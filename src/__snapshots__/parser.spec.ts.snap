@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test cases basics.ts: basics.ts 1`] = `
+exports[`Parser produces the expected output for example API definition 1`] = `
 Object {
   "endpoints": Object {
     "createUser": Object {
