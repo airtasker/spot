@@ -1,4 +1,3 @@
-import fs from "fs-extra";
 import ts from "typescript";
 import { isHttpMethod } from "./lib";
 import {
@@ -15,24 +14,10 @@ import {
 } from "./models";
 import { validate } from "./validator";
 
-export async function parse(sourcePath: string): Promise<Api> {
-  if (!(await fs.existsSync(sourcePath))) {
-    if (await fs.existsSync(sourcePath + ".js")) {
-      sourcePath += ".js";
-    } else if (await fs.existsSync(sourcePath + ".jsx")) {
-      sourcePath += ".jsx";
-    } else if (await fs.existsSync(sourcePath + ".ts")) {
-      sourcePath += ".ts";
-    } else if (await fs.existsSync(sourcePath + ".tsx")) {
-      sourcePath += ".tsx";
-    } else {
-      throw panic(`No source file found at ${sourcePath}`);
-    }
-  }
-  const file = await fs.readFile(sourcePath, "utf8");
+export function parse(source: string): Api {
   const sourceFile = ts.createSourceFile(
-    sourcePath,
-    file,
+    "api.ts",
+    source,
     ts.ScriptTarget.Latest
   );
   const api: Api = {
