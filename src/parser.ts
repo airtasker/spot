@@ -13,6 +13,7 @@ import {
   Type,
   VOID
 } from "./models";
+import { validate } from "./validator";
 
 export async function parse(sourcePath: string): Promise<Api> {
   if (!(await fs.existsSync(sourcePath))) {
@@ -51,6 +52,10 @@ export async function parse(sourcePath: string): Promise<Api> {
       const name = statement.name.getText(sourceFile);
       api.types[name] = extractObjectType(sourceFile, statement);
     }
+  }
+  const errors = validate(api);
+  if (errors.length > 0) {
+    throw panic(errors.map(e => e.message).join("\n"));
   }
   return api;
 }
