@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test cases basics.ts: basics.ts 1`] = `
+Object {
+  "endpoints": Object {
+    "createUser": Object {
+      "method": "POST",
+      "params": Array [],
+      "path": "/users/create",
+      "requestType": Object {
+        "kind": "type-reference",
+        "typeName": "CreaterUserRequest",
+      },
+      "responseType": Object {
+        "kind": "type-reference",
+        "typeName": "CreateUserResponse",
+      },
+    },
+    "getUser": Object {
+      "method": "GET",
+      "params": Array [
+        Object {
+          "name": "userId",
+          "type": Object {
+            "kind": "string",
+          },
+        },
+      ],
+      "path": "/users/:userId",
+      "requestType": Object {
+        "kind": "void",
+      },
+      "responseType": Object {
+        "kind": "object",
+        "properties": Object {
+          "age": Object {
+            "kind": "optional",
+            "optional": Object {
+              "kind": "number",
+            },
+          },
+          "name": Object {
+            "kind": "string",
+          },
+        },
+      },
+    },
+  },
+  "types": Object {
+    "CreateUserResponse": Object {
+      "kind": "object",
+      "properties": Object {
+        "success": Object {
+          "kind": "boolean",
+        },
+      },
+    },
+    "CreaterUserRequest": Object {
+      "kind": "object",
+      "properties": Object {
+        "name": Object {
+          "kind": "string",
+        },
+      },
+    },
+    "GetUserResponse": Object {
+      "kind": "object",
+      "properties": Object {
+        "name": Object {
+          "kind": "string",
+        },
+      },
+    },
+  },
+}
+`;
