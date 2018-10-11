@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Parser produces the expected output for example API definition 1`] = `
+exports[`Parser produces the expected output for example API definitions single-file 1`] = `
 Object {
   "endpoints": Object {
     "createUser": Object {
