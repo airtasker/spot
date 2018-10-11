@@ -4,6 +4,7 @@ import {
   optionalType,
   STRING,
   typeReference,
+  unionType,
   VOID
 } from "./models";
 import { validate } from "./validator";
@@ -109,7 +110,10 @@ describe("Validator", () => {
           path: "/",
           pathParameters: [],
           requestType: optionalType(typeReference("missing4")),
-          responseType: arrayType(typeReference("missing5"))
+          responseType: unionType(
+            arrayType(typeReference("missing5")),
+            arrayType(typeReference("missing6"))
+          )
         }
       },
       types: {}
@@ -119,7 +123,8 @@ describe("Validator", () => {
       "Referenced type missing2 is not defined",
       "Referenced type missing3 is not defined",
       "Referenced type missing4 is not defined",
-      "Referenced type missing5 is not defined"
+      "Referenced type missing5 is not defined",
+      "Referenced type missing6 is not defined"
     ]);
   });
 });

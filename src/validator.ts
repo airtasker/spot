@@ -52,8 +52,11 @@ function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
     case "void":
     case "null":
     case "boolean":
+    case "boolean-constant":
     case "string":
+    case "string-constant":
     case "number":
+    case "number-constant":
       break;
     case "object":
       for (const property of Object.values(type.properties)) {
@@ -65,6 +68,11 @@ function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
       break;
     case "optional":
       validateType(api, type.optional, errors);
+      break;
+    case "union":
+      for (const t of type.types) {
+        validateType(api, t, errors);
+      }
       break;
     case "type-reference":
       if (!api.types[type.typeName]) {

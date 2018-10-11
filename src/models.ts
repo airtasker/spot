@@ -1,3 +1,4 @@
+import { uniq } from "lodash";
 import { HttpMethod } from "./lib";
 
 export interface Api {
@@ -26,11 +27,15 @@ export type Type =
   | VoidType
   | NullType
   | BooleanType
+  | BooleanConstantType
   | StringType
+  | StringConstantType
   | NumberType
+  | IntegerConstantType
   | ObjectType
   | ArrayType
   | OptionalType
+  | UnionType
   | TypeReference;
 
 export const VOID: VoidType = {
@@ -57,6 +62,11 @@ export interface BooleanType {
   kind: "boolean";
 }
 
+export interface BooleanConstantType {
+  kind: "boolean-constant";
+  value: boolean;
+}
+
 export const STRING: StringType = {
   kind: "string"
 };
@@ -65,12 +75,22 @@ export interface StringType {
   kind: "string";
 }
 
+export interface StringConstantType {
+  kind: "string-constant";
+  value: string;
+}
+
 export const NUMBER: NumberType = {
   kind: "number"
 };
 
 export interface NumberType {
   kind: "number";
+}
+
+export interface IntegerConstantType {
+  kind: "integer-constant";
+  value: number;
 }
 
 export function objectType(properties: { [key: string]: Type }): ObjectType {
@@ -112,6 +132,36 @@ export function optionalType(type: Type): OptionalType {
 export interface OptionalType {
   kind: "optional";
   optional: Type;
+}
+
+export function unionType(...types: Type[]): Type {
+  types = uniq(
+    types.map(extractPossibleTypes).reduce((acc, curr) => [...acc, ...curr], [])
+  );
+  if (types.length === 0) {
+    return VOID;
+  } else if (types.length === 1) {
+    return types[0];
+  } else {
+    return {
+      kind: "union",
+      types
+    };
+  }
+}
+
+function extractPossibleTypes(type: Type): Type[] {
+  if (type.kind === "union") {
+    return type.types
+      .map(extractPossibleTypes)
+      .reduce((acc, curr) => [...acc, ...curr], []);
+  }
+  return [type];
+}
+
+export interface UnionType {
+  kind: "union";
+  types: Type[];
 }
 
 export function typeReference(typeName: string): TypeReference {

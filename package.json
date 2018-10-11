@@ -5,10 +5,12 @@
   "dependencies": {
     "@types/fs-extra": "^5.0.4",
     "@types/jest": "^23.3.5",
+    "@types/lodash": "^4.14.117",
     "@types/node": "^10.11.7",
     "assert-never": "^1.1.0",
     "fs-extra": "^7.0.0",
     "jest": "^23.6.0",
+    "lodash": "^4.17.11",
     "ts-jest": "^23.10.4",
     "typescript": "^3.1.2"
   },

@@ -36,9 +36,15 @@ export interface CreaterUserRequest {
   name: string;
 }
 
-export interface CreateUserResponse {
-  success: boolean;
-}
+export type CreateUserResponse =
+  | {
+      success: false;
+      errors: string[];
+    }
+  | {
+      success: true;
+      confirmation: string;
+    };
 
 export interface GetUserResponse {
   name: string;

@@ -4,6 +4,8 @@ import ts from "typescript";
 import { isHttpMethod } from "./lib";
 import {
   Api,
+  arrayType,
+  ArrayType,
   BOOLEAN,
   Endpoint,
   NUMBER,
@@ -13,6 +15,7 @@ import {
   Param,
   STRING,
   Type,
+  unionType,
   VOID
 } from "./models";
 import { validate } from "./validator";
@@ -232,18 +235,53 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
   }
   if (ts.isTypeLiteralNode(type)) {
     return extractObjectType(sourceFile, type);
-  }
-  if (!ts.isTypeReferenceNode(type) || !ts.isIdentifier(type.typeName)) {
+  } else if (ts.isArrayTypeNode(type)) {
+    return extractArrayType(sourceFile, type);
+  } else if (ts.isLiteralTypeNode(type)) {
+    const literal = extractLiteral(sourceFile, type.literal);
+    switch (literal.kind) {
+      case "string": {
+        return {
+          kind: "string-constant",
+          value: literal.text
+        };
+      }
+      case "number": {
+        if (!literal.text.match(/^-?\d+$/)) {
+          throw panic(
+            `Expected an integer, got this instead: ${type.getText(sourceFile)}`
+          );
+        }
+        return {
+          kind: "integer-constant",
+          value: parseInt(literal.text)
+        };
+      }
+      case "boolean": {
+        return {
+          kind: "boolean-constant",
+          value: literal.value
+        };
+      }
+      default:
+        throw panic(
+          `Unexpected literal in type definition: ${type.getText(sourceFile)}`
+        );
+    }
+  } else if (ts.isUnionTypeNode(type)) {
+    return extractUnionType(sourceFile, type);
+  } else if (ts.isTypeReferenceNode(type) && ts.isIdentifier(type.typeName)) {
+    return {
+      kind: "type-reference",
+      typeName: type.typeName.getText(sourceFile)
+    };
+  } else {
     throw panic(
       `Expected a plain type identifier, got this instead: ${type.getText(
         sourceFile
       )}`
     );
   }
-  return {
-    kind: "type-reference",
-    typeName: type.typeName.getText(sourceFile)
-  };
 }
 
 function extractObjectType(
@@ -275,11 +313,30 @@ function extractObjectType(
   return objectType(properties);
 }
 
-type Literal = ObjectLiteral | ArrayLiteral | StringLiteral;
+function extractArrayType(
+  sourceFile: ts.SourceFile,
+  declaration: ts.ArrayTypeNode
+): ArrayType {
+  return arrayType(extractType(sourceFile, declaration.elementType));
+}
+
+function extractUnionType(
+  sourceFile: ts.SourceFile,
+  declaration: ts.UnionTypeNode
+): Type {
+  return unionType(...declaration.types.map(t => extractType(sourceFile, t)));
+}
+
+type Literal =
+  | ObjectLiteral
+  | ArrayLiteral
+  | StringLiteral
+  | NumericLiteral
+  | BooleanLiteral;
 
 function extractLiteral(
   sourceFile: ts.SourceFile,
-  expression: ts.Expression
+  expression: ts.Node
 ): Literal {
   if (ts.isObjectLiteralExpression(expression)) {
     return extractObjectLiteral(sourceFile, expression);
@@ -287,6 +344,13 @@ function extractLiteral(
     return extractArrayLiteral(sourceFile, expression);
   } else if (ts.isStringLiteral(expression)) {
     return extractStringLiteral(sourceFile, expression);
+  } else if (ts.isNumericLiteral(expression)) {
+    return extractNumericLiteral(sourceFile, expression);
+  } else if (
+    expression.kind === ts.SyntaxKind.TrueKeyword ||
+    expression.kind === ts.SyntaxKind.FalseKeyword
+  ) {
+    return extractBooleanLiteral(sourceFile, expression);
   } else {
     throw panic(`Expected a literal, found ${expression.getText(sourceFile)}`);
   }
@@ -368,6 +432,45 @@ function extractStringLiteral(
     kind: "string",
     // TODO: Unescape strings.
     text: literal.substr(1, literal.length - 2)
+  };
+}
+
+interface NumericLiteral {
+  kind: "number";
+  text: string;
+}
+
+export function isNumericLiteral(literal?: Literal): literal is NumericLiteral {
+  return literal !== undefined && literal.kind === "number";
+}
+
+function extractNumericLiteral(
+  sourceFile: ts.SourceFile,
+  expression: ts.NumericLiteral
+): NumericLiteral {
+  const literal = expression.getText(sourceFile);
+  return {
+    kind: "number",
+    text: literal
+  };
+}
+
+interface BooleanLiteral {
+  kind: "boolean";
+  value: boolean;
+}
+
+export function isBooleanLiteral(literal?: Literal): literal is BooleanLiteral {
+  return literal !== undefined && literal.kind === "boolean";
+}
+
+function extractBooleanLiteral(
+  sourceFile: ts.SourceFile,
+  expression: ts.Node
+): BooleanLiteral {
+  return {
+    kind: "boolean",
+    value: expression.kind === ts.SyntaxKind.TrueKeyword
   };
 }
 
