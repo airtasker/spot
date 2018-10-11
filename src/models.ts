@@ -73,10 +73,24 @@ export interface NumberType {
   kind: "number";
 }
 
+export function objectType(properties: { [key: string]: Type }): ObjectType {
+  return {
+    kind: "object",
+    properties
+  };
+}
+
 export interface ObjectType {
   kind: "object";
   properties: {
     [key: string]: Type;
+  };
+}
+
+export function arrayType(elements: Type): ArrayType {
+  return {
+    kind: "array",
+    elements
   };
 }
 
@@ -100,7 +114,7 @@ export interface OptionalType {
   optional: Type;
 }
 
-export function referenceType(typeName: string): TypeReference {
+export function typeReference(typeName: string): TypeReference {
   return {
     kind: "type-reference",
     typeName

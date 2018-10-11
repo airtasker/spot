@@ -1,4 +1,11 @@
-import { optionalType, referenceType, STRING, VOID } from "./models";
+import {
+  arrayType,
+  objectType,
+  optionalType,
+  STRING,
+  typeReference,
+  VOID
+} from "./models";
 import { validate } from "./validator";
 
 describe("Validator", () => {
@@ -68,10 +75,7 @@ describe("Validator", () => {
           method: "GET",
           path: "/",
           pathParameters: [],
-          requestType: {
-            kind: "object",
-            properties: {}
-          },
+          requestType: objectType({}),
           responseType: VOID
         }
       },
@@ -92,26 +96,20 @@ describe("Validator", () => {
           pathParameters: [
             {
               name: "param",
-              type: referenceType("missing1")
+              type: typeReference("missing1")
             }
           ],
-          requestType: referenceType("missing2"),
-          responseType: {
-            kind: "object",
-            properties: {
-              example: referenceType("missing3")
-            }
-          }
+          requestType: typeReference("missing2"),
+          responseType: objectType({
+            example: typeReference("missing3")
+          })
         },
         example2: {
           method: "POST",
           path: "/",
           pathParameters: [],
-          requestType: optionalType(referenceType("missing4")),
-          responseType: {
-            kind: "array",
-            elements: referenceType("missing5")
-          }
+          requestType: optionalType(typeReference("missing4")),
+          responseType: arrayType(typeReference("missing5"))
         }
       },
       types: {}

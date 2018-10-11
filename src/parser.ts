@@ -6,6 +6,7 @@ import {
   Endpoint,
   NUMBER,
   ObjectType,
+  objectType,
   optionalType,
   Param,
   STRING,
@@ -208,7 +209,9 @@ function extractObjectType(
   sourceFile: ts.SourceFile,
   declaration: ts.TypeLiteralNode | ts.InterfaceDeclaration
 ): ObjectType {
-  const objectType: ObjectType = { kind: "object", properties: {} };
+  const properties: {
+    [key: string]: Type;
+  } = {};
   for (const member of declaration.members) {
     if (
       !member.name ||
@@ -226,9 +229,9 @@ function extractObjectType(
     if (member.questionToken) {
       type = optionalType(type);
     }
-    objectType.properties[member.name.getText(sourceFile)] = type;
+    properties[member.name.getText(sourceFile)] = type;
   }
-  return objectType;
+  return objectType(properties);
 }
 
 type Literal = ObjectLiteral | ArrayLiteral | StringLiteral;
