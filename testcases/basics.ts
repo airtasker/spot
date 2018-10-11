@@ -7,7 +7,7 @@ export class Api {
     path: "/users/create"
   })
   createUser(@request req: CreaterUserRequest): Promise<CreateUserResponse> {
-    return Promise.reject();
+    throw new Error("Not implemented");
   }
 
   @endpoint({
@@ -20,7 +20,7 @@ export class Api {
     name: string;
     age?: number;
   }> {
-    return Promise.reject();
+    throw new Error("Not implemented");
   }
 }
 
