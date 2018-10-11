@@ -16,6 +16,24 @@ Object {
         "typeName": "CreateUserResponse",
       },
     },
+    "deleteUser": Object {
+      "method": "DELETE",
+      "path": "/users/:userId",
+      "pathParameters": Array [
+        Object {
+          "name": "userId",
+          "type": Object {
+            "kind": "string",
+          },
+        },
+      ],
+      "requestType": Object {
+        "kind": "void",
+      },
+      "responseType": Object {
+        "kind": "void",
+      },
+    },
     "getUser": Object {
       "method": "GET",
       "path": "/users/:userId",

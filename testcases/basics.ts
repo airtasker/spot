@@ -6,7 +6,7 @@ export class Api {
     method: "POST",
     path: "/users/create"
   })
-  createUser(@request req: CreaterUserRequest): Promise<CreateUserResponse> {
+  createUser(@request req: CreaterUserRequest): CreateUserResponse {
     throw new Error("Not implemented");
   }
 
@@ -20,6 +20,14 @@ export class Api {
     name: string;
     age?: number;
   }> {
+    throw new Error("Not implemented");
+  }
+
+  @endpoint({
+    method: "DELETE",
+    path: "/users/:userId"
+  })
+  deleteUser(@pathParam userId: string): void {
     throw new Error("Not implemented");
   }
 }

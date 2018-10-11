@@ -148,20 +148,25 @@ function extractEndpoint(
   let responseType: Type = VOID;
   if (methodDeclaration.type) {
     if (
-      !ts.isTypeReferenceNode(methodDeclaration.type) ||
-      !ts.isIdentifier(methodDeclaration.type.typeName) ||
-      methodDeclaration.type.typeName.escapedText !== "Promise" ||
-      !methodDeclaration.type.typeArguments ||
-      methodDeclaration.type.typeArguments.length !== 1
+      ts.isTypeReferenceNode(methodDeclaration.type) &&
+      ts.isIdentifier(methodDeclaration.type.typeName) &&
+      methodDeclaration.type.typeName.escapedText === "Promise"
     ) {
-      throw panic(
-        `Expected Promise<...> as return type for endpoint method, got this instead: ${methodDeclaration.type.getText(
-          sourceFile
-        )}`
-      );
+      if (
+        !methodDeclaration.type.typeArguments ||
+        methodDeclaration.type.typeArguments.length !== 1
+      ) {
+        throw panic(
+          `Expected Promise<...>, got this instead: ${methodDeclaration.type.getText(
+            sourceFile
+          )}`
+        );
+      }
+      const promisedType = methodDeclaration.type.typeArguments[0];
+      responseType = extractType(sourceFile, promisedType);
+    } else {
+      responseType = extractType(sourceFile, methodDeclaration.type);
     }
-    const promisedType = methodDeclaration.type.typeArguments[0];
-    responseType = extractType(sourceFile, promisedType);
   }
   return {
     method,
@@ -174,6 +179,8 @@ function extractEndpoint(
 
 function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
   switch (type.kind) {
+    case ts.SyntaxKind.VoidKeyword:
+      return VOID;
     case ts.SyntaxKind.StringKeyword:
       return STRING;
     case ts.SyntaxKind.NumberKeyword:
