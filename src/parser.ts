@@ -40,7 +40,7 @@ export function parse(source: string): Api {
   }
   const errors = validate(api);
   if (errors.length > 0) {
-    throw panic(errors.map(e => e.message).join("\n"));
+    throw panic(errors.join("\n"));
   }
   return api;
 }
@@ -102,7 +102,7 @@ function extractEndpoint(
     );
   }
   const path = pathLiteral.text;
-  const params: Param[] = [];
+  const pathParameters: Param[] = [];
   let requestType: Type = VOID;
   for (const parameter of methodDeclaration.parameters) {
     const [hasRequestDecorator] = extractDecorator(
@@ -133,7 +133,7 @@ function extractEndpoint(
     if (hasRequestDecorator) {
       requestType = type;
     } else if (hasPathParamDecorator) {
-      params.push({
+      pathParameters.push({
         name: parameter.name.getText(sourceFile),
         type
       });
@@ -166,7 +166,7 @@ function extractEndpoint(
   return {
     method,
     path,
-    params,
+    pathParameters,
     requestType,
     responseType
   };

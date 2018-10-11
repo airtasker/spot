@@ -12,7 +12,7 @@ export interface Api {
 export interface Endpoint {
   method: HttpMethod;
   path: string;
-  params: Param[];
+  pathParameters: Param[];
   requestType: Type;
   responseType: Type;
 }
@@ -98,6 +98,13 @@ export function optionalType(type: Type): OptionalType {
 export interface OptionalType {
   kind: "optional";
   optional: Type;
+}
+
+export function referenceType(typeName: string): TypeReference {
+  return {
+    kind: "type-reference",
+    typeName
+  };
 }
 
 export type TypeReference = {

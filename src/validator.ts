@@ -1,11 +1,42 @@
 import assertNever from "assert-never";
 import { Api, Type } from "./models";
 
-export function validate(api: Api): Error[] {
-  const errors: Error[] = [];
-  for (const endpoint of Object.values(api.endpoints)) {
-    for (const param of endpoint.params) {
+const PREFIXED_PARAM_NAME = /:[a-z]+/gi;
+
+export function validate(api: Api): ErrorMessage[] {
+  const errors: ErrorMessage[] = [];
+  for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
+    const matches = endpoint.path.match(PREFIXED_PARAM_NAME);
+    const expectedPathParamNames = new Set(
+      matches ? matches.map(m => m.substr(1)) : []
+    );
+    const definedPathParamNames = new Set<string>();
+    for (const param of endpoint.pathParameters) {
+      definedPathParamNames.add(param.name);
       validateType(api, param.type, errors);
+    }
+    const missingPathParamNames = new Set(
+      [...expectedPathParamNames].filter(x => !definedPathParamNames.has(x))
+    );
+    const extraneousPathParamNames = new Set(
+      [...definedPathParamNames].filter(x => !expectedPathParamNames.has(x))
+    );
+    for (const paramName of missingPathParamNames) {
+      errors.push(
+        `${endpointName} does not define a type for path parameter :${paramName}`
+      );
+    }
+    for (const paramName of extraneousPathParamNames) {
+      errors.push(
+        `${endpointName} does not have a parameter named :${paramName} in its path`
+      );
+    }
+    if (endpoint.method === "GET" && endpoint.requestType.kind !== "void") {
+      errors.push(
+        `${endpointName} cannot have a request body because its HTTP method is ${
+          endpoint.method
+        }`
+      );
     }
     validateType(api, endpoint.requestType, errors);
     validateType(api, endpoint.responseType, errors);
@@ -16,7 +47,7 @@ export function validate(api: Api): Error[] {
   return errors;
 }
 
-function validateType(api: Api, type: Type, errors: Error[]): void {
+function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
   switch (type.kind) {
     case "void":
     case "null":
@@ -37,9 +68,7 @@ function validateType(api: Api, type: Type, errors: Error[]): void {
       break;
     case "type-reference":
       if (!api.types[type.typeName]) {
-        errors.push(
-          createError(`Referenced type ${type.typeName} is not defined.`)
-        );
+        errors.push(`Referenced type ${type.typeName} is not defined`);
       }
       break;
     default:
@@ -47,14 +76,4 @@ function validateType(api: Api, type: Type, errors: Error[]): void {
   }
 }
 
-export function createError(message: string): Error {
-  return {
-    kind: "error",
-    message
-  };
-}
-
-export type Error = {
-  kind: "error";
-  message: string;
-};
+export type ErrorMessage = string;

@@ -5,8 +5,8 @@ Object {
   "endpoints": Object {
     "createUser": Object {
       "method": "POST",
-      "params": Array [],
       "path": "/users/create",
+      "pathParameters": Array [],
       "requestType": Object {
         "kind": "type-reference",
         "typeName": "CreaterUserRequest",
@@ -18,7 +18,8 @@ Object {
     },
     "getUser": Object {
       "method": "GET",
-      "params": Array [
+      "path": "/users/:userId",
+      "pathParameters": Array [
         Object {
           "name": "userId",
           "type": Object {
@@ -26,7 +27,6 @@ Object {
           },
         },
       ],
-      "path": "/users/:userId",
       "requestType": Object {
         "kind": "void",
       },
