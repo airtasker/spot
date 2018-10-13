@@ -7,12 +7,13 @@ import {
   arrayType,
   ArrayType,
   BOOLEAN,
+  DynamicPathComponent,
   Endpoint,
   NUMBER,
   ObjectType,
   objectType,
   optionalType,
-  Param,
+  PathComponent,
   STRING,
   Type,
   unionType,
@@ -103,7 +104,13 @@ function parseApiDeclaration(
         "endpoint"
       );
       if (hasEndpointDecorator) {
-        api.endpoints[member.name.getText(sourceFile)] = extractEndpoint(
+        const endpointName = member.name.getText(sourceFile);
+        if (api.endpoints[endpointName]) {
+          throw panic(
+            `Found multiple definitions of the same endpoint ${endpointName}`
+          );
+        }
+        api.endpoints[endpointName] = extractEndpoint(
           sourceFile,
           endpointArgs[0],
           member
@@ -147,7 +154,46 @@ function extractEndpoint(
     );
   }
   const path = pathLiteral.text;
-  const pathParameters: Param[] = [];
+  const pathComponents: PathComponent[] = [];
+  const dynamicPathComponents: { [name: string]: DynamicPathComponent } = {};
+  if (path.length > 0) {
+    let componentStartPosition = 0;
+    do {
+      if (path.charAt(componentStartPosition) === ":") {
+        // The parameter name extends until a character that isn't a valid name.
+        const nextNonNamePositionRelative = path
+          .substr(componentStartPosition + 1)
+          .search(/[^a-z0-9_]/gi);
+        const dynamicPathComponent: DynamicPathComponent = {
+          kind: "dynamic",
+          name: path.substr(
+            componentStartPosition + 1,
+            nextNonNamePositionRelative === -1
+              ? undefined
+              : nextNonNamePositionRelative
+          ),
+          type: VOID
+        };
+        pathComponents.push(dynamicPathComponent);
+        dynamicPathComponents[dynamicPathComponent.name] = dynamicPathComponent;
+        componentStartPosition =
+          nextNonNamePositionRelative === -1
+            ? -1
+            : componentStartPosition + 1 + nextNonNamePositionRelative;
+      } else {
+        // The static component extends until the next parameter, which starts with ":".
+        const nextColumnPosition = path.indexOf(":", componentStartPosition);
+        pathComponents.push({
+          kind: "static",
+          content: path.substring(
+            componentStartPosition,
+            nextColumnPosition === -1 ? undefined : nextColumnPosition
+          )
+        });
+        componentStartPosition = nextColumnPosition;
+      }
+    } while (componentStartPosition !== -1);
+  }
   let requestType: Type = VOID;
   for (const parameter of methodDeclaration.parameters) {
     const [hasRequestDecorator] = extractDecorator(
@@ -178,10 +224,16 @@ function extractEndpoint(
     if (hasRequestDecorator) {
       requestType = type;
     } else if (hasPathParamDecorator) {
-      pathParameters.push({
-        name: parameter.name.getText(sourceFile),
-        type
-      });
+      const name = parameter.name.getText(sourceFile);
+      if (dynamicPathComponents[name]) {
+        dynamicPathComponents[name].type = type;
+      } else {
+        throw panic(
+          `Found a path parameter that isn't present in path. Expected one of [${Object.keys(
+            dynamicPathComponents
+          ).join(", ")}], got this instead: ${name}`
+        );
+      }
     } else {
       throw panic(
         `Found a parameter without @request or @pathParam: ${parameter.getText(
@@ -215,8 +267,7 @@ function extractEndpoint(
   }
   return {
     method,
-    path,
-    pathParameters,
+    path: pathComponents,
     requestType,
     responseType
   };

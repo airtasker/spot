@@ -1,5 +1,6 @@
 import {
   arrayType,
+  NUMBER,
   objectType,
   optionalType,
   STRING,
@@ -15,9 +16,13 @@ describe("Validator", () => {
       endpoints: {
         example: {
           method: "GET",
-          path: "/users/:userId",
-          pathParameters: [
+          path: [
             {
+              kind: "static",
+              content: "/users/"
+            },
+            {
+              kind: "dynamic",
               name: "userId",
               type: STRING
             }
@@ -35,8 +40,17 @@ describe("Validator", () => {
       endpoints: {
         example: {
           method: "GET",
-          path: "/users/:userId",
-          pathParameters: [],
+          path: [
+            {
+              kind: "static",
+              content: "/users/"
+            },
+            {
+              kind: "dynamic",
+              name: "userId",
+              type: VOID
+            }
+          ],
           requestType: VOID,
           responseType: VOID
         }
@@ -47,16 +61,29 @@ describe("Validator", () => {
       "example does not define a type for path parameter :userId"
     ]);
   });
-  it("rejects extraneous path parameters", () => {
+  it("rejects duplicate path parameters", () => {
     const errors = validate({
       endpoints: {
         example: {
           method: "GET",
-          path: "/users",
-          pathParameters: [
+          path: [
             {
+              kind: "static",
+              content: "/users/"
+            },
+            {
+              kind: "dynamic",
               name: "userId",
-              type: STRING
+              type: NUMBER
+            },
+            {
+              kind: "static",
+              content: "/profile/"
+            },
+            {
+              kind: "dynamic",
+              name: "userId",
+              type: NUMBER
             }
           ],
           requestType: VOID,
@@ -66,7 +93,7 @@ describe("Validator", () => {
       types: {}
     });
     expect(errors).toEqual([
-      "example does not have a parameter named :userId in its path"
+      "example defines the path parameter :userId multiple times"
     ]);
   });
   it("rejects request body for GET requests", () => {
@@ -74,8 +101,12 @@ describe("Validator", () => {
       endpoints: {
         example: {
           method: "GET",
-          path: "/",
-          pathParameters: [],
+          path: [
+            {
+              kind: "static",
+              content: "/"
+            }
+          ],
           requestType: objectType({}),
           responseType: VOID
         }
@@ -93,9 +124,13 @@ describe("Validator", () => {
       endpoints: {
         example1: {
           method: "POST",
-          path: "/:param",
-          pathParameters: [
+          path: [
             {
+              kind: "static",
+              content: "/"
+            },
+            {
+              kind: "dynamic",
               name: "param",
               type: typeReference("missing1")
             }
@@ -107,8 +142,12 @@ describe("Validator", () => {
         },
         example2: {
           method: "POST",
-          path: "/",
-          pathParameters: [],
+          path: [
+            {
+              kind: "static",
+              content: "/"
+            }
+          ],
           requestType: optionalType(typeReference("missing4")),
           responseType: unionType(
             arrayType(typeReference("missing5")),

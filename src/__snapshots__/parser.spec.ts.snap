@@ -5,8 +5,12 @@ Object {
   "endpoints": Object {
     "createUser": Object {
       "method": "POST",
-      "path": "/users/create",
-      "pathParameters": Array [],
+      "path": Array [
+        Object {
+          "content": "/users/create",
+          "kind": "static",
+        },
+      ],
       "requestType": Object {
         "kind": "type-reference",
         "typeName": "CreaterUserRequest",
@@ -18,13 +22,21 @@ Object {
     },
     "deleteUser": Object {
       "method": "DELETE",
-      "path": "/users/:userId",
-      "pathParameters": Array [
+      "path": Array [
         Object {
+          "content": "/users/",
+          "kind": "static",
+        },
+        Object {
+          "kind": "dynamic",
           "name": "userId",
           "type": Object {
             "kind": "string",
           },
+        },
+        Object {
+          "content": "-confirmed",
+          "kind": "static",
         },
       ],
       "requestType": Object {
@@ -36,9 +48,13 @@ Object {
     },
     "getUser": Object {
       "method": "GET",
-      "path": "/users/:userId",
-      "pathParameters": Array [
+      "path": Array [
         Object {
+          "content": "/users/",
+          "kind": "static",
+        },
+        Object {
+          "kind": "dynamic",
           "name": "userId",
           "type": Object {
             "kind": "string",
@@ -98,8 +114,12 @@ Object {
   "endpoints": Object {
     "createUser": Object {
       "method": "POST",
-      "path": "/users/create",
-      "pathParameters": Array [],
+      "path": Array [
+        Object {
+          "content": "/users/create",
+          "kind": "static",
+        },
+      ],
       "requestType": Object {
         "kind": "type-reference",
         "typeName": "CreaterUserRequest",
@@ -111,13 +131,21 @@ Object {
     },
     "deleteUser": Object {
       "method": "DELETE",
-      "path": "/users/:userId",
-      "pathParameters": Array [
+      "path": Array [
         Object {
+          "content": "/users/",
+          "kind": "static",
+        },
+        Object {
+          "kind": "dynamic",
           "name": "userId",
           "type": Object {
             "kind": "string",
           },
+        },
+        Object {
+          "content": "-confirmed",
+          "kind": "static",
         },
       ],
       "requestType": Object {
@@ -129,9 +157,13 @@ Object {
     },
     "getUser": Object {
       "method": "GET",
-      "path": "/users/:userId",
-      "pathParameters": Array [
+      "path": Array [
         Object {
+          "content": "/users/",
+          "kind": "static",
+        },
+        Object {
+          "kind": "dynamic",
           "name": "userId",
           "type": Object {
             "kind": "string",

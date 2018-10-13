@@ -1,35 +1,36 @@
 import assertNever from "assert-never";
 import { Api, Type } from "./models";
 
-const PREFIXED_PARAM_NAME = /:[a-z]+/gi;
-
 export function validate(api: Api): ErrorMessage[] {
   const errors: ErrorMessage[] = [];
   for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-    const matches = endpoint.path.match(PREFIXED_PARAM_NAME);
-    const expectedPathParamNames = new Set(
-      matches ? matches.map(m => m.substr(1)) : []
-    );
-    const definedPathParamNames = new Set<string>();
-    for (const param of endpoint.pathParameters) {
-      definedPathParamNames.add(param.name);
-      validateType(api, param.type, errors);
-    }
-    const missingPathParamNames = new Set(
-      [...expectedPathParamNames].filter(x => !definedPathParamNames.has(x))
-    );
-    const extraneousPathParamNames = new Set(
-      [...definedPathParamNames].filter(x => !expectedPathParamNames.has(x))
-    );
-    for (const paramName of missingPathParamNames) {
-      errors.push(
-        `${endpointName} does not define a type for path parameter :${paramName}`
-      );
-    }
-    for (const paramName of extraneousPathParamNames) {
-      errors.push(
-        `${endpointName} does not have a parameter named :${paramName} in its path`
-      );
+    const pathParameterNames = new Set<string>();
+    for (const pathComponent of endpoint.path) {
+      switch (pathComponent.kind) {
+        case "static":
+          // Nothing to check.
+          break;
+        case "dynamic":
+          validateType(api, pathComponent.type, errors);
+          if (pathComponent.type.kind === "void") {
+            errors.push(
+              `${endpointName} does not define a type for path parameter :${
+                pathComponent.name
+              }`
+            );
+          }
+          if (pathParameterNames.has(pathComponent.name)) {
+            errors.push(
+              `${endpointName} defines the path parameter :${
+                pathComponent.name
+              } multiple times`
+            );
+          }
+          pathParameterNames.add(pathComponent.name);
+          break;
+        default:
+          throw assertNever(pathComponent);
+      }
     }
     if (endpoint.method === "GET" && endpoint.requestType.kind !== "void") {
       errors.push(

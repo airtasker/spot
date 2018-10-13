@@ -12,13 +12,20 @@ export interface Api {
 
 export interface Endpoint {
   method: HttpMethod;
-  path: string;
-  pathParameters: Param[];
+  path: PathComponent[];
   requestType: Type;
   responseType: Type;
 }
 
-export interface Param {
+export type PathComponent = StaticPathComponent | DynamicPathComponent;
+
+export interface StaticPathComponent {
+  kind: "static";
+  content: string;
+}
+
+export interface DynamicPathComponent {
+  kind: "dynamic";
   name: string;
   type: Type;
 }
