@@ -56,7 +56,7 @@ function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
     case "string":
     case "string-constant":
     case "number":
-    case "number-constant":
+    case "integer-constant":
       break;
     case "object":
       for (const property of Object.values(type.properties)) {
