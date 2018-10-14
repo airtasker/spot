@@ -27,7 +27,7 @@ export class Api {
     method: "DELETE",
     path: "/users/:userId-confirmed"
   })
-  deleteUser(@pathParam userId: string): void {
+  deleteUser(@pathParam userId: string): null {
     throw new Error("Not implemented");
   }
 }

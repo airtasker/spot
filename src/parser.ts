@@ -9,6 +9,7 @@ import {
   BOOLEAN,
   DynamicPathComponent,
   Endpoint,
+  NULL,
   NUMBER,
   ObjectType,
   objectType,
@@ -398,6 +399,8 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
           `Unexpected literal in type definition: ${type.getText(sourceFile)}`
         );
     }
+  } else if (ts.isToken(type) && type.kind === ts.SyntaxKind.NullKeyword) {
+    return NULL;
   } else if (ts.isUnionTypeNode(type)) {
     return extractUnionType(sourceFile, type);
   } else if (ts.isTypeReferenceNode(type) && ts.isIdentifier(type.typeName)) {

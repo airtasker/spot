@@ -68,7 +68,7 @@ Object {
         "kind": "void",
       },
       "responseType": Object {
-        "kind": "void",
+        "kind": "null",
       },
     },
     "getUser": Object {
@@ -189,7 +189,7 @@ Object {
         "kind": "void",
       },
       "responseType": Object {
-        "kind": "void",
+        "kind": "null",
       },
     },
     "getUser": Object {
