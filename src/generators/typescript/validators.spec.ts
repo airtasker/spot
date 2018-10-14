@@ -49,33 +49,27 @@ describe("TypeScript validators generator", () => {
         types: {}
       })
     ).toMatchInlineSnapshot(`
-"export function validateExample_request(value: any): value is example_request {
+"export function validateExample_request(value: any): value is void {
     return value === undefined;
 }
 
-export function validateExample_response(value: any): value is example_response {
+export function validateExample_response(value: any): value is void {
     return value === undefined;
 }
 
-export function validateExample_defaultError(value: any): value is example_defaultError {
+export function validateExample_defaultError(value: any): value is void {
     return value === undefined;
 }
 
-export function validateExample_customError403(value: any): value is example_customError403 {
+export function validateExample_customError403(value: any): value is void {
     return value === undefined;
 }
 
-export function validateExample_customError404(value: any): value is example_customError404 {
+export function validateExample_customError404(value: any): value is void {
     return value === undefined;
 }"
 `);
   });
-
-  // generates endpoint
-  // - request
-  // - response
-  // - defaultError
-  // - customError`statusCode`
 
   describe("generates type validator", () => {
     test("void", () => {
@@ -83,11 +77,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: VOID
+            Example: VOID
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === undefined;
 }"
 `);
@@ -98,11 +92,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: NULL
+            Example: NULL
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === null;
 }"
 `);
@@ -113,11 +107,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: BOOLEAN
+            Example: BOOLEAN
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return typeof value === \\"boolean\\";
 }"
 `);
@@ -128,14 +122,14 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: {
+            Example: {
               kind: "boolean-constant",
               value: true
             }
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === true;
 }"
 `);
@@ -143,14 +137,14 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: {
+            Example: {
               kind: "boolean-constant",
               value: false
             }
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === false;
 }"
 `);
@@ -161,11 +155,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: STRING
+            Example: STRING
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return typeof value === \\"string\\";
 }"
 `);
@@ -176,14 +170,14 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: {
+            Example: {
               kind: "string-constant",
               value: "some constant"
             }
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === \\"some constant\\";
 }"
 `);
@@ -194,11 +188,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: NUMBER
+            Example: NUMBER
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return typeof value === \\"number\\";
 }"
 `);
@@ -209,14 +203,14 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: {
+            Example: {
               kind: "integer-constant",
               value: 0
             }
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === 0;
 }"
 `);
@@ -224,14 +218,14 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: {
+            Example: {
               kind: "integer-constant",
               value: 123
             }
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === 123;
 }"
 `);
@@ -239,14 +233,14 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: {
+            Example: {
               kind: "integer-constant",
               value: -1000
             }
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === -1000;
 }"
 `);
@@ -257,11 +251,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: objectType({})
+            Example: objectType({})
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return !(value === null) && typeof value === \\"object\\";
 }"
 `);
@@ -269,13 +263,13 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: objectType({
+            Example: objectType({
               singleField: NUMBER
             })
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"singleField\\"] === \\"number\\";
 }"
 `);
@@ -283,7 +277,7 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: objectType({
+            Example: objectType({
               field1: NUMBER,
               field2: STRING,
               field3: BOOLEAN
@@ -291,7 +285,7 @@ export function validateExample_customError404(value: any): value is example_cus
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"field1\\"] === \\"number\\" && typeof value[\\"field2\\"] === \\"string\\" && typeof value[\\"field3\\"] === \\"boolean\\";
 }"
 `);
@@ -302,11 +296,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: arrayType(STRING)
+            Example: arrayType(STRING)
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value instanceof Array && value.reduce((acc, curr) => acc && typeof curr === \\"string\\", true);
 }"
 `);
@@ -317,11 +311,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: optionalType(STRING)
+            Example: optionalType(STRING)
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return value === undefined || typeof value === \\"string\\";
 }"
 `);
@@ -332,11 +326,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: unionType(STRING, NUMBER, BOOLEAN)
+            Example: unionType(STRING, NUMBER, BOOLEAN)
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return typeof value === \\"string\\" || typeof value === \\"number\\" || typeof value === \\"boolean\\";
 }"
 `);
@@ -347,11 +341,11 @@ export function validateExample_customError404(value: any): value is example_cus
         generateValidatorsSource({
           endpoints: {},
           types: {
-            example: typeReference("OtherType")
+            Example: typeReference("OtherType")
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is example {
+"export function validateExample(value: any): value is Example {
     return validateOtherType(value);
 }"
 `);

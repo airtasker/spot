@@ -9,37 +9,42 @@ import {
   TypeReference,
   UnionType
 } from "../../models";
+import { typeNode } from "./types";
 
 export function generateValidatorsSource(api: Api) {
-  const statements: StatementPerTypeName = {};
+  const statements: ts.Statement[] = [];
   for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-    generateValidator(
-      statements,
-      endpointPropertyTypeName(endpointName, "request"),
-      endpoint.requestType
+    statements.push(
+      generateValidator(
+        endpointPropertyTypeName(endpointName, "request"),
+        endpoint.requestType
+      )
     );
-    generateValidator(
-      statements,
-      endpointPropertyTypeName(endpointName, "response"),
-      endpoint.responseType
+    statements.push(
+      generateValidator(
+        endpointPropertyTypeName(endpointName, "response"),
+        endpoint.responseType
+      )
     );
-    generateValidator(
-      statements,
-      endpointPropertyTypeName(endpointName, "defaultError"),
-      endpoint.defaultErrorType
+    statements.push(
+      generateValidator(
+        endpointPropertyTypeName(endpointName, "defaultError"),
+        endpoint.defaultErrorType
+      )
     );
     for (const [statusCode, customErrorType] of Object.entries(
       endpoint.customErrorTypes
     )) {
-      generateValidator(
-        statements,
-        endpointPropertyTypeName(endpointName, `customError${statusCode}`),
-        customErrorType
+      statements.push(
+        generateValidator(
+          endpointPropertyTypeName(endpointName, `customError${statusCode}`),
+          customErrorType
+        )
       );
     }
   }
   for (const [typeName, type] of Object.entries(api.types)) {
-    generateValidator(statements, typeName, type);
+    statements.push(generateValidator(typeName, type, typeName));
   }
   const sourceFile = ts.createSourceFile(
     "validators.ts",
@@ -51,26 +56,22 @@ export function generateValidatorsSource(api: Api) {
   const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed
   });
-  return Object.values(statements)
+  return statements
     .map(s => printer.printNode(ts.EmitHint.Unspecified, s, sourceFile))
     .join("\n\n");
 }
 
-interface StatementPerTypeName {
-  [typeName: string]: ts.Statement;
-}
-
 function generateValidator(
-  statements: StatementPerTypeName,
-  typeName: string,
-  type: Type
-): void {
+  typeNickname: string,
+  type: Type,
+  typeName?: string
+): ts.Statement {
   const parameterName = ts.createIdentifier("value");
-  statements[typeName] = ts.createFunctionDeclaration(
+  return ts.createFunctionDeclaration(
     /*decorators*/ undefined,
     /*modifiers*/ [ts.createToken(ts.SyntaxKind.ExportKeyword)],
     /*asteriskToken*/ undefined,
-    ts.createIdentifier(validatorName(typeName)),
+    ts.createIdentifier(validatorName(typeNickname)),
     /*typeParameters*/ undefined,
     [
       ts.createParameter(
@@ -84,7 +85,9 @@ function generateValidator(
     ],
     /*returnType*/ ts.createTypePredicateNode(
       parameterName,
-      ts.createTypeReferenceNode(typeName, /*typeArguments*/ undefined)
+      typeName
+        ? ts.createTypeReferenceNode(typeName, /*typeArguments*/ undefined)
+        : typeNode(type)
     ),
     ts.createBlock(
       [ts.createReturn(validator(type, parameterName))],

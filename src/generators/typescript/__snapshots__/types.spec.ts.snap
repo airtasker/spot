@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TypeScript types generator produces valid code multi-file 1`] = `
+"export type CreaterUserRequest = {
+    name: string;
+};
+
+export type CreateUserResponse = {
+    success: boolean;
+};
+
+export type GetUserResponse = {
+    name: string;
+};"
+`;
+
+exports[`TypeScript types generator produces valid code single-file 1`] = `
+"export type CreaterUserRequest = {
+    name: string;
+};
+
+export type CreateUserResponse = {
+    success: false;
+    errors: string[];
+} | {
+    success: true;
+    confirmation: string;
+};
+
+export type GetUserResponse = {
+    name: string;
+};"
+`;
