@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TypeScript validators generator produces valid code multi-file 1`] = `
+"export function validateCreateUser_request(value: any): value is createUser_request {
+    return validateCreaterUserRequest(value);
+}
+
+export function validateCreateUser_response(value: any): value is createUser_response {
+    return validateCreateUserResponse(value);
+}
+
+export function validateCreateUser_defaultError(value: any): value is createUser_defaultError {
+    return value === undefined;
+}
+
+export function validateDeleteUser_request(value: any): value is deleteUser_request {
+    return value === undefined;
+}
+
+export function validateDeleteUser_response(value: any): value is deleteUser_response {
+    return value === null;
+}
+
+export function validateDeleteUser_defaultError(value: any): value is deleteUser_defaultError {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"message\\"] === \\"string\\";
+}
+
+export function validateDeleteUser_customError403(value: any): value is deleteUser_customError403 {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"message\\"] === \\"string\\" && typeof value[\\"signedInAs\\"] === \\"string\\";
+}
+
+export function validateGetUser_request(value: any): value is getUser_request {
+    return value === undefined;
+}
+
+export function validateGetUser_response(value: any): value is getUser_response {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\" && (value[\\"age\\"] === undefined || typeof value[\\"age\\"] === \\"number\\");
+}
+
+export function validateGetUser_defaultError(value: any): value is getUser_defaultError {
+    return value === undefined;
+}
+
+export function validateCreaterUserRequest(value: any): value is CreaterUserRequest {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\";
+}
+
+export function validateCreateUserResponse(value: any): value is CreateUserResponse {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"success\\"] === \\"boolean\\";
+}
+
+export function validateGetUserResponse(value: any): value is GetUserResponse {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\";
+}"
+`;
+
+exports[`TypeScript validators generator produces valid code single-file 1`] = `
+"export function validateCreateUser_request(value: any): value is createUser_request {
+    return validateCreaterUserRequest(value);
+}
+
+export function validateCreateUser_response(value: any): value is createUser_response {
+    return validateCreateUserResponse(value);
+}
+
+export function validateCreateUser_defaultError(value: any): value is createUser_defaultError {
+    return value === undefined;
+}
+
+export function validateGetUser_request(value: any): value is getUser_request {
+    return value === undefined;
+}
+
+export function validateGetUser_response(value: any): value is getUser_response {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\" && (value[\\"age\\"] === undefined || typeof value[\\"age\\"] === \\"number\\");
+}
+
+export function validateGetUser_defaultError(value: any): value is getUser_defaultError {
+    return value === undefined;
+}
+
+export function validateDeleteUser_request(value: any): value is deleteUser_request {
+    return value === undefined;
+}
+
+export function validateDeleteUser_response(value: any): value is deleteUser_response {
+    return value === null;
+}
+
+export function validateDeleteUser_defaultError(value: any): value is deleteUser_defaultError {
+    return value === undefined;
+}
+
+export function validateCreaterUserRequest(value: any): value is CreaterUserRequest {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\";
+}
+
+export function validateCreateUserResponse(value: any): value is CreateUserResponse {
+    return !(value === null) && typeof value === \\"object\\" && value[\\"success\\"] === false && (value[\\"errors\\"] instanceof Array && value[\\"errors\\"].reduce((acc, curr) => acc && typeof curr === \\"string\\", true)) || !(value === null) && typeof value === \\"object\\" && value[\\"success\\"] === true && typeof value[\\"confirmation\\"] === \\"string\\";
+}
+
+export function validateGetUserResponse(value: any): value is GetUserResponse {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\";
+}"
+`;
