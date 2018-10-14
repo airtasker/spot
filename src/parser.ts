@@ -77,8 +77,8 @@ async function parseFileRecursively(
         path.join(sourcePath, "..", importPath)
       );
     } else if (ts.isClassDeclaration(statement)) {
-      const [hasApiDecorator] = extractDecorator(sourceFile, statement, "api");
-      if (hasApiDecorator) {
+      const apiDecorator = extractSingleDecorator(sourceFile, statement, "api");
+      if (apiDecorator) {
         parseApiDeclaration(sourceFile, statement, api);
       }
     } else if (ts.isTypeAliasDeclaration(statement)) {
@@ -98,21 +98,30 @@ function parseApiDeclaration(
 ): void {
   for (const member of classDeclaration.members) {
     if (ts.isMethodDeclaration(member)) {
-      const [hasEndpointDecorator, ...endpointArgs] = extractDecorator(
+      const endpointDecorator = extractSingleDecorator(
         sourceFile,
         member,
         "endpoint"
       );
-      if (hasEndpointDecorator) {
+      const errorDecorators = extractDecorators(sourceFile, member, "error");
+      if (endpointDecorator) {
         const endpointName = member.name.getText(sourceFile);
         if (api.endpoints[endpointName]) {
           throw panic(
             `Found multiple definitions of the same endpoint ${endpointName}`
           );
         }
+        if (endpointDecorator.arguments.length !== 1) {
+          throw panic(
+            `Expected exactly one argument for @endpoint(), got ${
+              endpointDecorator.arguments.length
+            }`
+          );
+        }
         api.endpoints[endpointName] = extractEndpoint(
           sourceFile,
-          endpointArgs[0],
+          endpointDecorator.arguments[0],
+          errorDecorators,
           member
         );
       }
@@ -122,22 +131,26 @@ function parseApiDeclaration(
 
 function extractEndpoint(
   sourceFile: ts.SourceFile,
-  decoratorValue: ts.Expression,
+  endpointDescriptionExpression: ts.Expression,
+  errorDecorators: Decorator[],
   methodDeclaration: ts.MethodDeclaration
 ): Endpoint {
-  const parsedEndpointDescription = extractLiteral(sourceFile, decoratorValue);
-  if (!isObjectLiteral(parsedEndpointDescription)) {
+  const endpointDescription = extractLiteral(
+    sourceFile,
+    endpointDescriptionExpression
+  );
+  if (!isObjectLiteral(endpointDescription)) {
     throw panic(
-      `@endpoint() expects an object literal, got this instead: ${decoratorValue.getText(
+      `@endpoint() expects an object literal, got this instead: ${endpointDescriptionExpression.getText(
         sourceFile
       )}`
     );
   }
-  const methodLiteral = parsedEndpointDescription.properties["method"];
-  const pathLiteral = parsedEndpointDescription.properties["path"];
+  const methodLiteral = endpointDescription.properties["method"];
+  const pathLiteral = endpointDescription.properties["path"];
   if (!isStringLiteral(methodLiteral)) {
     throw panic(
-      `Invalid method in endpoint description: ${decoratorValue.getText(
+      `Invalid method in endpoint description: ${endpointDescriptionExpression.getText(
         sourceFile
       )}`
     );
@@ -148,7 +161,7 @@ function extractEndpoint(
   }
   if (!isStringLiteral(pathLiteral)) {
     throw panic(
-      `Invalid path in endpoint description: ${decoratorValue.getText(
+      `Invalid path in endpoint description: ${endpointDescriptionExpression.getText(
         sourceFile
       )}`
     );
@@ -196,12 +209,12 @@ function extractEndpoint(
   }
   let requestType: Type = VOID;
   for (const parameter of methodDeclaration.parameters) {
-    const [hasRequestDecorator] = extractDecorator(
+    const requestDecorator = extractSingleDecorator(
       sourceFile,
       parameter,
       "request"
     );
-    const [hasPathParamDecorator] = extractDecorator(
+    const pathParamDecorator = extractSingleDecorator(
       sourceFile,
       parameter,
       "pathParam"
@@ -221,9 +234,9 @@ function extractEndpoint(
       );
     }
     const type = extractType(sourceFile, parameter.type);
-    if (hasRequestDecorator) {
+    if (requestDecorator) {
       requestType = type;
-    } else if (hasPathParamDecorator) {
+    } else if (pathParamDecorator) {
       const name = parameter.name.getText(sourceFile);
       if (dynamicPathComponents[name]) {
         dynamicPathComponents[name].type = type;
@@ -265,11 +278,77 @@ function extractEndpoint(
       responseType = extractType(sourceFile, methodDeclaration.type);
     }
   }
+  let defaultErrorType: Type = VOID;
+  let customErrorTypes: {
+    [statusCode: number]: Type;
+  } = {};
+  let defaultErrorDefined = false;
+  for (const errorDecorator of errorDecorators) {
+    if (errorDecorator.typeParameters.length !== 1) {
+      throw panic(
+        `Expected exactly one type parameter for @error(), got ${
+          errorDecorator.typeParameters.length
+        }`
+      );
+    }
+    const errorResponseType = extractType(
+      sourceFile,
+      errorDecorator.typeParameters[0]
+    );
+    if (errorDecorator.arguments.length > 1) {
+      throw panic(
+        `Expected at most one argument for @error(), got ${
+          errorDecorator.arguments.length
+        }`
+      );
+    }
+    let errorDescription: Literal;
+    if (errorDecorator.arguments.length === 1) {
+      errorDescription = extractLiteral(
+        sourceFile,
+        errorDecorator.arguments[0]
+      );
+      if (!isObjectLiteral(errorDescription)) {
+        throw panic(
+          `@error() expects an object literal, got this instead: ${errorDecorator.arguments[0].getText(
+            sourceFile
+          )}`
+        );
+      }
+    } else {
+      errorDescription = {
+        kind: "object",
+        properties: {}
+      };
+    }
+    const statusCode = errorDescription.properties["statusCode"];
+    if (statusCode) {
+      if (!isNumericLiteral(statusCode)) {
+        throw panic(
+          `@error() expects a numeric status code, got this instead: ${errorDecorator.arguments[0].getText(
+            sourceFile
+          )}`
+        );
+      }
+      // TODO: Ensure that it's an integer.
+      customErrorTypes[parseInt(statusCode.text)] = errorResponseType;
+    } else {
+      if (defaultErrorDefined) {
+        throw panic(
+          `@error() cannot be called without a status multiple times.`
+        );
+      }
+      defaultErrorType = errorResponseType;
+      defaultErrorDefined = true;
+    }
+  }
   return {
     method,
     path: pathComponents,
     requestType,
-    responseType
+    responseType,
+    defaultErrorType,
+    customErrorTypes
   };
 }
 
@@ -525,29 +604,60 @@ function extractBooleanLiteral(
   };
 }
 
-function extractDecorator(
+function extractSingleDecorator(
   sourceFile: ts.SourceFile,
   node: ts.Node,
   decoratorName: string
-): [boolean, ...ts.Expression[]] {
+): Decorator | null {
+  const decorators = extractDecorators(sourceFile, node, decoratorName);
+  if (decorators.length === 1) {
+    return decorators[0];
+  } else if (decorators.length > 1) {
+    throw panic(
+      `Expected a single @${decoratorName} decorator, found ${
+        decorators.length
+      }`
+    );
+  } else {
+    return null;
+  }
+}
+
+function extractDecorators(
+  sourceFile: ts.SourceFile,
+  node: ts.Node,
+  decoratorName: string
+): Decorator[] {
+  const decorators: Decorator[] = [];
   if (node.decorators) {
     for (const decorator of node.decorators) {
       if (
         ts.isIdentifier(decorator.expression) &&
         decorator.expression.getText(sourceFile) === decoratorName
       ) {
-        return [true];
+        decorators.push({
+          typeParameters: [],
+          arguments: []
+        });
       } else if (ts.isCallExpression(decorator.expression)) {
         if (
           ts.isIdentifier(decorator.expression.expression) &&
           decorator.expression.expression.getText(sourceFile) === decoratorName
         ) {
-          return [true, ...decorator.expression.arguments];
+          decorators.push({
+            typeParameters: [...(decorator.expression.typeArguments || [])],
+            arguments: [...decorator.expression.arguments]
+          });
         }
       }
     }
   }
-  return [false];
+  return decorators;
+}
+
+interface Decorator {
+  typeParameters: ts.TypeNode[];
+  arguments: ts.Expression[];
 }
 
 function panic(nodeOrMessage: ts.Node | string) {

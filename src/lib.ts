@@ -1,16 +1,32 @@
-export function api<T>(description: ApiDescription = {}) {
+export function api(description: ApiDescription = {}) {
   return (constructor: Function) => {};
 }
 
 export interface ApiDescription {}
 
-export function endpoint<T>(description: EndpointDescription) {
-  return (target: T, propertyKey: string, descriptor: PropertyDescriptor) => {};
+export function endpoint(description: EndpointDescription) {
+  return (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {};
 }
 
 export interface EndpointDescription {
   method: HttpMethod;
   path: string;
+}
+
+export function error<T>(description: ErrorDescription = {}) {
+  return (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {};
+}
+
+export interface ErrorDescription {
+  statusCode?: number;
 }
 
 export function isHttpMethod(method: string): method is HttpMethod {

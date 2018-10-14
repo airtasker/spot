@@ -28,7 +28,9 @@ describe("Validator", () => {
             }
           ],
           requestType: VOID,
-          responseType: VOID
+          responseType: VOID,
+          defaultErrorType: VOID,
+          customErrorTypes: {}
         }
       },
       types: {}
@@ -52,7 +54,9 @@ describe("Validator", () => {
             }
           ],
           requestType: VOID,
-          responseType: VOID
+          responseType: VOID,
+          defaultErrorType: VOID,
+          customErrorTypes: {}
         }
       },
       types: {}
@@ -87,7 +91,9 @@ describe("Validator", () => {
             }
           ],
           requestType: VOID,
-          responseType: VOID
+          responseType: VOID,
+          defaultErrorType: VOID,
+          customErrorTypes: {}
         }
       },
       types: {}
@@ -108,7 +114,9 @@ describe("Validator", () => {
             }
           ],
           requestType: objectType({}),
-          responseType: VOID
+          responseType: VOID,
+          defaultErrorType: VOID,
+          customErrorTypes: {}
         }
       },
       types: {}
@@ -138,7 +146,9 @@ describe("Validator", () => {
           requestType: typeReference("missing2"),
           responseType: objectType({
             example: typeReference("missing3")
-          })
+          }),
+          defaultErrorType: typeReference("missing4"),
+          customErrorTypes: {}
         },
         example2: {
           method: "POST",
@@ -148,11 +158,15 @@ describe("Validator", () => {
               content: "/"
             }
           ],
-          requestType: optionalType(typeReference("missing4")),
+          requestType: optionalType(typeReference("missing5")),
           responseType: unionType(
-            arrayType(typeReference("missing5")),
-            arrayType(typeReference("missing6"))
-          )
+            arrayType(typeReference("missing6")),
+            arrayType(typeReference("missing7"))
+          ),
+          defaultErrorType: VOID,
+          customErrorTypes: {
+            403: typeReference("missing8")
+          }
         }
       },
       types: {}
@@ -163,7 +177,9 @@ describe("Validator", () => {
       "Referenced type missing3 is not defined",
       "Referenced type missing4 is not defined",
       "Referenced type missing5 is not defined",
-      "Referenced type missing6 is not defined"
+      "Referenced type missing6 is not defined",
+      "Referenced type missing7 is not defined",
+      "Referenced type missing8 is not defined"
     ]);
   });
 });

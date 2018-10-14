@@ -15,6 +15,10 @@ export interface Endpoint {
   path: PathComponent[];
   requestType: Type;
   responseType: Type;
+  defaultErrorType: Type;
+  customErrorTypes: {
+    [statusCode: number]: Type;
+  };
 }
 
 export type PathComponent = StaticPathComponent | DynamicPathComponent;

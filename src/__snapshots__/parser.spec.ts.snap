@@ -4,6 +4,10 @@ exports[`Parser produces the expected output for example API definitions multi-f
 Object {
   "endpoints": Object {
     "createUser": Object {
+      "customErrorTypes": Object {},
+      "defaultErrorType": Object {
+        "kind": "void",
+      },
       "method": "POST",
       "path": Array [
         Object {
@@ -21,6 +25,27 @@ Object {
       },
     },
     "deleteUser": Object {
+      "customErrorTypes": Object {
+        "403": Object {
+          "kind": "object",
+          "properties": Object {
+            "message": Object {
+              "kind": "string",
+            },
+            "signedInAs": Object {
+              "kind": "string",
+            },
+          },
+        },
+      },
+      "defaultErrorType": Object {
+        "kind": "object",
+        "properties": Object {
+          "message": Object {
+            "kind": "string",
+          },
+        },
+      },
       "method": "DELETE",
       "path": Array [
         Object {
@@ -47,6 +72,10 @@ Object {
       },
     },
     "getUser": Object {
+      "customErrorTypes": Object {},
+      "defaultErrorType": Object {
+        "kind": "void",
+      },
       "method": "GET",
       "path": Array [
         Object {
@@ -113,6 +142,10 @@ exports[`Parser produces the expected output for example API definitions single-
 Object {
   "endpoints": Object {
     "createUser": Object {
+      "customErrorTypes": Object {},
+      "defaultErrorType": Object {
+        "kind": "void",
+      },
       "method": "POST",
       "path": Array [
         Object {
@@ -130,6 +163,10 @@ Object {
       },
     },
     "deleteUser": Object {
+      "customErrorTypes": Object {},
+      "defaultErrorType": Object {
+        "kind": "void",
+      },
       "method": "DELETE",
       "path": Array [
         Object {
@@ -156,6 +193,10 @@ Object {
       },
     },
     "getUser": Object {
+      "customErrorTypes": Object {},
+      "defaultErrorType": Object {
+        "kind": "void",
+      },
       "method": "GET",
       "path": Array [
         Object {
