@@ -17,7 +17,7 @@ export function validateDeleteUser_request(value: any): value is void {
     return value === undefined;
 }
 
-export function validateDeleteUser_paramuserId(value: any): value is string {
+export function validateDeleteUser_paramUserId(value: any): value is string {
     return typeof value === \\"string\\";
 }
 
@@ -42,7 +42,7 @@ export function validateGetUser_request(value: any): value is void {
     return value === undefined;
 }
 
-export function validateGetUser_paramuserId(value: any): value is string {
+export function validateGetUser_paramUserId(value: any): value is string {
     return typeof value === \\"string\\";
 }
 
@@ -87,7 +87,7 @@ export function validateGetUser_request(value: any): value is void {
     return value === undefined;
 }
 
-export function validateGetUser_paramuserId(value: any): value is string {
+export function validateGetUser_paramUserId(value: any): value is string {
     return typeof value === \\"string\\";
 }
 
@@ -106,7 +106,7 @@ export function validateDeleteUser_request(value: any): value is void {
     return value === undefined;
 }
 
-export function validateDeleteUser_paramuserId(value: any): value is string {
+export function validateDeleteUser_paramUserId(value: any): value is string {
     return typeof value === \\"string\\";
 }
 

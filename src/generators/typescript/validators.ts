@@ -307,9 +307,16 @@ export function endpointPropertyTypeName(
         throw new Error(`Unexpected ${property} with a suffix`);
       }
   }
-  return `${endpointName}_${property}${suffix}`;
+  return `${endpointName}_${property}${capitaliseFirstLetter(suffix)}`;
 }
 
 export function validatorName(typeName: string) {
-  return `validate${typeName[0].toUpperCase()}${typeName.substr(1)}`;
+  return `validate${capitaliseFirstLetter(typeName)}`;
+}
+
+function capitaliseFirstLetter(name: string) {
+  if (name.length === 0) {
+    return name;
+  }
+  return `${name[0].toUpperCase()}${name.substr(1)}`;
 }
