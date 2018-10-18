@@ -174,7 +174,7 @@ export function generateExpressServerSource(api: Api): string {
                     /*typeArguments*/ undefined,
                     [
                       ts.createTemplateExpression(
-                        ts.createTemplateHead("Listening on port"),
+                        ts.createTemplateHead("Listening on port "),
                         [
                           ts.createTemplateSpan(
                             ts.createIdentifier(PORT_NAME),

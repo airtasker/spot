@@ -149,7 +149,7 @@ app.get(\\"/users/:userId\\", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(\`Listening on port\${PORT}\`);
+    console.log(\`Listening on port \${PORT}\`);
 });"
 `;
 
@@ -302,6 +302,6 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(\`Listening on port\${PORT}\`);
+    console.log(\`Listening on port \${PORT}\`);
 });"
 `;
