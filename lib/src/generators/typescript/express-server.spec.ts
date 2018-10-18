@@ -19,6 +19,7 @@ describe("TypeScript Express server generator", () => {
         expect(serverSource).toMatchSnapshot("server");
         for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
           const endpointSource = generateEndpointHandlerSource(
+            api,
             endpointName,
             endpoint
           );

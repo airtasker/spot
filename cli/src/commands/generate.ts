@@ -84,7 +84,7 @@ Generated the following files:
         for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
           generatedFiles[
             `endpoints/${endpointName}.ts`
-          ] = generateEndpointHandlerSource(endpointName, endpoint);
+          ] = generateEndpointHandlerSource(api, endpointName, endpoint);
         }
         break;
 

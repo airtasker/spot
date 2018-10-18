@@ -8,6 +8,7 @@ import {
   objectType,
   unionType
 } from "../../models";
+import { isVoid } from "../../validator";
 import { outputTypeScriptSource } from "./ts-writer";
 import { promiseTypeNode, typeNode } from "./types";
 import {
@@ -145,7 +146,7 @@ export function generateExpressServerSource(api: Api): string {
     )
   );
   for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-    statements.push(generateEndpointRoute(endpointName, endpoint));
+    statements.push(generateEndpointRoute(api, endpointName, endpoint));
   }
   statements.push(
     ts.createStatement(
@@ -202,10 +203,11 @@ const PARSED_REQUEST_VARIABLE = "request";
 const RESPONSE_VARIABLE = "response";
 
 function generateEndpointRoute(
+  api: Api,
   endpointName: string,
   endpoint: Endpoint
 ): ts.Statement {
-  const includeRequest = endpoint.requestType.kind !== "void";
+  const includeRequest = !isVoid(api, endpoint.requestType);
   return ts.createStatement(
     ts.createCall(
       ts.createPropertyAccess(
@@ -359,9 +361,9 @@ function generateEndpointRoute(
                           ts.createIdentifier(endpointName),
                           /*typeArguments*/ undefined,
                           [
-                            ...(endpoint.requestType.kind !== "void"
-                              ? [ts.createIdentifier(PARSED_REQUEST_VARIABLE)]
-                              : []),
+                            ...(isVoid(api, endpoint.requestType)
+                              ? []
+                              : [ts.createIdentifier(PARSED_REQUEST_VARIABLE)]),
                             ...compact(
                               endpoint.path.map(
                                 pathComponent =>
@@ -478,6 +480,7 @@ function generateValidateAndSendResponse(
 }
 
 export function generateEndpointHandlerSource(
+  api: Api,
   endpointName: string,
   endpoint: Endpoint
 ): string {
@@ -513,8 +516,9 @@ export function generateEndpointHandlerSource(
       endpointName,
       /*typeParameters*/ undefined,
       [
-        ...(endpoint.requestType.kind !== "void"
-          ? [
+        ...(isVoid(api, endpoint.requestType)
+          ? []
+          : [
               ts.createParameter(
                 /*decorators*/ undefined,
                 /*modifiers*/ undefined,
@@ -523,8 +527,7 @@ export function generateEndpointHandlerSource(
                 /*questionToken*/ undefined,
                 typeNode(endpoint.requestType)
               )
-            ]
-          : []),
+            ]),
         ...compact(
           endpoint.path.map(
             pathComponent =>

@@ -10,6 +10,7 @@ import {
   Type,
   unionType
 } from "../../models";
+import { isVoid } from "../../validator";
 import { outputTypeScriptSource } from "./ts-writer";
 import { promiseTypeNode, typeNode } from "./types";
 import {
@@ -66,7 +67,7 @@ export function generateAxiosClientSource(api: Api): string {
     )
   );
   for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-    statements.push(generateEndpointFunction(endpointName, endpoint));
+    statements.push(generateEndpointFunction(api, endpointName, endpoint));
   }
   return outputTypeScriptSource(statements);
 }
@@ -74,11 +75,12 @@ export function generateAxiosClientSource(api: Api): string {
 const REQUEST_PARAMETER = "request";
 
 function generateEndpointFunction(
+  api: Api,
   endpointName: string,
   endpoint: Endpoint
 ): ts.FunctionDeclaration {
   const parameters: ts.ParameterDeclaration[] = [];
-  const includeRequest = endpoint.requestType.kind !== "void";
+  const includeRequest = !isVoid(api, endpoint.requestType);
   if (includeRequest) {
     parameters.push(
       ts.createParameter(

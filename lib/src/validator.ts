@@ -19,7 +19,7 @@ export function validate(api: Api): ErrorMessage[] {
             pathComponent.name,
             errors
           );
-          if (pathComponent.type.kind === "void") {
+          if (isVoid(api, pathComponent.type)) {
             errors.push(
               `${endpointName} does not define a type for path parameter :${
                 pathComponent.name
@@ -39,7 +39,7 @@ export function validate(api: Api): ErrorMessage[] {
           throw assertNever(pathComponent);
       }
     }
-    if (endpoint.method === "GET" && endpoint.requestType.kind !== "void") {
+    if (endpoint.method === "GET" && !isVoid(api, endpoint.requestType)) {
       errors.push(
         `${endpointName} cannot have a request body because its HTTP method is ${
           endpoint.method
@@ -177,3 +177,18 @@ function ensureOptionalOrRequiredString(
 }
 
 export type ErrorMessage = string;
+
+export function isVoid(api: Api, type: Type): boolean {
+  switch (type.kind) {
+    case "void":
+      return true;
+    case "type-reference":
+      return api.types[type.typeName] && isVoid(api, api.types[type.typeName]);
+    case "union":
+      return type.types.reduce((acc, t) => acc && isVoid(api, t), true);
+    case "optional":
+      return isVoid(api, type.optional);
+    default:
+      return false;
+  }
+}
