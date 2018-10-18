@@ -93,10 +93,6 @@ app.post(\\"/users/create\\", async (req, res) => {
 });
 
 app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
-    const request = req.body;
-    if (!validators.validateDeleteUser_request(request)) {
-        throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
-    }
     const userId = req.params.userId;
     if (!validators.validateDeleteUser_paramUserId(userId)) {
         throw new Error(\`Invalid path parameter userId: \${JSON.stringify(userId, null, 2)}\`);
@@ -127,10 +123,6 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
 });
 
 app.get(\\"/users/:userId\\", async (req, res) => {
-    const request = req.body;
-    if (!validators.validateGetUser_request(request)) {
-        throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
-    }
     const userId = req.params.userId;
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid path parameter userId: \${JSON.stringify(userId, null, 2)}\`);
@@ -246,10 +238,6 @@ app.post(\\"/users/create\\", async (req, res) => {
 });
 
 app.get(\\"/users/:userId\\", async (req, res) => {
-    const request = req.body;
-    if (!validators.validateGetUser_request(request)) {
-        throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
-    }
     const userId = req.params.userId;
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid path parameter userId: \${JSON.stringify(userId, null, 2)}\`);
@@ -268,10 +256,6 @@ app.get(\\"/users/:userId\\", async (req, res) => {
 });
 
 app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
-    const request = req.body;
-    if (!validators.validateDeleteUser_request(request)) {
-        throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
-    }
     const userId = req.params.userId;
     if (!validators.validateDeleteUser_paramUserId(userId)) {
         throw new Error(\`Invalid path parameter userId: \${JSON.stringify(userId, null, 2)}\`);

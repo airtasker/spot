@@ -205,6 +205,7 @@ function generateEndpointRoute(
   endpointName: string,
   endpoint: Endpoint
 ): ts.Statement {
+  const includeRequest = endpoint.requestType.kind !== "void";
   return ts.createStatement(
     ts.createCall(
       ts.createPropertyAccess(
@@ -244,29 +245,33 @@ function generateEndpointRoute(
           /*equalsGreaterThanToken*/ undefined,
           ts.createBlock(
             [
-              ts.createVariableStatement(
-                /*modifiers*/ undefined,
-                ts.createVariableDeclarationList(
-                  [
-                    ts.createVariableDeclaration(
-                      PARSED_REQUEST_VARIABLE,
-                      /*type*/ undefined,
-                      ts.createPropertyAccess(
-                        ts.createIdentifier(REQUEST_PARAMETER),
-                        "body"
+              ...(includeRequest
+                ? [
+                    ts.createVariableStatement(
+                      /*modifiers*/ undefined,
+                      ts.createVariableDeclarationList(
+                        [
+                          ts.createVariableDeclaration(
+                            PARSED_REQUEST_VARIABLE,
+                            /*type*/ undefined,
+                            ts.createPropertyAccess(
+                              ts.createIdentifier(REQUEST_PARAMETER),
+                              "body"
+                            )
+                          )
+                        ],
+                        ts.NodeFlags.Const
                       )
+                    ),
+                    validateStatement(
+                      ts.createIdentifier(PARSED_REQUEST_VARIABLE),
+                      validatorName(
+                        endpointPropertyTypeName(endpointName, "request")
+                      ),
+                      "Invalid request"
                     )
-                  ],
-                  ts.NodeFlags.Const
-                )
-              ),
-              validateStatement(
-                ts.createIdentifier(PARSED_REQUEST_VARIABLE),
-                validatorName(
-                  endpointPropertyTypeName(endpointName, "request")
-                ),
-                "Invalid request"
-              ),
+                  ]
+                : []),
               ...flatten(
                 compact(
                   endpoint.path.map(
