@@ -33,7 +33,7 @@ export function generateTypesSource(api: Api): string {
   const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed
   });
-  return Object.values(definitions)
+  return definitions
     .map(s => printer.printNode(ts.EmitHint.Unspecified, s, sourceFile))
     .join("\n\n");
 }
