@@ -1,7 +1,10 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import { parsePath } from "../../parser";
-import { generateExpressServerSource } from "./express-server";
+import {
+  generateEndpointHandlerSource,
+  generateExpressServerSource
+} from "./express-server";
 
 const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
 
@@ -12,8 +15,15 @@ describe("TypeScript Express server generator", () => {
         const api = await parsePath(
           path.join(EXAMPLES_DIR, testCaseName, "api.ts")
         );
-        const source = generateExpressServerSource(api);
-        expect(source).toMatchSnapshot();
+        const serverSource = generateExpressServerSource(api);
+        expect(serverSource).toMatchSnapshot("server");
+        for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
+          const endpointSource = generateEndpointHandlerSource(
+            endpointName,
+            endpoint
+          );
+          expect(endpointSource).toMatchSnapshot(`endpoint:${endpointName}`);
+        }
       });
     }
   });

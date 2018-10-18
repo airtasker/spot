@@ -1,11 +1,66 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TypeScript Express server generator produces valid code multi-file 1`] = `
+exports[`TypeScript Express server generator produces valid code multi-file: endpoint:createUser 1`] = `
+"import { CreateUserRequest, CreateUserResponse } from \\"../types\\";
+
+export async function createUser(request: CreateUserRequest, authToken: string | void): Promise<{
+    status: 200;
+    data: CreateUserResponse;
+} | {
+    status: number;
+    data: void;
+}> {
+    throw new Error(\\"Endpoint createUser is not yet implemented!\\");
+}"
+`;
+
+exports[`TypeScript Express server generator produces valid code multi-file: endpoint:deleteUser 1`] = `
+"export async function deleteUser(userId: string, authToken: string): Promise<{
+    status: 200;
+    data: null;
+} | {
+    status: 403;
+    data: {
+        message: string;
+        signedInAs: string;
+    };
+} | {
+    status: number;
+    data: {
+        message: string;
+    };
+}> {
+    throw new Error(\\"Endpoint deleteUser is not yet implemented!\\");
+}"
+`;
+
+exports[`TypeScript Express server generator produces valid code multi-file: endpoint:getUser 1`] = `
+"export async function getUser(userId: string): Promise<{
+    status: 200;
+    data: {
+        name: string;
+        age?: number;
+    };
+} | {
+    status: number;
+    data: void;
+}> {
+    throw new Error(\\"Endpoint getUser is not yet implemented!\\");
+}"
+`;
+
+exports[`TypeScript Express server generator produces valid code multi-file: server 1`] = `
 "import * as cors from \\"cors\\";
 
 import * as express from \\"express\\";
 
 import * as validators from \\"./validators\\";
+
+import { createUser } from \\"./endpoints/createUser\\";
+
+import { deleteUser } from \\"./endpoints/deleteUser\\";
+
+import { getUser } from \\"./endpoints/getUser\\";
 
 const app = express();
 
@@ -92,12 +147,67 @@ app.get(\\"/users/:userId\\", async (req, res) => {
 });"
 `;
 
-exports[`TypeScript Express server generator produces valid code single-file 1`] = `
+exports[`TypeScript Express server generator produces valid code single-file: endpoint:createUser 1`] = `
+"import { CreateUserRequest, CreateUserResponse } from \\"../types\\";
+
+export async function createUser(request: CreateUserRequest, authToken: string | void): Promise<{
+    status: 200;
+    data: CreateUserResponse;
+} | {
+    status: number;
+    data: void;
+}> {
+    throw new Error(\\"Endpoint createUser is not yet implemented!\\");
+}"
+`;
+
+exports[`TypeScript Express server generator produces valid code single-file: endpoint:deleteUser 1`] = `
+"export async function deleteUser(userId: string, authToken: string): Promise<{
+    status: 200;
+    data: null;
+} | {
+    status: 403;
+    data: {
+        message: string;
+        signedInAs: string;
+    };
+} | {
+    status: number;
+    data: {
+        message: string;
+    };
+}> {
+    throw new Error(\\"Endpoint deleteUser is not yet implemented!\\");
+}"
+`;
+
+exports[`TypeScript Express server generator produces valid code single-file: endpoint:getUser 1`] = `
+"export async function getUser(userId: string): Promise<{
+    status: 200;
+    data: {
+        name: string;
+        age?: number;
+    };
+} | {
+    status: number;
+    data: void;
+}> {
+    throw new Error(\\"Endpoint getUser is not yet implemented!\\");
+}"
+`;
+
+exports[`TypeScript Express server generator produces valid code single-file: server 1`] = `
 "import * as cors from \\"cors\\";
 
 import * as express from \\"express\\";
 
 import * as validators from \\"./validators\\";
+
+import { createUser } from \\"./endpoints/createUser\\";
+
+import { getUser } from \\"./endpoints/getUser\\";
+
+import { deleteUser } from \\"./endpoints/deleteUser\\";
 
 const app = express();
 

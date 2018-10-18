@@ -1,11 +1,21 @@
 import * as ts from "typescript";
-import { Api, Endpoint } from "../../models";
+import {
+  Api,
+  Endpoint,
+  gatherTypes,
+  integerConstant,
+  NUMBER,
+  objectType,
+  unionType
+} from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
+import { promiseTypeNode, typeNode } from "./types";
 import {
   endpointPropertyTypeName,
   validateStatement,
   validatorName
 } from "./validators";
+import uniq = require("lodash/uniq");
 import compact = require("lodash/compact");
 import flatten = require("lodash/flatten");
 
@@ -48,6 +58,24 @@ export function generateExpressServerSource(api: Api): string {
       ts.createStringLiteral("./validators")
     )
   );
+  for (const endpointName of Object.keys(api.endpoints)) {
+    statements.push(
+      ts.createImportDeclaration(
+        /*decorators*/ undefined,
+        /*modifiers*/ undefined,
+        ts.createImportClause(
+          /*name*/ undefined,
+          ts.createNamedImports([
+            ts.createImportSpecifier(
+              /*propertyName*/ undefined,
+              ts.createIdentifier(endpointName)
+            )
+          ])
+        ),
+        ts.createStringLiteral(`./endpoints/${endpointName}`)
+      )
+    );
+  }
   statements.push(
     ts.createVariableStatement(
       /*modifiers*/ undefined,
@@ -380,4 +408,129 @@ function generateValidateAndSendResponse(
     ),
     ...sendStatusAndData
   ];
+}
+
+export function generateEndpointHandlerSource(
+  endpointName: string,
+  endpoint: Endpoint
+): string {
+  const typeNames = getTypeNamesForEndpoint(endpoint);
+  return outputTypeScriptSource([
+    ...(typeNames.length > 0
+      ? [
+          ts.createImportDeclaration(
+            /*decorators*/ undefined,
+            /*modifiers*/ undefined,
+            ts.createImportClause(
+              /*name*/ undefined,
+              ts.createNamedImports(
+                typeNames.map(typeName =>
+                  ts.createImportSpecifier(
+                    /*propertyName*/ undefined,
+                    ts.createIdentifier(typeName)
+                  )
+                )
+              )
+            ),
+            ts.createStringLiteral("../types")
+          )
+        ]
+      : []),
+    ts.createFunctionDeclaration(
+      /*decorators*/ undefined,
+      [
+        ts.createToken(ts.SyntaxKind.ExportKeyword),
+        ts.createToken(ts.SyntaxKind.AsyncKeyword)
+      ],
+      /*asteriskToken*/ undefined,
+      endpointName,
+      /*typeParameters*/ undefined,
+      [
+        ...(endpoint.requestType.kind !== "void"
+          ? [
+              ts.createParameter(
+                /*decorators*/ undefined,
+                /*modifiers*/ undefined,
+                /*dotDotDotToken*/ undefined,
+                ts.createIdentifier("request"),
+                /*questionToken*/ undefined,
+                typeNode(endpoint.requestType)
+              )
+            ]
+          : []),
+        ...compact(
+          endpoint.path.map(
+            pathComponent =>
+              pathComponent.kind === "dynamic"
+                ? ts.createParameter(
+                    /*decorators*/ undefined,
+                    /*modifiers*/ undefined,
+                    /*dotDotDotToken*/ undefined,
+                    ts.createIdentifier(pathComponent.name),
+                    /*questionToken*/ undefined,
+                    typeNode(pathComponent.type)
+                  )
+                : null
+          )
+        ),
+        ...Object.entries(endpoint.headers).map(([headerName, header]) =>
+          ts.createParameter(
+            /*decorators*/ undefined,
+            /*modifiers*/ undefined,
+            /*dotDotDotToken*/ undefined,
+            ts.createIdentifier(headerName),
+            /*questionToken*/ undefined,
+            typeNode(header.type)
+          )
+        )
+      ],
+      promiseTypeNode(
+        unionType(
+          ...[
+            objectType({
+              status: integerConstant(200),
+              data: endpoint.responseType
+            }),
+            ...Object.entries(endpoint.customErrorTypes).map(
+              ([statusCode, type]) =>
+                objectType({
+                  status: integerConstant(parseInt(statusCode)),
+                  data: type
+                })
+            ),
+            objectType({
+              status: NUMBER,
+              data: endpoint.defaultErrorType
+            })
+          ]
+        )
+      ),
+      ts.createBlock(
+        [
+          ts.createThrow(
+            ts.createNew(
+              ts.createIdentifier("Error"),
+              /*typeArguments*/ undefined,
+              [
+                ts.createStringLiteral(
+                  `Endpoint ${endpointName} is not yet implemented!`
+                )
+              ]
+            )
+          )
+        ],
+        /*multiLine*/ true
+      )
+    )
+  ]);
+}
+
+function getTypeNamesForEndpoint(endpoint: Endpoint): string[] {
+  return uniq(
+    compact(
+      gatherTypes(endpoint).map(
+        t => (t.kind === "type-reference" ? t.typeName : null)
+      )
+    )
+  );
 }

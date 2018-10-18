@@ -1,4 +1,5 @@
-import { uniq } from "lodash";
+import compact = require("lodash/compact");
+import uniq = require("lodash/uniq");
 import { HttpMethod } from "./lib";
 
 export interface Api {
@@ -20,6 +21,17 @@ export interface Endpoint {
   customErrorTypes: {
     [statusCode: number]: Type;
   };
+}
+
+export function gatherTypes(endpoint: Endpoint): Type[] {
+  return uniq([
+    ...compact(endpoint.path.map(p => (p.kind === "dynamic" ? p.type : null))),
+    ...Object.values(endpoint.headers).map(h => h.type),
+    endpoint.requestType,
+    endpoint.responseType,
+    endpoint.defaultErrorType,
+    ...Object.values(endpoint.customErrorTypes)
+  ]);
 }
 
 export type PathComponent = StaticPathComponent | DynamicPathComponent;

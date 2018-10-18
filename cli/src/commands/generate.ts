@@ -2,7 +2,10 @@ import { Command, flags } from "@oclif/command";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
-import { generateExpressServerSource } from "../../../lib/src/generators/typescript/express-server";
+import {
+  generateEndpointHandlerSource,
+  generateExpressServerSource
+} from "../../../lib/src/generators/typescript/express-server";
 import { generateTypesSource } from "../../../lib/src/generators/typescript/types";
 import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
 import { parsePath } from "../../../lib/src/parser";
@@ -78,6 +81,11 @@ Generated the following files:
         generatedFiles["types.ts"] = generateTypesSource(api);
         generatedFiles["validators.ts"] = generateValidatorsSource(api);
         generatedFiles["server.ts"] = generateExpressServerSource(api);
+        for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
+          generatedFiles[
+            `endpoints/${endpointName}.ts`
+          ] = generateEndpointHandlerSource(endpointName, endpoint);
+        }
         break;
 
       default:
@@ -95,6 +103,7 @@ Generated the following files:
 }
 
 function outputFile(outDir: string, relativePath: string, content: string) {
-  fs.mkdirpSync(outDir);
-  fs.writeFileSync(path.join(outDir, relativePath), content, "utf8");
+  const destinationPath = path.join(outDir, relativePath);
+  fs.mkdirpSync(path.dirname(destinationPath));
+  fs.writeFileSync(destinationPath, content, "utf8");
 }
