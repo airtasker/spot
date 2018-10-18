@@ -1,5 +1,5 @@
 import { api, endpoint, request } from "../../../src/lib";
-import { CreaterUserRequest, CreateUserResponse } from "../models";
+import { CreateUserRequest, CreateUserResponse } from "../models";
 
 @api()
 export class Api {
@@ -7,7 +7,7 @@ export class Api {
     method: "POST",
     path: "/users/create"
   })
-  createUser(@request req: CreaterUserRequest): CreateUserResponse {
+  createUser(@request req: CreateUserRequest): CreateUserResponse {
     throw new Error("Not implemented");
   }
 }

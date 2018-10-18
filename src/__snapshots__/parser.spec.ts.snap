@@ -17,7 +17,7 @@ Object {
       ],
       "requestType": Object {
         "kind": "type-reference",
-        "typeName": "CreaterUserRequest",
+        "typeName": "CreateUserRequest",
       },
       "responseType": Object {
         "kind": "type-reference",
@@ -110,19 +110,19 @@ Object {
     },
   },
   "types": Object {
+    "CreateUserRequest": Object {
+      "kind": "object",
+      "properties": Object {
+        "name": Object {
+          "kind": "string",
+        },
+      },
+    },
     "CreateUserResponse": Object {
       "kind": "object",
       "properties": Object {
         "success": Object {
           "kind": "boolean",
-        },
-      },
-    },
-    "CreaterUserRequest": Object {
-      "kind": "object",
-      "properties": Object {
-        "name": Object {
-          "kind": "string",
         },
       },
     },
@@ -155,7 +155,7 @@ Object {
       ],
       "requestType": Object {
         "kind": "type-reference",
-        "typeName": "CreaterUserRequest",
+        "typeName": "CreateUserRequest",
       },
       "responseType": Object {
         "kind": "type-reference",
@@ -231,6 +231,14 @@ Object {
     },
   },
   "types": Object {
+    "CreateUserRequest": Object {
+      "kind": "object",
+      "properties": Object {
+        "name": Object {
+          "kind": "string",
+        },
+      },
+    },
     "CreateUserResponse": Object {
       "kind": "union",
       "types": Array [
@@ -262,14 +270,6 @@ Object {
           },
         },
       ],
-    },
-    "CreaterUserRequest": Object {
-      "kind": "object",
-      "properties": Object {
-        "name": Object {
-          "kind": "string",
-        },
-      },
     },
     "GetUserResponse": Object {
       "kind": "object",

@@ -6,7 +6,7 @@ export class Api {
     method: "POST",
     path: "/users/create"
   })
-  createUser(@request req: CreaterUserRequest): CreateUserResponse {
+  createUser(@request req: CreateUserRequest): CreateUserResponse {
     throw new Error("Not implemented");
   }
 
@@ -32,7 +32,7 @@ export class Api {
   }
 }
 
-export interface CreaterUserRequest {
+export interface CreateUserRequest {
   name: string;
 }
 

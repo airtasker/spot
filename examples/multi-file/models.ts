@@ -1,4 +1,4 @@
-export interface CreaterUserRequest {
+export interface CreateUserRequest {
   name: string;
 }
 
