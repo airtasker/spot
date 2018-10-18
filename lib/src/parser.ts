@@ -234,6 +234,13 @@ function extractEndpoint(
       parameter,
       "pathParam"
     );
+    if (parameter.questionToken) {
+      throw panic(
+        `Question tokens are not allowed in parameter definitions. Please use Optional<...> to be specific. Offending parameter: ${parameter.getText(
+          sourceFile
+        )}`
+      );
+    }
     if (!ts.isIdentifier(parameter.name)) {
       throw panic(
         `Expected a plain identifier for endpoint parameter name, got this instead: ${parameter.getText(
