@@ -36,8 +36,36 @@ jobs:
           name: Compile
           command: yarn build
 
+  build-cli:
+    docker:
+      - image: node:latest
+
+    working_directory: ~/repo/cli
+
+    steps:
+      - checkout:
+          path: ~/repo
+
+      - restore_cache: &restore_cache
+          keys:
+          - v1-npm-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
+          - v1-npm-{{checksum ".circleci/config.yml"}}
+
+      - run:
+          name: Install dependencies
+          command: yarn
+
+      - run: ./bin/run --version
+
+      - run: ./bin/run --help
+
+      - run:
+          name: Testing
+          command: yarn test
+
 workflows:
   version: 2
   build-and-test:
     jobs:
       - build-lib
+      - build-cli
