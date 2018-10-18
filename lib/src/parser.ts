@@ -107,8 +107,17 @@ function parseApiDeclaration(
         member,
         "endpoint"
       );
-      const errorDecorators = extractDecorators(sourceFile, member, "error");
       if (endpointDecorator) {
+        const defaultErrorDecorator = extractSingleDecorator(
+          sourceFile,
+          member,
+          "defaultError"
+        );
+        const specificErrorDecorators = extractDecorators(
+          sourceFile,
+          member,
+          "specificError"
+        );
         const endpointName = member.name.getText(sourceFile);
         if (api.endpoints[endpointName]) {
           throw panic(
@@ -125,7 +134,8 @@ function parseApiDeclaration(
         api.endpoints[endpointName] = extractEndpoint(
           sourceFile,
           endpointDecorator.arguments[0],
-          errorDecorators,
+          defaultErrorDecorator,
+          specificErrorDecorators,
           member
         );
       }
@@ -136,7 +146,8 @@ function parseApiDeclaration(
 function extractEndpoint(
   sourceFile: ts.SourceFile,
   endpointDescriptionExpression: ts.Expression,
-  errorDecorators: Decorator[],
+  defaultErrorDecorator: Decorator | null,
+  specificErrorDecorators: Decorator[],
   methodDeclaration: ts.MethodDeclaration
 ): Endpoint {
   const endpointDescription = extractLiteral(
@@ -286,35 +297,47 @@ function extractEndpoint(
   let customErrorTypes: {
     [statusCode: number]: Type;
   } = {};
-  let defaultErrorDefined = false;
-  for (const errorDecorator of errorDecorators) {
-    if (errorDecorator.typeParameters.length !== 1) {
+  if (defaultErrorDecorator) {
+    if (defaultErrorDecorator.typeParameters.length !== 1) {
       throw panic(
-        `Expected exactly one type parameter for @error(), got ${
-          errorDecorator.typeParameters.length
+        `Expected exactly one type parameter for @defaultError(), got ${
+          defaultErrorDecorator.typeParameters.length
+        }`
+      );
+    }
+    defaultErrorType = extractType(
+      sourceFile,
+      defaultErrorDecorator.typeParameters[0]
+    );
+  }
+  for (const specificErrorDecorator of specificErrorDecorators) {
+    if (specificErrorDecorator.typeParameters.length !== 1) {
+      throw panic(
+        `Expected exactly one type parameter for @specificError(), got ${
+          specificErrorDecorator.typeParameters.length
         }`
       );
     }
     const errorResponseType = extractType(
       sourceFile,
-      errorDecorator.typeParameters[0]
+      specificErrorDecorator.typeParameters[0]
     );
-    if (errorDecorator.arguments.length > 1) {
+    if (specificErrorDecorator.arguments.length !== 1) {
       throw panic(
-        `Expected at most one argument for @error(), got ${
-          errorDecorator.arguments.length
+        `Expected exactly one argument for @specificError(), got ${
+          specificErrorDecorator.arguments.length
         }`
       );
     }
     let errorDescription: Literal;
-    if (errorDecorator.arguments.length === 1) {
+    if (specificErrorDecorator.arguments.length === 1) {
       errorDescription = extractLiteral(
         sourceFile,
-        errorDecorator.arguments[0]
+        specificErrorDecorator.arguments[0]
       );
       if (!isObjectLiteral(errorDescription)) {
         throw panic(
-          `@error() expects an object literal, got this instead: ${errorDecorator.arguments[0].getText(
+          `@specificError() expects an object literal, got this instead: ${specificErrorDecorator.arguments[0].getText(
             sourceFile
           )}`
         );
@@ -326,25 +349,15 @@ function extractEndpoint(
       };
     }
     const statusCode = errorDescription.properties["statusCode"];
-    if (statusCode) {
-      if (!isNumericLiteral(statusCode)) {
-        throw panic(
-          `@error() expects a numeric status code, got this instead: ${errorDecorator.arguments[0].getText(
-            sourceFile
-          )}`
-        );
-      }
-      // TODO: Ensure that it's an integer.
-      customErrorTypes[parseInt(statusCode.text)] = errorResponseType;
-    } else {
-      if (defaultErrorDefined) {
-        throw panic(
-          `@error() cannot be called without a status multiple times.`
-        );
-      }
-      defaultErrorType = errorResponseType;
-      defaultErrorDefined = true;
+    if (!statusCode || !isNumericLiteral(statusCode)) {
+      throw panic(
+        `@specificError() expects a numeric status code, got this instead: ${specificErrorDecorator.arguments[0].getText(
+          sourceFile
+        )}`
+      );
     }
+    // TODO: Ensure that it's an integer.
+    customErrorTypes[parseInt(statusCode.text)] = errorResponseType;
   }
   return {
     method,

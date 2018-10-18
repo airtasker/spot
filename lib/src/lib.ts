@@ -17,7 +17,15 @@ export interface EndpointDescription {
   path: string;
 }
 
-export function error<T>(description: ErrorDescription = {}) {
+export function defaultError<T>() {
+  return (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {};
+}
+
+export function specificError<T>(description: ErrorDescription) {
   return (
     target: any,
     propertyKey: string,
@@ -26,7 +34,7 @@ export function error<T>(description: ErrorDescription = {}) {
 }
 
 export interface ErrorDescription {
-  statusCode?: number;
+  statusCode: number;
 }
 
 export function isHttpMethod(method: string): method is HttpMethod {

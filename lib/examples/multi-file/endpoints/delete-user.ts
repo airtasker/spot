@@ -1,4 +1,10 @@
-import { api, endpoint, error, pathParam } from "../../../src/lib";
+import {
+  api,
+  defaultError,
+  endpoint,
+  pathParam,
+  specificError
+} from "../../../src/lib";
 
 @api()
 export class Api {
@@ -6,10 +12,10 @@ export class Api {
     method: "DELETE",
     path: "/users/:userId-confirmed"
   })
-  @error<{
+  @defaultError<{
     message: string;
   }>()
-  @error<{
+  @specificError<{
     message: string;
     signedInAs: string;
   }>({
