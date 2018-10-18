@@ -212,7 +212,7 @@ describe("TypeScript types generator", () => {
             Example: objectType({
               field1: NUMBER,
               field2: STRING,
-              field3: BOOLEAN
+              field3: optionalType(BOOLEAN)
             })
           }
         })
@@ -220,7 +220,7 @@ describe("TypeScript types generator", () => {
 "export type Example = {
     field1: number;
     field2: string;
-    field3: boolean;
+    field3?: boolean;
 };"
 `);
     });
