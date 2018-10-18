@@ -84,7 +84,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === undefined;
 }"
 `);
@@ -99,7 +101,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === null;
 }"
 `);
@@ -114,7 +118,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return typeof value === \\"boolean\\";
 }"
 `);
@@ -129,7 +135,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === true;
 }"
 `);
@@ -141,7 +149,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === false;
 }"
 `);
@@ -156,7 +166,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return typeof value === \\"string\\";
 }"
 `);
@@ -171,7 +183,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === \\"some constant\\";
 }"
 `);
@@ -186,7 +200,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return typeof value === \\"number\\";
 }"
 `);
@@ -201,7 +217,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === 0;
 }"
 `);
@@ -213,7 +231,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === 123;
 }"
 `);
@@ -225,7 +245,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === -1000;
 }"
 `);
@@ -240,7 +262,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return !(value === null) && typeof value === \\"object\\";
 }"
 `);
@@ -254,7 +278,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"singleField\\"] === \\"number\\";
 }"
 `);
@@ -270,7 +296,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"field1\\"] === \\"number\\" && typeof value[\\"field2\\"] === \\"string\\" && typeof value[\\"field3\\"] === \\"boolean\\";
 }"
 `);
@@ -285,7 +313,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value instanceof Array && value.reduce((acc, curr) => acc && typeof curr === \\"string\\", true);
 }"
 `);
@@ -300,7 +330,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return value === undefined || typeof value === \\"string\\";
 }"
 `);
@@ -315,7 +347,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return typeof value === \\"string\\" || typeof value === \\"number\\" || typeof value === \\"boolean\\";
 }"
 `);
@@ -330,7 +364,9 @@ export function validateExample_customError404(value: any): value is void {
           }
         })
       ).toMatchInlineSnapshot(`
-"export function validateExample(value: any): value is Example {
+"import { Example } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
     return validateOtherType(value);
 }"
 `);

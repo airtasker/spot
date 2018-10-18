@@ -1,19 +1,32 @@
 import assertNever from "assert-never";
 import * as ts from "typescript";
-import {
-  Api,
-  ArrayType,
-  ObjectType,
-  OptionalType,
-  Type,
-  TypeReference,
-  UnionType
-} from "../../models";
+import { Api, ArrayType, ObjectType, OptionalType, Type, TypeReference, UnionType } from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
 import { typeNode } from "./types";
 
 export function generateValidatorsSource(api: Api): string {
   const statements: ts.Statement[] = [];
+  const typeNames = Object.keys(api.types);
+  if (typeNames.length > 0) {
+    statements.push(
+      ts.createImportDeclaration(
+        /*decorators*/ undefined,
+        /*modifiers*/ undefined,
+        ts.createImportClause(
+          /*name*/ undefined,
+          ts.createNamedImports(
+            typeNames.map(typeName =>
+              ts.createImportSpecifier(
+                /*propertyName*/ undefined,
+                ts.createIdentifier(typeName)
+              )
+            )
+          )
+        ),
+        ts.createStringLiteral("./types")
+      )
+    );
+  }
   for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
     statements.push(
       generateValidator(

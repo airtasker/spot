@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TypeScript validators generator produces valid code multi-file 1`] = `
-"export function validateCreateUser_request(value: any): value is CreateUserRequest {
+"import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./types\\";
+
+export function validateCreateUser_request(value: any): value is CreateUserRequest {
     return validateCreateUserRequest(value);
 }
 
@@ -71,7 +73,9 @@ export function validateGetUserResponse(value: any): value is GetUserResponse {
 `;
 
 exports[`TypeScript validators generator produces valid code single-file 1`] = `
-"export function validateCreateUser_request(value: any): value is CreateUserRequest {
+"import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./types\\";
+
+export function validateCreateUser_request(value: any): value is CreateUserRequest {
     return validateCreateUserRequest(value);
 }
 
