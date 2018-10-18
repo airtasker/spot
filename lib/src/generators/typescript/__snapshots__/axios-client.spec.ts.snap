@@ -61,9 +61,6 @@ export async function deleteUser(userId: string): Promise<{
         signedInAs: string;
     };
 }> {
-    if (!validators.validateDeleteUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
-    }
     if (!validators.validateDeleteUser_paramUserId(userId)) {
         throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
@@ -71,7 +68,6 @@ export async function deleteUser(userId: string): Promise<{
         url: \\"/users/\\" + userId + \\"-confirmed\\",
         method: \\"DELETE\\",
         responseType: \\"json\\",
-        data: request,
         validateStatus: () => true
     });
     switch (response.status) {
@@ -114,9 +110,6 @@ export async function getUser(userId: string): Promise<{
     kind: \\"unknown-error\\";
     data: void;
 }> {
-    if (!validators.validateGetUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
-    }
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
@@ -124,7 +117,6 @@ export async function getUser(userId: string): Promise<{
         url: \\"/users/\\" + userId,
         method: \\"GET\\",
         responseType: \\"json\\",
-        data: request,
         validateStatus: () => true
     });
     switch (response.status) {
@@ -206,9 +198,6 @@ export async function getUser(userId: string): Promise<{
     kind: \\"unknown-error\\";
     data: void;
 }> {
-    if (!validators.validateGetUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
-    }
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
@@ -216,7 +205,6 @@ export async function getUser(userId: string): Promise<{
         url: \\"/users/\\" + userId,
         method: \\"GET\\",
         responseType: \\"json\\",
-        data: request,
         validateStatus: () => true
     });
     switch (response.status) {
@@ -248,9 +236,6 @@ export async function deleteUser(userId: string): Promise<{
     kind: \\"unknown-error\\";
     data: void;
 }> {
-    if (!validators.validateDeleteUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
-    }
     if (!validators.validateDeleteUser_paramUserId(userId)) {
         throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
@@ -258,7 +243,6 @@ export async function deleteUser(userId: string): Promise<{
         url: \\"/users/\\" + userId + \\"-confirmed\\",
         method: \\"DELETE\\",
         responseType: \\"json\\",
-        data: request,
         validateStatus: () => true
     });
     switch (response.status) {

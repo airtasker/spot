@@ -74,7 +74,8 @@ function generateEndpointFunction(
   endpoint: Endpoint
 ): ts.FunctionDeclaration {
   const parameters: ts.ParameterDeclaration[] = [];
-  if (endpoint.requestType.kind !== "void") {
+  const includeRequest = endpoint.requestType.kind !== "void";
+  if (includeRequest) {
     parameters.push(
       ts.createParameter(
         /*decorators*/ undefined,
@@ -113,7 +114,7 @@ function generateEndpointFunction(
     /*type*/ ts.createTypeReferenceNode("Promise", [
       typeNode(unionType(...generateReturnTypes(endpoint)))
     ]),
-    generateEndpointBody(endpointName, endpoint)
+    generateEndpointBody(endpointName, endpoint, includeRequest)
   );
 }
 
@@ -144,10 +145,13 @@ function generateReturnTypes(endpoint: Endpoint): Type[] {
 
 function generateEndpointBody(
   endpointName: string,
-  endpoint: Endpoint
+  endpoint: Endpoint,
+  includeRequest: boolean
 ): ts.FunctionBody {
   const statements: ts.Statement[] = [];
-  statements.push(generateRequestValidation(endpointName, endpoint));
+  if (includeRequest) {
+    statements.push(generateRequestValidation(endpointName, endpoint));
+  }
   for (const pathComponent of endpoint.path) {
     if (pathComponent.kind === "dynamic") {
       statements.push(
@@ -155,7 +159,7 @@ function generateEndpointBody(
       );
     }
   }
-  statements.push(generateAxiosCall(endpoint));
+  statements.push(generateAxiosCall(endpoint, includeRequest));
   statements.push(generateSwitchStatus(endpointName, endpoint));
   return ts.createBlock(statements, /*multiLine*/ true);
 }
@@ -194,7 +198,10 @@ const RESPONSE_DATA = ts.createPropertyAccess(
   "data"
 );
 
-function generateAxiosCall(endpoint: Endpoint): ts.Statement {
+function generateAxiosCall(
+  endpoint: Endpoint,
+  includeRequest: boolean
+): ts.Statement {
   return ts.createVariableStatement(
     /*modifiers*/ undefined,
     ts.createVariableDeclarationList(
@@ -221,10 +228,14 @@ function generateAxiosCall(endpoint: Endpoint): ts.Statement {
                       "responseType",
                       ts.createStringLiteral("json")
                     ),
-                    ts.createPropertyAssignment(
-                      "data",
-                      ts.createIdentifier(REQUEST_PARAMETER)
-                    ),
+                    ...(includeRequest
+                      ? [
+                          ts.createPropertyAssignment(
+                            "data",
+                            ts.createIdentifier(REQUEST_PARAMETER)
+                          )
+                        ]
+                      : []),
                     ts.createPropertyAssignment(
                       "validateStatus",
                       ts.createArrowFunction(
