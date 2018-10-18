@@ -6,6 +6,7 @@ import {
   Endpoint,
   objectType,
   PathComponent,
+  stringConstant,
   Type,
   unionType
 } from "../../models";
@@ -120,29 +121,20 @@ function generateReturnTypes(endpoint: Endpoint): Type[] {
   const types: Type[] = [];
   types.push(
     objectType({
-      kind: {
-        kind: "string-constant",
-        value: "success"
-      },
+      kind: stringConstant("success"),
       data: endpoint.responseType
     })
   );
   types.push(
     objectType({
-      kind: {
-        kind: "string-constant",
-        value: "unknown-error"
-      },
+      kind: stringConstant("unknown-error"),
       data: endpoint.defaultErrorType
     })
   );
   for (const [statusCode, type] of Object.entries(endpoint.customErrorTypes)) {
     types.push(
       objectType({
-        kind: {
-          kind: "string-constant",
-          value: `error-${statusCode}`
-        },
+        kind: stringConstant(`error-${statusCode}`),
         data: type
       })
     );

@@ -73,6 +73,13 @@ export interface BooleanType {
   kind: "boolean";
 }
 
+export function booleanConstant(value: boolean): BooleanConstantType {
+  return {
+    kind: "boolean-constant",
+    value
+  };
+}
+
 export interface BooleanConstantType {
   kind: "boolean-constant";
   value: boolean;
@@ -86,6 +93,13 @@ export interface StringType {
   kind: "string";
 }
 
+export function stringConstant(value: string): StringConstantType {
+  return {
+    kind: "string-constant",
+    value
+  };
+}
+
 export interface StringConstantType {
   kind: "string-constant";
   value: string;
@@ -97,6 +111,16 @@ export const NUMBER: NumberType = {
 
 export interface NumberType {
   kind: "number";
+}
+
+export function integerConstant(value: number): IntegerConstantType {
+  if (value !== Math.round(value)) {
+    throw new Error(`Invalid integer: ${value}`);
+  }
+  return {
+    kind: "integer-constant",
+    value
+  };
 }
 
 export interface IntegerConstantType {

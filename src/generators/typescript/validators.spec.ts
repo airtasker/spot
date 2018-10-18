@@ -3,11 +3,14 @@ import * as path from "path";
 import {
   arrayType,
   BOOLEAN,
+  booleanConstant,
+  integerConstant,
   NULL,
   NUMBER,
   objectType,
   optionalType,
   STRING,
+  stringConstant,
   typeReference,
   unionType,
   VOID
@@ -122,10 +125,7 @@ export function validateExample_customError404(value: any): value is void {
         generateValidatorsSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "boolean-constant",
-              value: true
-            }
+            Example: booleanConstant(true)
           }
         })
       ).toMatchInlineSnapshot(`
@@ -137,10 +137,7 @@ export function validateExample_customError404(value: any): value is void {
         generateValidatorsSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "boolean-constant",
-              value: false
-            }
+            Example: booleanConstant(false)
           }
         })
       ).toMatchInlineSnapshot(`
@@ -170,10 +167,7 @@ export function validateExample_customError404(value: any): value is void {
         generateValidatorsSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "string-constant",
-              value: "some constant"
-            }
+            Example: stringConstant("some constant")
           }
         })
       ).toMatchInlineSnapshot(`
@@ -203,10 +197,7 @@ export function validateExample_customError404(value: any): value is void {
         generateValidatorsSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "integer-constant",
-              value: 0
-            }
+            Example: integerConstant(0)
           }
         })
       ).toMatchInlineSnapshot(`
@@ -218,10 +209,7 @@ export function validateExample_customError404(value: any): value is void {
         generateValidatorsSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "integer-constant",
-              value: 123
-            }
+            Example: integerConstant(123)
           }
         })
       ).toMatchInlineSnapshot(`
@@ -233,10 +221,7 @@ export function validateExample_customError404(value: any): value is void {
         generateValidatorsSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "integer-constant",
-              value: -1000
-            }
+            Example: integerConstant(-1000)
           }
         })
       ).toMatchInlineSnapshot(`

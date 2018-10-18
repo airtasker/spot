@@ -1,11 +1,14 @@
 import {
   arrayType,
   BOOLEAN,
+  booleanConstant,
+  integerConstant,
   NULL,
   NUMBER,
   objectType,
   optionalType,
   STRING,
+  stringConstant,
   typeReference,
   unionType,
   VOID
@@ -128,18 +131,12 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "paramStringConstant",
-              type: {
-                kind: "string-constant",
-                value: "abc"
-              }
+              type: stringConstant("abc")
             },
             {
               kind: "dynamic",
               name: "paramIntegerContant",
-              type: {
-                kind: "integer-constant",
-                value: 123
-              }
+              type: integerConstant(123)
             },
             {
               kind: "dynamic",
@@ -164,18 +161,12 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "paramBooleanConstantTrue",
-              type: {
-                kind: "boolean-constant",
-                value: true
-              }
+              type: booleanConstant(true)
             },
             {
               kind: "dynamic",
               name: "paramBooleanConstantFalse",
-              type: {
-                kind: "boolean-constant",
-                value: false
-              }
+              type: booleanConstant(false)
             },
             {
               kind: "dynamic",

@@ -3,11 +3,14 @@ import * as path from "path";
 import {
   arrayType,
   BOOLEAN,
+  booleanConstant,
+  integerConstant,
   NULL,
   NUMBER,
   objectType,
   optionalType,
   STRING,
+  stringConstant,
   typeReference,
   unionType,
   VOID
@@ -90,10 +93,7 @@ describe("TypeScript types generator", () => {
         generateTypesSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "boolean-constant",
-              value: true
-            }
+            Example: booleanConstant(true)
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = true;"`);
@@ -101,10 +101,7 @@ describe("TypeScript types generator", () => {
         generateTypesSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "boolean-constant",
-              value: false
-            }
+            Example: booleanConstant(false)
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = false;"`);
@@ -126,10 +123,7 @@ describe("TypeScript types generator", () => {
         generateTypesSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "string-constant",
-              value: "some constant"
-            }
+            Example: stringConstant("some constant")
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = \\"some constant\\";"`);
@@ -151,10 +145,7 @@ describe("TypeScript types generator", () => {
         generateTypesSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "integer-constant",
-              value: 0
-            }
+            Example: integerConstant(0)
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = 0;"`);
@@ -162,10 +153,7 @@ describe("TypeScript types generator", () => {
         generateTypesSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "integer-constant",
-              value: 123
-            }
+            Example: integerConstant(123)
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = 123;"`);
@@ -173,10 +161,7 @@ describe("TypeScript types generator", () => {
         generateTypesSource({
           endpoints: {},
           types: {
-            Example: {
-              kind: "integer-constant",
-              value: -1000
-            }
+            Example: integerConstant(-1000)
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = -1000;"`);

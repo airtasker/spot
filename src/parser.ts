@@ -7,8 +7,10 @@ import {
   arrayType,
   ArrayType,
   BOOLEAN,
+  booleanConstant,
   DynamicPathComponent,
   Endpoint,
+  integerConstant,
   NULL,
   NUMBER,
   ObjectType,
@@ -16,6 +18,7 @@ import {
   optionalType,
   PathComponent,
   STRING,
+  stringConstant,
   Type,
   unionType,
   VOID
@@ -372,10 +375,7 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
     const literal = extractLiteral(sourceFile, type.literal);
     switch (literal.kind) {
       case "string": {
-        return {
-          kind: "string-constant",
-          value: literal.text
-        };
+        return stringConstant(literal.text);
       }
       case "number": {
         if (!literal.text.match(/^-?\d+$/)) {
@@ -383,16 +383,10 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
             `Expected an integer, got this instead: ${type.getText(sourceFile)}`
           );
         }
-        return {
-          kind: "integer-constant",
-          value: parseInt(literal.text)
-        };
+        return integerConstant(parseInt(literal.text));
       }
       case "boolean": {
-        return {
-          kind: "boolean-constant",
-          value: literal.value
-        };
+        return booleanConstant(literal.value);
       }
       default:
         throw panic(
