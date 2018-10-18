@@ -11,7 +11,7 @@ import {
 } from "../../models";
 import { typeNode } from "./types";
 
-export function generateValidatorsSource(api: Api) {
+export function generateValidatorsSource(api: Api): string {
   const statements: ts.Statement[] = [];
   for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
     statements.push(

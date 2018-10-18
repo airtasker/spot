@@ -10,7 +10,7 @@ import {
   UnionType
 } from "../../models";
 
-export function generateTypesSource(api: Api) {
+export function generateTypesSource(api: Api): string {
   const definitions: ts.Statement[] = [];
   for (const [typeName, type] of Object.entries(api.types)) {
     definitions.push(
