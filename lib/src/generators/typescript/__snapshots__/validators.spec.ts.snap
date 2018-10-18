@@ -23,6 +23,10 @@ export function validateDeleteUser_paramUserId(value: any): value is string {
     return typeof value === \\"string\\";
 }
 
+export function validateDeleteUser_headerAuthToken(value: any): value is string {
+    return typeof value === \\"string\\";
+}
+
 export function validateDeleteUser_response(value: any): value is null {
     return value === null;
 }
@@ -111,6 +115,10 @@ export function validateDeleteUser_request(value: any): value is void {
 }
 
 export function validateDeleteUser_paramUserId(value: any): value is string {
+    return typeof value === \\"string\\";
+}
+
+export function validateDeleteUser_headerAuthToken(value: any): value is string {
     return typeof value === \\"string\\";
 }
 

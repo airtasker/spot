@@ -46,6 +46,19 @@ export function validate(api: Api): ErrorMessage[] {
         }`
       );
     }
+    const usedHeaderFieldNames = new Set<string>();
+    for (const [headerName, header] of Object.entries(endpoint.headers)) {
+      validateType(api, header.type, errors);
+      ensureOptionalOrRequiredString(api, header.type, headerName, errors);
+      if (usedHeaderFieldNames.has(header.headerFieldName)) {
+        errors.push(
+          `${endpointName} defines the same header ${
+            header.headerFieldName
+          } multiple times`
+        );
+      }
+      usedHeaderFieldNames.add(header.headerFieldName);
+    }
     validateType(api, endpoint.requestType, errors);
     validateType(api, endpoint.responseType, errors);
     validateType(api, endpoint.defaultErrorType, errors);
@@ -125,6 +138,41 @@ function ensureStringOrNumber(
     default:
       // That's not fine.
       errors.push(`Parameter ${parameterName} must be a string or a number`);
+  }
+}
+
+function ensureOptionalOrRequiredString(
+  api: Api,
+  type: Type,
+  parameterName: string,
+  errors: ErrorMessage[]
+): void {
+  switch (type.kind) {
+    case "string":
+    case "string-constant":
+      // That's fine.
+      return;
+    case "type-reference":
+      ensureOptionalOrRequiredString(
+        api,
+        api.types[type.typeName] || VOID,
+        parameterName,
+        errors
+      );
+      break;
+    case "optional":
+      ensureOptionalOrRequiredString(api, type.optional, parameterName, errors);
+      break;
+    case "union":
+      type.types.forEach(possibleType =>
+        ensureOptionalOrRequiredString(api, possibleType, parameterName, errors)
+      );
+      break;
+    default:
+      // That's not fine.
+      errors.push(
+        `Parameter ${parameterName} must be a string (either required or optional)`
+      );
   }
 }
 

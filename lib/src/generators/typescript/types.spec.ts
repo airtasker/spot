@@ -40,6 +40,7 @@ describe("TypeScript types generator", () => {
           example: {
             method: "POST",
             path: [],
+            headers: {},
             requestType: STRING,
             responseType: STRING,
             defaultErrorType: STRING,

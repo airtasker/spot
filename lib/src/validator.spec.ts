@@ -32,6 +32,7 @@ describe("Validator", () => {
               type: STRING
             }
           ],
+          headers: {},
           requestType: VOID,
           responseType: VOID,
           defaultErrorType: VOID,
@@ -58,6 +59,7 @@ describe("Validator", () => {
               type: VOID
             }
           ],
+          headers: {},
           requestType: VOID,
           responseType: VOID,
           defaultErrorType: VOID,
@@ -96,6 +98,7 @@ describe("Validator", () => {
               type: NUMBER
             }
           ],
+          headers: {},
           requestType: VOID,
           responseType: VOID,
           defaultErrorType: VOID,
@@ -189,6 +192,7 @@ describe("Validator", () => {
               type: unionType(STRING, objectType({}), arrayType(STRING))
             }
           ],
+          headers: {},
           requestType: VOID,
           responseType: VOID,
           defaultErrorType: VOID,
@@ -210,6 +214,134 @@ describe("Validator", () => {
       "Parameter paramStringOrObjectOrArray must be a string or a number"
     ]);
   });
+  it("rejects duplicate headers", () => {
+    const errors = validate({
+      endpoints: {
+        example: {
+          method: "GET",
+          path: [],
+          headers: {
+            header1: {
+              headerFieldName: "duplicate",
+              type: STRING
+            },
+            header2: {
+              headerFieldName: "duplicate",
+              type: STRING
+            }
+          },
+          requestType: VOID,
+          responseType: VOID,
+          defaultErrorType: VOID,
+          customErrorTypes: {}
+        }
+      },
+      types: {}
+    });
+    expect(errors).toEqual([
+      "example defines the same header duplicate multiple times"
+    ]);
+  });
+  it("rejects non-string headers", () => {
+    const errors = validate({
+      endpoints: {
+        example: {
+          method: "GET",
+          path: [],
+          headers: {
+            headerRequiredString: {
+              headerFieldName: "required-string",
+              type: STRING
+            },
+            headerOptionalString: {
+              headerFieldName: "optional-string",
+              type: optionalType(STRING)
+            },
+            headerRequiredStringConstant: {
+              headerFieldName: "required-string-constant",
+              type: stringConstant("abc")
+            },
+            headerOptionalStringConstant: {
+              headerFieldName: "optional-string-constant",
+              type: optionalType(stringConstant("abc"))
+            },
+            headerUnionStringConstants: {
+              headerFieldName: "union-string-constant",
+              type: unionType(stringConstant("abc"), stringConstant("def"))
+            },
+            headerOptionalReferenceString: {
+              headerFieldName: "optional-reference-string",
+              type: optionalType(typeReference("StringAlias"))
+            },
+            headerNumber: {
+              headerFieldName: "number",
+              type: NUMBER
+            },
+            headerIntegerConstant: {
+              headerFieldName: "integer-constant",
+              type: integerConstant(123)
+            },
+            headerStringOrNumber: {
+              headerFieldName: "string-or-number",
+              type: unionType(STRING, NUMBER)
+            },
+            headerVoid: {
+              headerFieldName: "void",
+              type: VOID
+            },
+            headerNull: {
+              headerFieldName: "null",
+              type: NULL
+            },
+            headerBoolean: {
+              headerFieldName: "boolean",
+              type: BOOLEAN
+            },
+            headerBooleanConstantTrue: {
+              headerFieldName: "boolean-constant-true",
+              type: booleanConstant(true)
+            },
+            headerBooleanConstantFalse: {
+              headerFieldName: "boolean-constant-false",
+              type: booleanConstant(false)
+            },
+            headerObjectType: {
+              headerFieldName: "object-type",
+              type: objectType({})
+            },
+            headerStringArray: {
+              headerFieldName: "string-array",
+              type: arrayType(STRING)
+            },
+            headerStringOrObjectOrArray: {
+              headerFieldName: "string-or-object-or-array",
+              type: unionType(STRING, objectType({}), arrayType(STRING))
+            }
+          },
+          requestType: VOID,
+          responseType: VOID,
+          defaultErrorType: VOID,
+          customErrorTypes: {}
+        }
+      },
+      types: {
+        StringAlias: STRING
+      }
+    });
+    expect(errors).toEqual([
+      "Parameter headerNumber must be a string (either required or optional)",
+      "Parameter headerIntegerConstant must be a string (either required or optional)",
+      "Parameter headerStringOrNumber must be a string (either required or optional)",
+      "Parameter headerVoid must be a string (either required or optional)",
+      "Parameter headerNull must be a string (either required or optional)",
+      "Parameter headerBoolean must be a string (either required or optional)",
+      "Parameter headerBooleanConstantTrue must be a string (either required or optional)",
+      "Parameter headerBooleanConstantFalse must be a string (either required or optional)",
+      "Parameter headerObjectType must be a string (either required or optional)",
+      "Parameter headerStringArray must be a string (either required or optional)",
+      "Parameter headerStringOrObjectOrArray must be a string (either required or optional)"
+    ]);
+  });
   it("rejects request body for GET requests", () => {
     const errors = validate({
       endpoints: {
@@ -221,6 +353,7 @@ describe("Validator", () => {
               content: "/"
             }
           ],
+          headers: {},
           requestType: objectType({}),
           responseType: VOID,
           defaultErrorType: VOID,
@@ -251,6 +384,7 @@ describe("Validator", () => {
               type: typeReference("missing1")
             }
           ],
+          headers: {},
           requestType: typeReference("missing2"),
           responseType: objectType({
             example: typeReference("missing3")
@@ -266,6 +400,7 @@ describe("Validator", () => {
               content: "/"
             }
           ],
+          headers: {},
           requestType: optionalType(typeReference("missing5")),
           responseType: unionType(
             arrayType(typeReference("missing6")),

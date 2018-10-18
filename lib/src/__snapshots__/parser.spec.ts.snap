@@ -8,6 +8,7 @@ Object {
       "defaultErrorType": Object {
         "kind": "void",
       },
+      "headers": Object {},
       "method": "POST",
       "path": Array [
         Object {
@@ -46,6 +47,14 @@ Object {
           },
         },
       },
+      "headers": Object {
+        "authToken": Object {
+          "headerFieldName": "Authorization",
+          "type": Object {
+            "kind": "string",
+          },
+        },
+      },
       "method": "DELETE",
       "path": Array [
         Object {
@@ -76,6 +85,7 @@ Object {
       "defaultErrorType": Object {
         "kind": "void",
       },
+      "headers": Object {},
       "method": "GET",
       "path": Array [
         Object {
@@ -146,6 +156,7 @@ Object {
       "defaultErrorType": Object {
         "kind": "void",
       },
+      "headers": Object {},
       "method": "POST",
       "path": Array [
         Object {
@@ -184,6 +195,14 @@ Object {
           },
         },
       },
+      "headers": Object {
+        "authToken": Object {
+          "headerFieldName": "Authorization",
+          "type": Object {
+            "kind": "string",
+          },
+        },
+      },
       "method": "DELETE",
       "path": Array [
         Object {
@@ -214,6 +233,7 @@ Object {
       "defaultErrorType": Object {
         "kind": "void",
       },
+      "headers": Object {},
       "method": "GET",
       "path": Array [
         Object {

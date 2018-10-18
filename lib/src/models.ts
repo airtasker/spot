@@ -13,6 +13,7 @@ export interface Api {
 export interface Endpoint {
   method: HttpMethod;
   path: PathComponent[];
+  headers: Headers;
   requestType: Type;
   responseType: Type;
   defaultErrorType: Type;
@@ -31,6 +32,15 @@ export interface StaticPathComponent {
 export interface DynamicPathComponent {
   kind: "dynamic";
   name: string;
+  type: Type;
+}
+
+export interface Headers {
+  [name: string]: Header;
+}
+
+export interface Header {
+  headerFieldName: string;
   type: Type;
 }
 

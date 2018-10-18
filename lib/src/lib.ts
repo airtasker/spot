@@ -76,3 +76,11 @@ export function pathParam(
   propertyKey: string,
   parameterIndex: number
 ) {}
+
+export function header(description: HeaderDescription) {
+  return (target: any, propertyKey: string, parameterIndex: number) => {};
+}
+
+export interface HeaderDescription {
+  name: string;
+}

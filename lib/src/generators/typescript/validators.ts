@@ -1,6 +1,14 @@
 import assertNever from "assert-never";
 import * as ts from "typescript";
-import { Api, ArrayType, ObjectType, OptionalType, Type, TypeReference, UnionType } from "../../models";
+import {
+  Api,
+  ArrayType,
+  ObjectType,
+  OptionalType,
+  Type,
+  TypeReference,
+  UnionType
+} from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
 import { typeNode } from "./types";
 
@@ -43,6 +51,14 @@ export function generateValidatorsSource(api: Api): string {
           )
         );
       }
+    }
+    for (const [headerName, header] of Object.entries(endpoint.headers)) {
+      statements.push(
+        generateValidator(
+          endpointPropertyTypeName(endpointName, "header", headerName),
+          header.type
+        )
+      );
     }
     statements.push(
       generateValidator(
@@ -304,11 +320,18 @@ function typeReferenceValidator(type: TypeReference, parameter: ts.Expression) {
 
 export function endpointPropertyTypeName(
   endpointName: string,
-  property: "request" | "param" | "response" | "defaultError" | "customError",
+  property:
+    | "request"
+    | "param"
+    | "header"
+    | "response"
+    | "defaultError"
+    | "customError",
   suffix = ""
 ) {
   switch (property) {
     case "param":
+    case "header":
     case "customError":
       if (!suffix) {
         throw new Error(`Unexpected ${property} without a suffix`);

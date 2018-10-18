@@ -10,6 +10,7 @@ import {
   booleanConstant,
   DynamicPathComponent,
   Endpoint,
+  Headers,
   integerConstant,
   NULL,
   NUMBER,
@@ -223,6 +224,7 @@ function extractEndpoint(
     } while (componentStartPosition !== -1);
   }
   let requestType: Type = VOID;
+  const headers: Headers = {};
   for (const parameter of methodDeclaration.parameters) {
     const requestDecorator = extractSingleDecorator(
       sourceFile,
@@ -233,6 +235,11 @@ function extractEndpoint(
       sourceFile,
       parameter,
       "pathParam"
+    );
+    const headerDecorator = extractSingleDecorator(
+      sourceFile,
+      parameter,
+      "header"
     );
     if (parameter.questionToken) {
       throw panic(
@@ -269,9 +276,44 @@ function extractEndpoint(
           ).join(", ")}], got this instead: ${name}`
         );
       }
+    } else if (headerDecorator) {
+      const name = parameter.name.getText(sourceFile);
+      if (headers[name]) {
+        throw panic(`Found multiple headers named ${name}`);
+      }
+      if (headerDecorator.arguments.length !== 1) {
+        throw panic(
+          `Expected exactly one argument for @header(), gpt ${
+            headerDecorator.arguments.length
+          }`
+        );
+      }
+      const headerDescription = extractLiteral(
+        sourceFile,
+        headerDecorator.arguments[0]
+      );
+      if (!isObjectLiteral(headerDescription)) {
+        throw panic(
+          `@header() expects an object literal, got this instead: ${headerDecorator.arguments[0].getText(
+            sourceFile
+          )}`
+        );
+      }
+      const nameProperty = headerDescription.properties["name"];
+      if (!nameProperty || !isStringLiteral(nameProperty)) {
+        throw panic(
+          `@header() expects a string name, got this instead: ${headerDecorator.arguments[0].getText(
+            sourceFile
+          )}`
+        );
+      }
+      headers[name] = {
+        headerFieldName: nameProperty.text,
+        type
+      };
     } else {
       throw panic(
-        `Found a parameter without @request or @pathParam: ${parameter.getText(
+        `Found a parameter without @request, @pathParam or @header: ${parameter.getText(
           sourceFile
         )}`
       );
@@ -369,6 +411,7 @@ function extractEndpoint(
   return {
     method,
     path: pathComponents,
+    headers,
     requestType,
     responseType,
     defaultErrorType,

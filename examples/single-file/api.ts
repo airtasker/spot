@@ -2,6 +2,7 @@ import {
   api,
   defaultError,
   endpoint,
+  header,
   pathParam,
   request,
   specificError
@@ -43,7 +44,13 @@ export class Api {
   }>({
     statusCode: 403
   })
-  deleteUser(@pathParam userId: string): null {
+  deleteUser(
+    @pathParam userId: string,
+    @header({
+      name: "Authorization"
+    })
+    authToken: string
+  ): null {
     throw new Error("Not implemented");
   }
 }

@@ -101,6 +101,18 @@ function generateEndpointFunction(
       );
     }
   }
+  for (const [headerName, header] of Object.entries(endpoint.headers)) {
+    parameters.push(
+      ts.createParameter(
+        /*decorators*/ undefined,
+        /*modifiers*/ undefined,
+        /*dotDotDotToken*/ undefined,
+        headerName,
+        /*questionToken*/ undefined,
+        typeNode(header.type)
+      )
+    );
+  }
   return ts.createFunctionDeclaration(
     /*decorators*/ undefined,
     [
@@ -159,6 +171,9 @@ function generateEndpointBody(
       );
     }
   }
+  for (const headerName of Object.keys(endpoint.headers)) {
+    statements.push(generateHeaderValidation(endpointName, headerName));
+  }
   statements.push(generateAxiosCall(endpoint, includeRequest));
   statements.push(generateSwitchStatus(endpointName, endpoint));
   return ts.createBlock(statements, /*multiLine*/ true);
@@ -175,6 +190,17 @@ function generateRequestValidation(
   );
 }
 
+function generateHeaderValidation(
+  endpointName: string,
+  headerName: string
+): ts.Statement {
+  return validateStatement(
+    ts.createIdentifier(headerName),
+    validatorName(endpointPropertyTypeName(endpointName, "header", headerName)),
+    `Invalid parameter ${headerName}`
+  );
+}
+
 function generatePathParameterValidation(
   endpointName: string,
   pathComponent: DynamicPathComponent
@@ -184,7 +210,7 @@ function generatePathParameterValidation(
     validatorName(
       endpointPropertyTypeName(endpointName, "param", pathComponent.name)
     ),
-    `Invalid parameter ${pathComponent.name}:`
+    `Invalid parameter ${pathComponent.name}`
   );
 }
 
@@ -227,6 +253,18 @@ function generateAxiosCall(
                     ts.createPropertyAssignment(
                       "responseType",
                       ts.createStringLiteral("json")
+                    ),
+                    ts.createPropertyAssignment(
+                      "headers",
+                      ts.createObjectLiteral(
+                        Object.entries(endpoint.headers).map(
+                          ([headerName, header]) =>
+                            ts.createPropertyAssignment(
+                              header.headerFieldName,
+                              ts.createIdentifier(headerName)
+                            )
+                        )
+                      )
                     ),
                     ...(includeRequest
                       ? [
@@ -408,7 +446,7 @@ function validateStatement(
             /*typeArguments*/ undefined,
             [
               ts.createTemplateExpression(
-                ts.createTemplateHead(`${errorMessage}:`),
+                ts.createTemplateHead(`${errorMessage}: `),
                 [
                   ts.createTemplateSpan(
                     ts.createCall(
