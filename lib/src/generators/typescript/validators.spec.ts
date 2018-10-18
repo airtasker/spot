@@ -44,7 +44,7 @@ describe("TypeScript validators generator", () => {
             requestType: VOID,
             responseType: VOID,
             genericErrorType: VOID,
-            customErrorTypes: {
+            specificErrorTypes: {
               403: VOID,
               404: VOID
             }
@@ -65,11 +65,11 @@ export function validateExample_genericError(value: any): value is void {
     return value === undefined;
 }
 
-export function validateExample_customError403(value: any): value is void {
+export function validateExample_specificError403(value: any): value is void {
     return value === undefined;
 }
 
-export function validateExample_customError404(value: any): value is void {
+export function validateExample_specificError404(value: any): value is void {
     return value === undefined;
 }"
 `);

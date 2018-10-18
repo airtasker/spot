@@ -346,7 +346,7 @@ function extractEndpoint(
     }
   }
   let genericErrorType: Type = VOID;
-  let customErrorTypes: {
+  let specificErrorTypes: {
     [statusCode: number]: Type;
   } = {};
   if (genericErrorDecorator) {
@@ -409,7 +409,7 @@ function extractEndpoint(
       );
     }
     // TODO: Ensure that it's an integer.
-    customErrorTypes[parseInt(statusCode.text)] = errorResponseType;
+    specificErrorTypes[parseInt(statusCode.text)] = errorResponseType;
   }
   return {
     method,
@@ -418,7 +418,7 @@ function extractEndpoint(
     requestType,
     responseType,
     genericErrorType,
-    customErrorTypes
+    specificErrorTypes
   };
 }
 

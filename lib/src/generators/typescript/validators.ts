@@ -72,11 +72,15 @@ export function generateValidatorsSource(api: Api): string {
           endpointPropertyTypeName(endpointName, "genericError"),
           endpoint.genericErrorType
         ),
-        ...Object.entries(endpoint.customErrorTypes).map(
-          ([statusCode, customErrorType]) =>
+        ...Object.entries(endpoint.specificErrorTypes).map(
+          ([statusCode, specificErrorType]) =>
             generateValidator(
-              endpointPropertyTypeName(endpointName, `customError`, statusCode),
-              customErrorType
+              endpointPropertyTypeName(
+                endpointName,
+                `specificError`,
+                statusCode
+              ),
+              specificErrorType
             )
         )
       ])
@@ -324,13 +328,13 @@ export function endpointPropertyTypeName(
     | "header"
     | "response"
     | "genericError"
-    | "customError",
+    | "specificError",
   suffix = ""
 ) {
   switch (property) {
     case "param":
     case "header":
-    case "customError":
+    case "specificError":
       if (!suffix) {
         throw new Error(`Unexpected ${property} without a suffix`);
       }

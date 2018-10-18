@@ -140,7 +140,7 @@ function generateReturnTypes(endpoint: Endpoint): Type[] {
       kind: stringConstant("unknown-error"),
       data: endpoint.genericErrorType
     }),
-    ...Object.entries(endpoint.customErrorTypes).map(([statusCode, type]) =>
+    ...Object.entries(endpoint.specificErrorTypes).map(([statusCode, type]) =>
       objectType({
         kind: stringConstant(`error-${statusCode}`),
         data: type
@@ -329,12 +329,16 @@ function generateSwitchStatus(
   return ts.createSwitch(
     RESPONSE_STATUS_CODE,
     ts.createCaseBlock([
-      ...Object.keys(endpoint.customErrorTypes).map(statusCode =>
+      ...Object.keys(endpoint.specificErrorTypes).map(statusCode =>
         ts.createCaseClause(ts.createNumericLiteral(statusCode), [
           validateStatement(
             RESPONSE_DATA,
             validatorName(
-              endpointPropertyTypeName(endpointName, "customError", statusCode)
+              endpointPropertyTypeName(
+                endpointName,
+                "specificError",
+                statusCode
+              )
             ),
             `Invalid response for status code ${statusCode}`
           ),

@@ -36,7 +36,7 @@ describe("Validator", () => {
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
-          customErrorTypes: {}
+          specificErrorTypes: {}
         }
       },
       types: {}
@@ -63,7 +63,7 @@ describe("Validator", () => {
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
-          customErrorTypes: {}
+          specificErrorTypes: {}
         }
       },
       types: {}
@@ -102,7 +102,7 @@ describe("Validator", () => {
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
-          customErrorTypes: {}
+          specificErrorTypes: {}
         }
       },
       types: {}
@@ -196,7 +196,7 @@ describe("Validator", () => {
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
-          customErrorTypes: {}
+          specificErrorTypes: {}
         }
       },
       types: {}
@@ -233,7 +233,7 @@ describe("Validator", () => {
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
-          customErrorTypes: {}
+          specificErrorTypes: {}
         }
       },
       types: {}
@@ -321,7 +321,7 @@ describe("Validator", () => {
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
-          customErrorTypes: {}
+          specificErrorTypes: {}
         }
       },
       types: {
@@ -357,7 +357,7 @@ describe("Validator", () => {
           requestType: objectType({}),
           responseType: VOID,
           genericErrorType: VOID,
-          customErrorTypes: {}
+          specificErrorTypes: {}
         }
       },
       types: {}
@@ -390,7 +390,7 @@ describe("Validator", () => {
             example: typeReference("missing3")
           }),
           genericErrorType: typeReference("missing4"),
-          customErrorTypes: {}
+          specificErrorTypes: {}
         },
         example2: {
           method: "POST",
@@ -407,7 +407,7 @@ describe("Validator", () => {
             arrayType(typeReference("missing7"))
           ),
           genericErrorType: VOID,
-          customErrorTypes: {
+          specificErrorTypes: {
             403: typeReference("missing8")
           }
         }

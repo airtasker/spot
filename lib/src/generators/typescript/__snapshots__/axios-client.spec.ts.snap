@@ -80,7 +80,7 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
     });
     switch (response.status) {
         case 403:
-            if (!validators.validateDeleteUser_customError403(response.data)) {
+            if (!validators.validateDeleteUser_specificError403(response.data)) {
                 throw new Error(\`Invalid response for status code 403: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -273,7 +273,7 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
     });
     switch (response.status) {
         case 403:
-            if (!validators.validateDeleteUser_customError403(response.data)) {
+            if (!validators.validateDeleteUser_specificError403(response.data)) {
                 throw new Error(\`Invalid response for status code 403: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {

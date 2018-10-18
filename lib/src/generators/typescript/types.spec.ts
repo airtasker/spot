@@ -44,7 +44,7 @@ describe("TypeScript types generator", () => {
             requestType: STRING,
             responseType: STRING,
             genericErrorType: STRING,
-            customErrorTypes: {
+            specificErrorTypes: {
               403: STRING,
               404: STRING
             }

@@ -4,7 +4,6 @@ exports[`Parser produces the expected output for example API definitions multi-f
 Object {
   "endpoints": Object {
     "createUser": Object {
-      "customErrorTypes": Object {},
       "genericErrorType": Object {
         "kind": "void",
       },
@@ -34,21 +33,9 @@ Object {
         "kind": "type-reference",
         "typeName": "CreateUserResponse",
       },
+      "specificErrorTypes": Object {},
     },
     "deleteUser": Object {
-      "customErrorTypes": Object {
-        "403": Object {
-          "kind": "object",
-          "properties": Object {
-            "message": Object {
-              "kind": "string",
-            },
-            "signedInAs": Object {
-              "kind": "string",
-            },
-          },
-        },
-      },
       "genericErrorType": Object {
         "kind": "object",
         "properties": Object {
@@ -89,9 +76,21 @@ Object {
       "responseType": Object {
         "kind": "null",
       },
+      "specificErrorTypes": Object {
+        "403": Object {
+          "kind": "object",
+          "properties": Object {
+            "message": Object {
+              "kind": "string",
+            },
+            "signedInAs": Object {
+              "kind": "string",
+            },
+          },
+        },
+      },
     },
     "getUser": Object {
-      "customErrorTypes": Object {},
       "genericErrorType": Object {
         "kind": "void",
       },
@@ -127,6 +126,7 @@ Object {
           },
         },
       },
+      "specificErrorTypes": Object {},
     },
   },
   "types": Object {
@@ -162,7 +162,6 @@ exports[`Parser produces the expected output for example API definitions single-
 Object {
   "endpoints": Object {
     "createUser": Object {
-      "customErrorTypes": Object {},
       "genericErrorType": Object {
         "kind": "void",
       },
@@ -192,21 +191,9 @@ Object {
         "kind": "type-reference",
         "typeName": "CreateUserResponse",
       },
+      "specificErrorTypes": Object {},
     },
     "deleteUser": Object {
-      "customErrorTypes": Object {
-        "403": Object {
-          "kind": "object",
-          "properties": Object {
-            "message": Object {
-              "kind": "string",
-            },
-            "signedInAs": Object {
-              "kind": "string",
-            },
-          },
-        },
-      },
       "genericErrorType": Object {
         "kind": "object",
         "properties": Object {
@@ -247,9 +234,21 @@ Object {
       "responseType": Object {
         "kind": "null",
       },
+      "specificErrorTypes": Object {
+        "403": Object {
+          "kind": "object",
+          "properties": Object {
+            "message": Object {
+              "kind": "string",
+            },
+            "signedInAs": Object {
+              "kind": "string",
+            },
+          },
+        },
+      },
     },
     "getUser": Object {
-      "customErrorTypes": Object {},
       "genericErrorType": Object {
         "kind": "void",
       },
@@ -285,6 +284,7 @@ Object {
           },
         },
       },
+      "specificErrorTypes": Object {},
     },
   },
   "types": Object {

@@ -474,13 +474,13 @@ function generateValidateAndSendResponse(
     )
   );
   return [
-    ...Object.entries(endpoint.customErrorTypes).map(
-      ([statusCode, customErrorType]) =>
+    ...Object.entries(endpoint.specificErrorTypes).map(
+      ([statusCode, specificErrorType]) =>
         ts.createIf(
           ts.createStrictEquality(status, ts.createNumericLiteral(statusCode)),
           ts.createBlock(
             [
-              ...(isVoid(api, customErrorType)
+              ...(isVoid(api, specificErrorType)
                 ? [sendStatus, sendNothing]
                 : [
                     validateStatement(
@@ -488,7 +488,7 @@ function generateValidateAndSendResponse(
                       validatorName(
                         endpointPropertyTypeName(
                           endpointName,
-                          "customError",
+                          "specificError",
                           statusCode
                         )
                       ),
@@ -634,7 +634,7 @@ export function generateEndpointHandlerSource(
               status: integerConstant(200),
               data: endpoint.responseType
             }),
-            ...Object.entries(endpoint.customErrorTypes).map(
+            ...Object.entries(endpoint.specificErrorTypes).map(
               ([statusCode, type]) =>
                 objectType({
                   status: integerConstant(parseInt(statusCode)),
