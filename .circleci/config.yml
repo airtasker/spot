@@ -4,14 +4,15 @@
 #
 version: 2
 jobs:
-  build:
+  build-lib:
     docker:
       - image: circleci/node:10-stretch
 
-    working_directory: ~/repo
+    working_directory: ~/repo/lib
 
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo
 
       # Download and cache dependencies
       - restore_cache:
@@ -34,3 +35,9 @@ jobs:
       - run:
           name: Compile
           command: yarn build
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build-lib
