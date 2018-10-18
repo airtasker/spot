@@ -24,7 +24,7 @@ export function generateTypesSource(api: Api): string {
     );
   }
   const sourceFile = ts.createSourceFile(
-    "Sources.ts",
+    "types.ts",
     "",
     ts.ScriptTarget.Latest,
     false,
