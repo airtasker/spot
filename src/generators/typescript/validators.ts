@@ -21,6 +21,16 @@ export function generateValidatorsSource(api: Api): string {
         endpoint.requestType
       )
     );
+    for (const pathComponent of endpoint.path) {
+      if (pathComponent.kind === "dynamic") {
+        statements.push(
+          generateValidator(
+            endpointPropertyTypeName(endpointName, "param", pathComponent.name),
+            pathComponent.type
+          )
+        );
+      }
+    }
     statements.push(
       generateValidator(
         endpointPropertyTypeName(endpointName, "response"),
@@ -38,7 +48,7 @@ export function generateValidatorsSource(api: Api): string {
     )) {
       statements.push(
         generateValidator(
-          endpointPropertyTypeName(endpointName, `customError${statusCode}`),
+          endpointPropertyTypeName(endpointName, `customError`, statusCode),
           customErrorType
         )
       );
@@ -279,10 +289,27 @@ function typeReferenceValidator(type: TypeReference, parameter: ts.Expression) {
   );
 }
 
-function endpointPropertyTypeName(endpointName: string, property: string) {
-  return `${endpointName}_${property}`;
+export function endpointPropertyTypeName(
+  endpointName: string,
+  property: "request" | "param" | "response" | "defaultError" | "customError",
+  suffix = ""
+) {
+  switch (property) {
+    case "param":
+    case "customError":
+      if (!suffix) {
+        throw new Error(`Unexpected ${property} without a suffix`);
+      }
+      break;
+    default:
+      // No suffix required.
+      if (suffix) {
+        throw new Error(`Unexpected ${property} with a suffix`);
+      }
+  }
+  return `${endpointName}_${property}${suffix}`;
 }
 
-function validatorName(typeName: string) {
+export function validatorName(typeName: string) {
   return `validate${typeName[0].toUpperCase()}${typeName.substr(1)}`;
 }
