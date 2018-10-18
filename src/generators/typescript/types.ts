@@ -9,6 +9,7 @@ import {
   TypeReference,
   UnionType
 } from "../../models";
+import { outputTypeScriptSource } from "./ts-writer";
 
 export function generateTypesSource(api: Api): string {
   const definitions: ts.Statement[] = [];
@@ -23,19 +24,7 @@ export function generateTypesSource(api: Api): string {
       )
     );
   }
-  const sourceFile = ts.createSourceFile(
-    "types.ts",
-    "",
-    ts.ScriptTarget.Latest,
-    false,
-    ts.ScriptKind.TS
-  );
-  const printer = ts.createPrinter({
-    newLine: ts.NewLineKind.LineFeed
-  });
-  return definitions
-    .map(s => printer.printNode(ts.EmitHint.Unspecified, s, sourceFile))
-    .join("\n\n");
+  return outputTypeScriptSource(definitions);
 }
 
 export function typeNode(type: Type): ts.TypeNode {

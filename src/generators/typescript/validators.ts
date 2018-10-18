@@ -9,6 +9,7 @@ import {
   TypeReference,
   UnionType
 } from "../../models";
+import { outputTypeScriptSource } from "./ts-writer";
 import { typeNode } from "./types";
 
 export function generateValidatorsSource(api: Api): string {
@@ -46,19 +47,7 @@ export function generateValidatorsSource(api: Api): string {
   for (const [typeName, type] of Object.entries(api.types)) {
     statements.push(generateValidator(typeName, type, typeName));
   }
-  const sourceFile = ts.createSourceFile(
-    "validators.ts",
-    "",
-    ts.ScriptTarget.Latest,
-    false,
-    ts.ScriptKind.TS
-  );
-  const printer = ts.createPrinter({
-    newLine: ts.NewLineKind.LineFeed
-  });
-  return statements
-    .map(s => printer.printNode(ts.EmitHint.Unspecified, s, sourceFile))
-    .join("\n\n");
+  return outputTypeScriptSource(statements);
 }
 
 function generateValidator(
