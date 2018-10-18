@@ -11,7 +11,7 @@ import {
   unionType
 } from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
-import { typeNode } from "./types";
+import { promiseTypeNode, typeNode } from "./types";
 import {
   endpointPropertyTypeName,
   validateStatement,
@@ -127,9 +127,7 @@ function generateEndpointFunction(
     endpointName,
     /*typeParameters*/ undefined,
     parameters,
-    /*type*/ ts.createTypeReferenceNode("Promise", [
-      typeNode(unionType(...generateReturnTypes(endpoint)))
-    ]),
+    promiseTypeNode(unionType(...generateReturnTypes(endpoint))),
     generateEndpointBody(endpointName, endpoint, includeRequest)
   );
 }

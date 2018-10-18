@@ -27,6 +27,10 @@ export function generateTypesSource(api: Api): string {
   return outputTypeScriptSource(definitions);
 }
 
+export function promiseTypeNode(type: Type): ts.TypeNode {
+  return ts.createTypeReferenceNode("Promise", [typeNode(type)]);
+}
+
 export function typeNode(type: Type): ts.TypeNode {
   switch (type.kind) {
     case "void":
