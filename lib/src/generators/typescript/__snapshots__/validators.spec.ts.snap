@@ -118,8 +118,17 @@ export function validateDeleteUser_response(value: any): value is null {
     return value === null;
 }
 
-export function validateDeleteUser_defaultError(value: any): value is void {
-    return value === undefined;
+export function validateDeleteUser_defaultError(value: any): value is {
+    message: string;
+} {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"message\\"] === \\"string\\";
+}
+
+export function validateDeleteUser_customError403(value: any): value is {
+    message: string;
+    signedInAs: string;
+} {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"message\\"] === \\"string\\" && typeof value[\\"signedInAs\\"] === \\"string\\";
 }
 
 export function validateCreateUserRequest(value: any): value is CreateUserRequest {

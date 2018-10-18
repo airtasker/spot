@@ -163,9 +163,26 @@ Object {
       },
     },
     "deleteUser": Object {
-      "customErrorTypes": Object {},
+      "customErrorTypes": Object {
+        "403": Object {
+          "kind": "object",
+          "properties": Object {
+            "message": Object {
+              "kind": "string",
+            },
+            "signedInAs": Object {
+              "kind": "string",
+            },
+          },
+        },
+      },
       "defaultErrorType": Object {
-        "kind": "void",
+        "kind": "object",
+        "properties": Object {
+          "message": Object {
+            "kind": "string",
+          },
+        },
       },
       "method": "DELETE",
       "path": Array [

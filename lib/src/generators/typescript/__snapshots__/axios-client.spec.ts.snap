@@ -234,7 +234,15 @@ export async function deleteUser(userId: string): Promise<{
     data: null;
 } | {
     kind: \\"unknown-error\\";
-    data: void;
+    data: {
+        message: string;
+    };
+} | {
+    kind: \\"error-403\\";
+    data: {
+        message: string;
+        signedInAs: string;
+    };
 }> {
     if (!validators.validateDeleteUser_paramUserId(userId)) {
         throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
@@ -246,6 +254,14 @@ export async function deleteUser(userId: string): Promise<{
         validateStatus: () => true
     });
     switch (response.status) {
+        case 403:
+            if (!validators.validateDeleteUser_customError403(response.data)) {
+                throw new Error(\`Invalid response for status code 403:\${JSON.stringify(response.data, null, 2)}\`);
+            }
+            return {
+                kind: \\"error-403\\",
+                data: response.data
+            };
         default: if (response.status >= 200 && response.status < 300) {
             if (!validators.validateDeleteUser_response(response.data)) {
                 throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, null, 2)}\`);
