@@ -1,3 +1,4 @@
 build
+nogit
 node_modules
 yarn-error.log
