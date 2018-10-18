@@ -17,16 +17,16 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-lib-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v1-lib-dependencies-
 
       - run: yarn install
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-lib-dependencies-{{ checksum "package.json" }}
 
       - run:
           name: Run tests
@@ -48,12 +48,18 @@ jobs:
 
       - restore_cache: &restore_cache
           keys:
-          - v1-npm-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
-          - v1-npm-{{checksum ".circleci/config.yml"}}
+          - v1-cli-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-cli-dependencies-
 
       - run:
           name: Install dependencies
           command: yarn
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-cli-dependencies-{{ checksum "package.json" }}
 
       - run: ./bin/run --version
 
