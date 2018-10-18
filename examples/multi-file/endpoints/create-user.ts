@@ -1,4 +1,4 @@
-import { api, endpoint, request } from "../../../src/lib";
+import { api, endpoint, request } from "../../../lib/src/lib";
 import { CreateUserRequest, CreateUserResponse } from "../models";
 
 @api()

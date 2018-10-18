@@ -1,4 +1,4 @@
-import { api, endpoint, pathParam } from "../../../src/lib";
+import { api, endpoint, pathParam } from "../../../lib/src/lib";
 
 @api()
 export class Api {

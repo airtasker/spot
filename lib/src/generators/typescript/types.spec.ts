@@ -18,7 +18,7 @@ import {
 import { parsePath } from "../../parser";
 import { generateTypesSource } from "./types";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "examples");
+const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
 
 describe("TypeScript types generator", () => {
   describe("produces valid code", () => {

@@ -3,7 +3,7 @@ import * as path from "path";
 import { parsePath } from "../../parser";
 import { generateAxiosClientSource } from "./axios-client";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "examples");
+const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
 
 describe("TypeScript axios client generator", () => {
   describe("produces valid code", () => {

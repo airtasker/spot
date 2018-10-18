@@ -4,7 +4,7 @@ import {
   endpoint,
   pathParam,
   specificError
-} from "../../../src/lib";
+} from "../../../lib/src/lib";
 
 @api()
 export class Api {

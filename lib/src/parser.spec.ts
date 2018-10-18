@@ -2,7 +2,7 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import { parsePath } from "./parser";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "examples");
+const EXAMPLES_DIR = path.join(__dirname, "..", "..", "examples");
 
 describe("Parser", () => {
   describe("produces the expected output for example API definitions", async () => {

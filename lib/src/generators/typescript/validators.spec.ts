@@ -18,7 +18,7 @@ import {
 import { parsePath } from "../../parser";
 import { generateValidatorsSource } from "./validators";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "examples");
+const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
 
 describe("TypeScript validators generator", () => {
   describe("produces valid code", () => {
