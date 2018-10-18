@@ -127,7 +127,7 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
             res.json(response.data);
         }
         else {
-            if (!validators.validateDeleteUser_defaultError(response.data)) {
+            if (!validators.validateDeleteUser_genericError(response.data)) {
                 throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
             }
             res.status(response.status);
@@ -325,7 +325,7 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
             res.json(response.data);
         }
         else {
-            if (!validators.validateDeleteUser_defaultError(response.data)) {
+            if (!validators.validateDeleteUser_genericError(response.data)) {
                 throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
             }
             res.status(response.status);

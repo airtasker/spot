@@ -39,7 +39,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
             };
         }
         else {
-            if (!validators.validateCreateUser_defaultError(response.data)) {
+            if (!validators.validateCreateUser_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -97,7 +97,7 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
             };
         }
         else {
-            if (!validators.validateDeleteUser_defaultError(response.data)) {
+            if (!validators.validateDeleteUser_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -139,7 +139,7 @@ export async function getUser(userId: string): Promise<{
             };
         }
         else {
-            if (!validators.validateGetUser_defaultError(response.data)) {
+            if (!validators.validateGetUser_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -190,7 +190,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
             };
         }
         else {
-            if (!validators.validateCreateUser_defaultError(response.data)) {
+            if (!validators.validateCreateUser_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -232,7 +232,7 @@ export async function getUser(userId: string): Promise<{
             };
         }
         else {
-            if (!validators.validateGetUser_defaultError(response.data)) {
+            if (!validators.validateGetUser_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -290,7 +290,7 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
             };
         }
         else {
-            if (!validators.validateDeleteUser_defaultError(response.data)) {
+            if (!validators.validateDeleteUser_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {

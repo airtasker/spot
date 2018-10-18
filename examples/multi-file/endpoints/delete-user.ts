@@ -1,7 +1,7 @@
 import {
   api,
-  defaultError,
   endpoint,
+  genericError,
   header,
   pathParam,
   specificError
@@ -13,7 +13,7 @@ export class Api {
     method: "DELETE",
     path: "/users/:userId-confirmed"
   })
-  @defaultError<{
+  @genericError<{
     message: string;
   }>()
   @specificError<{

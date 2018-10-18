@@ -17,7 +17,7 @@ export interface EndpointDescription {
   path: string;
 }
 
-export function defaultError<T>() {
+export function genericError<T>() {
   return (
     target: any,
     propertyKey: string,

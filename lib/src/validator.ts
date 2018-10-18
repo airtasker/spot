@@ -61,7 +61,7 @@ export function validate(api: Api): ErrorMessage[] {
     }
     validateType(api, endpoint.requestType, errors);
     validateType(api, endpoint.responseType, errors);
-    validateType(api, endpoint.defaultErrorType, errors);
+    validateType(api, endpoint.genericErrorType, errors);
     for (const customErrorType of Object.values(endpoint.customErrorTypes)) {
       validateType(api, customErrorType, errors);
     }

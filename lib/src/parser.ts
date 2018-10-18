@@ -112,10 +112,10 @@ function parseApiDeclaration(
         "endpoint"
       );
       if (endpointDecorator) {
-        const defaultErrorDecorator = extractSingleDecorator(
+        const genericErrorDecorator = extractSingleDecorator(
           sourceFile,
           member,
-          "defaultError"
+          "genericError"
         );
         const specificErrorDecorators = extractDecorators(
           sourceFile,
@@ -138,7 +138,7 @@ function parseApiDeclaration(
         api.endpoints[endpointName] = extractEndpoint(
           sourceFile,
           endpointDecorator.arguments[0],
-          defaultErrorDecorator,
+          genericErrorDecorator,
           specificErrorDecorators,
           member
         );
@@ -150,7 +150,7 @@ function parseApiDeclaration(
 function extractEndpoint(
   sourceFile: ts.SourceFile,
   endpointDescriptionExpression: ts.Expression,
-  defaultErrorDecorator: Decorator | null,
+  genericErrorDecorator: Decorator | null,
   specificErrorDecorators: Decorator[],
   methodDeclaration: ts.MethodDeclaration
 ): Endpoint {
@@ -345,21 +345,21 @@ function extractEndpoint(
       responseType = extractType(sourceFile, methodDeclaration.type);
     }
   }
-  let defaultErrorType: Type = VOID;
+  let genericErrorType: Type = VOID;
   let customErrorTypes: {
     [statusCode: number]: Type;
   } = {};
-  if (defaultErrorDecorator) {
-    if (defaultErrorDecorator.typeParameters.length !== 1) {
+  if (genericErrorDecorator) {
+    if (genericErrorDecorator.typeParameters.length !== 1) {
       throw panic(
-        `Expected exactly one type parameter for @defaultError(), got ${
-          defaultErrorDecorator.typeParameters.length
+        `Expected exactly one type parameter for @genericError(), got ${
+          genericErrorDecorator.typeParameters.length
         }`
       );
     }
-    defaultErrorType = extractType(
+    genericErrorType = extractType(
       sourceFile,
-      defaultErrorDecorator.typeParameters[0]
+      genericErrorDecorator.typeParameters[0]
     );
   }
   for (const specificErrorDecorator of specificErrorDecorators) {
@@ -417,7 +417,7 @@ function extractEndpoint(
     headers,
     requestType,
     responseType,
-    defaultErrorType,
+    genericErrorType,
     customErrorTypes
   };
 }

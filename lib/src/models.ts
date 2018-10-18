@@ -17,7 +17,7 @@ export interface Endpoint {
   headers: Headers;
   requestType: Type;
   responseType: Type;
-  defaultErrorType: Type;
+  genericErrorType: Type;
   customErrorTypes: {
     [statusCode: number]: Type;
   };
@@ -29,7 +29,7 @@ export function gatherTypes(endpoint: Endpoint): Type[] {
     ...Object.values(endpoint.headers).map(h => h.type),
     endpoint.requestType,
     endpoint.responseType,
-    endpoint.defaultErrorType,
+    endpoint.genericErrorType,
     ...Object.values(endpoint.customErrorTypes)
   ]);
 }

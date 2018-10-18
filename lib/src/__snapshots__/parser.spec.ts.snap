@@ -5,7 +5,7 @@ Object {
   "endpoints": Object {
     "createUser": Object {
       "customErrorTypes": Object {},
-      "defaultErrorType": Object {
+      "genericErrorType": Object {
         "kind": "void",
       },
       "headers": Object {
@@ -49,7 +49,7 @@ Object {
           },
         },
       },
-      "defaultErrorType": Object {
+      "genericErrorType": Object {
         "kind": "object",
         "properties": Object {
           "message": Object {
@@ -92,7 +92,7 @@ Object {
     },
     "getUser": Object {
       "customErrorTypes": Object {},
-      "defaultErrorType": Object {
+      "genericErrorType": Object {
         "kind": "void",
       },
       "headers": Object {},
@@ -163,7 +163,7 @@ Object {
   "endpoints": Object {
     "createUser": Object {
       "customErrorTypes": Object {},
-      "defaultErrorType": Object {
+      "genericErrorType": Object {
         "kind": "void",
       },
       "headers": Object {
@@ -207,7 +207,7 @@ Object {
           },
         },
       },
-      "defaultErrorType": Object {
+      "genericErrorType": Object {
         "kind": "object",
         "properties": Object {
           "message": Object {
@@ -250,7 +250,7 @@ Object {
     },
     "getUser": Object {
       "customErrorTypes": Object {},
-      "defaultErrorType": Object {
+      "genericErrorType": Object {
         "kind": "void",
       },
       "headers": Object {},

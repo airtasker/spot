@@ -138,7 +138,7 @@ function generateReturnTypes(endpoint: Endpoint): Type[] {
     }),
     objectType({
       kind: stringConstant("unknown-error"),
-      data: endpoint.defaultErrorType
+      data: endpoint.genericErrorType
     }),
     ...Object.entries(endpoint.customErrorTypes).map(([statusCode, type]) =>
       objectType({
@@ -395,7 +395,7 @@ function generateSwitchStatus(
               validateStatement(
                 RESPONSE_DATA,
                 validatorName(
-                  endpointPropertyTypeName(endpointName, "defaultError")
+                  endpointPropertyTypeName(endpointName, "genericError")
                 ),
                 `Invalid response for unknown error`
               ),

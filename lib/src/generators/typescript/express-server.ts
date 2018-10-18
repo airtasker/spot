@@ -533,13 +533,13 @@ function generateValidateAndSendResponse(
         /*multiLine*/ true
       ),
       ts.createBlock(
-        isVoid(api, endpoint.defaultErrorType)
+        isVoid(api, endpoint.genericErrorType)
           ? [sendStatus, sendNothing]
           : [
               validateStatement(
                 data,
                 validatorName(
-                  endpointPropertyTypeName(endpointName, "defaultError")
+                  endpointPropertyTypeName(endpointName, "genericError")
                 ),
                 "Invalid error response"
               ),
@@ -643,7 +643,7 @@ export function generateEndpointHandlerSource(
             ),
             objectType({
               status: NUMBER,
-              data: endpoint.defaultErrorType
+              data: endpoint.genericErrorType
             })
           ]
         )

@@ -15,7 +15,7 @@ export function validateCreateUser_response(value: any): value is CreateUserResp
     return validateCreateUserResponse(value);
 }
 
-export function validateCreateUser_defaultError(value: any): value is void {
+export function validateCreateUser_genericError(value: any): value is void {
     return value === undefined;
 }
 
@@ -35,7 +35,7 @@ export function validateDeleteUser_response(value: any): value is null {
     return value === null;
 }
 
-export function validateDeleteUser_defaultError(value: any): value is {
+export function validateDeleteUser_genericError(value: any): value is {
     message: string;
 } {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"message\\"] === \\"string\\";
@@ -63,7 +63,7 @@ export function validateGetUser_response(value: any): value is {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\" && (value[\\"age\\"] === undefined || typeof value[\\"age\\"] === \\"number\\");
 }
 
-export function validateGetUser_defaultError(value: any): value is void {
+export function validateGetUser_genericError(value: any): value is void {
     return value === undefined;
 }
 
@@ -95,7 +95,7 @@ export function validateCreateUser_response(value: any): value is CreateUserResp
     return validateCreateUserResponse(value);
 }
 
-export function validateCreateUser_defaultError(value: any): value is void {
+export function validateCreateUser_genericError(value: any): value is void {
     return value === undefined;
 }
 
@@ -114,7 +114,7 @@ export function validateGetUser_response(value: any): value is {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\" && (value[\\"age\\"] === undefined || typeof value[\\"age\\"] === \\"number\\");
 }
 
-export function validateGetUser_defaultError(value: any): value is void {
+export function validateGetUser_genericError(value: any): value is void {
     return value === undefined;
 }
 
@@ -134,7 +134,7 @@ export function validateDeleteUser_response(value: any): value is null {
     return value === null;
 }
 
-export function validateDeleteUser_defaultError(value: any): value is {
+export function validateDeleteUser_genericError(value: any): value is {
     message: string;
 } {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"message\\"] === \\"string\\";

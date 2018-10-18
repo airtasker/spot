@@ -69,8 +69,8 @@ export function generateValidatorsSource(api: Api): string {
           endpoint.responseType
         ),
         generateValidator(
-          endpointPropertyTypeName(endpointName, "defaultError"),
-          endpoint.defaultErrorType
+          endpointPropertyTypeName(endpointName, "genericError"),
+          endpoint.genericErrorType
         ),
         ...Object.entries(endpoint.customErrorTypes).map(
           ([statusCode, customErrorType]) =>
@@ -323,7 +323,7 @@ export function endpointPropertyTypeName(
     | "param"
     | "header"
     | "response"
-    | "defaultError"
+    | "genericError"
     | "customError",
   suffix = ""
 ) {
