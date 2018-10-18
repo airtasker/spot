@@ -18,6 +18,7 @@ import {
   objectType,
   optionalType,
   PathComponent,
+  SpecificError,
   STRING,
   stringConstant,
   Type,
@@ -347,7 +348,7 @@ function extractEndpoint(
   }
   let genericErrorType: Type = VOID;
   let specificErrorTypes: {
-    [statusCode: number]: Type;
+    [name: string]: SpecificError;
   } = {};
   if (genericErrorDecorator) {
     if (genericErrorDecorator.typeParameters.length !== 1) {
@@ -400,6 +401,14 @@ function extractEndpoint(
         properties: {}
       };
     }
+    const name = errorDescription.properties["name"];
+    if (!name || !isStringLiteral(name)) {
+      throw panic(
+        `@specificError() expects a string name, got this instead: ${specificErrorDecorator.arguments[0].getText(
+          sourceFile
+        )}`
+      );
+    }
     const statusCode = errorDescription.properties["statusCode"];
     if (!statusCode || !isNumericLiteral(statusCode)) {
       throw panic(
@@ -408,8 +417,11 @@ function extractEndpoint(
         )}`
       );
     }
-    // TODO: Ensure that it's an integer.
-    specificErrorTypes[parseInt(statusCode.text)] = errorResponseType;
+    specificErrorTypes[name.text] = {
+      // TODO: Ensure that the status is an integer.
+      statusCode: parseInt(statusCode.text),
+      type: errorResponseType
+    };
   }
   return {
     method,

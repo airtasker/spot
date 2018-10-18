@@ -73,14 +73,10 @@ export function generateValidatorsSource(api: Api): string {
           endpoint.genericErrorType
         ),
         ...Object.entries(endpoint.specificErrorTypes).map(
-          ([statusCode, specificErrorType]) =>
+          ([name, specificError]) =>
             generateValidator(
-              endpointPropertyTypeName(
-                endpointName,
-                `specificError`,
-                statusCode
-              ),
-              specificErrorType
+              endpointPropertyTypeName(endpointName, `specificError`, name),
+              specificError.type
             )
         )
       ])

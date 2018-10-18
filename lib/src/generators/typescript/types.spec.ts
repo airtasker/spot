@@ -45,8 +45,14 @@ describe("TypeScript types generator", () => {
             responseType: STRING,
             genericErrorType: STRING,
             specificErrorTypes: {
-              403: STRING,
-              404: STRING
+              forbidden: {
+                statusCode: 403,
+                type: STRING
+              },
+              notFound: {
+                statusCode: 404,
+                type: STRING
+              }
             }
           }
         },

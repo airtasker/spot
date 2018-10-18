@@ -59,7 +59,7 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
         message: string;
     };
 } | {
-    kind: \\"error-403\\";
+    kind: \\"forbidden\\";
     data: {
         message: string;
         signedInAs: string;
@@ -80,11 +80,11 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
     });
     switch (response.status) {
         case 403:
-            if (!validators.validateDeleteUser_specificError403(response.data)) {
+            if (!validators.validateDeleteUser_specificErrorForbidden(response.data)) {
                 throw new Error(\`Invalid response for status code 403: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
-                kind: \\"error-403\\",
+                kind: \\"forbidden\\",
                 data: response.data
             };
         default: if (response.status >= 200 && response.status < 300) {
@@ -252,7 +252,7 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
         message: string;
     };
 } | {
-    kind: \\"error-403\\";
+    kind: \\"forbidden\\";
     data: {
         message: string;
         signedInAs: string;
@@ -273,11 +273,11 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
     });
     switch (response.status) {
         case 403:
-            if (!validators.validateDeleteUser_specificError403(response.data)) {
+            if (!validators.validateDeleteUser_specificErrorForbidden(response.data)) {
                 throw new Error(\`Invalid response for status code 403: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
-                kind: \\"error-403\\",
+                kind: \\"forbidden\\",
                 data: response.data
             };
         default: if (response.status >= 200 && response.status < 300) {

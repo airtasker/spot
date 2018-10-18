@@ -3,10 +3,13 @@ import {
   Api,
   Endpoint,
   gatherTypes,
-  integerConstant,
   NUMBER,
   objectType,
-  unionType
+  optionalType,
+  STRING,
+  stringConstant,
+  unionType,
+  VOID
 } from "../../models";
 import { isVoid } from "../../validator";
 import { outputTypeScriptSource } from "./ts-writer";
@@ -179,6 +182,8 @@ export function generateExpressServerSource(api: Api): string {
   ]);
 }
 
+const DEFAULT_SUCCESS_STATUS = 200;
+const DEFAULT_ERROR_STATUS = 500;
 const REQUEST_PARAMETER = "req";
 const RESPONSE_PARAMETER = "res";
 const PARSED_REQUEST_VARIABLE = "request";
@@ -447,18 +452,37 @@ function generateValidateAndSendResponse(
   endpoint: Endpoint
 ): ts.Statement[] {
   const response = ts.createIdentifier(RESPONSE_VARIABLE);
+  const specificErrorKind = ts.createPropertyAccess(response, "error");
   const status = ts.createPropertyAccess(response, "status");
   const data = ts.createPropertyAccess(response, "data");
-  const sendStatus = ts.createStatement(
-    ts.createCall(
-      ts.createPropertyAccess(
-        ts.createIdentifier(RESPONSE_PARAMETER),
-        "status"
-      ),
-      /*typeArguments*/ undefined,
-      [status]
-    )
-  );
+  const sendFixedStatus = (fixedStatusCode: number) =>
+    ts.createStatement(
+      ts.createCall(
+        ts.createPropertyAccess(
+          ts.createIdentifier(RESPONSE_PARAMETER),
+          "status"
+        ),
+        /*typeArguments*/ undefined,
+        [ts.createNumericLiteral(fixedStatusCode.toString(10))]
+      )
+    );
+  const sendResponseStatus = (defaultStatusCode: number) =>
+    ts.createStatement(
+      ts.createCall(
+        ts.createPropertyAccess(
+          ts.createIdentifier(RESPONSE_PARAMETER),
+          "status"
+        ),
+        /*typeArguments*/ undefined,
+        [
+          ts.createBinary(
+            status,
+            ts.SyntaxKind.BarBarToken,
+            ts.createNumericLiteral(defaultStatusCode.toString(10))
+          )
+        ]
+      )
+    );
   const sendData = ts.createStatement(
     ts.createCall(
       ts.createPropertyAccess(ts.createIdentifier(RESPONSE_PARAMETER), "json"),
@@ -475,13 +499,16 @@ function generateValidateAndSendResponse(
   );
   return [
     ...Object.entries(endpoint.specificErrorTypes).map(
-      ([statusCode, specificErrorType]) =>
+      ([name, specificError]) =>
         ts.createIf(
-          ts.createStrictEquality(status, ts.createNumericLiteral(statusCode)),
+          ts.createStrictEquality(
+            specificErrorKind,
+            ts.createStringLiteral(name)
+          ),
           ts.createBlock(
             [
-              ...(isVoid(api, specificErrorType)
-                ? [sendStatus, sendNothing]
+              ...(isVoid(api, specificError.type)
+                ? [sendFixedStatus(specificError.statusCode), sendNothing]
                 : [
                     validateStatement(
                       data,
@@ -489,12 +516,12 @@ function generateValidateAndSendResponse(
                         endpointPropertyTypeName(
                           endpointName,
                           "specificError",
-                          statusCode
+                          name
                         )
                       ),
-                      `Invalid error response for status ${statusCode}`
+                      `Invalid error response for specific error ${name}`
                     ),
-                    sendStatus,
+                    sendFixedStatus(specificError.statusCode),
                     sendData
                   ]),
               ts.createReturn()
@@ -504,37 +531,14 @@ function generateValidateAndSendResponse(
         )
     ),
     ts.createIf(
-      ts.createLogicalAnd(
-        ts.createBinary(
-          status,
-          ts.SyntaxKind.GreaterThanEqualsToken,
-          ts.createNumericLiteral("200")
-        ),
-        ts.createBinary(
-          status,
-          ts.SyntaxKind.LessThanToken,
-          ts.createNumericLiteral("300")
-        )
-      ),
-      ts.createBlock(
-        isVoid(api, endpoint.responseType)
-          ? [sendStatus, sendNothing]
-          : [
-              validateStatement(
-                data,
-                validatorName(
-                  endpointPropertyTypeName(endpointName, "response")
-                ),
-                "Invalid successful response"
-              ),
-              sendStatus,
-              sendData
-            ],
-        /*multiLine*/ true
+      ts.createBinary(
+        ts.createStringLiteral("error"),
+        ts.SyntaxKind.InKeyword,
+        ts.createIdentifier(RESPONSE_VARIABLE)
       ),
       ts.createBlock(
         isVoid(api, endpoint.genericErrorType)
-          ? [sendStatus, sendNothing]
+          ? [sendResponseStatus(DEFAULT_ERROR_STATUS), sendNothing]
           : [
               validateStatement(
                 data,
@@ -543,7 +547,23 @@ function generateValidateAndSendResponse(
                 ),
                 "Invalid error response"
               ),
-              sendStatus,
+              sendResponseStatus(DEFAULT_ERROR_STATUS),
+              sendData
+            ],
+        /*multiLine*/ true
+      ),
+      ts.createBlock(
+        isVoid(api, endpoint.responseType)
+          ? [sendResponseStatus(DEFAULT_SUCCESS_STATUS), sendNothing]
+          : [
+              validateStatement(
+                data,
+                validatorName(
+                  endpointPropertyTypeName(endpointName, "response")
+                ),
+                "Invalid successful response"
+              ),
+              sendResponseStatus(DEFAULT_SUCCESS_STATUS),
               sendData
             ],
         /*multiLine*/ true
@@ -631,18 +651,21 @@ export function generateEndpointHandlerSource(
         unionType(
           ...[
             objectType({
-              status: integerConstant(200),
+              error: VOID,
+              status: NUMBER,
               data: endpoint.responseType
             }),
             ...Object.entries(endpoint.specificErrorTypes).map(
-              ([statusCode, type]) =>
+              ([name, specificError]) =>
                 objectType({
-                  status: integerConstant(parseInt(statusCode)),
-                  data: type
+                  error: stringConstant(name),
+                  status: VOID,
+                  data: specificError.type
                 })
             ),
             objectType({
-              status: NUMBER,
+              error: STRING,
+              status: optionalType(NUMBER),
               data: endpoint.genericErrorType
             })
           ]

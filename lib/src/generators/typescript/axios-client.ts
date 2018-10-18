@@ -140,11 +140,12 @@ function generateReturnTypes(endpoint: Endpoint): Type[] {
       kind: stringConstant("unknown-error"),
       data: endpoint.genericErrorType
     }),
-    ...Object.entries(endpoint.specificErrorTypes).map(([statusCode, type]) =>
-      objectType({
-        kind: stringConstant(`error-${statusCode}`),
-        data: type
-      })
+    ...Object.entries(endpoint.specificErrorTypes).map(
+      ([name, specificError]) =>
+        objectType({
+          kind: stringConstant(name),
+          data: specificError.type
+        })
     )
   ];
 }
@@ -329,32 +330,32 @@ function generateSwitchStatus(
   return ts.createSwitch(
     RESPONSE_STATUS_CODE,
     ts.createCaseBlock([
-      ...Object.keys(endpoint.specificErrorTypes).map(statusCode =>
-        ts.createCaseClause(ts.createNumericLiteral(statusCode), [
-          validateStatement(
-            RESPONSE_DATA,
-            validatorName(
-              endpointPropertyTypeName(
-                endpointName,
-                "specificError",
-                statusCode
-              )
-            ),
-            `Invalid response for status code ${statusCode}`
-          ),
-          ts.createReturn(
-            ts.createObjectLiteral(
-              [
-                ts.createPropertyAssignment(
-                  "kind",
-                  ts.createStringLiteral(`error-${statusCode}`)
+      ...Object.entries(endpoint.specificErrorTypes).map(
+        ([name, specificError]) =>
+          ts.createCaseClause(
+            ts.createNumericLiteral(specificError.statusCode.toString(10)),
+            [
+              validateStatement(
+                RESPONSE_DATA,
+                validatorName(
+                  endpointPropertyTypeName(endpointName, "specificError", name)
                 ),
-                ts.createPropertyAssignment("data", RESPONSE_DATA)
-              ],
-              /*multiLine*/ true
-            )
+                `Invalid response for status code ${specificError.statusCode}`
+              ),
+              ts.createReturn(
+                ts.createObjectLiteral(
+                  [
+                    ts.createPropertyAssignment(
+                      "kind",
+                      ts.createStringLiteral(name)
+                    ),
+                    ts.createPropertyAssignment("data", RESPONSE_DATA)
+                  ],
+                  /*multiLine*/ true
+                )
+              )
+            ]
           )
-        ])
       ),
       ts.createDefaultClause([
         ts.createIf(

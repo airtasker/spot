@@ -34,6 +34,7 @@ export function specificError<T>(description: ErrorDescription) {
 }
 
 export interface ErrorDescription {
+  name: string;
   statusCode: number;
 }
 

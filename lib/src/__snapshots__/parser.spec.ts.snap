@@ -77,14 +77,17 @@ Object {
         "kind": "null",
       },
       "specificErrorTypes": Object {
-        "403": Object {
-          "kind": "object",
-          "properties": Object {
-            "message": Object {
-              "kind": "string",
-            },
-            "signedInAs": Object {
-              "kind": "string",
+        "forbidden": Object {
+          "statusCode": 403,
+          "type": Object {
+            "kind": "object",
+            "properties": Object {
+              "message": Object {
+                "kind": "string",
+              },
+              "signedInAs": Object {
+                "kind": "string",
+              },
             },
           },
         },
@@ -235,14 +238,17 @@ Object {
         "kind": "null",
       },
       "specificErrorTypes": Object {
-        "403": Object {
-          "kind": "object",
-          "properties": Object {
-            "message": Object {
-              "kind": "string",
-            },
-            "signedInAs": Object {
-              "kind": "string",
+        "forbidden": Object {
+          "statusCode": 403,
+          "type": Object {
+            "kind": "object",
+            "properties": Object {
+              "message": Object {
+                "kind": "string",
+              },
+              "signedInAs": Object {
+                "kind": "string",
+              },
             },
           },
         },

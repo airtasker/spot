@@ -49,6 +49,7 @@ export class Api {
     message: string;
     signedInAs: string;
   }>({
+    name: "forbidden",
     statusCode: 403
   })
   deleteUser(

@@ -4,10 +4,12 @@ exports[`TypeScript Express server generator produces valid code multi-file: end
 "import { CreateUserRequest, CreateUserResponse } from \\"../types\\";
 
 export async function createUser(request: CreateUserRequest, authToken: string | void): Promise<{
-    status: 200;
+    error?: void;
+    status: number;
     data: CreateUserResponse;
 } | {
-    status: number;
+    error: string;
+    status?: number;
     data?: void;
 }> {
     throw new Error(\\"Endpoint createUser is not yet implemented!\\");
@@ -16,16 +18,19 @@ export async function createUser(request: CreateUserRequest, authToken: string |
 
 exports[`TypeScript Express server generator produces valid code multi-file: endpoint:deleteUser 1`] = `
 "export async function deleteUser(userId: string, authToken: string): Promise<{
-    status: 200;
+    error?: void;
+    status: number;
     data: null;
 } | {
-    status: 403;
+    error: \\"forbidden\\";
+    status?: void;
     data: {
         message: string;
         signedInAs: string;
     };
 } | {
-    status: number;
+    error: string;
+    status?: number;
     data: {
         message: string;
     };
@@ -36,13 +41,15 @@ exports[`TypeScript Express server generator produces valid code multi-file: end
 
 exports[`TypeScript Express server generator produces valid code multi-file: endpoint:getUser 1`] = `
 "export async function getUser(userId: string): Promise<{
-    status: 200;
+    error?: void;
+    status: number;
     data: {
         name: string;
         age?: number;
     };
 } | {
-    status: number;
+    error: string;
+    status?: number;
     data?: void;
 }> {
     throw new Error(\\"Endpoint getUser is not yet implemented!\\");
@@ -81,16 +88,16 @@ app.post(\\"/users/create\\", async (req, res) => {
     }
     try {
         const response = await createUser(request, authToken);
-        if (response.status >= 200 && response.status < 300) {
+        if (\\"error\\" in response) {
+            res.status(response.status || 500);
+            res.end();
+        }
+        else {
             if (!validators.validateCreateUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(response.status || 200);
             res.json(response.data);
-        }
-        else {
-            res.status(response.status);
-            res.end();
         }
     }
     catch (e) {
@@ -111,26 +118,26 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
     }
     try {
         const response = await deleteUser(userId, authToken);
-        if (response.status === 403) {
-            if (!validators.validateDeleteUser_specificError403(response.data)) {
-                throw new Error(\`Invalid error response for status 403: \${JSON.stringify(response.data, null, 2)}\`);
+        if (response.error === \\"forbidden\\") {
+            if (!validators.validateDeleteUser_specificErrorForbidden(response.data)) {
+                throw new Error(\`Invalid error response for specific error forbidden: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(403);
             res.json(response.data);
             return;
         }
-        if (response.status >= 200 && response.status < 300) {
-            if (!validators.validateDeleteUser_response(response.data)) {
-                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
-            }
-            res.status(response.status);
-            res.json(response.data);
-        }
-        else {
+        if (\\"error\\" in response) {
             if (!validators.validateDeleteUser_genericError(response.data)) {
                 throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(response.status || 500);
+            res.json(response.data);
+        }
+        else {
+            if (!validators.validateDeleteUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status || 200);
             res.json(response.data);
         }
     }
@@ -148,16 +155,16 @@ app.get(\\"/users/:userId\\", async (req, res) => {
     }
     try {
         const response = await getUser(userId);
-        if (response.status >= 200 && response.status < 300) {
+        if (\\"error\\" in response) {
+            res.status(response.status || 500);
+            res.end();
+        }
+        else {
             if (!validators.validateGetUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(response.status || 200);
             res.json(response.data);
-        }
-        else {
-            res.status(response.status);
-            res.end();
         }
     }
     catch (e) {
@@ -176,10 +183,12 @@ exports[`TypeScript Express server generator produces valid code single-file: en
 "import { CreateUserRequest, CreateUserResponse } from \\"../types\\";
 
 export async function createUser(request: CreateUserRequest, authToken: string | void): Promise<{
-    status: 200;
+    error?: void;
+    status: number;
     data: CreateUserResponse;
 } | {
-    status: number;
+    error: string;
+    status?: number;
     data?: void;
 }> {
     throw new Error(\\"Endpoint createUser is not yet implemented!\\");
@@ -188,16 +197,19 @@ export async function createUser(request: CreateUserRequest, authToken: string |
 
 exports[`TypeScript Express server generator produces valid code single-file: endpoint:deleteUser 1`] = `
 "export async function deleteUser(userId: string, authToken: string): Promise<{
-    status: 200;
+    error?: void;
+    status: number;
     data: null;
 } | {
-    status: 403;
+    error: \\"forbidden\\";
+    status?: void;
     data: {
         message: string;
         signedInAs: string;
     };
 } | {
-    status: number;
+    error: string;
+    status?: number;
     data: {
         message: string;
     };
@@ -208,13 +220,15 @@ exports[`TypeScript Express server generator produces valid code single-file: en
 
 exports[`TypeScript Express server generator produces valid code single-file: endpoint:getUser 1`] = `
 "export async function getUser(userId: string): Promise<{
-    status: 200;
+    error?: void;
+    status: number;
     data: {
         name: string;
         age?: number;
     };
 } | {
-    status: number;
+    error: string;
+    status?: number;
     data?: void;
 }> {
     throw new Error(\\"Endpoint getUser is not yet implemented!\\");
@@ -253,16 +267,16 @@ app.post(\\"/users/create\\", async (req, res) => {
     }
     try {
         const response = await createUser(request, authToken);
-        if (response.status >= 200 && response.status < 300) {
+        if (\\"error\\" in response) {
+            res.status(response.status || 500);
+            res.end();
+        }
+        else {
             if (!validators.validateCreateUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(response.status || 200);
             res.json(response.data);
-        }
-        else {
-            res.status(response.status);
-            res.end();
         }
     }
     catch (e) {
@@ -279,16 +293,16 @@ app.get(\\"/users/:userId\\", async (req, res) => {
     }
     try {
         const response = await getUser(userId);
-        if (response.status >= 200 && response.status < 300) {
+        if (\\"error\\" in response) {
+            res.status(response.status || 500);
+            res.end();
+        }
+        else {
             if (!validators.validateGetUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(response.status || 200);
             res.json(response.data);
-        }
-        else {
-            res.status(response.status);
-            res.end();
         }
     }
     catch (e) {
@@ -309,26 +323,26 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
     }
     try {
         const response = await deleteUser(userId, authToken);
-        if (response.status === 403) {
-            if (!validators.validateDeleteUser_specificError403(response.data)) {
-                throw new Error(\`Invalid error response for status 403: \${JSON.stringify(response.data, null, 2)}\`);
+        if (response.error === \\"forbidden\\") {
+            if (!validators.validateDeleteUser_specificErrorForbidden(response.data)) {
+                throw new Error(\`Invalid error response for specific error forbidden: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(403);
             res.json(response.data);
             return;
         }
-        if (response.status >= 200 && response.status < 300) {
-            if (!validators.validateDeleteUser_response(response.data)) {
-                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
-            }
-            res.status(response.status);
-            res.json(response.data);
-        }
-        else {
+        if (\\"error\\" in response) {
             if (!validators.validateDeleteUser_genericError(response.data)) {
                 throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
             }
-            res.status(response.status);
+            res.status(response.status || 500);
+            res.json(response.data);
+        }
+        else {
+            if (!validators.validateDeleteUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status || 200);
             res.json(response.data);
         }
     }

@@ -408,7 +408,10 @@ describe("Validator", () => {
           ),
           genericErrorType: VOID,
           specificErrorTypes: {
-            403: typeReference("missing8")
+            forbidden: {
+              statusCode: 403,
+              type: typeReference("missing8")
+            }
           }
         }
       },
