@@ -12,9 +12,8 @@ import {
 import { outputTypeScriptSource } from "./ts-writer";
 
 export function generateTypesSource(api: Api): string {
-  const definitions: ts.Statement[] = [];
-  for (const [typeName, type] of Object.entries(api.types)) {
-    definitions.push(
+  return outputTypeScriptSource(
+    Object.entries(api.types).map(([typeName, type]) =>
       ts.createTypeAliasDeclaration(
         /*decorators*/ undefined,
         /*modifiers*/ [ts.createModifier(ts.SyntaxKind.ExportKeyword)],
@@ -22,9 +21,8 @@ export function generateTypesSource(api: Api): string {
         /*typeParameters*/ undefined,
         typeNode(type)
       )
-    );
-  }
-  return outputTypeScriptSource(definitions);
+    )
+  );
 }
 
 export function promiseTypeNode(type: Type): ts.TypeNode {

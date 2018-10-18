@@ -11,82 +11,80 @@ import {
 } from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
 import { typeNode } from "./types";
+import flatten = require("lodash/flatten");
+import compact = require("lodash/compact");
 
 export function generateValidatorsSource(api: Api): string {
-  const statements: ts.Statement[] = [];
   const typeNames = Object.keys(api.types);
-  if (typeNames.length > 0) {
-    statements.push(
-      ts.createImportDeclaration(
-        /*decorators*/ undefined,
-        /*modifiers*/ undefined,
-        ts.createImportClause(
-          /*name*/ undefined,
-          ts.createNamedImports(
-            typeNames.map(typeName =>
-              ts.createImportSpecifier(
-                /*propertyName*/ undefined,
-                ts.createIdentifier(typeName)
+  return outputTypeScriptSource([
+    ...(typeNames.length > 0
+      ? [
+          ts.createImportDeclaration(
+            /*decorators*/ undefined,
+            /*modifiers*/ undefined,
+            ts.createImportClause(
+              /*name*/ undefined,
+              ts.createNamedImports(
+                typeNames.map(typeName =>
+                  ts.createImportSpecifier(
+                    /*propertyName*/ undefined,
+                    ts.createIdentifier(typeName)
+                  )
+                )
               )
-            )
+            ),
+            ts.createStringLiteral("./types")
+          )
+        ]
+      : []),
+    ...flatten(
+      Object.entries(api.endpoints).map(([endpointName, endpoint]) => [
+        generateValidator(
+          endpointPropertyTypeName(endpointName, "request"),
+          endpoint.requestType
+        ),
+        ...compact(
+          endpoint.path.map(
+            pathComponent =>
+              pathComponent.kind === "dynamic"
+                ? generateValidator(
+                    endpointPropertyTypeName(
+                      endpointName,
+                      "param",
+                      pathComponent.name
+                    ),
+                    pathComponent.type
+                  )
+                : null
           )
         ),
-        ts.createStringLiteral("./types")
-      )
-    );
-  }
-  for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-    statements.push(
-      generateValidator(
-        endpointPropertyTypeName(endpointName, "request"),
-        endpoint.requestType
-      )
-    );
-    for (const pathComponent of endpoint.path) {
-      if (pathComponent.kind === "dynamic") {
-        statements.push(
+        ...Object.entries(endpoint.headers).map(([headerName, header]) =>
           generateValidator(
-            endpointPropertyTypeName(endpointName, "param", pathComponent.name),
-            pathComponent.type
+            endpointPropertyTypeName(endpointName, "header", headerName),
+            header.type
           )
-        );
-      }
-    }
-    for (const [headerName, header] of Object.entries(endpoint.headers)) {
-      statements.push(
+        ),
         generateValidator(
-          endpointPropertyTypeName(endpointName, "header", headerName),
-          header.type
-        )
-      );
-    }
-    statements.push(
-      generateValidator(
-        endpointPropertyTypeName(endpointName, "response"),
-        endpoint.responseType
-      )
-    );
-    statements.push(
-      generateValidator(
-        endpointPropertyTypeName(endpointName, "defaultError"),
-        endpoint.defaultErrorType
-      )
-    );
-    for (const [statusCode, customErrorType] of Object.entries(
-      endpoint.customErrorTypes
-    )) {
-      statements.push(
+          endpointPropertyTypeName(endpointName, "response"),
+          endpoint.responseType
+        ),
         generateValidator(
-          endpointPropertyTypeName(endpointName, `customError`, statusCode),
-          customErrorType
+          endpointPropertyTypeName(endpointName, "defaultError"),
+          endpoint.defaultErrorType
+        ),
+        ...Object.entries(endpoint.customErrorTypes).map(
+          ([statusCode, customErrorType]) =>
+            generateValidator(
+              endpointPropertyTypeName(endpointName, `customError`, statusCode),
+              customErrorType
+            )
         )
-      );
-    }
-  }
-  for (const [typeName, type] of Object.entries(api.types)) {
-    statements.push(generateValidator(typeName, type, typeName));
-  }
-  return outputTypeScriptSource(statements);
+      ])
+    ),
+    ...Object.entries(api.types).map(([typeName, type]) =>
+      generateValidator(typeName, type, typeName)
+    )
+  ]);
 }
 
 function generateValidator(

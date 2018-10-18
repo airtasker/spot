@@ -18,12 +18,13 @@ import {
   validateStatement,
   validatorName
 } from "./validators";
+import compact = require("lodash/compact");
 
 const IMPORTED_AXIOS_NAME = "axios";
 
 export function generateAxiosClientSource(api: Api): string {
-  const statements: ts.Statement[] = [];
-  statements.push(
+  const typeNames = Object.keys(api.types);
+  return outputTypeScriptSource([
     ts.createImportDeclaration(
       /*decorators*/ undefined,
       /*modifiers*/ undefined,
@@ -32,30 +33,27 @@ export function generateAxiosClientSource(api: Api): string {
         /*namedBindings*/ undefined
       ),
       ts.createStringLiteral("axios")
-    )
-  );
-  const typeNames = Object.keys(api.types);
-  if (typeNames.length > 0) {
-    statements.push(
-      ts.createImportDeclaration(
-        /*decorators*/ undefined,
-        /*modifiers*/ undefined,
-        ts.createImportClause(
-          /*name*/ undefined,
-          ts.createNamedImports(
-            typeNames.map(typeName =>
-              ts.createImportSpecifier(
-                /*propertyName*/ undefined,
-                ts.createIdentifier(typeName)
+    ),
+    ...(typeNames.length > 0
+      ? [
+          ts.createImportDeclaration(
+            /*decorators*/ undefined,
+            /*modifiers*/ undefined,
+            ts.createImportClause(
+              /*name*/ undefined,
+              ts.createNamedImports(
+                typeNames.map(typeName =>
+                  ts.createImportSpecifier(
+                    /*propertyName*/ undefined,
+                    ts.createIdentifier(typeName)
+                  )
+                )
               )
-            )
+            ),
+            ts.createStringLiteral("./types")
           )
-        ),
-        ts.createStringLiteral("./types")
-      )
-    );
-  }
-  statements.push(
+        ]
+      : []),
     ts.createImportDeclaration(
       /*decorators*/ undefined,
       /*modifiers*/ undefined,
@@ -64,12 +62,11 @@ export function generateAxiosClientSource(api: Api): string {
         ts.createNamespaceImport(ts.createIdentifier("validators"))
       ),
       ts.createStringLiteral("./validators")
+    ),
+    ...Object.entries(api.endpoints).map(([endpointName, endpoint]) =>
+      generateEndpointFunction(api, endpointName, endpoint)
     )
-  );
-  for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-    statements.push(generateEndpointFunction(api, endpointName, endpoint));
-  }
-  return outputTypeScriptSource(statements);
+  ]);
 }
 
 const REQUEST_PARAMETER = "request";
@@ -79,46 +76,7 @@ function generateEndpointFunction(
   endpointName: string,
   endpoint: Endpoint
 ): ts.FunctionDeclaration {
-  const parameters: ts.ParameterDeclaration[] = [];
   const includeRequest = !isVoid(api, endpoint.requestType);
-  if (includeRequest) {
-    parameters.push(
-      ts.createParameter(
-        /*decorators*/ undefined,
-        /*modifiers*/ undefined,
-        /*dotDotDotToken*/ undefined,
-        REQUEST_PARAMETER,
-        /*questionToken*/ undefined,
-        typeNode(endpoint.requestType)
-      )
-    );
-  }
-  for (const pathComponent of endpoint.path) {
-    if (pathComponent.kind === "dynamic") {
-      parameters.push(
-        ts.createParameter(
-          /*decorators*/ undefined,
-          /*modifiers*/ undefined,
-          /*dotDotDotToken*/ undefined,
-          pathComponent.name,
-          /*questionToken*/ undefined,
-          typeNode(pathComponent.type)
-        )
-      );
-    }
-  }
-  for (const [headerName, header] of Object.entries(endpoint.headers)) {
-    parameters.push(
-      ts.createParameter(
-        /*decorators*/ undefined,
-        /*modifiers*/ undefined,
-        /*dotDotDotToken*/ undefined,
-        headerName,
-        /*questionToken*/ undefined,
-        typeNode(header.type)
-      )
-    );
-  }
   return ts.createFunctionDeclaration(
     /*decorators*/ undefined,
     [
@@ -128,35 +86,67 @@ function generateEndpointFunction(
     /*asteriskToken*/ undefined,
     endpointName,
     /*typeParameters*/ undefined,
-    parameters,
+    [
+      ...(includeRequest
+        ? [
+            ts.createParameter(
+              /*decorators*/ undefined,
+              /*modifiers*/ undefined,
+              /*dotDotDotToken*/ undefined,
+              REQUEST_PARAMETER,
+              /*questionToken*/ undefined,
+              typeNode(endpoint.requestType)
+            )
+          ]
+        : []),
+      ...compact(
+        endpoint.path.map(
+          pathComponent =>
+            pathComponent.kind === "dynamic"
+              ? ts.createParameter(
+                  /*decorators*/ undefined,
+                  /*modifiers*/ undefined,
+                  /*dotDotDotToken*/ undefined,
+                  pathComponent.name,
+                  /*questionToken*/ undefined,
+                  typeNode(pathComponent.type)
+                )
+              : null
+        )
+      ),
+      ...Object.entries(endpoint.headers).map(([headerName, header]) =>
+        ts.createParameter(
+          /*decorators*/ undefined,
+          /*modifiers*/ undefined,
+          /*dotDotDotToken*/ undefined,
+          headerName,
+          /*questionToken*/ undefined,
+          typeNode(header.type)
+        )
+      )
+    ],
     promiseTypeNode(unionType(...generateReturnTypes(endpoint))),
     generateEndpointBody(endpointName, endpoint, includeRequest)
   );
 }
 
 function generateReturnTypes(endpoint: Endpoint): Type[] {
-  const types: Type[] = [];
-  types.push(
+  return [
     objectType({
       kind: stringConstant("success"),
       data: endpoint.responseType
-    })
-  );
-  types.push(
+    }),
     objectType({
       kind: stringConstant("unknown-error"),
       data: endpoint.defaultErrorType
-    })
-  );
-  for (const [statusCode, type] of Object.entries(endpoint.customErrorTypes)) {
-    types.push(
+    }),
+    ...Object.entries(endpoint.customErrorTypes).map(([statusCode, type]) =>
       objectType({
         kind: stringConstant(`error-${statusCode}`),
         data: type
       })
-    );
-  }
-  return types;
+    )
+  ];
 }
 
 function generateEndpointBody(
@@ -164,23 +154,27 @@ function generateEndpointBody(
   endpoint: Endpoint,
   includeRequest: boolean
 ): ts.FunctionBody {
-  const statements: ts.Statement[] = [];
-  if (includeRequest) {
-    statements.push(generateRequestValidation(endpointName, endpoint));
-  }
-  for (const pathComponent of endpoint.path) {
-    if (pathComponent.kind === "dynamic") {
-      statements.push(
-        generatePathParameterValidation(endpointName, pathComponent)
-      );
-    }
-  }
-  for (const headerName of Object.keys(endpoint.headers)) {
-    statements.push(generateHeaderValidation(endpointName, headerName));
-  }
-  statements.push(generateAxiosCall(endpoint, includeRequest));
-  statements.push(generateSwitchStatus(endpointName, endpoint));
-  return ts.createBlock(statements, /*multiLine*/ true);
+  return ts.createBlock(
+    [
+      ...(includeRequest
+        ? [generateRequestValidation(endpointName, endpoint)]
+        : []),
+      ...compact(
+        endpoint.path.map(
+          pathComponent =>
+            pathComponent.kind === "dynamic"
+              ? generatePathParameterValidation(endpointName, pathComponent)
+              : null
+        )
+      ),
+      ...Object.keys(endpoint.headers).map(headerName =>
+        generateHeaderValidation(endpointName, headerName)
+      ),
+      generateAxiosCall(endpoint, includeRequest),
+      generateSwitchStatus(endpointName, endpoint)
+    ],
+    /*multiLine*/ true
+  );
 }
 
 function generateRequestValidation(

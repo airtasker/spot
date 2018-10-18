@@ -26,8 +26,7 @@ const EXPRESS_APP_NAME = "app";
 const PORT_NAME = "PORT";
 
 export function generateExpressServerSource(api: Api): string {
-  const statements: ts.Statement[] = [];
-  statements.push(
+  return outputTypeScriptSource([
     ts.createImportDeclaration(
       /*decorators*/ undefined,
       /*modifiers*/ undefined,
@@ -36,9 +35,7 @@ export function generateExpressServerSource(api: Api): string {
         ts.createNamespaceImport(ts.createIdentifier(IMPORTED_CORS_NAME))
       ),
       ts.createStringLiteral("cors")
-    )
-  );
-  statements.push(
+    ),
     ts.createImportDeclaration(
       /*decorators*/ undefined,
       /*modifiers*/ undefined,
@@ -47,9 +44,7 @@ export function generateExpressServerSource(api: Api): string {
         ts.createNamespaceImport(ts.createIdentifier(IMPORTED_EXPRESS_NAME))
       ),
       ts.createStringLiteral("express")
-    )
-  );
-  statements.push(
+    ),
     ts.createImportDeclaration(
       /*decorators*/ undefined,
       /*modifiers*/ undefined,
@@ -58,10 +53,8 @@ export function generateExpressServerSource(api: Api): string {
         ts.createNamespaceImport(ts.createIdentifier("validators"))
       ),
       ts.createStringLiteral("./validators")
-    )
-  );
-  for (const endpointName of Object.keys(api.endpoints)) {
-    statements.push(
+    ),
+    ...Object.keys(api.endpoints).map(endpointName =>
       ts.createImportDeclaration(
         /*decorators*/ undefined,
         /*modifiers*/ undefined,
@@ -76,9 +69,7 @@ export function generateExpressServerSource(api: Api): string {
         ),
         ts.createStringLiteral(`./endpoints/${endpointName}`)
       )
-    );
-  }
-  statements.push(
+    ),
     ts.createVariableStatement(
       /*modifiers*/ undefined,
       ts.createVariableDeclarationList(
@@ -91,9 +82,7 @@ export function generateExpressServerSource(api: Api): string {
         ],
         ts.NodeFlags.Const
       )
-    )
-  );
-  statements.push(
+    ),
     ts.createVariableStatement(
       /*modifiers*/ undefined,
       ts.createVariableDeclarationList(
@@ -110,9 +99,7 @@ export function generateExpressServerSource(api: Api): string {
         ],
         ts.NodeFlags.Const
       )
-    )
-  );
-  statements.push(
+    ),
     ts.createStatement(
       ts.createCall(
         ts.createPropertyAccess(ts.createIdentifier(EXPRESS_APP_NAME), "use"),
@@ -125,9 +112,7 @@ export function generateExpressServerSource(api: Api): string {
           )
         ]
       )
-    )
-  );
-  statements.push(
+    ),
     ts.createStatement(
       ts.createCall(
         ts.createPropertyAccess(ts.createIdentifier(EXPRESS_APP_NAME), "use"),
@@ -143,12 +128,10 @@ export function generateExpressServerSource(api: Api): string {
           )
         ]
       )
-    )
-  );
-  for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-    statements.push(generateEndpointRoute(api, endpointName, endpoint));
-  }
-  statements.push(
+    ),
+    ...Object.entries(api.endpoints).map(([endpointName, endpoint]) =>
+      generateEndpointRoute(api, endpointName, endpoint)
+    ),
     ts.createStatement(
       ts.createCall(
         ts.createPropertyAccess(
@@ -193,8 +176,7 @@ export function generateExpressServerSource(api: Api): string {
         ]
       )
     )
-  );
-  return outputTypeScriptSource(statements);
+  ]);
 }
 
 const REQUEST_PARAMETER = "req";
