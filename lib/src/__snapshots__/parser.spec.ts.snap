@@ -8,7 +8,17 @@ Object {
       "defaultErrorType": Object {
         "kind": "void",
       },
-      "headers": Object {},
+      "headers": Object {
+        "authToken": Object {
+          "headerFieldName": "Authorization",
+          "type": Object {
+            "kind": "optional",
+            "optional": Object {
+              "kind": "string",
+            },
+          },
+        },
+      },
       "method": "POST",
       "path": Array [
         Object {
@@ -156,7 +166,17 @@ Object {
       "defaultErrorType": Object {
         "kind": "void",
       },
-      "headers": Object {},
+      "headers": Object {
+        "authToken": Object {
+          "headerFieldName": "Authorization",
+          "type": Object {
+            "kind": "optional",
+            "optional": Object {
+              "kind": "string",
+            },
+          },
+        },
+      },
       "method": "POST",
       "path": Array [
         Object {

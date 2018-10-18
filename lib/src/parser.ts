@@ -461,9 +461,21 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
   } else if (ts.isUnionTypeNode(type)) {
     return extractUnionType(sourceFile, type);
   } else if (ts.isTypeReferenceNode(type) && ts.isIdentifier(type.typeName)) {
+    const typeName = type.typeName.getText(sourceFile);
+    if (typeName === "Optional") {
+      if (!type.typeArguments || type.typeArguments.length !== 1) {
+        throw panic(
+          `Expected exacty one type parameter for Optional, got this instead: ${type.getText(
+            sourceFile
+          )}`
+        );
+      }
+      const typeParameter = type.typeArguments[0];
+      return optionalType(extractType(sourceFile, typeParameter));
+    }
     return {
       kind: "type-reference",
-      typeName: type.typeName.getText(sourceFile)
+      typeName
     };
   } else {
     throw panic(

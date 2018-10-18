@@ -7,6 +7,10 @@ export function validateCreateUser_request(value: any): value is CreateUserReque
     return validateCreateUserRequest(value);
 }
 
+export function validateCreateUser_headerAuthToken(value: any): value is string | void {
+    return value === undefined || typeof value === \\"string\\";
+}
+
 export function validateCreateUser_response(value: any): value is CreateUserResponse {
     return validateCreateUserResponse(value);
 }
@@ -81,6 +85,10 @@ exports[`TypeScript validators generator produces valid code single-file 1`] = `
 
 export function validateCreateUser_request(value: any): value is CreateUserRequest {
     return validateCreateUserRequest(value);
+}
+
+export function validateCreateUser_headerAuthToken(value: any): value is string | void {
+    return value === undefined || typeof value === \\"string\\";
 }
 
 export function validateCreateUser_response(value: any): value is CreateUserResponse {

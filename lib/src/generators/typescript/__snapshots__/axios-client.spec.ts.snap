@@ -7,7 +7,7 @@ import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./type
 
 import * as validators from \\"./validators\\";
 
-export async function createUser(request: CreateUserRequest): Promise<{
+export async function createUser(request: CreateUserRequest, authToken: string | void): Promise<{
     kind: \\"success\\";
     data: CreateUserResponse;
 } | {
@@ -17,11 +17,14 @@ export async function createUser(request: CreateUserRequest): Promise<{
     if (!validators.validateCreateUser_request(request)) {
         throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
     }
+    if (!validators.validateCreateUser_headerAuthToken(authToken)) {
+        throw new Error(\`Invalid parameter authToken: \${JSON.stringify(authToken, null, 2)}\`);
+    }
     const response = await axios({
         url: \\"/users/create\\",
         method: \\"POST\\",
         responseType: \\"json\\",
-        headers: {},
+        headers: { Authorization: authToken },
         data: request,
         validateStatus: () => true
     });
@@ -155,7 +158,7 @@ import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./type
 
 import * as validators from \\"./validators\\";
 
-export async function createUser(request: CreateUserRequest): Promise<{
+export async function createUser(request: CreateUserRequest, authToken: string | void): Promise<{
     kind: \\"success\\";
     data: CreateUserResponse;
 } | {
@@ -165,11 +168,14 @@ export async function createUser(request: CreateUserRequest): Promise<{
     if (!validators.validateCreateUser_request(request)) {
         throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
     }
+    if (!validators.validateCreateUser_headerAuthToken(authToken)) {
+        throw new Error(\`Invalid parameter authToken: \${JSON.stringify(authToken, null, 2)}\`);
+    }
     const response = await axios({
         url: \\"/users/create\\",
         method: \\"POST\\",
         responseType: \\"json\\",
-        headers: {},
+        headers: { Authorization: authToken },
         data: request,
         validateStatus: () => true
     });

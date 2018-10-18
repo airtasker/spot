@@ -3,6 +3,7 @@ import {
   defaultError,
   endpoint,
   header,
+  Optional,
   pathParam,
   request,
   specificError
@@ -14,7 +15,13 @@ export class Api {
     method: "POST",
     path: "/users/create"
   })
-  createUser(@request req: CreateUserRequest): CreateUserResponse {
+  createUser(
+    @request req: CreateUserRequest,
+    @header({
+      name: "Authorization"
+    })
+    authToken: Optional<string>
+  ): CreateUserResponse {
     throw new Error("Not implemented");
   }
 

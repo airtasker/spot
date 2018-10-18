@@ -84,3 +84,5 @@ export function header(description: HeaderDescription) {
 export interface HeaderDescription {
   name: string;
 }
+
+export type Optional<T> = T | void;
