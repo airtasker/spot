@@ -51,7 +51,10 @@ async function parseFileRecursively(
       throw panic(`No source file found at ${sourcePath}`);
     }
   }
-  if (visitedPaths.has(sourcePath) || sourcePath.startsWith(__dirname)) {
+  if (
+    visitedPaths.has(sourcePath) ||
+    path.resolve(sourcePath).startsWith(__dirname)
+  ) {
     return;
   } else {
     visitedPaths.add(sourcePath);
