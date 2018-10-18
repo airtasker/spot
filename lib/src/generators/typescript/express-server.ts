@@ -22,6 +22,7 @@ import flatten = require("lodash/flatten");
 const IMPORTED_CORS_NAME = "cors";
 const IMPORTED_EXPRESS_NAME = "express";
 const EXPRESS_APP_NAME = "app";
+const PORT_NAME = "PORT";
 
 export function generateExpressServerSource(api: Api): string {
   const statements: ts.Statement[] = [];
@@ -82,6 +83,21 @@ export function generateExpressServerSource(api: Api): string {
       ts.createVariableDeclarationList(
         [
           ts.createVariableDeclaration(
+            PORT_NAME,
+            /*type*/ undefined,
+            ts.createNumericLiteral("3020")
+          )
+        ],
+        ts.NodeFlags.Const
+      )
+    )
+  );
+  statements.push(
+    ts.createVariableStatement(
+      /*modifiers*/ undefined,
+      ts.createVariableDeclarationList(
+        [
+          ts.createVariableDeclaration(
             EXPRESS_APP_NAME,
             /*type*/ undefined,
             ts.createCall(
@@ -131,6 +147,52 @@ export function generateExpressServerSource(api: Api): string {
   for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
     statements.push(generateEndpointRoute(endpointName, endpoint));
   }
+  statements.push(
+    ts.createStatement(
+      ts.createCall(
+        ts.createPropertyAccess(
+          ts.createIdentifier(EXPRESS_APP_NAME),
+          "listen"
+        ),
+        /*typeArguments*/ undefined,
+        [
+          ts.createIdentifier(PORT_NAME),
+          ts.createArrowFunction(
+            /*modifiers*/ undefined,
+            /*typeParameters*/ undefined,
+            [],
+            /*type*/ undefined,
+            /*equalsGreaterThanToken*/ undefined,
+            ts.createBlock(
+              [
+                ts.createStatement(
+                  ts.createCall(
+                    ts.createPropertyAccess(
+                      ts.createIdentifier("console"),
+                      "log"
+                    ),
+                    /*typeArguments*/ undefined,
+                    [
+                      ts.createTemplateExpression(
+                        ts.createTemplateHead("Listening on port"),
+                        [
+                          ts.createTemplateSpan(
+                            ts.createIdentifier(PORT_NAME),
+                            ts.createTemplateTail("")
+                          )
+                        ]
+                      )
+                    ]
+                  )
+                )
+              ],
+              /*multiLine*/ true
+            )
+          )
+        ]
+      )
+    )
+  );
   return outputTypeScriptSource(statements);
 }
 

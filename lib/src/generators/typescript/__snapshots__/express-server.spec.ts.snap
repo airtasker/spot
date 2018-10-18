@@ -62,6 +62,8 @@ import { deleteUser } from \\"./endpoints/deleteUser\\";
 
 import { getUser } from \\"./endpoints/getUser\\";
 
+const PORT = 3020;
+
 const app = express();
 
 app.use(cors());
@@ -144,6 +146,10 @@ app.get(\\"/users/:userId\\", async (req, res) => {
     }
     res.status(response.status);
     res.json(response.data);
+});
+
+app.listen(PORT, () => {
+    console.log(\`Listening on port\${PORT}\`);
 });"
 `;
 
@@ -209,6 +215,8 @@ import { getUser } from \\"./endpoints/getUser\\";
 
 import { deleteUser } from \\"./endpoints/deleteUser\\";
 
+const PORT = 3020;
+
 const app = express();
 
 app.use(cors());
@@ -291,5 +299,9 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
     }
     res.status(response.status);
     res.json(response.data);
+});
+
+app.listen(PORT, () => {
+    console.log(\`Listening on port\${PORT}\`);
 });"
 `;
