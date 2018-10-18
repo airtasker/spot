@@ -8,7 +8,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
     data: CreateUserResponse;
 } | {
     status: number;
-    data: void;
+    data?: void;
 }> {
     throw new Error(\\"Endpoint createUser is not yet implemented!\\");
 }"
@@ -43,7 +43,7 @@ exports[`TypeScript Express server generator produces valid code multi-file: end
     };
 } | {
     status: number;
-    data: void;
+    data?: void;
 }> {
     throw new Error(\\"Endpoint getUser is not yet implemented!\\");
 }"
@@ -85,12 +85,13 @@ app.post(\\"/users/create\\", async (req, res) => {
             if (!validators.validateCreateUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
+            res.status(response.status);
+            res.json(response.data);
         }
-        else if (!validators.validateCreateUser_defaultError(response.data)) {
-            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        else {
+            res.status(response.status);
+            res.end();
         }
-        res.status(response.status);
-        res.json(response.data);
     }
     catch (e) {
         console.error(\\"Endpoint createUser threw an unexpected error:\\\\n\\", e);
@@ -122,12 +123,16 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
             if (!validators.validateDeleteUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
+            res.status(response.status);
+            res.json(response.data);
         }
-        else if (!validators.validateDeleteUser_defaultError(response.data)) {
-            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        else {
+            if (!validators.validateDeleteUser_defaultError(response.data)) {
+                throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status);
+            res.json(response.data);
         }
-        res.status(response.status);
-        res.json(response.data);
     }
     catch (e) {
         console.error(\\"Endpoint deleteUser threw an unexpected error:\\\\n\\", e);
@@ -147,12 +152,13 @@ app.get(\\"/users/:userId\\", async (req, res) => {
             if (!validators.validateGetUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
+            res.status(response.status);
+            res.json(response.data);
         }
-        else if (!validators.validateGetUser_defaultError(response.data)) {
-            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        else {
+            res.status(response.status);
+            res.end();
         }
-        res.status(response.status);
-        res.json(response.data);
     }
     catch (e) {
         console.error(\\"Endpoint getUser threw an unexpected error:\\\\n\\", e);
@@ -174,7 +180,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
     data: CreateUserResponse;
 } | {
     status: number;
-    data: void;
+    data?: void;
 }> {
     throw new Error(\\"Endpoint createUser is not yet implemented!\\");
 }"
@@ -209,7 +215,7 @@ exports[`TypeScript Express server generator produces valid code single-file: en
     };
 } | {
     status: number;
-    data: void;
+    data?: void;
 }> {
     throw new Error(\\"Endpoint getUser is not yet implemented!\\");
 }"
@@ -251,12 +257,13 @@ app.post(\\"/users/create\\", async (req, res) => {
             if (!validators.validateCreateUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
+            res.status(response.status);
+            res.json(response.data);
         }
-        else if (!validators.validateCreateUser_defaultError(response.data)) {
-            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        else {
+            res.status(response.status);
+            res.end();
         }
-        res.status(response.status);
-        res.json(response.data);
     }
     catch (e) {
         console.error(\\"Endpoint createUser threw an unexpected error:\\\\n\\", e);
@@ -276,12 +283,13 @@ app.get(\\"/users/:userId\\", async (req, res) => {
             if (!validators.validateGetUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
+            res.status(response.status);
+            res.json(response.data);
         }
-        else if (!validators.validateGetUser_defaultError(response.data)) {
-            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        else {
+            res.status(response.status);
+            res.end();
         }
-        res.status(response.status);
-        res.json(response.data);
     }
     catch (e) {
         console.error(\\"Endpoint getUser threw an unexpected error:\\\\n\\", e);
@@ -313,12 +321,16 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
             if (!validators.validateDeleteUser_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
+            res.status(response.status);
+            res.json(response.data);
         }
-        else if (!validators.validateDeleteUser_defaultError(response.data)) {
-            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        else {
+            if (!validators.validateDeleteUser_defaultError(response.data)) {
+                throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status);
+            res.json(response.data);
         }
-        res.status(response.status);
-        res.json(response.data);
     }
     catch (e) {
         console.error(\\"Endpoint deleteUser threw an unexpected error:\\\\n\\", e);

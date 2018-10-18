@@ -10,6 +10,7 @@ import {
   UnionType
 } from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
+import compact = require("lodash/compact");
 
 export function generateTypesSource(api: Api): string {
   return outputTypeScriptSource(
@@ -88,7 +89,15 @@ function integerConstantTypeNode(value: number): ts.TypeNode {
 function objectTypeNode(type: ObjectType): ts.TypeNode {
   return ts.createTypeLiteralNode(
     Object.entries(type.properties).map(([propertyName, propertyType]) => {
-      if (propertyType.kind === "optional") {
+      if (propertyType.kind === "void") {
+        return ts.createPropertySignature(
+          /*modifiers*/ undefined,
+          propertyName,
+          ts.createToken(ts.SyntaxKind.QuestionToken),
+          VOID_TYPE_NODE,
+          /*initializer*/ undefined
+        );
+      } else if (propertyType.kind === "optional") {
         return ts.createPropertySignature(
           /*modifiers*/ undefined,
           propertyName,

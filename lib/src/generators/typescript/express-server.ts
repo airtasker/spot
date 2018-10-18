@@ -375,7 +375,11 @@ function generateEndpointRoute(
                         ts.NodeFlags.Const
                       )
                     ),
-                    ...generateValidateAndSendResponse(endpointName, endpoint)
+                    ...generateValidateAndSendResponse(
+                      api,
+                      endpointName,
+                      endpoint
+                    )
                   ],
                   /*multiLine*/ true
                 ),
@@ -438,57 +442,66 @@ function generateEndpointRoute(
 }
 
 function generateValidateAndSendResponse(
+  api: Api,
   endpointName: string,
   endpoint: Endpoint
 ): ts.Statement[] {
   const response = ts.createIdentifier(RESPONSE_VARIABLE);
   const status = ts.createPropertyAccess(response, "status");
   const data = ts.createPropertyAccess(response, "data");
-  const sendStatusAndData = [
-    ts.createStatement(
-      ts.createCall(
-        ts.createPropertyAccess(
-          ts.createIdentifier(RESPONSE_PARAMETER),
-          "status"
-        ),
-        /*typeArguments*/ undefined,
-        [status]
-      )
-    ),
-    ts.createStatement(
-      ts.createCall(
-        ts.createPropertyAccess(
-          ts.createIdentifier(RESPONSE_PARAMETER),
-          "json"
-        ),
-        /*typeArguments*/ undefined,
-        [data]
-      )
+  const sendStatus = ts.createStatement(
+    ts.createCall(
+      ts.createPropertyAccess(
+        ts.createIdentifier(RESPONSE_PARAMETER),
+        "status"
+      ),
+      /*typeArguments*/ undefined,
+      [status]
     )
-  ];
+  );
+  const sendData = ts.createStatement(
+    ts.createCall(
+      ts.createPropertyAccess(ts.createIdentifier(RESPONSE_PARAMETER), "json"),
+      /*typeArguments*/ undefined,
+      [data]
+    )
+  );
+  const sendNothing = ts.createStatement(
+    ts.createCall(
+      ts.createPropertyAccess(ts.createIdentifier(RESPONSE_PARAMETER), "end"),
+      /*typeArguments*/ undefined,
+      []
+    )
+  );
   return [
-    ...Object.keys(endpoint.customErrorTypes).map(statusCode =>
-      ts.createIf(
-        ts.createStrictEquality(status, ts.createNumericLiteral(statusCode)),
-        ts.createBlock(
-          [
-            validateStatement(
-              data,
-              validatorName(
-                endpointPropertyTypeName(
-                  endpointName,
-                  "customError",
-                  statusCode
-                )
-              ),
-              `Invalid error response for status ${statusCode}`
-            ),
-            ...sendStatusAndData,
-            ts.createReturn()
-          ],
-          /*multiLine*/ true
+    ...Object.entries(endpoint.customErrorTypes).map(
+      ([statusCode, customErrorType]) =>
+        ts.createIf(
+          ts.createStrictEquality(status, ts.createNumericLiteral(statusCode)),
+          ts.createBlock(
+            [
+              ...(isVoid(api, customErrorType)
+                ? [sendStatus, sendNothing]
+                : [
+                    validateStatement(
+                      data,
+                      validatorName(
+                        endpointPropertyTypeName(
+                          endpointName,
+                          "customError",
+                          statusCode
+                        )
+                      ),
+                      `Invalid error response for status ${statusCode}`
+                    ),
+                    sendStatus,
+                    sendData
+                  ]),
+              ts.createReturn()
+            ],
+            /*multiLine*/ true
+          )
         )
-      )
     ),
     ts.createIf(
       ts.createLogicalAnd(
@@ -504,22 +517,38 @@ function generateValidateAndSendResponse(
         )
       ),
       ts.createBlock(
-        [
-          validateStatement(
-            data,
-            validatorName(endpointPropertyTypeName(endpointName, "response")),
-            "Invalid successful response"
-          )
-        ],
+        isVoid(api, endpoint.responseType)
+          ? [sendStatus, sendNothing]
+          : [
+              validateStatement(
+                data,
+                validatorName(
+                  endpointPropertyTypeName(endpointName, "response")
+                ),
+                "Invalid successful response"
+              ),
+              sendStatus,
+              sendData
+            ],
         /*multiLine*/ true
       ),
-      validateStatement(
-        data,
-        validatorName(endpointPropertyTypeName(endpointName, "defaultError")),
-        "Invalid error response"
+      ts.createBlock(
+        isVoid(api, endpoint.defaultErrorType)
+          ? [sendStatus, sendNothing]
+          : [
+              validateStatement(
+                data,
+                validatorName(
+                  endpointPropertyTypeName(endpointName, "defaultError")
+                ),
+                "Invalid error response"
+              ),
+              sendStatus,
+              sendData
+            ],
+        /*multiLine*/ true
       )
-    ),
-    ...sendStatusAndData
+    )
   ];
 }
 

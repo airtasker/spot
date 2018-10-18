@@ -12,7 +12,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
     data: CreateUserResponse;
 } | {
     kind: \\"unknown-error\\";
-    data: void;
+    data?: void;
 }> {
     if (!validators.validateCreateUser_request(request)) {
         throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
@@ -116,7 +116,7 @@ export async function getUser(userId: string): Promise<{
     };
 } | {
     kind: \\"unknown-error\\";
-    data: void;
+    data?: void;
 }> {
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid parameter userId: \${JSON.stringify(userId, null, 2)}\`);
@@ -163,7 +163,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
     data: CreateUserResponse;
 } | {
     kind: \\"unknown-error\\";
-    data: void;
+    data?: void;
 }> {
     if (!validators.validateCreateUser_request(request)) {
         throw new Error(\`Invalid request: \${JSON.stringify(request, null, 2)}\`);
@@ -209,7 +209,7 @@ export async function getUser(userId: string): Promise<{
     };
 } | {
     kind: \\"unknown-error\\";
-    data: void;
+    data?: void;
 }> {
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid parameter userId: \${JSON.stringify(userId, null, 2)}\`);
