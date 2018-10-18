@@ -1,5 +1,6 @@
 import assertNever from "assert-never";
-import { Api, Type } from "./models";
+import uniq from "lodash/uniq";
+import { Api, Type, VOID } from "./models";
 
 export function validate(api: Api): ErrorMessage[] {
   const errors: ErrorMessage[] = [];
@@ -12,6 +13,12 @@ export function validate(api: Api): ErrorMessage[] {
           break;
         case "dynamic":
           validateType(api, pathComponent.type, errors);
+          ensureStringOrNumber(
+            api,
+            pathComponent.type,
+            pathComponent.name,
+            errors
+          );
           if (pathComponent.type.kind === "void") {
             errors.push(
               `${endpointName} does not define a type for path parameter :${
@@ -49,7 +56,7 @@ export function validate(api: Api): ErrorMessage[] {
   for (const type of Object.values(api.types)) {
     validateType(api, type, errors);
   }
-  return errors;
+  return uniq(errors);
 }
 
 function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
@@ -86,6 +93,38 @@ function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
       break;
     default:
       throw assertNever(type);
+  }
+}
+
+function ensureStringOrNumber(
+  api: Api,
+  type: Type,
+  parameterName: string,
+  errors: ErrorMessage[]
+): void {
+  switch (type.kind) {
+    case "string":
+    case "string-constant":
+    case "number":
+    case "integer-constant":
+      // That's fine.
+      return;
+    case "type-reference":
+      ensureStringOrNumber(
+        api,
+        api.types[type.typeName] || VOID,
+        parameterName,
+        errors
+      );
+      break;
+    case "union":
+      type.types.forEach(possibleType =>
+        ensureStringOrNumber(api, possibleType, parameterName, errors)
+      );
+      break;
+    default:
+      // That's not fine.
+      errors.push(`Parameter ${parameterName} must be a string or a number`);
   }
 }
 

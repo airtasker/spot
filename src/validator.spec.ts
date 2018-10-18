@@ -1,5 +1,7 @@
 import {
   arrayType,
+  BOOLEAN,
+  NULL,
   NUMBER,
   objectType,
   optionalType,
@@ -62,6 +64,7 @@ describe("Validator", () => {
       types: {}
     });
     expect(errors).toEqual([
+      "Parameter userId must be a string or a number",
       "example does not define a type for path parameter :userId"
     ]);
   });
@@ -100,6 +103,120 @@ describe("Validator", () => {
     });
     expect(errors).toEqual([
       "example defines the path parameter :userId multiple times"
+    ]);
+  });
+  it("rejects non-string/number path parameters", () => {
+    const errors = validate({
+      endpoints: {
+        example: {
+          method: "GET",
+          path: [
+            {
+              kind: "static",
+              content: "/hello/"
+            },
+            {
+              kind: "dynamic",
+              name: "paramNumber",
+              type: NUMBER
+            },
+            {
+              kind: "dynamic",
+              name: "paramString",
+              type: STRING
+            },
+            {
+              kind: "dynamic",
+              name: "paramStringConstant",
+              type: {
+                kind: "string-constant",
+                value: "abc"
+              }
+            },
+            {
+              kind: "dynamic",
+              name: "paramIntegerContant",
+              type: {
+                kind: "integer-constant",
+                value: 123
+              }
+            },
+            {
+              kind: "dynamic",
+              name: "paramStringOrNumber",
+              type: unionType(STRING, NUMBER)
+            },
+            {
+              kind: "dynamic",
+              name: "paramVoid",
+              type: VOID
+            },
+            {
+              kind: "dynamic",
+              name: "paramNull",
+              type: NULL
+            },
+            {
+              kind: "dynamic",
+              name: "paramBoolean",
+              type: BOOLEAN
+            },
+            {
+              kind: "dynamic",
+              name: "paramBooleanConstantTrue",
+              type: {
+                kind: "boolean-constant",
+                value: true
+              }
+            },
+            {
+              kind: "dynamic",
+              name: "paramBooleanConstantFalse",
+              type: {
+                kind: "boolean-constant",
+                value: false
+              }
+            },
+            {
+              kind: "dynamic",
+              name: "paramObjectType",
+              type: objectType({})
+            },
+            {
+              kind: "dynamic",
+              name: "paramStringArray",
+              type: arrayType(STRING)
+            },
+            {
+              kind: "dynamic",
+              name: "paramOptionalString",
+              type: optionalType(STRING)
+            },
+            {
+              kind: "dynamic",
+              name: "paramStringOrObjectOrArray",
+              type: unionType(STRING, objectType({}), arrayType(STRING))
+            }
+          ],
+          requestType: VOID,
+          responseType: VOID,
+          defaultErrorType: VOID,
+          customErrorTypes: {}
+        }
+      },
+      types: {}
+    });
+    expect(errors).toEqual([
+      "Parameter paramVoid must be a string or a number",
+      "example does not define a type for path parameter :paramVoid",
+      "Parameter paramNull must be a string or a number",
+      "Parameter paramBoolean must be a string or a number",
+      "Parameter paramBooleanConstantTrue must be a string or a number",
+      "Parameter paramBooleanConstantFalse must be a string or a number",
+      "Parameter paramObjectType must be a string or a number",
+      "Parameter paramStringArray must be a string or a number",
+      "Parameter paramOptionalString must be a string or a number",
+      "Parameter paramStringOrObjectOrArray must be a string or a number"
     ]);
   });
   it("rejects request body for GET requests", () => {
@@ -173,6 +290,7 @@ describe("Validator", () => {
     });
     expect(errors).toEqual([
       "Referenced type missing1 is not defined",
+      "Parameter param must be a string or a number",
       "Referenced type missing2 is not defined",
       "Referenced type missing3 is not defined",
       "Referenced type missing4 is not defined",
