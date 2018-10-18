@@ -57,14 +57,14 @@ export type HttpMethod =
   | "TRACE"
   | "PATCH";
 
-export function request<T>(
-  target: T,
+export function request(
+  target: any,
   propertyKey: string,
   parameterIndex: number
 ) {}
 
-export function pathParam<T>(
-  target: T,
+export function pathParam(
+  target: any,
   propertyKey: string,
   parameterIndex: number
 ) {}
