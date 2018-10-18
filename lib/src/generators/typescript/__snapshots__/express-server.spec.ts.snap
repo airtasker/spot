@@ -79,17 +79,24 @@ app.post(\\"/users/create\\", async (req, res) => {
     if (!validators.validateCreateUser_headerAuthToken(authToken)) {
         throw new Error(\`Invalid header Authorization: \${JSON.stringify(authToken, null, 2)}\`);
     }
-    const response = await createUser(request, authToken);
-    if (response.status >= 200 && response.status < 300) {
-        if (!validators.validateCreateUser_response(response.data)) {
-            throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+    try {
+        const response = await createUser(request, authToken);
+        if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateCreateUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
         }
+        else if (!validators.validateCreateUser_defaultError(response.data)) {
+            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        }
+        res.status(response.status);
+        res.json(response.data);
     }
-    else if (!validators.validateCreateUser_defaultError(response.data)) {
-        throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+    catch (e) {
+        console.error(\\"Endpoint createUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
     }
-    res.status(response.status);
-    res.json(response.data);
 });
 
 app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
@@ -101,25 +108,32 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
     if (!validators.validateDeleteUser_headerAuthToken(authToken)) {
         throw new Error(\`Invalid header Authorization: \${JSON.stringify(authToken, null, 2)}\`);
     }
-    const response = await deleteUser(userId, authToken);
-    if (response.status === 403) {
-        if (!validators.validateDeleteUser_customError403(response.data)) {
-            throw new Error(\`Invalid error response for status 403: \${JSON.stringify(response.data, null, 2)}\`);
+    try {
+        const response = await deleteUser(userId, authToken);
+        if (response.status === 403) {
+            if (!validators.validateDeleteUser_customError403(response.data)) {
+                throw new Error(\`Invalid error response for status 403: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status);
+            res.json(response.data);
+            return;
+        }
+        if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateDeleteUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+        }
+        else if (!validators.validateDeleteUser_defaultError(response.data)) {
+            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
         }
         res.status(response.status);
         res.json(response.data);
-        return;
     }
-    if (response.status >= 200 && response.status < 300) {
-        if (!validators.validateDeleteUser_response(response.data)) {
-            throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
-        }
+    catch (e) {
+        console.error(\\"Endpoint deleteUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
     }
-    else if (!validators.validateDeleteUser_defaultError(response.data)) {
-        throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
-    }
-    res.status(response.status);
-    res.json(response.data);
 });
 
 app.get(\\"/users/:userId\\", async (req, res) => {
@@ -127,17 +141,24 @@ app.get(\\"/users/:userId\\", async (req, res) => {
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid path parameter userId: \${JSON.stringify(userId, null, 2)}\`);
     }
-    const response = await getUser(userId);
-    if (response.status >= 200 && response.status < 300) {
-        if (!validators.validateGetUser_response(response.data)) {
-            throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+    try {
+        const response = await getUser(userId);
+        if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateGetUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
         }
+        else if (!validators.validateGetUser_defaultError(response.data)) {
+            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        }
+        res.status(response.status);
+        res.json(response.data);
     }
-    else if (!validators.validateGetUser_defaultError(response.data)) {
-        throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+    catch (e) {
+        console.error(\\"Endpoint getUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
     }
-    res.status(response.status);
-    res.json(response.data);
 });
 
 app.listen(PORT, () => {
@@ -224,17 +245,24 @@ app.post(\\"/users/create\\", async (req, res) => {
     if (!validators.validateCreateUser_headerAuthToken(authToken)) {
         throw new Error(\`Invalid header Authorization: \${JSON.stringify(authToken, null, 2)}\`);
     }
-    const response = await createUser(request, authToken);
-    if (response.status >= 200 && response.status < 300) {
-        if (!validators.validateCreateUser_response(response.data)) {
-            throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+    try {
+        const response = await createUser(request, authToken);
+        if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateCreateUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
         }
+        else if (!validators.validateCreateUser_defaultError(response.data)) {
+            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        }
+        res.status(response.status);
+        res.json(response.data);
     }
-    else if (!validators.validateCreateUser_defaultError(response.data)) {
-        throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+    catch (e) {
+        console.error(\\"Endpoint createUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
     }
-    res.status(response.status);
-    res.json(response.data);
 });
 
 app.get(\\"/users/:userId\\", async (req, res) => {
@@ -242,17 +270,24 @@ app.get(\\"/users/:userId\\", async (req, res) => {
     if (!validators.validateGetUser_paramUserId(userId)) {
         throw new Error(\`Invalid path parameter userId: \${JSON.stringify(userId, null, 2)}\`);
     }
-    const response = await getUser(userId);
-    if (response.status >= 200 && response.status < 300) {
-        if (!validators.validateGetUser_response(response.data)) {
-            throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+    try {
+        const response = await getUser(userId);
+        if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateGetUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
         }
+        else if (!validators.validateGetUser_defaultError(response.data)) {
+            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+        }
+        res.status(response.status);
+        res.json(response.data);
     }
-    else if (!validators.validateGetUser_defaultError(response.data)) {
-        throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
+    catch (e) {
+        console.error(\\"Endpoint getUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
     }
-    res.status(response.status);
-    res.json(response.data);
 });
 
 app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
@@ -264,25 +299,32 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
     if (!validators.validateDeleteUser_headerAuthToken(authToken)) {
         throw new Error(\`Invalid header Authorization: \${JSON.stringify(authToken, null, 2)}\`);
     }
-    const response = await deleteUser(userId, authToken);
-    if (response.status === 403) {
-        if (!validators.validateDeleteUser_customError403(response.data)) {
-            throw new Error(\`Invalid error response for status 403: \${JSON.stringify(response.data, null, 2)}\`);
+    try {
+        const response = await deleteUser(userId, authToken);
+        if (response.status === 403) {
+            if (!validators.validateDeleteUser_customError403(response.data)) {
+                throw new Error(\`Invalid error response for status 403: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status);
+            res.json(response.data);
+            return;
+        }
+        if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateDeleteUser_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+        }
+        else if (!validators.validateDeleteUser_defaultError(response.data)) {
+            throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
         }
         res.status(response.status);
         res.json(response.data);
-        return;
     }
-    if (response.status >= 200 && response.status < 300) {
-        if (!validators.validateDeleteUser_response(response.data)) {
-            throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
-        }
+    catch (e) {
+        console.error(\\"Endpoint deleteUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
     }
-    else if (!validators.validateDeleteUser_defaultError(response.data)) {
-        throw new Error(\`Invalid error response: \${JSON.stringify(response.data, null, 2)}\`);
-    }
-    res.status(response.status);
-    res.json(response.data);
 });
 
 app.listen(PORT, () => {

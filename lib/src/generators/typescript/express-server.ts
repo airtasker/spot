@@ -331,41 +331,103 @@ function generateEndpointRoute(
                   )
                 ])
               ),
-              ts.createVariableStatement(
-                /*modifiers*/ undefined,
-                ts.createVariableDeclarationList(
+              ts.createTry(
+                ts.createBlock(
                   [
-                    ts.createVariableDeclaration(
-                      RESPONSE_VARIABLE,
-                      /*type*/ undefined,
-                      ts.createAwait(
+                    ts.createVariableStatement(
+                      /*modifiers*/ undefined,
+                      ts.createVariableDeclarationList(
+                        [
+                          ts.createVariableDeclaration(
+                            RESPONSE_VARIABLE,
+                            /*type*/ undefined,
+                            ts.createAwait(
+                              ts.createCall(
+                                ts.createIdentifier(endpointName),
+                                /*typeArguments*/ undefined,
+                                [
+                                  ...(isVoid(api, endpoint.requestType)
+                                    ? []
+                                    : [
+                                        ts.createIdentifier(
+                                          PARSED_REQUEST_VARIABLE
+                                        )
+                                      ]),
+                                  ...compact(
+                                    endpoint.path.map(
+                                      pathComponent =>
+                                        pathComponent.kind === "dynamic"
+                                          ? ts.createIdentifier(
+                                              pathComponent.name
+                                            )
+                                          : null
+                                    )
+                                  ),
+                                  ...Object.keys(endpoint.headers).map(
+                                    headerName =>
+                                      ts.createIdentifier(headerName)
+                                  )
+                                ]
+                              )
+                            )
+                          )
+                        ],
+                        ts.NodeFlags.Const
+                      )
+                    ),
+                    ...generateValidateAndSendResponse(endpointName, endpoint)
+                  ],
+                  /*multiLine*/ true
+                ),
+                ts.createCatchClause(
+                  "e",
+                  ts.createBlock(
+                    [
+                      ts.createStatement(
                         ts.createCall(
-                          ts.createIdentifier(endpointName),
+                          ts.createPropertyAccess(
+                            ts.createIdentifier("console"),
+                            "error"
+                          ),
                           /*typeArguments*/ undefined,
                           [
-                            ...(isVoid(api, endpoint.requestType)
-                              ? []
-                              : [ts.createIdentifier(PARSED_REQUEST_VARIABLE)]),
-                            ...compact(
-                              endpoint.path.map(
-                                pathComponent =>
-                                  pathComponent.kind === "dynamic"
-                                    ? ts.createIdentifier(pathComponent.name)
-                                    : null
-                              )
+                            ts.createStringLiteral(
+                              `Endpoint ${endpointName} threw an unexpected error:\n`
                             ),
-                            ...Object.keys(endpoint.headers).map(headerName =>
-                              ts.createIdentifier(headerName)
+                            ts.createIdentifier("e")
+                          ]
+                        )
+                      ),
+                      ts.createStatement(
+                        ts.createCall(
+                          ts.createPropertyAccess(
+                            ts.createIdentifier(RESPONSE_PARAMETER),
+                            "status"
+                          ),
+                          /*typeArguments*/ undefined,
+                          [ts.createNumericLiteral("500")]
+                        )
+                      ),
+                      ts.createStatement(
+                        ts.createCall(
+                          ts.createPropertyAccess(
+                            ts.createIdentifier(RESPONSE_PARAMETER),
+                            "json"
+                          ),
+                          /*typeArguments*/ undefined,
+                          [
+                            ts.createStringLiteral(
+                              "An unknown server error has occurred."
                             )
                           ]
                         )
                       )
-                    )
-                  ],
-                  ts.NodeFlags.Const
-                )
-              ),
-              ...generateValidateAndSendResponse(endpointName, endpoint)
+                    ],
+                    /*multiLine*/ true
+                  )
+                ),
+                /*finally*/ undefined
+              )
             ],
             /*multiLine*/ true
           )
