@@ -12,7 +12,11 @@ import {
 } from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
 import { typeNode } from "./types";
-import { endpointPropertyTypeName, validatorName } from "./validators";
+import {
+  endpointPropertyTypeName,
+  validateStatement,
+  validatorName
+} from "./validators";
 
 const IMPORTED_AXIOS_NAME = "axios";
 
@@ -419,57 +423,5 @@ function generateSwitchStatus(
         )
       ])
     ])
-  );
-}
-
-function validateStatement(
-  variable: ts.Expression,
-  validatorName: string,
-  errorMessage: string
-): ts.Statement {
-  return ts.createIf(
-    ts.createLogicalNot(
-      ts.createCall(
-        ts.createPropertyAccess(
-          ts.createIdentifier("validators"),
-          validatorName
-        ),
-        /*typeArguments*/ undefined,
-        [variable]
-      )
-    ),
-    ts.createBlock(
-      [
-        ts.createThrow(
-          ts.createNew(
-            ts.createIdentifier("Error"),
-            /*typeArguments*/ undefined,
-            [
-              ts.createTemplateExpression(
-                ts.createTemplateHead(`${errorMessage}: `),
-                [
-                  ts.createTemplateSpan(
-                    ts.createCall(
-                      ts.createPropertyAccess(
-                        ts.createIdentifier("JSON"),
-                        "stringify"
-                      ),
-                      /*typeArguments*/ undefined,
-                      [
-                        variable,
-                        ts.createIdentifier("null"),
-                        ts.createNumericLiteral("2")
-                      ]
-                    ),
-                    ts.createTemplateTail("")
-                  )
-                ]
-              )
-            ]
-          )
-        )
-      ],
-      /*multiLine*/ true
-    )
   );
 }

@@ -2,6 +2,7 @@ import { Command, flags } from "@oclif/command";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
+import { generateExpressServerSource } from "../../../lib/src/generators/typescript/express-server";
 import { generateTypesSource } from "../../../lib/src/generators/typescript/types";
 import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
 import { parsePath } from "../../../lib/src/parser";
@@ -64,6 +65,21 @@ Generated the following files:
         generatedFiles["validators.ts"] = generateValidatorsSource(api);
         generatedFiles["client.ts"] = generateAxiosClientSource(api);
         break;
+      case "express-server":
+        switch (language) {
+          case "typescript":
+            // Good.
+            break;
+          default:
+            this.error(`Unsupported language: ${language}`);
+            this.exit(1);
+        }
+        // Good.
+        generatedFiles["types.ts"] = generateTypesSource(api);
+        generatedFiles["validators.ts"] = generateValidatorsSource(api);
+        generatedFiles["server.ts"] = generateExpressServerSource(api);
+        break;
+
       default:
         this.error(`Unsupported generator: ${generator}`);
         this.exit(1);
