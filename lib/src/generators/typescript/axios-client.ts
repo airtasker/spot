@@ -408,7 +408,7 @@ function validateStatement(
                       /*typeArguments*/ undefined,
                       [
                         variable,
-                        ts.createLiteral("null"),
+                        ts.createIdentifier("null"),
                         ts.createNumericLiteral("2")
                       ]
                     ),

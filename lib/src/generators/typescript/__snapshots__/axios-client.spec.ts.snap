@@ -15,7 +15,7 @@ export async function createUser(request: CreateUserRequest): Promise<{
     data: void;
 }> {
     if (!validators.validateCreateUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
     }
     const response = await axios({
         url: \\"/users/create\\",
@@ -27,7 +27,7 @@ export async function createUser(request: CreateUserRequest): Promise<{
     switch (response.status) {
         default: if (response.status >= 200 && response.status < 300) {
             if (!validators.validateCreateUser_response(response.data)) {
-                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"success\\",
@@ -36,7 +36,7 @@ export async function createUser(request: CreateUserRequest): Promise<{
         }
         else {
             if (!validators.validateCreateUser_defaultError(response.data)) {
-                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"unknown-error\\",
@@ -62,10 +62,10 @@ export async function deleteUser(userId: string): Promise<{
     };
 }> {
     if (!validators.validateDeleteUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
     }
     if (!validators.validateDeleteUser_paramUserId(userId)) {
-        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
     const response = await axios({
         url: \\"/users/\\" + userId + \\"-confirmed\\",
@@ -77,7 +77,7 @@ export async function deleteUser(userId: string): Promise<{
     switch (response.status) {
         case 403:
             if (!validators.validateDeleteUser_customError403(response.data)) {
-                throw new Error(\`Invalid response for status code 403:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for status code 403:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"error-403\\",
@@ -85,7 +85,7 @@ export async function deleteUser(userId: string): Promise<{
             };
         default: if (response.status >= 200 && response.status < 300) {
             if (!validators.validateDeleteUser_response(response.data)) {
-                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"success\\",
@@ -94,7 +94,7 @@ export async function deleteUser(userId: string): Promise<{
         }
         else {
             if (!validators.validateDeleteUser_defaultError(response.data)) {
-                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"unknown-error\\",
@@ -115,10 +115,10 @@ export async function getUser(userId: string): Promise<{
     data: void;
 }> {
     if (!validators.validateGetUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
     }
     if (!validators.validateGetUser_paramUserId(userId)) {
-        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
     const response = await axios({
         url: \\"/users/\\" + userId,
@@ -130,7 +130,7 @@ export async function getUser(userId: string): Promise<{
     switch (response.status) {
         default: if (response.status >= 200 && response.status < 300) {
             if (!validators.validateGetUser_response(response.data)) {
-                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"success\\",
@@ -139,7 +139,7 @@ export async function getUser(userId: string): Promise<{
         }
         else {
             if (!validators.validateGetUser_defaultError(response.data)) {
-                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"unknown-error\\",
@@ -165,7 +165,7 @@ export async function createUser(request: CreateUserRequest): Promise<{
     data: void;
 }> {
     if (!validators.validateCreateUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
     }
     const response = await axios({
         url: \\"/users/create\\",
@@ -177,7 +177,7 @@ export async function createUser(request: CreateUserRequest): Promise<{
     switch (response.status) {
         default: if (response.status >= 200 && response.status < 300) {
             if (!validators.validateCreateUser_response(response.data)) {
-                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"success\\",
@@ -186,7 +186,7 @@ export async function createUser(request: CreateUserRequest): Promise<{
         }
         else {
             if (!validators.validateCreateUser_defaultError(response.data)) {
-                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"unknown-error\\",
@@ -207,10 +207,10 @@ export async function getUser(userId: string): Promise<{
     data: void;
 }> {
     if (!validators.validateGetUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
     }
     if (!validators.validateGetUser_paramUserId(userId)) {
-        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
     const response = await axios({
         url: \\"/users/\\" + userId,
@@ -222,7 +222,7 @@ export async function getUser(userId: string): Promise<{
     switch (response.status) {
         default: if (response.status >= 200 && response.status < 300) {
             if (!validators.validateGetUser_response(response.data)) {
-                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"success\\",
@@ -231,7 +231,7 @@ export async function getUser(userId: string): Promise<{
         }
         else {
             if (!validators.validateGetUser_defaultError(response.data)) {
-                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"unknown-error\\",
@@ -249,10 +249,10 @@ export async function deleteUser(userId: string): Promise<{
     data: void;
 }> {
     if (!validators.validateDeleteUser_request(request)) {
-        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid request:\${JSON.stringify(request, null, 2)}\`);
     }
     if (!validators.validateDeleteUser_paramUserId(userId)) {
-        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, null, 2)}\`);
     }
     const response = await axios({
         url: \\"/users/\\" + userId + \\"-confirmed\\",
@@ -264,7 +264,7 @@ export async function deleteUser(userId: string): Promise<{
     switch (response.status) {
         default: if (response.status >= 200 && response.status < 300) {
             if (!validators.validateDeleteUser_response(response.data)) {
-                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"success\\",
@@ -273,7 +273,7 @@ export async function deleteUser(userId: string): Promise<{
         }
         else {
             if (!validators.validateDeleteUser_defaultError(response.data)) {
-                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
                 kind: \\"unknown-error\\",
