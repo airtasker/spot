@@ -1,0 +1,285 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TypeScript axios client generator produces valid code multi-file 1`] = `
+"import axios from \\"axios\\";
+
+import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./types\\";
+
+import * as validators from \\"./validators\\";
+
+export async function createUser(request: CreateUserRequest): Promise<{
+    kind: \\"success\\";
+    data: CreateUserResponse;
+} | {
+    kind: \\"unknown-error\\";
+    data: void;
+}> {
+    if (!validators.validateCreateUser_request(request)) {
+        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+    }
+    const response = await axios({
+        url: \\"/users/create\\",
+        method: \\"POST\\",
+        responseType: \\"json\\",
+        data: request,
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateCreateUser_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateCreateUser_defaultError(response.data)) {
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}
+
+export async function deleteUser(userId: string): Promise<{
+    kind: \\"success\\";
+    data: null;
+} | {
+    kind: \\"unknown-error\\";
+    data: {
+        message: string;
+    };
+} | {
+    kind: \\"error-403\\";
+    data: {
+        message: string;
+        signedInAs: string;
+    };
+}> {
+    if (!validators.validateDeleteUser_request(request)) {
+        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+    }
+    if (!validators.validateDeleteUser_paramUserId(userId)) {
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+    }
+    const response = await axios({
+        url: \\"/users/\\" + userId + \\"-confirmed\\",
+        method: \\"DELETE\\",
+        responseType: \\"json\\",
+        data: request,
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        case 403:
+            if (!validators.validateDeleteUser_customError403(response.data)) {
+                throw new Error(\`Invalid response for status code 403:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"error-403\\",
+                data: response.data
+            };
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateDeleteUser_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateDeleteUser_defaultError(response.data)) {
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}
+
+export async function getUser(userId: string): Promise<{
+    kind: \\"success\\";
+    data: {
+        name: string;
+        age?: number;
+    };
+} | {
+    kind: \\"unknown-error\\";
+    data: void;
+}> {
+    if (!validators.validateGetUser_request(request)) {
+        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+    }
+    if (!validators.validateGetUser_paramUserId(userId)) {
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+    }
+    const response = await axios({
+        url: \\"/users/\\" + userId,
+        method: \\"GET\\",
+        responseType: \\"json\\",
+        data: request,
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateGetUser_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateGetUser_defaultError(response.data)) {
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}"
+`;
+
+exports[`TypeScript axios client generator produces valid code single-file 1`] = `
+"import axios from \\"axios\\";
+
+import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./types\\";
+
+import * as validators from \\"./validators\\";
+
+export async function createUser(request: CreateUserRequest): Promise<{
+    kind: \\"success\\";
+    data: CreateUserResponse;
+} | {
+    kind: \\"unknown-error\\";
+    data: void;
+}> {
+    if (!validators.validateCreateUser_request(request)) {
+        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+    }
+    const response = await axios({
+        url: \\"/users/create\\",
+        method: \\"POST\\",
+        responseType: \\"json\\",
+        data: request,
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateCreateUser_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateCreateUser_defaultError(response.data)) {
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}
+
+export async function getUser(userId: string): Promise<{
+    kind: \\"success\\";
+    data: {
+        name: string;
+        age?: number;
+    };
+} | {
+    kind: \\"unknown-error\\";
+    data: void;
+}> {
+    if (!validators.validateGetUser_request(request)) {
+        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+    }
+    if (!validators.validateGetUser_paramUserId(userId)) {
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+    }
+    const response = await axios({
+        url: \\"/users/\\" + userId,
+        method: \\"GET\\",
+        responseType: \\"json\\",
+        data: request,
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateGetUser_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateGetUser_defaultError(response.data)) {
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}
+
+export async function deleteUser(userId: string): Promise<{
+    kind: \\"success\\";
+    data: null;
+} | {
+    kind: \\"unknown-error\\";
+    data: void;
+}> {
+    if (!validators.validateDeleteUser_request(request)) {
+        throw new Error(\`Invalid request:\${JSON.stringify(request, \\"null\\", 2)}\`);
+    }
+    if (!validators.validateDeleteUser_paramUserId(userId)) {
+        throw new Error(\`Invalid parameter userId::\${JSON.stringify(userId, \\"null\\", 2)}\`);
+    }
+    const response = await axios({
+        url: \\"/users/\\" + userId + \\"-confirmed\\",
+        method: \\"DELETE\\",
+        responseType: \\"json\\",
+        data: request,
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateDeleteUser_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateDeleteUser_defaultError(response.data)) {
+                throw new Error(\`Invalid response for unknown error:\${JSON.stringify(response.data, \\"null\\", 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}"
+`;
