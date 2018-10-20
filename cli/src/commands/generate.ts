@@ -57,7 +57,9 @@ Generated the following files:
       case "axios-client":
         switch (language) {
           case "typescript":
-            // Good.
+            generatedFiles["types.ts"] = generateTypesSource(api);
+            generatedFiles["validators.ts"] = generateValidatorsSource(api);
+            generatedFiles["client.ts"] = generateAxiosClientSource(api);
             break;
           default:
             this.error(
@@ -65,30 +67,26 @@ Generated the following files:
             );
             this.exit(1);
         }
-        // Good.
-        generatedFiles["types.ts"] = generateTypesSource(api);
-        generatedFiles["validators.ts"] = generateValidatorsSource(api);
-        generatedFiles["client.ts"] = generateAxiosClientSource(api);
         break;
       case "express-server":
         switch (language) {
           case "typescript":
-            // Good.
+            generatedFiles["types.ts"] = generateTypesSource(api);
+            generatedFiles["validators.ts"] = generateValidatorsSource(api);
+            generatedFiles["server.ts"] = generateExpressServerSource(api);
+            for (const [endpointName, endpoint] of Object.entries(
+              api.endpoints
+            )) {
+              generatedFiles[
+                `endpoints/${endpointName}.ts`
+              ] = generateEndpointHandlerSource(api, endpointName, endpoint);
+            }
             break;
           default:
             this.error(
               `Unsupported language for generator ${generator}: ${language}`
             );
             this.exit(1);
-        }
-        // Good.
-        generatedFiles["types.ts"] = generateTypesSource(api);
-        generatedFiles["validators.ts"] = generateValidatorsSource(api);
-        generatedFiles["server.ts"] = generateExpressServerSource(api);
-        for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-          generatedFiles[
-            `endpoints/${endpointName}.ts`
-          ] = generateEndpointHandlerSource(api, endpointName, endpoint);
         }
         break;
 
