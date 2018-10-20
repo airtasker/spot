@@ -60,7 +60,9 @@ Generated the following files:
             // Good.
             break;
           default:
-            this.error(`Unsupported language: ${language}`);
+            this.error(
+              `Unsupported language for generator ${generator}: ${language}`
+            );
             this.exit(1);
         }
         // Good.
@@ -74,7 +76,9 @@ Generated the following files:
             // Good.
             break;
           default:
-            this.error(`Unsupported language: ${language}`);
+            this.error(
+              `Unsupported language for generator ${generator}: ${language}`
+            );
             this.exit(1);
         }
         // Good.
