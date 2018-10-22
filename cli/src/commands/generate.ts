@@ -1,6 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import * as fs from "fs-extra";
 import * as path from "path";
+import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi-3";
 import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
 import {
   generateEndpointHandlerSource,
@@ -54,6 +55,18 @@ Generated the following files:
       [relativePath: string]: string;
     } = {};
     switch (generator) {
+      case "openapi-3":
+        switch (language) {
+          case "yaml":
+            generatedFiles["api.yaml"] = generateOpenApiV3(api, "yaml");
+            break;
+          default:
+            this.error(
+              `Unsupported language for generator ${generator}: ${language}`
+            );
+            this.exit(1);
+        }
+        break;
       case "axios-client":
         switch (language) {
           case "typescript":
