@@ -34,6 +34,7 @@ Object {
         "typeName": "CreateUserResponse",
       },
       "specificErrorTypes": Object {},
+      "successStatusCode": 200,
     },
     "deleteUser": Object {
       "genericErrorType": Object {
@@ -92,6 +93,7 @@ Object {
           },
         },
       },
+      "successStatusCode": 200,
     },
     "getUser": Object {
       "genericErrorType": Object {
@@ -130,6 +132,7 @@ Object {
         },
       },
       "specificErrorTypes": Object {},
+      "successStatusCode": 200,
     },
   },
   "types": Object {
@@ -195,6 +198,7 @@ Object {
         "typeName": "CreateUserResponse",
       },
       "specificErrorTypes": Object {},
+      "successStatusCode": 200,
     },
     "deleteUser": Object {
       "genericErrorType": Object {
@@ -253,6 +257,7 @@ Object {
           },
         },
       },
+      "successStatusCode": 200,
     },
     "getUser": Object {
       "genericErrorType": Object {
@@ -291,6 +296,7 @@ Object {
         },
       },
       "specificErrorTypes": Object {},
+      "successStatusCode": 200,
     },
   },
   "types": Object {

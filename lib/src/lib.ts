@@ -15,6 +15,7 @@ export function endpoint(description: EndpointDescription) {
 export interface EndpointDescription {
   method: HttpMethod;
   path: string;
+  successStatusCode?: number;
 }
 
 export function genericError<T>() {

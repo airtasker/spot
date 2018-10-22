@@ -168,6 +168,8 @@ function extractEndpoint(
   }
   const methodLiteral = endpointDescription.properties["method"];
   const pathLiteral = endpointDescription.properties["path"];
+  const successStatusCodeLiteral =
+    endpointDescription.properties["successStatusCode"];
   if (!isStringLiteral(methodLiteral)) {
     throw panic(
       `Invalid method in endpoint description: ${endpointDescriptionExpression.getText(
@@ -185,6 +187,19 @@ function extractEndpoint(
         sourceFile
       )}`
     );
+  }
+  let successStatusCode;
+  if (successStatusCodeLiteral) {
+    if (!isNumericLiteral(successStatusCodeLiteral)) {
+      throw panic(
+        `Invalid success status code in endpoint description: ${endpointDescriptionExpression.getText(
+          sourceFile
+        )}`
+      );
+    }
+    successStatusCode = parseInt(successStatusCodeLiteral.text);
+  } else {
+    successStatusCode = 200;
   }
   const path = pathLiteral.text;
   const pathComponents: PathComponent[] = [];
@@ -429,6 +444,7 @@ function extractEndpoint(
     headers,
     requestType,
     responseType,
+    successStatusCode,
     genericErrorType,
     specificErrorTypes
   };
