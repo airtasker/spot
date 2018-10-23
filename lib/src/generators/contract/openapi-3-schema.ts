@@ -2,7 +2,28 @@ import assertNever from "assert-never";
 import { Type } from "../../models";
 import compact = require("lodash/compact");
 
-export function jsonSchema(type: Type): JsonSchemaType | null {
+export function rejectVoidOpenApi3SchemaType(
+  type: Type,
+  errorMessage: string
+): OpenAPI3SchemaType {
+  const schemaType = openApi3Schema(type);
+  if (!schemaType) {
+    throw new Error(errorMessage);
+  }
+  return schemaType;
+}
+
+export function voidToNullOpenApi3SchemaType(type: Type): OpenAPI3SchemaType {
+  const schemaType = openApi3Schema(type);
+  if (!schemaType) {
+    return {
+      type: "null"
+    };
+  }
+  return schemaType;
+}
+
+export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
   switch (type.kind) {
     case "void":
       return null;
@@ -45,7 +66,7 @@ export function jsonSchema(type: Type): JsonSchemaType | null {
           } else {
             acc.required.push(name);
           }
-          const schemaType = jsonSchema(type);
+          const schemaType = openApi3Schema(type);
           if (schemaType) {
             acc.properties[name] = schemaType;
           }
@@ -55,10 +76,10 @@ export function jsonSchema(type: Type): JsonSchemaType | null {
           type: "object",
           properties: {},
           required: []
-        } as JsonSchemaObject & { required: string[] }
+        } as OpenAPI3SchemaTypeObject & { required: string[] }
       );
     case "array":
-      const itemsType = jsonSchema(type.elements);
+      const itemsType = openApi3Schema(type.elements);
       if (!itemsType) {
         throw new Error(`Unsupported void array`);
       }
@@ -69,7 +90,7 @@ export function jsonSchema(type: Type): JsonSchemaType | null {
     case "optional":
       throw new Error(`Unsupported top-level optional type`);
     case "union":
-      const types = type.types.map(t => jsonSchema(t));
+      const types = type.types.map(t => openApi3Schema(t));
       const withoutNullTypes = compact(types);
       if (withoutNullTypes.length !== types.length) {
         throw new Error(`Unsupported void type in union`);
@@ -79,74 +100,74 @@ export function jsonSchema(type: Type): JsonSchemaType | null {
       };
     case "type-reference":
       return {
-        $ref: `#/definitions/${type.typeName}`
+        $ref: `#/components/schema/${type.typeName}`
       };
     default:
       throw assertNever(type);
   }
 }
 
-export type JsonSchemaType =
-  | JsonSchemaObject
-  | JsonSchemaArray
-  | JsonSchemaOneOf
-  | JsonSchemaNull
-  | JsonSchemaString
-  | JsonSchemaNumber
-  | JsonSchemaInteger
-  | JsonSchemaBoolean
-  | JsonSchemaTypeReference;
+export type OpenAPI3SchemaType =
+  | OpenAPI3SchemaTypeObject
+  | OpenAPI3SchemaTypeArray
+  | OpenAPI3SchemaTypeOneOf
+  | OpenAPI3SchemaTypeNull
+  | OpenAPI3SchemaTypeString
+  | OpenAPI3SchemaTypeNumber
+  | OpenAPI3SchemaTypeInteger
+  | OpenAPI3SchemaTypeBoolean
+  | OpenAPI3SchemaTypeReference;
 
-export interface JsonSchemaObject {
+export interface OpenAPI3SchemaTypeObject {
   type: "object";
   properties: {
-    [name: string]: JsonSchemaType;
+    [name: string]: OpenAPI3SchemaType;
   };
   required?: string[];
 }
 
-export interface JsonSchemaArray {
+export interface OpenAPI3SchemaTypeArray {
   type: "array";
-  items: JsonSchemaType;
+  items: OpenAPI3SchemaType;
 }
 
-export interface JsonSchemaOneOf {
-  oneOf: JsonSchemaType[];
+export interface OpenAPI3SchemaTypeOneOf {
+  oneOf: OpenAPI3SchemaType[];
   discriminator?: {
     propertyName: string;
     mapping: {
-      [value: string]: JsonSchemaType;
+      [value: string]: OpenAPI3SchemaType;
     };
   };
 }
 
-export interface JsonSchemaNull {
+export interface OpenAPI3SchemaTypeNull {
   type: "null";
 }
 
-export interface JsonSchemaString {
+export interface OpenAPI3SchemaTypeString {
   type: "string";
   const?: string;
   enum?: string[];
 }
 
-export interface JsonSchemaNumber {
+export interface OpenAPI3SchemaTypeNumber {
   type: "number";
   const?: number;
   enum?: number[];
 }
 
-export interface JsonSchemaInteger {
+export interface OpenAPI3SchemaTypeInteger {
   type: "integer";
   const?: number;
   enum?: number[];
 }
 
-export interface JsonSchemaBoolean {
+export interface OpenAPI3SchemaTypeBoolean {
   type: "boolean";
   const?: boolean;
 }
 
-export interface JsonSchemaTypeReference {
+export interface OpenAPI3SchemaTypeReference {
   $ref: string;
 }

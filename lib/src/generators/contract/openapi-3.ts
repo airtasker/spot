@@ -3,11 +3,11 @@ import * as YAML from "js-yaml";
 import { Api } from "../../models";
 import { isVoid } from "../../validator";
 import {
-  jsonSchema,
-  JsonSchemaType,
-  noVoidJsonSchema,
-  voidToNullJsonSchema
-} from "./json-schema";
+  openApi3Schema,
+  OpenAPI3SchemaType,
+  rejectVoidOpenApi3SchemaType,
+  voidToNullOpenApi3SchemaType
+} from "./openapi-3-schema";
 import identity = require("lodash/identity");
 import compact = require("lodash/compact");
 import pickBy = require("lodash/pickBy");
@@ -53,8 +53,7 @@ export function openApiV3(api: Api): OpenApiV3 {
                       in: "path",
                       name: pathComponent.name,
                       required: true,
-                      schema: noVoidJsonSchema(
-                        "openapi-3",
+                      schema: rejectVoidOpenApi3SchemaType(
                         pathComponent.type,
                         `Unsupported void type for path component ${
                           pathComponent.name
@@ -68,26 +67,21 @@ export function openApiV3(api: Api): OpenApiV3 {
             {
               requestBody: isVoid(api, endpoint.requestType)
                 ? undefined
-                : defaultTo(
-                    jsonSchema("openapi-3", endpoint.requestType),
-                    undefined
-                  )
+                : defaultTo(openApi3Schema(endpoint.requestType), undefined)
             },
             identity
           ),
           responses: {
             default: {
               content: {
-                "application/json": voidToNullJsonSchema(
-                  "openapi-3",
+                "application/json": voidToNullOpenApi3SchemaType(
                   endpoint.genericErrorType
                 )
               }
             },
             [(endpoint.successStatusCode || 200).toString(10)]: {
               content: {
-                "application/json": voidToNullJsonSchema(
-                  "openapi-3",
+                "application/json": voidToNullOpenApi3SchemaType(
                   endpoint.responseType
                 )
               }
@@ -96,8 +90,7 @@ export function openApiV3(api: Api): OpenApiV3 {
               (acc, [errorName, specificError]) => {
                 acc[specificError.statusCode.toString(10)] = {
                   content: {
-                    "application/json": voidToNullJsonSchema(
-                      "openapi-3",
+                    "application/json": voidToNullOpenApi3SchemaType(
                       specificError.type
                     )
                   }
@@ -119,14 +112,13 @@ export function openApiV3(api: Api): OpenApiV3 {
     components: {
       schemas: Object.entries(api.types).reduce(
         (acc, [typeName, type]) => {
-          acc[typeName] = noVoidJsonSchema(
-            "openapi-3",
+          acc[typeName] = rejectVoidOpenApi3SchemaType(
             type,
             `Unsupported void type ${typeName}`
           );
           return acc;
         },
-        {} as { [typeName: string]: JsonSchemaType }
+        {} as { [typeName: string]: OpenAPI3SchemaType }
       )
     }
   };
@@ -160,7 +152,7 @@ export interface OpenApiV3 {
   };
   components: {
     schemas: {
-      [typeName: string]: JsonSchemaType;
+      [typeName: string]: OpenAPI3SchemaType;
     };
   };
 }
@@ -168,7 +160,7 @@ export interface OpenApiV3 {
 export interface OpenAPIV3Operation {
   operationId: string;
   parameters: OpenAPIV3Parameter[];
-  requestBody?: JsonSchemaType;
+  requestBody?: OpenAPI3SchemaType;
   responses: {
     default?: OpenAPIV3Response;
     // Note: we use | undefined because otherwise "default" would have to be required.
@@ -180,11 +172,11 @@ export interface OpenAPIV3Parameter {
   in: "path" | "query";
   name: string;
   required: boolean;
-  schema: JsonSchemaType;
+  schema: OpenAPI3SchemaType;
 }
 
 export interface OpenAPIV3Response {
   content: {
-    "application/json": JsonSchemaType;
+    "application/json": OpenAPI3SchemaType;
   };
 }

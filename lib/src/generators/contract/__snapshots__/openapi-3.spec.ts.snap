@@ -13,13 +13,13 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"parameters\\": [],
         \\"requestBody\\": {
-          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
+          \\"$ref\\": \\"#/components/schema/CreateUserRequest\\"
         },
         \\"responses\\": {
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+                \\"$ref\\": \\"#/components/schema/CreateUserResponse\\"
               }
             }
           },
@@ -185,12 +185,12 @@ paths:
       operationId: createUser
       parameters: []
       requestBody:
-        $ref: '#/components/schemas/CreateUserRequest'
+        $ref: '#/components/schema/CreateUserRequest'
       responses:
         '200':
           content:
             application/json:
-              $ref: '#/components/schemas/CreateUserResponse'
+              $ref: '#/components/schema/CreateUserResponse'
         default:
           content:
             application/json:
@@ -294,13 +294,13 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"parameters\\": [],
         \\"requestBody\\": {
-          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
+          \\"$ref\\": \\"#/components/schema/CreateUserRequest\\"
         },
         \\"responses\\": {
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+                \\"$ref\\": \\"#/components/schema/CreateUserResponse\\"
               }
             }
           },
@@ -494,12 +494,12 @@ paths:
       operationId: createUser
       parameters: []
       requestBody:
-        $ref: '#/components/schemas/CreateUserRequest'
+        $ref: '#/components/schema/CreateUserRequest'
       responses:
         '200':
           content:
             application/json:
-              $ref: '#/components/schemas/CreateUserResponse'
+              $ref: '#/components/schema/CreateUserResponse'
         default:
           content:
             application/json:
