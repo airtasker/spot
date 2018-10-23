@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "examples"
+    },
+    {
+      "path": "cli"
+    },
+    {
+      "path": "lib"
+    },
+    {
+      "path": ".circleci"
+    }
+  ]
+}

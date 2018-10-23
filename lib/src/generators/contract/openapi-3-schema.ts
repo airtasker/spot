@@ -13,23 +13,13 @@ export function rejectVoidOpenApi3SchemaType(
   return schemaType;
 }
 
-export function voidToNullOpenApi3SchemaType(type: Type): OpenAPI3SchemaType {
-  const schemaType = openApi3Schema(type);
-  if (!schemaType) {
-    return {
-      type: "null"
-    };
-  }
-  return schemaType;
-}
-
 export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
   switch (type.kind) {
     case "void":
       return null;
     case "null":
       return {
-        type: "null"
+        nullable: true
       };
     case "boolean":
       return {
@@ -38,7 +28,7 @@ export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
     case "boolean-constant":
       return {
         type: "boolean",
-        const: type.value
+        enum: [type.value]
       };
     case "string":
       return {
@@ -47,7 +37,7 @@ export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
     case "string-constant":
       return {
         type: "string",
-        const: type.value
+        enum: [type.value]
       };
     case "number":
       return {
@@ -56,7 +46,7 @@ export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
     case "integer-constant":
       return {
         type: "integer",
-        const: type.value
+        enum: [type.value]
       };
     case "object":
       return Object.entries(type.properties).reduce(
@@ -100,7 +90,7 @@ export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
       };
     case "type-reference":
       return {
-        $ref: `#/components/schema/${type.typeName}`
+        $ref: `#/components/schemas/${type.typeName}`
       };
     default:
       throw assertNever(type);
@@ -118,21 +108,8 @@ export type OpenAPI3SchemaType =
   | OpenAPI3SchemaTypeBoolean
   | OpenAPI3SchemaTypeReference;
 
-export interface OpenAPI3SchemaTypeObject {
-  type: "object";
-  properties: {
-    [name: string]: OpenAPI3SchemaType;
-  };
-  required?: string[];
-}
-
-export interface OpenAPI3SchemaTypeArray {
-  type: "array";
-  items: OpenAPI3SchemaType;
-}
-
-export interface OpenAPI3SchemaTypeOneOf {
-  oneOf: OpenAPI3SchemaType[];
+export interface OpenAPI3BaseSchemaType {
+  nullable?: boolean;
   discriminator?: {
     propertyName: string;
     mapping: {
@@ -141,33 +118,45 @@ export interface OpenAPI3SchemaTypeOneOf {
   };
 }
 
-export interface OpenAPI3SchemaTypeNull {
-  type: "null";
+export interface OpenAPI3SchemaTypeObject extends OpenAPI3BaseSchemaType {
+  type: "object";
+  properties: {
+    [name: string]: OpenAPI3SchemaType;
+  };
+  required?: string[];
 }
 
-export interface OpenAPI3SchemaTypeString {
+export interface OpenAPI3SchemaTypeArray extends OpenAPI3BaseSchemaType {
+  type: "array";
+  items: OpenAPI3SchemaType;
+}
+
+export interface OpenAPI3SchemaTypeOneOf extends OpenAPI3BaseSchemaType {
+  oneOf: OpenAPI3SchemaType[];
+}
+
+export interface OpenAPI3SchemaTypeNull extends OpenAPI3BaseSchemaType {}
+
+export interface OpenAPI3SchemaTypeString extends OpenAPI3BaseSchemaType {
   type: "string";
-  const?: string;
   enum?: string[];
 }
 
-export interface OpenAPI3SchemaTypeNumber {
+export interface OpenAPI3SchemaTypeNumber extends OpenAPI3BaseSchemaType {
   type: "number";
-  const?: number;
   enum?: number[];
 }
 
-export interface OpenAPI3SchemaTypeInteger {
+export interface OpenAPI3SchemaTypeInteger extends OpenAPI3BaseSchemaType {
   type: "integer";
-  const?: number;
   enum?: number[];
 }
 
-export interface OpenAPI3SchemaTypeBoolean {
+export interface OpenAPI3SchemaTypeBoolean extends OpenAPI3BaseSchemaType {
   type: "boolean";
-  const?: boolean;
+  enum?: boolean[];
 }
 
-export interface OpenAPI3SchemaTypeReference {
+export interface OpenAPI3SchemaTypeReference extends OpenAPI3BaseSchemaType {
   $ref: string;
 }

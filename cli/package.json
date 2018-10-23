@@ -12,6 +12,7 @@
     "@oclif/plugin-help": "^2",
     "@types/fs-extra": "^5.0.4",
     "fs-extra": "^7.0.0",
+    "speccy": "^0.8.4",
     "tslib": "^1"
   },
   "devDependencies": {

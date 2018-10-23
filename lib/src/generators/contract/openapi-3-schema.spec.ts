@@ -24,7 +24,7 @@ describe("JSON Schema generator", () => {
     test("null", () => {
       expect(openApi3Schema(NULL)).toMatchInlineSnapshot(`
 Object {
-  "type": "null",
+  "nullable": true,
 }
 `);
     });
@@ -40,13 +40,17 @@ Object {
     test("boolean constant", () => {
       expect(openApi3Schema(booleanConstant(true))).toMatchInlineSnapshot(`
 Object {
-  "const": true,
+  "enum": Array [
+    true,
+  ],
   "type": "boolean",
 }
 `);
       expect(openApi3Schema(booleanConstant(false))).toMatchInlineSnapshot(`
 Object {
-  "const": false,
+  "enum": Array [
+    false,
+  ],
   "type": "boolean",
 }
 `);
@@ -64,7 +68,9 @@ Object {
       expect(openApi3Schema(stringConstant("some constant")))
         .toMatchInlineSnapshot(`
 Object {
-  "const": "some constant",
+  "enum": Array [
+    "some constant",
+  ],
   "type": "string",
 }
 `);
@@ -81,19 +87,25 @@ Object {
     test("integer constant", () => {
       expect(openApi3Schema(integerConstant(0))).toMatchInlineSnapshot(`
 Object {
-  "const": 0,
+  "enum": Array [
+    0,
+  ],
   "type": "integer",
 }
 `);
       expect(openApi3Schema(integerConstant(123))).toMatchInlineSnapshot(`
 Object {
-  "const": 123,
+  "enum": Array [
+    123,
+  ],
   "type": "integer",
 }
 `);
       expect(openApi3Schema(integerConstant(-1000))).toMatchInlineSnapshot(`
 Object {
-  "const": -1000,
+  "enum": Array [
+    -1000,
+  ],
   "type": "integer",
 }
 `);
@@ -195,7 +207,7 @@ Object {
     test("type reference", () => {
       expect(openApi3Schema(typeReference("OtherType"))).toMatchInlineSnapshot(`
 Object {
-  "$ref": "#/components/schema/OtherType",
+  "$ref": "#/components/schemas/OtherType",
 }
 `);
     });

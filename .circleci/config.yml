@@ -69,6 +69,14 @@ jobs:
           name: Testing
           command: yarn test
 
+      - run:
+          name: Speccy (single file)
+          command: ./bin/run generate --api ../examples/single-file/api.ts -l yaml --generator openapi-3 -o output/ && speccy lint output/api.yaml
+
+      - run:
+          name: Speccy (multiple files)
+          command: ./bin/run generate --api ../examples/multi-file/api.ts -l yaml --generator openapi-3 -o output/ && speccy lint output/api.yaml
+
 workflows:
   version: 2
   build-and-test:

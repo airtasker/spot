@@ -1,12 +1,11 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { Api } from "../../models";
+import { Api, Type } from "../../models";
 import { isVoid } from "../../validator";
 import {
   openApi3Schema,
   OpenAPI3SchemaType,
-  rejectVoidOpenApi3SchemaType,
-  voidToNullOpenApi3SchemaType
+  rejectVoidOpenApi3SchemaType
 } from "./openapi-3-schema";
 import identity = require("lodash/identity");
 import compact = require("lodash/compact");
@@ -72,29 +71,17 @@ export function openApiV3(api: Api): OpenApiV3 {
             identity
           ),
           responses: {
-            default: {
-              content: {
-                "application/json": voidToNullOpenApi3SchemaType(
-                  endpoint.genericErrorType
-                )
-              }
-            },
-            [(endpoint.successStatusCode || 200).toString(10)]: {
-              content: {
-                "application/json": voidToNullOpenApi3SchemaType(
-                  endpoint.responseType
-                )
-              }
-            },
+            default: response(api, endpoint.genericErrorType),
+            [(endpoint.successStatusCode || 200).toString(10)]: response(
+              api,
+              endpoint.responseType
+            ),
             ...Object.entries(endpoint.specificErrorTypes).reduce(
               (acc, [errorName, specificError]) => {
-                acc[specificError.statusCode.toString(10)] = {
-                  content: {
-                    "application/json": voidToNullOpenApi3SchemaType(
-                      specificError.type
-                    )
-                  }
-                };
+                acc[specificError.statusCode.toString(10)] = response(
+                  api,
+                  specificError.type
+                );
                 return acc;
               },
               {} as { [statusCode: string]: OpenAPIV3Response }
@@ -121,6 +108,22 @@ export function openApiV3(api: Api): OpenApiV3 {
         {} as { [typeName: string]: OpenAPI3SchemaType }
       )
     }
+  };
+}
+
+function response(api: Api, type: Type): OpenAPIV3Response {
+  const schemaType = openApi3Schema(type);
+  return {
+    ...(schemaType
+      ? {
+          content: {
+            "application/json": {
+              schema: schemaType
+            }
+          }
+        }
+      : {}),
+    description: ""
   };
 }
 
@@ -176,7 +179,10 @@ export interface OpenAPIV3Parameter {
 }
 
 export interface OpenAPIV3Response {
-  content: {
-    "application/json": OpenAPI3SchemaType;
+  content?: {
+    "application/json": {
+      schema: OpenAPI3SchemaType;
+    };
   };
+  description: string;
 }

@@ -13,22 +13,21 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"parameters\\": [],
         \\"requestBody\\": {
-          \\"$ref\\": \\"#/components/schema/CreateUserRequest\\"
+          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
         },
         \\"responses\\": {
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"$ref\\": \\"#/components/schema/CreateUserResponse\\"
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"default\\": {
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"type\\": \\"null\\"
-              }
-            }
+            \\"description\\": \\"\\"
           }
         }
       }
@@ -50,43 +49,52 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"null\\"
+                \\"schema\\": {
+                  \\"nullable\\": true
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"403\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"message\\": {
-                    \\"type\\": \\"string\\"
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"message\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"signedInAs\\": {
+                      \\"type\\": \\"string\\"
+                    }
                   },
-                  \\"signedInAs\\": {
-                    \\"type\\": \\"string\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"message\\",
-                  \\"signedInAs\\"
-                ]
+                  \\"required\\": [
+                    \\"message\\",
+                    \\"signedInAs\\"
+                  ]
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"default\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"message\\": {
-                    \\"type\\": \\"string\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"message\\"
-                ]
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"message\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"message\\"
+                  ]
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           }
         }
       }
@@ -108,27 +116,26 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"age\\": {
+                      \\"type\\": \\"number\\"
+                    }
                   },
-                  \\"age\\": {
-                    \\"type\\": \\"number\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"name\\"
-                ]
+                  \\"required\\": [
+                    \\"name\\"
+                  ]
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"default\\": {
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"type\\": \\"null\\"
-              }
-            }
+            \\"description\\": \\"\\"
           }
         }
       }
@@ -185,16 +192,16 @@ paths:
       operationId: createUser
       parameters: []
       requestBody:
-        $ref: '#/components/schema/CreateUserRequest'
+        $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '200':
           content:
             application/json:
-              $ref: '#/components/schema/CreateUserResponse'
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+          description: ''
         default:
-          content:
-            application/json:
-              type: 'null'
+          description: ''
   '/users/{userId}-confirmed':
     delete:
       operationId: deleteUser
@@ -208,28 +215,34 @@ paths:
         '200':
           content:
             application/json:
-              type: 'null'
+              schema:
+                nullable: true
+          description: ''
         '403':
           content:
             application/json:
-              type: object
-              properties:
-                message:
-                  type: string
-                signedInAs:
-                  type: string
-              required:
-                - message
-                - signedInAs
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  signedInAs:
+                    type: string
+                required:
+                  - message
+                  - signedInAs
+          description: ''
         default:
           content:
             application/json:
-              type: object
-              properties:
-                message:
-                  type: string
-              required:
-                - message
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+          description: ''
   '/users/{userId}':
     get:
       operationId: getUser
@@ -243,18 +256,18 @@ paths:
         '200':
           content:
             application/json:
-              type: object
-              properties:
-                name:
-                  type: string
-                age:
-                  type: number
-              required:
-                - name
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  age:
+                    type: number
+                required:
+                  - name
+          description: ''
         default:
-          content:
-            application/json:
-              type: 'null'
+          description: ''
 components:
   schemas:
     CreateUserRequest:
@@ -294,22 +307,21 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"parameters\\": [],
         \\"requestBody\\": {
-          \\"$ref\\": \\"#/components/schema/CreateUserRequest\\"
+          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
         },
         \\"responses\\": {
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"$ref\\": \\"#/components/schema/CreateUserResponse\\"
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"default\\": {
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"type\\": \\"null\\"
-              }
-            }
+            \\"description\\": \\"\\"
           }
         }
       }
@@ -331,27 +343,26 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"age\\": {
+                      \\"type\\": \\"number\\"
+                    }
                   },
-                  \\"age\\": {
-                    \\"type\\": \\"number\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"name\\"
-                ]
+                  \\"required\\": [
+                    \\"name\\"
+                  ]
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"default\\": {
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"type\\": \\"null\\"
-              }
-            }
+            \\"description\\": \\"\\"
           }
         }
       }
@@ -373,43 +384,52 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"null\\"
+                \\"schema\\": {
+                  \\"nullable\\": true
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"403\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"message\\": {
-                    \\"type\\": \\"string\\"
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"message\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"signedInAs\\": {
+                      \\"type\\": \\"string\\"
+                    }
                   },
-                  \\"signedInAs\\": {
-                    \\"type\\": \\"string\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"message\\",
-                  \\"signedInAs\\"
-                ]
+                  \\"required\\": [
+                    \\"message\\",
+                    \\"signedInAs\\"
+                  ]
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           },
           \\"default\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"message\\": {
-                    \\"type\\": \\"string\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"message\\"
-                ]
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"message\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"message\\"
+                  ]
+                }
               }
-            }
+            },
+            \\"description\\": \\"\\"
           }
         }
       }
@@ -435,7 +455,9 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
             \\"properties\\": {
               \\"success\\": {
                 \\"type\\": \\"boolean\\",
-                \\"const\\": false
+                \\"enum\\": [
+                  false
+                ]
               },
               \\"errors\\": {
                 \\"type\\": \\"array\\",
@@ -454,7 +476,9 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
             \\"properties\\": {
               \\"success\\": {
                 \\"type\\": \\"boolean\\",
-                \\"const\\": true
+                \\"enum\\": [
+                  true
+                ]
               },
               \\"confirmation\\": {
                 \\"type\\": \\"string\\"
@@ -494,16 +518,16 @@ paths:
       operationId: createUser
       parameters: []
       requestBody:
-        $ref: '#/components/schema/CreateUserRequest'
+        $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '200':
           content:
             application/json:
-              $ref: '#/components/schema/CreateUserResponse'
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+          description: ''
         default:
-          content:
-            application/json:
-              type: 'null'
+          description: ''
   '/users/{userId}':
     get:
       operationId: getUser
@@ -517,18 +541,18 @@ paths:
         '200':
           content:
             application/json:
-              type: object
-              properties:
-                name:
-                  type: string
-                age:
-                  type: number
-              required:
-                - name
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  age:
+                    type: number
+                required:
+                  - name
+          description: ''
         default:
-          content:
-            application/json:
-              type: 'null'
+          description: ''
   '/users/{userId}-confirmed':
     delete:
       operationId: deleteUser
@@ -542,28 +566,34 @@ paths:
         '200':
           content:
             application/json:
-              type: 'null'
+              schema:
+                nullable: true
+          description: ''
         '403':
           content:
             application/json:
-              type: object
-              properties:
-                message:
-                  type: string
-                signedInAs:
-                  type: string
-              required:
-                - message
-                - signedInAs
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  signedInAs:
+                    type: string
+                required:
+                  - message
+                  - signedInAs
+          description: ''
         default:
           content:
             application/json:
-              type: object
-              properties:
-                message:
-                  type: string
-              required:
-                - message
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+          description: ''
 components:
   schemas:
     CreateUserRequest:
@@ -579,7 +609,8 @@ components:
           properties:
             success:
               type: boolean
-              const: false
+              enum:
+                - false
             errors:
               type: array
               items:
@@ -591,7 +622,8 @@ components:
           properties:
             success:
               type: boolean
-              const: true
+              enum:
+                - true
             confirmation:
               type: string
           required:
