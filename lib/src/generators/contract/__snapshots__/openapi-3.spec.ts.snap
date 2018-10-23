@@ -13,13 +13,13 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"parameters\\": [],
         \\"requestBody\\": {
-          \\"$ref\\": \\"CreateUserRequest\\"
+          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
         },
         \\"responses\\": {
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"$ref\\": \\"CreateUserResponse\\"
+                \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
               }
             }
           },
@@ -185,12 +185,12 @@ paths:
       operationId: createUser
       parameters: []
       requestBody:
-        $ref: CreateUserRequest
+        $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '200':
           content:
             application/json:
-              $ref: CreateUserResponse
+              $ref: '#/components/schemas/CreateUserResponse'
         default:
           content:
             application/json:
@@ -294,13 +294,13 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"parameters\\": [],
         \\"requestBody\\": {
-          \\"$ref\\": \\"CreateUserRequest\\"
+          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
         },
         \\"responses\\": {
           \\"200\\": {
             \\"content\\": {
               \\"application/json\\": {
-                \\"$ref\\": \\"CreateUserResponse\\"
+                \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
               }
             }
           },
@@ -494,12 +494,12 @@ paths:
       operationId: createUser
       parameters: []
       requestBody:
-        $ref: CreateUserRequest
+        $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '200':
           content:
             application/json:
-              $ref: CreateUserResponse
+              $ref: '#/components/schemas/CreateUserResponse'
         default:
           content:
             application/json:

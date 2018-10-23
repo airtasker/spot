@@ -13,191 +13,91 @@ import {
   unionType,
   VOID
 } from "../../models";
-import { jsonSchema } from "./json-schema";
+import { FLAVOURS, jsonSchema } from "./json-schema";
 
 describe("JSON Schema generator", () => {
   describe("generates type validator", () => {
-    test("void", () => {
-      expect(jsonSchema(VOID)).toMatchInlineSnapshot(`null`);
-    });
+    for (const flavour of FLAVOURS) {
+      test(`${flavour} - void`, () => {
+        expect(jsonSchema(flavour, VOID)).toMatchSnapshot();
+      });
 
-    test("null", () => {
-      expect(jsonSchema(NULL)).toMatchInlineSnapshot(`
-Object {
-  "type": "null",
-}
-`);
-    });
+      test(`${flavour} - null`, () => {
+        expect(jsonSchema(flavour, NULL)).toMatchSnapshot();
+      });
 
-    test("boolean", () => {
-      expect(jsonSchema(BOOLEAN)).toMatchInlineSnapshot(`
-Object {
-  "type": "boolean",
-}
-`);
-    });
+      test(`${flavour} - boolean`, () => {
+        expect(jsonSchema(flavour, BOOLEAN)).toMatchSnapshot();
+      });
 
-    test("boolean constant", () => {
-      expect(jsonSchema(booleanConstant(true))).toMatchInlineSnapshot(`
-Object {
-  "const": true,
-  "type": "boolean",
-}
-`);
-      expect(jsonSchema(booleanConstant(false))).toMatchInlineSnapshot(`
-Object {
-  "const": false,
-  "type": "boolean",
-}
-`);
-    });
+      test(`${flavour} - boolean constant`, () => {
+        expect(jsonSchema(flavour, booleanConstant(true))).toMatchSnapshot();
+        expect(jsonSchema(flavour, booleanConstant(false))).toMatchSnapshot();
+      });
 
-    test("string", () => {
-      expect(jsonSchema(STRING)).toMatchInlineSnapshot(`
-Object {
-  "type": "string",
-}
-`);
-    });
+      test(`${flavour} - string`, () => {
+        expect(jsonSchema(flavour, STRING)).toMatchSnapshot();
+      });
 
-    test("string constant", () => {
-      expect(jsonSchema(stringConstant("some constant")))
-        .toMatchInlineSnapshot(`
-Object {
-  "const": "some constant",
-  "type": "string",
-}
-`);
-    });
+      test(`${flavour} - string constant`, () => {
+        expect(
+          jsonSchema(flavour, stringConstant("some constant"))
+        ).toMatchSnapshot();
+      });
 
-    test("number", () => {
-      expect(jsonSchema(NUMBER)).toMatchInlineSnapshot(`
-Object {
-  "type": "number",
-}
-`);
-    });
+      test(`${flavour} - number`, () => {
+        expect(jsonSchema(flavour, NUMBER)).toMatchSnapshot();
+      });
 
-    test("integer constant", () => {
-      expect(jsonSchema(integerConstant(0))).toMatchInlineSnapshot(`
-Object {
-  "const": 0,
-  "type": "integer",
-}
-`);
-      expect(jsonSchema(integerConstant(123))).toMatchInlineSnapshot(`
-Object {
-  "const": 123,
-  "type": "integer",
-}
-`);
-      expect(jsonSchema(integerConstant(-1000))).toMatchInlineSnapshot(`
-Object {
-  "const": -1000,
-  "type": "integer",
-}
-`);
-    });
+      test(`${flavour} - integer constant`, () => {
+        expect(jsonSchema(flavour, integerConstant(0))).toMatchSnapshot();
+        expect(jsonSchema(flavour, integerConstant(123))).toMatchSnapshot();
+        expect(jsonSchema(flavour, integerConstant(-1000))).toMatchSnapshot();
+      });
 
-    test("object", () => {
-      expect(jsonSchema(objectType({}))).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {},
-  "required": Array [],
-  "type": "object",
-}
-`);
-      expect(
-        jsonSchema(
-          objectType({
-            singleField: NUMBER
-          })
-        )
-      ).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {
-    "singleField": Object {
-      "type": "number",
-    },
-  },
-  "required": Array [
-    "singleField",
-  ],
-  "type": "object",
-}
-`);
-      expect(
-        jsonSchema(
-          objectType({
-            field1: NUMBER,
-            field2: STRING,
-            field3: optionalType(BOOLEAN)
-          })
-        )
-      ).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {
-    "field1": Object {
-      "type": "number",
-    },
-    "field2": Object {
-      "type": "string",
-    },
-    "field3": Object {
-      "type": "boolean",
-    },
-  },
-  "required": Array [
-    "field1",
-    "field2",
-  ],
-  "type": "object",
-}
-`);
-    });
+      test(`${flavour} - object`, () => {
+        expect(jsonSchema(flavour, objectType({}))).toMatchSnapshot();
+        expect(
+          jsonSchema(
+            flavour,
+            objectType({
+              singleField: NUMBER
+            })
+          )
+        ).toMatchSnapshot();
+        expect(
+          jsonSchema(
+            flavour,
+            objectType({
+              field1: NUMBER,
+              field2: STRING,
+              field3: optionalType(BOOLEAN)
+            })
+          )
+        ).toMatchSnapshot();
+      });
 
-    test("array", () => {
-      expect(jsonSchema(arrayType(STRING))).toMatchInlineSnapshot(`
-Object {
-  "items": Object {
-    "type": "string",
-  },
-  "type": "array",
-}
-`);
-    });
+      test(`${flavour} - array`, () => {
+        expect(jsonSchema(flavour, arrayType(STRING))).toMatchSnapshot();
+      });
 
-    test("optional", () => {
-      expect(() => jsonSchema(optionalType(STRING))).toThrowError(
-        "Unsupported top-level optional type"
-      );
-    });
+      test(`${flavour} - optional`, () => {
+        expect(() => jsonSchema(flavour, optionalType(STRING))).toThrowError(
+          "Unsupported top-level optional type"
+        );
+      });
 
-    test("union", () => {
-      expect(jsonSchema(unionType(STRING, NUMBER, BOOLEAN)))
-        .toMatchInlineSnapshot(`
-Object {
-  "oneOf": Array [
-    Object {
-      "type": "string",
-    },
-    Object {
-      "type": "number",
-    },
-    Object {
-      "type": "boolean",
-    },
-  ],
-}
-`);
-    });
+      test(`${flavour} - union`, () => {
+        expect(
+          jsonSchema(flavour, unionType(STRING, NUMBER, BOOLEAN))
+        ).toMatchSnapshot();
+      });
 
-    test("type reference", () => {
-      expect(jsonSchema(typeReference("OtherType"))).toMatchInlineSnapshot(`
-Object {
-  "$ref": "OtherType",
-}
-`);
-    });
+      test(`${flavour} - type reference`, () => {
+        expect(
+          jsonSchema(flavour, typeReference("OtherType"))
+        ).toMatchSnapshot();
+      });
+    }
   });
 });

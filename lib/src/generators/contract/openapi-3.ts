@@ -54,6 +54,7 @@ export function openApiV3(api: Api): OpenApiV3 {
                       name: pathComponent.name,
                       required: true,
                       schema: noVoidJsonSchema(
+                        "openapi-3",
                         pathComponent.type,
                         `Unsupported void type for path component ${
                           pathComponent.name
@@ -67,7 +68,10 @@ export function openApiV3(api: Api): OpenApiV3 {
             {
               requestBody: isVoid(api, endpoint.requestType)
                 ? undefined
-                : defaultTo(jsonSchema(endpoint.requestType), undefined)
+                : defaultTo(
+                    jsonSchema("openapi-3", endpoint.requestType),
+                    undefined
+                  )
             },
             identity
           ),
@@ -75,20 +79,27 @@ export function openApiV3(api: Api): OpenApiV3 {
             default: {
               content: {
                 "application/json": voidToNullJsonSchema(
+                  "openapi-3",
                   endpoint.genericErrorType
                 )
               }
             },
             [(endpoint.successStatusCode || 200).toString(10)]: {
               content: {
-                "application/json": voidToNullJsonSchema(endpoint.responseType)
+                "application/json": voidToNullJsonSchema(
+                  "openapi-3",
+                  endpoint.responseType
+                )
               }
             },
             ...Object.entries(endpoint.specificErrorTypes).reduce(
               (acc, [errorName, specificError]) => {
                 acc[specificError.statusCode.toString(10)] = {
                   content: {
-                    "application/json": voidToNullJsonSchema(specificError.type)
+                    "application/json": voidToNullJsonSchema(
+                      "openapi-3",
+                      specificError.type
+                    )
                   }
                 };
                 return acc;
@@ -109,6 +120,7 @@ export function openApiV3(api: Api): OpenApiV3 {
       schemas: Object.entries(api.types).reduce(
         (acc, [typeName, type]) => {
           acc[typeName] = noVoidJsonSchema(
+            "openapi-3",
             type,
             `Unsupported void type ${typeName}`
           );
