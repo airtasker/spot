@@ -17,7 +17,7 @@ export interface Endpoint {
   headers: Headers;
   requestType: Type;
   responseType: Type;
-  successStatusCode: number;
+  successStatusCode?: number;
   genericErrorType: Type;
   specificErrorTypes: {
     [name: string]: SpecificError;

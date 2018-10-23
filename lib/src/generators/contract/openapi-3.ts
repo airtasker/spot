@@ -70,7 +70,7 @@ export function openApiV3(api: Api): OpenApiV3 {
                 )
               }
             },
-            [endpoint.successStatusCode.toString(10)]: {
+            [(endpoint.successStatusCode || 200).toString(10)]: {
               content: {
                 "application/json": voidToNullJsonSchema(endpoint.responseType)
               }

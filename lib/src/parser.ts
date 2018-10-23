@@ -198,8 +198,6 @@ function extractEndpoint(
       );
     }
     successStatusCode = parseInt(successStatusCodeLiteral.text);
-  } else {
-    successStatusCode = 200;
   }
   const path = pathLiteral.text;
   const pathComponents: PathComponent[] = [];
@@ -444,9 +442,9 @@ function extractEndpoint(
     headers,
     requestType,
     responseType,
-    successStatusCode,
     genericErrorType,
-    specificErrorTypes
+    specificErrorTypes,
+    ...(successStatusCode ? { successStatusCode } : {})
   };
 }
 
