@@ -1,3 +1,4 @@
+import assertNever from "assert-never";
 import * as YAML from "js-yaml";
 import { Api } from "../../models";
 import { isVoid } from "../../validator";
@@ -12,8 +13,16 @@ import compact = require("lodash/compact");
 import pickBy = require("lodash/pickBy");
 import defaultTo = require("lodash/defaultTo");
 
-export function generateOpenApiV3(api: Api, format: "yaml") {
-  return YAML.safeDump(openApiV3(api));
+export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
+  const contract = openApiV3(api);
+  switch (format) {
+    case "json":
+      return JSON.stringify(contract, null, 2);
+    case "yaml":
+      return YAML.safeDump(contract);
+    default:
+      throw assertNever(format);
+  }
 }
 
 export function openApiV3(api: Api): OpenApiV3 {

@@ -15,8 +15,8 @@ describe("OpenAPI 3 generator", () => {
         const api = await parsePath(
           path.join(EXAMPLES_DIR, testCaseName, "api.ts")
         );
-        const serverSource = generateOpenApiV3(api, "yaml");
-        expect(serverSource).toMatchSnapshot();
+        expect(generateOpenApiV3(api, "json")).toMatchSnapshot("json");
+        expect(generateOpenApiV3(api, "yaml")).toMatchSnapshot("yaml");
       });
     }
   });

@@ -57,6 +57,9 @@ Generated the following files:
     switch (generator) {
       case "openapi-3":
         switch (language) {
+          case "json":
+            generatedFiles["api.json"] = generateOpenApiV3(api, "json");
+            break;
           case "yaml":
             generatedFiles["api.yaml"] = generateOpenApiV3(api, "yaml");
             break;
