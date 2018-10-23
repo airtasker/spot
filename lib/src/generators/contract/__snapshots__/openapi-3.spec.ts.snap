@@ -1,0 +1,232 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 3 generator produces valid code multi-file 1`] = `
+"openapi: 3.0.0
+info:
+  version: 0.0.0
+  title: TODO
+paths:
+  /users/create:
+    post:
+      operationId: createUser
+      parameters: []
+      requestBody:
+        $ref: CreateUserRequest
+      responses:
+        '200':
+          content:
+            application/json:
+              $ref: CreateUserResponse
+        default:
+          content:
+            application/json:
+              type: 'null'
+  '/users/{userId}-confirmed':
+    delete:
+      operationId: deleteUser
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              type: 'null'
+        '403':
+          content:
+            application/json:
+              type: object
+              properties:
+                message:
+                  type: string
+                signedInAs:
+                  type: string
+              required:
+                - message
+                - signedInAs
+        default:
+          content:
+            application/json:
+              type: object
+              properties:
+                message:
+                  type: string
+              required:
+                - message
+  '/users/{userId}':
+    get:
+      operationId: getUser
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              type: object
+              properties:
+                name:
+                  type: string
+                age:
+                  type: number
+              required:
+                - name
+        default:
+          content:
+            application/json:
+              type: 'null'
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    CreateUserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+    GetUserResponse:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+"
+`;
+
+exports[`OpenAPI 3 generator produces valid code single-file 1`] = `
+"openapi: 3.0.0
+info:
+  version: 0.0.0
+  title: TODO
+paths:
+  /users/create:
+    post:
+      operationId: createUser
+      parameters: []
+      requestBody:
+        $ref: CreateUserRequest
+      responses:
+        '200':
+          content:
+            application/json:
+              $ref: CreateUserResponse
+        default:
+          content:
+            application/json:
+              type: 'null'
+  '/users/{userId}':
+    get:
+      operationId: getUser
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              type: object
+              properties:
+                name:
+                  type: string
+                age:
+                  type: number
+              required:
+                - name
+        default:
+          content:
+            application/json:
+              type: 'null'
+  '/users/{userId}-confirmed':
+    delete:
+      operationId: deleteUser
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              type: 'null'
+        '403':
+          content:
+            application/json:
+              type: object
+              properties:
+                message:
+                  type: string
+                signedInAs:
+                  type: string
+              required:
+                - message
+                - signedInAs
+        default:
+          content:
+            application/json:
+              type: object
+              properties:
+                message:
+                  type: string
+              required:
+                - message
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    CreateUserResponse:
+      oneOf:
+        - type: object
+          properties:
+            success:
+              type: boolean
+              const: false
+            errors:
+              type: array
+              items:
+                type: string
+          required:
+            - success
+            - errors
+        - type: object
+          properties:
+            success:
+              type: boolean
+              const: true
+            confirmation:
+              type: string
+          required:
+            - success
+            - confirmation
+    GetUserResponse:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+"
+`;
