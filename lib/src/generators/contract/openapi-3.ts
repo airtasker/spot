@@ -3,8 +3,8 @@ import * as YAML from "js-yaml";
 import { Api, Type } from "../../models";
 import { isVoid } from "../../validator";
 import {
-  openApi3Schema,
   OpenAPI3SchemaType,
+  openApi3TypeSchema,
   rejectVoidOpenApi3SchemaType
 } from "./openapi-3-schema";
 import identity = require("lodash/identity");
@@ -77,7 +77,7 @@ export function openApiV3(api: Api): OpenApiV3 {
             {
               requestBody: isVoid(api, endpoint.requestType)
                 ? undefined
-                : defaultTo(openApi3Schema(endpoint.requestType), undefined)
+                : defaultTo(openApi3TypeSchema(endpoint.requestType), undefined)
             },
             identity
           ),
@@ -123,7 +123,7 @@ export function openApiV3(api: Api): OpenApiV3 {
 }
 
 function response(api: Api, type: Type): OpenAPIV3Response {
-  const schemaType = openApi3Schema(type);
+  const schemaType = openApi3TypeSchema(type);
   return {
     ...(schemaType
       ? {

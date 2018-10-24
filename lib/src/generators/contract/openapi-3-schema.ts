@@ -6,14 +6,14 @@ export function rejectVoidOpenApi3SchemaType(
   type: Type,
   errorMessage: string
 ): OpenAPI3SchemaType {
-  const schemaType = openApi3Schema(type);
+  const schemaType = openApi3TypeSchema(type);
   if (!schemaType) {
     throw new Error(errorMessage);
   }
   return schemaType;
 }
 
-export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
+export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
   switch (type.kind) {
     case "void":
       return null;
@@ -56,7 +56,7 @@ export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
           } else {
             acc.required.push(name);
           }
-          const schemaType = openApi3Schema(type);
+          const schemaType = openApi3TypeSchema(type);
           if (schemaType) {
             acc.properties[name] = schemaType;
           }
@@ -69,7 +69,7 @@ export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
         } as OpenAPI3SchemaTypeObject & { required: string[] }
       );
     case "array":
-      const itemsType = openApi3Schema(type.elements);
+      const itemsType = openApi3TypeSchema(type.elements);
       if (!itemsType) {
         throw new Error(`Unsupported void array`);
       }
@@ -80,7 +80,7 @@ export function openApi3Schema(type: Type): OpenAPI3SchemaType | null {
     case "optional":
       throw new Error(`Unsupported top-level optional type`);
     case "union":
-      const types = type.types.map(t => openApi3Schema(t));
+      const types = type.types.map(t => openApi3TypeSchema(t));
       const withoutNullTypes = compact(types);
       if (withoutNullTypes.length !== types.length) {
         throw new Error(`Unsupported void type in union`);
