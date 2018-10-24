@@ -1,6 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import * as fs from "fs-extra";
 import * as path from "path";
+import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi-3";
 import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
 import {
@@ -55,6 +56,21 @@ Generated the following files:
       [relativePath: string]: string;
     } = {};
     switch (generator) {
+      case "json-schema":
+        switch (language) {
+          case "json":
+            generatedFiles["types.json"] = generateJsonSchema(api, "json");
+            break;
+          case "yaml":
+            generatedFiles["types.yaml"] = generateJsonSchema(api, "yaml");
+            break;
+          default:
+            this.error(
+              `Unsupported language for generator ${generator}: ${language}`
+            );
+            this.exit(1);
+        }
+        break;
       case "openapi-3":
         switch (language) {
           case "json":
