@@ -3,14 +3,26 @@
 exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
 "{
   \\"openapi\\": \\"3.0.0\\",
+  \\"tags\\": [
+    {
+      \\"name\\": \\"TODO\\"
+    }
+  ],
   \\"info\\": {
     \\"version\\": \\"0.0.0\\",
-    \\"title\\": \\"TODO\\"
+    \\"title\\": \\"TODO\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
   },
   \\"paths\\": {
     \\"/users/create\\": {
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
         \\"parameters\\": [],
         \\"requestBody\\": {
           \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
@@ -35,10 +47,15 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
     \\"/users/{userId}-confirmed\\": {
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
         \\"parameters\\": [
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -102,10 +119,15 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
     \\"/users/{userId}\\": {
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
         \\"parameters\\": [
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -183,13 +205,20 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
 
 exports[`OpenAPI 3 generator produces valid code multi-file: yaml 1`] = `
 "openapi: 3.0.0
+tags:
+  - name: TODO
 info:
   version: 0.0.0
   title: TODO
+  contact:
+    name: TODO
 paths:
   /users/create:
     post:
       operationId: createUser
+      description: TODO
+      tags:
+        - TODO
       parameters: []
       requestBody:
         $ref: '#/components/schemas/CreateUserRequest'
@@ -205,9 +234,13 @@ paths:
   '/users/{userId}-confirmed':
     delete:
       operationId: deleteUser
+      description: TODO
+      tags:
+        - TODO
       parameters:
         - in: path
           name: userId
+          description: TODO
           required: true
           schema:
             type: string
@@ -246,9 +279,13 @@ paths:
   '/users/{userId}':
     get:
       operationId: getUser
+      description: TODO
+      tags:
+        - TODO
       parameters:
         - in: path
           name: userId
+          description: TODO
           required: true
           schema:
             type: string
@@ -297,14 +334,26 @@ components:
 exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
 "{
   \\"openapi\\": \\"3.0.0\\",
+  \\"tags\\": [
+    {
+      \\"name\\": \\"TODO\\"
+    }
+  ],
   \\"info\\": {
     \\"version\\": \\"0.0.0\\",
-    \\"title\\": \\"TODO\\"
+    \\"title\\": \\"TODO\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
   },
   \\"paths\\": {
     \\"/users/create\\": {
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
         \\"parameters\\": [],
         \\"requestBody\\": {
           \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
@@ -329,10 +378,15 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
     \\"/users/{userId}\\": {
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
         \\"parameters\\": [
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -370,10 +424,15 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
     \\"/users/{userId}-confirmed\\": {
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
         \\"parameters\\": [
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -509,13 +568,20 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
 
 exports[`OpenAPI 3 generator produces valid code single-file: yaml 1`] = `
 "openapi: 3.0.0
+tags:
+  - name: TODO
 info:
   version: 0.0.0
   title: TODO
+  contact:
+    name: TODO
 paths:
   /users/create:
     post:
       operationId: createUser
+      description: TODO
+      tags:
+        - TODO
       parameters: []
       requestBody:
         $ref: '#/components/schemas/CreateUserRequest'
@@ -531,9 +597,13 @@ paths:
   '/users/{userId}':
     get:
       operationId: getUser
+      description: TODO
+      tags:
+        - TODO
       parameters:
         - in: path
           name: userId
+          description: TODO
           required: true
           schema:
             type: string
@@ -556,9 +626,13 @@ paths:
   '/users/{userId}-confirmed':
     delete:
       operationId: deleteUser
+      description: TODO
+      tags:
+        - TODO
       parameters:
         - in: path
           name: userId
+          description: TODO
           required: true
           schema:
             type: string

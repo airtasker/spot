@@ -27,9 +27,17 @@ export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
 export function openApiV3(api: Api): OpenApiV3 {
   return {
     openapi: "3.0.0",
+    tags: [
+      {
+        name: "TODO"
+      }
+    ],
     info: {
       version: "0.0.0",
-      title: "TODO"
+      title: "TODO",
+      contact: {
+        name: "TODO"
+      }
     },
     paths: Object.entries(api.endpoints).reduce(
       (acc, [endpointName, endpoint]) => {
@@ -44,6 +52,8 @@ export function openApiV3(api: Api): OpenApiV3 {
         acc[openApiPath] = acc[openApiPath] || {};
         acc[openApiPath][endpoint.method.toLowerCase()] = {
           operationId: endpointName,
+          description: "TODO",
+          tags: ["TODO"],
           parameters: compact(
             endpoint.path.map(
               (pathComponent): OpenAPIV3Parameter | null =>
@@ -51,6 +61,7 @@ export function openApiV3(api: Api): OpenApiV3 {
                   ? {
                       in: "path",
                       name: pathComponent.name,
+                      description: "TODO",
                       required: true,
                       schema: rejectVoidOpenApi3SchemaType(
                         pathComponent.type,
@@ -129,6 +140,7 @@ function response(api: Api, type: Type): OpenAPIV3Response {
 
 export interface OpenApiV3 {
   openapi: "3.0.0";
+  tags?: OpenAPIV3TagObject[];
   info: {
     version: string;
     title: string;
@@ -160,8 +172,15 @@ export interface OpenApiV3 {
   };
 }
 
+export interface OpenAPIV3TagObject {
+  name: string;
+  description?: string;
+}
+
 export interface OpenAPIV3Operation {
   operationId: string;
+  description?: string;
+  tags?: string[];
   parameters: OpenAPIV3Parameter[];
   requestBody?: OpenAPI3SchemaType;
   responses: {
@@ -174,6 +193,7 @@ export interface OpenAPIV3Operation {
 export interface OpenAPIV3Parameter {
   in: "path" | "query";
   name: string;
+  description?: string;
   required: boolean;
   schema: OpenAPI3SchemaType;
 }
