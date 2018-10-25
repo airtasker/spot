@@ -81,7 +81,8 @@ Generated the following files:
       outDir = (await prompt<{
         "Output destination": string;
       }>({
-        name: "Output destination"
+        name: "Output destination",
+        default: "."
       }))["Output destination"];
     }
     if (!generators[generator][language]) {
