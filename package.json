@@ -38,6 +38,8 @@
   "files": [
     "bin",
     "build",
+    "index.d.ts",
+    "index.js",
     "npm-shrinkwrap.json",
     "oclif.manifest.json"
   ],

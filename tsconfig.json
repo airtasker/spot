@@ -65,6 +65,7 @@
   ],
   "exclude": [
     "build",
+    "index.d.ts",
     "**/*.spec.ts"
   ]
 }
