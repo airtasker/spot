@@ -20,7 +20,7 @@ $ npm install -g @zenclabs/api
 $ api COMMAND
 running command...
 $ api (-v|--version|version)
-@zenclabs/api/0.1.17 darwin-x64 node-v10.6.0
+@zenclabs/api/0.1.18 darwin-x64 node-v10.6.0
 $ api --help [COMMAND]
 USAGE
   $ api COMMAND
@@ -29,19 +29,9 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`api `](#api)
 * [`api generate`](#api-generate)
 * [`api help [COMMAND]`](#api-help-command)
 * [`api init`](#api-init)
-
-## `api `
-
-```
-USAGE
-  $ api
-```
-
-_See code: [build/cli/src/index.js](https://github.com/zenclabs/typed-api/blob/v0.1.17/build/cli/src/index.js)_
 
 ## `api generate`
 
@@ -66,7 +56,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [build/cli/src/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.17/build/cli/src/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.18/build/cli/src/commands/generate.js)_
 
 ## `api help [COMMAND]`
 
@@ -104,5 +94,5 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/init.js](https://github.com/zenclabs/typed-api/blob/v0.1.17/build/cli/src/init.js)_
+_See code: [build/cli/src/commands/init.js](https://github.com/zenclabs/typed-api/blob/v0.1.18/build/cli/src/commands/init.js)_
 <!-- commandsstop -->
