@@ -1,5 +1,4 @@
 import { Command, flags } from "@oclif/command";
-import * as fs from "fs-extra";
 import { prompt } from "inquirer";
 import * as path from "path";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
@@ -13,6 +12,7 @@ import { generateTypesSource } from "../../../lib/src/generators/typescript/type
 import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
 import { Api } from "../../../lib/src/models";
 import { parsePath } from "../../../lib/src/parser";
+import { outputFile } from "../io/output";
 import sortBy = require("lodash/sortBy");
 
 export default class Generate extends Command {
@@ -178,9 +178,3 @@ const generators: {
     })
   }
 };
-
-function outputFile(outDir: string, relativePath: string, content: string) {
-  const destinationPath = path.join(outDir, relativePath);
-  fs.mkdirpSync(path.dirname(destinationPath));
-  fs.writeFileSync(destinationPath, content, "utf8");
-}
