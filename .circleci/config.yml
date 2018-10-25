@@ -69,11 +69,11 @@ jobs:
 
       - run:
           name: Speccy (single file)
-          command: ./bin/run generate --api ../examples/single-file/api.ts -l yaml --generator openapi-3 -o output/ && ./node_modules/.bin/speccy lint output/api.yml
+          command: ./bin/run generate --api examples/single-file/api.ts -l yaml --generator openapi-3 -o output/ && ./node_modules/.bin/speccy lint output/api.yml
 
       - run:
           name: Speccy (multiple files)
-          command: ./bin/run generate --api ../examples/multi-file/api.ts -l yaml --generator openapi-3 -o output/ && ./node_modules/.bin/speccy lint output/api.yml
+          command: ./bin/run generate --api examples/multi-file/api.ts -l yaml --generator openapi-3 -o output/ && ./node_modules/.bin/speccy lint output/api.yml
 
 workflows:
   version: 2
