@@ -51,7 +51,7 @@
   "repository": "zenclabs/typed-api",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf build; tsc -b --force && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf build; tsc -b --force && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",
     "test": "jest",
     "version": "oclif-dev readme && git add README.md"
   }
