@@ -43,6 +43,8 @@
     "npm-shrinkwrap.json",
     "oclif.manifest.json"
   ],
+  "main": "index.js",
+  "types": "index.d.ts",
   "homepage": "https://github.com/zenclabs/typed-api",
   "license": "MIT",
   "oclif": {
