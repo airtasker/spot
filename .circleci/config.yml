@@ -16,16 +16,16 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v2-dependencies-{{ checksum "package.json" }}
+          - v3-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+          - v3-dependencies-
 
       - run: yarn install
 
       - save_cache:
           paths:
             - node_modules
-          key: v2-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "package.json" }}
 
       - run:
           name: Run tests
@@ -33,7 +33,7 @@ jobs:
 
   build-cli:
     docker:
-      - image: node:latest
+      - image: circleci/node:10-stretch
 
     working_directory: ~/repo
 
@@ -42,9 +42,9 @@ jobs:
 
       - restore_cache: &restore_cache
           keys:
-          - v2-dependencies-{{ checksum "package.json" }}
+          - v3-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+          - v3-dependencies-
 
       - run:
           name: Install dependencies
@@ -53,7 +53,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v2-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "package.json" }}
 
       - run: ./bin/run --version
 
