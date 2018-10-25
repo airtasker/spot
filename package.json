@@ -10,7 +10,6 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "@zenclabs/api": "^0.1.12",
     "fs-extra": "^7.0.0",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",

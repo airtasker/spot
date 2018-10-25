@@ -142,20 +142,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.0.tgz#ea6dcbddbc5b584c83f06c60e82736d8fbb0c235"
   integrity sha512-3TUHC3jsBAB7qVRGxT6lWyYo2v96BMmD2PTcl47H25Lu7UXtFH/2qqmKiVrnel6Ne//0TFYf6uvNX+HW2FRkLQ==
 
-"@zenclabs/api@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@zenclabs/api/-/api-0.1.12.tgz#d12d53619724b600b947ade7548f01008531ef4d"
-  integrity sha512-D8RG3Rp1LPfRI0XSYfAEw52l2oVZZLlF+SN5jsP4sl4A51DgCgEWYepOBzqxUivaD59STIKw0/inL/0/0wtG3A==
-  dependencies:
-    "@oclif/command" "^1"
-    "@oclif/config" "^1"
-    "@oclif/plugin-help" "^2"
-    fs-extra "^7.0.0"
-    js-yaml "^3.12.0"
-    lodash "^4.17.11"
-    tslib "^1"
-    typescript "^3.1.3"
-
 abab@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.0.tgz#aba0ab4c5eee2d4c79d3487d85450fb2376ebb0f"
