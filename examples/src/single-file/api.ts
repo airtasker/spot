@@ -7,7 +7,7 @@ import {
   pathParam,
   request,
   specificError
-} from "../../lib/src/lib";
+} from "@zenclabs/api";
 
 @api()
 export class Api {

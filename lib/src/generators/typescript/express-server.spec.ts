@@ -1,9 +1,20 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import { parsePath } from "../../parser";
-import { generateEndpointHandlerSource, generateExpressServerSource } from "./express-server";
+import {
+  generateEndpointHandlerSource,
+  generateExpressServerSource
+} from "./express-server";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
+const EXAMPLES_DIR = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "..",
+  "examples",
+  "src"
+);
 
 describe("TypeScript Express server generator", () => {
   describe("produces valid code", () => {

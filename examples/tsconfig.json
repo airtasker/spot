@@ -1,6 +1,9 @@
 {
   "extends": "../tsconfig",
-  "include": [
-    "."
-  ]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@zenclabs/api": ["../lib/src/lib"]
+    }
+  }
 }

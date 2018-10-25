@@ -1,4 +1,4 @@
-import { api, endpoint, pathParam } from "../../../lib/src/lib";
+import { api, endpoint, pathParam } from "@zenclabs/api";
 
 @api()
 export class Api {

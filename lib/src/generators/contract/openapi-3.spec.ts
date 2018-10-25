@@ -3,7 +3,15 @@ import * as path from "path";
 import { parsePath } from "../../parser";
 import { generateOpenApiV3 } from "./openapi-3";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
+const EXAMPLES_DIR = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "..",
+  "examples",
+  "src"
+);
 
 describe("OpenAPI 3 generator", () => {
   describe("produces valid code", () => {

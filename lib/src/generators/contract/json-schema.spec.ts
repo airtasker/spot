@@ -18,7 +18,15 @@ import {
 import { parsePath } from "../../parser";
 import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
+const EXAMPLES_DIR = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "..",
+  "examples",
+  "src"
+);
 
 describe("JSON Schema generator", () => {
   describe("produces valid code", () => {

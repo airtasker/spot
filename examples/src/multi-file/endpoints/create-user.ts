@@ -1,4 +1,4 @@
-import { api, endpoint, header, Optional, request } from "../../../lib/src/lib";
+import { api, endpoint, header, Optional, request } from "@zenclabs/api";
 import { CreateUserRequest, CreateUserResponse } from "../models";
 
 @api()

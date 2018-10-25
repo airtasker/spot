@@ -1,10 +1,32 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import { arrayType, BOOLEAN, booleanConstant, integerConstant, NULL, NUMBER, objectType, optionalType, STRING, stringConstant, typeReference, unionType, VOID } from "../../models";
+import {
+  arrayType,
+  BOOLEAN,
+  booleanConstant,
+  integerConstant,
+  NULL,
+  NUMBER,
+  objectType,
+  optionalType,
+  STRING,
+  stringConstant,
+  typeReference,
+  unionType,
+  VOID
+} from "../../models";
 import { parsePath } from "../../parser";
 import { generateValidatorsSource } from "./validators";
 
-const EXAMPLES_DIR = path.join(__dirname, "..", "..", "..", "..", "examples");
+const EXAMPLES_DIR = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "..",
+  "examples",
+  "src"
+);
 
 describe("TypeScript validators generator", () => {
   describe("produces valid code", () => {
