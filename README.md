@@ -20,7 +20,7 @@ $ npm install -g @zenclabs/api
 $ api COMMAND
 running command...
 $ api (-v|--version|version)
-@zenclabs/api/0.1.14 darwin-x64 node-v10.6.0
+@zenclabs/api/0.1.15 darwin-x64 node-v10.6.0
 $ api --help [COMMAND]
 USAGE
   $ api COMMAND
@@ -55,7 +55,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.14/build/cli/src/commands/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.15/build/cli/src/commands/generate.js)_
 
 ## `api help [COMMAND]`
 
