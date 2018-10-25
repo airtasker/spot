@@ -68,16 +68,12 @@ jobs:
           command: yarn pack
 
       - run:
-          name: Install Speccy
-          command: yarn global add speccy
-
-      - run:
           name: Speccy (single file)
-          command: ./bin/run generate --api examples/src/single-file/api.ts -l yaml --generator openapi-3 -o output/ && speccy lint output/api.yml
+          command: ./bin/run generate --api examples/src/single-file/api.ts -l yaml --generator openapi-3 -o output/ && npx speccy lint output/api.yml
 
       - run:
           name: Speccy (multiple files)
-          command: ./bin/run generate --api examples/src/multi-file/api.ts -l yaml --generator openapi-3 -o output/ && speccy lint output/api.yml
+          command: ./bin/run generate --api examples/src/multi-file/api.ts -l yaml --generator openapi-3 -o output/ && npx speccy lint output/api.yml
 
 workflows:
   version: 2
