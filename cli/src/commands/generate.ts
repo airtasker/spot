@@ -1,5 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import * as fs from "fs-extra";
+import { prompt } from "inquirer";
 import * as path from "path";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi-3";
@@ -12,6 +13,7 @@ import { generateTypesSource } from "../../../lib/src/generators/typescript/type
 import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
 import { Api } from "../../../lib/src/models";
 import { parsePath } from "../../../lib/src/parser";
+import sortBy = require("lodash/sortBy");
 
 export default class Generate extends Command {
   static description =
@@ -34,17 +36,14 @@ Generated the following files:
       description: "Path to a TypeScript API definition"
     }),
     language: flags.string({
-      required: true,
       char: "l",
       description: "Language to generate"
     }),
     generator: flags.string({
-      required: true,
       char: "g",
       description: "Generator to run"
     }),
     out: flags.string({
-      required: true,
       char: "o",
       description: "Directory in which to output generated files"
     })
@@ -52,17 +51,42 @@ Generated the following files:
 
   async run() {
     const { flags } = this.parse(Generate);
-    const { api: apiPath, language, generator, out: outDir } = flags;
+    let { api: apiPath, language, generator, out: outDir } = flags;
     const api = await parsePath(apiPath);
+    if (!generator) {
+      generator = (await prompt<{
+        Generator: string;
+      }>({
+        name: "Generator",
+        type: "list",
+        choices: sortBy(Object.keys(generators))
+      })).Generator;
+    }
     if (!generators[generator]) {
       this.error(
         `No such generator ${generator}. Available generators:\n${availableGeneratorsList()}`
       );
       this.exit(1);
     }
+    if (!language) {
+      language = (await prompt<{
+        Language: string;
+      }>({
+        name: "Language",
+        type: "list",
+        choices: sortBy(Object.keys(generators[generator]))
+      })).Language;
+    }
+    if (!outDir) {
+      outDir = (await prompt<{
+        "Output destination": string;
+      }>({
+        name: "Output destination"
+      }))["Output destination"];
+    }
     if (!generators[generator][language]) {
       const otherGenerators = Object.entries(generators)
-        .filter(([name, languages]) => language in languages)
+        .filter(([name, languages]) => language! in languages)
         .map(([name, languages]) => name);
       if (otherGenerators.length === 0) {
         this.error(
@@ -89,7 +113,7 @@ Generated the following files:
     }
     this.log(`Generated the following files:`);
     Object.keys(generatedFiles).forEach(relativePath =>
-      this.log(`- ${path.join(outDir, relativePath)}`)
+      this.log(`- ${path.join(outDir!, relativePath)}`)
     );
   }
 }
