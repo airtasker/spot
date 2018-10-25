@@ -14,7 +14,8 @@ import { Api } from "../../../lib/src/models";
 import { parsePath } from "../../../lib/src/parser";
 
 export default class Generate extends Command {
-  static description = "describe the command here";
+  static description =
+    "Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats such as OpenAPI.";
 
   static examples = [
     `$ api generate --language typescript --generator axios-client --out src/
@@ -54,13 +55,32 @@ Generated the following files:
     const { api: apiPath, language, generator, out: outDir } = flags;
     const api = await parsePath(apiPath);
     if (!generators[generator]) {
-      this.error(`No such generator ${generator}`);
+      this.error(
+        `No such generator ${generator}. Available generators:\n${availableGeneratorsList()}`
+      );
       this.exit(1);
     }
     if (!generators[generator][language]) {
-      this.error(
-        `Unsupported language for generator ${generator}: ${language}`
-      );
+      const otherGenerators = Object.entries(generators)
+        .filter(([name, languages]) => language in languages)
+        .map(([name, languages]) => name);
+      if (otherGenerators.length === 0) {
+        this.error(
+          `${language} is not supported by any generator. Available generators:\n${availableGeneratorsList()}`
+        );
+      } else {
+        this.error(
+          `${language} is not a supported language for this generator.\n\nThe generator ${generator} supports the following languages:\n${Object.keys(
+            generators[generator]
+          )
+            .map(name => `- ${name}`)
+            .join(
+              "\n"
+            )}\n\nOther generators that produce ${language} are available: ${otherGenerators.join(
+            ", "
+          )}`
+        );
+      }
       this.exit(1);
     }
     const generatedFiles = generators[generator][language](api);
@@ -72,6 +92,14 @@ Generated the following files:
       this.log(`- ${path.join(outDir, relativePath)}`)
     );
   }
+}
+
+function availableGeneratorsList() {
+  return Object.entries(generators)
+    .map(
+      ([name, languages]) => `- ${name} (${Object.keys(languages).join(", ")})`
+    )
+    .join("\n");
 }
 
 const generators: {
