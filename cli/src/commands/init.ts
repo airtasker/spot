@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import { execSync } from "child_process";
 import * as fs from "fs-extra";
-import { outputFile } from "../../lib/src/io/output";
+import { outputFile } from "../../../lib/src/io/output";
 
 export default class Init extends Command {
   static description = "Generates the boilerplate for an API.";

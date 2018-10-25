@@ -1,18 +1,18 @@
 import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
 import * as path from "path";
-import { generateJsonSchema } from "../../lib/src/generators/contract/json-schema";
-import { generateOpenApiV3 } from "../../lib/src/generators/contract/openapi-3";
-import { generateAxiosClientSource } from "../../lib/src/generators/typescript/axios-client";
+import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
+import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi-3";
+import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
 import {
   generateEndpointHandlerSource,
   generateExpressServerSource
-} from "../../lib/src/generators/typescript/express-server";
-import { generateTypesSource } from "../../lib/src/generators/typescript/types";
-import { generateValidatorsSource } from "../../lib/src/generators/typescript/validators";
-import { Api } from "../../lib/src/models";
-import { parsePath } from "../../lib/src/parser";
-import { outputFile } from "../../lib/src/io/output";
+} from "../../../lib/src/generators/typescript/express-server";
+import { generateTypesSource } from "../../../lib/src/generators/typescript/types";
+import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
+import { Api } from "../../../lib/src/models";
+import { parsePath } from "../../../lib/src/parser";
+import { outputFile } from "../../../lib/src/io/output";
 import sortBy = require("lodash/sortBy");
 
 export default class Generate extends Command {
