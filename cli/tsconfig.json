@@ -4,6 +4,11 @@
     "rootDir": "src",
     "composite": true
   },
+  "references": [
+    {
+      "path": "../lib"
+    }
+  ],
   "exclude": [
     "**/*.spec.ts"
   ]

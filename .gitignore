@@ -2,10 +2,9 @@
 *-debug.log
 *-error.log
 /.nyc_output
+/build
 /dist
 /package-lock.json
 /tmp
 node_modules
-*.js
-*.d.ts
-!jest.config.js
+oclif.manifest.json

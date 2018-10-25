@@ -29,10 +29,8 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-- [Usage](#usage)
-- [Commands](#commands)
-  - [`api generate`](#api-generate)
-  - [`api help [COMMAND]`](#api-help-command)
+* [`api generate`](#api-generate)
+* [`api help [COMMAND]`](#api-help-command)
 
 ## `api generate`
 
@@ -57,7 +55,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.13/src/commands/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.13/build/cli/src/commands/generate.js)_
 
 ## `api help [COMMAND]`
 

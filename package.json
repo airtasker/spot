@@ -36,15 +36,15 @@
   },
   "files": [
     "bin",
+    "cli/src",
     "lib/src",
-    "src",
     "npm-shrinkwrap.json",
     "oclif.manifest.json"
   ],
   "homepage": "https://github.com/zenclabs/typed-api",
   "license": "MIT",
   "oclif": {
-    "commands": "./src/commands",
+    "commands": "./build/cli/src/commands",
     "bin": "api",
     "plugins": [
       "@oclif/plugin-help"
@@ -53,7 +53,7 @@
   "repository": "zenclabs/typed-api",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf build; tsc -b --force && oclif-dev manifest && oclif-dev readme",
     "test": "jest",
     "version": "oclif-dev readme && git add README.md"
   }

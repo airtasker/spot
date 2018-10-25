@@ -1,14 +1,17 @@
 import { Command, flags } from "@oclif/command";
 import * as fs from "fs-extra";
 import * as path from "path";
-import { generateJsonSchema } from "../../lib/src/generators/contract/json-schema";
-import { generateOpenApiV3 } from "../../lib/src/generators/contract/openapi-3";
-import { generateAxiosClientSource } from "../../lib/src/generators/typescript/axios-client";
-import { generateEndpointHandlerSource, generateExpressServerSource } from "../../lib/src/generators/typescript/express-server";
-import { generateTypesSource } from "../../lib/src/generators/typescript/types";
-import { generateValidatorsSource } from "../../lib/src/generators/typescript/validators";
-import { Api } from "../../lib/src/models";
-import { parsePath } from "../../lib/src/parser";
+import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
+import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi-3";
+import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
+import {
+  generateEndpointHandlerSource,
+  generateExpressServerSource
+} from "../../../lib/src/generators/typescript/express-server";
+import { generateTypesSource } from "../../../lib/src/generators/typescript/types";
+import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
+import { Api } from "../../../lib/src/models";
+import { parsePath } from "../../../lib/src/parser";
 
 export default class Generate extends Command {
   static description = "describe the command here";
