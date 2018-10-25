@@ -1,4 +1,4 @@
-import assertNever from "assert-never";
+import assertNever from "./assert-never";
 import { Api, Type, VOID } from "./models";
 import uniq = require("lodash/uniq");
 

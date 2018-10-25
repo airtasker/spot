@@ -16,11 +16,11 @@ cli
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g cli
+$ npm install -g @zenclabs/api
 $ api COMMAND
 running command...
 $ api (-v|--version|version)
-cli/0.0.0 darwin-x64 node-v10.6.0
+@zenclabs/api/0.1.13 darwin-x64 node-v10.6.0
 $ api --help [COMMAND]
 USAGE
   $ api COMMAND
@@ -29,28 +29,35 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`api hello [FILE]`](#api-hello-file)
-* [`api help [COMMAND]`](#api-help-command)
+- [Usage](#usage)
+- [Commands](#commands)
+  - [`api generate`](#api-generate)
+  - [`api help [COMMAND]`](#api-help-command)
 
-## `api hello [FILE]`
+## `api generate`
 
 describe the command here
 
 ```
 USAGE
-  $ api hello [FILE]
+  $ api generate
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --api=api              (required) Path to a TypeScript API definition
+  -g, --generator=generator  (required) Generator to run
+  -h, --help                 show CLI help
+  -l, --language=language    (required) Language to generate
+  -o, --out=out              (required) Directory in which to output generated files
 
 EXAMPLE
-  $ api hello
-  hello world from ./src/hello.ts!
+  $ api generate --language typescript --generator axios-client --out src/
+  Generated the following files:
+  - src/types.ts
+  - src/validators.ts
+  - src/client.ts
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/zenclabs/typed-api/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.13/src/commands/generate.js)_
 
 ## `api help [COMMAND]`
 

@@ -1,9 +1,10 @@
 {
   "extends": "../tsconfig",
+  "compilerOptions": {
+    "composite": true
+  },
   "include": [
-    "src",
-    // Not sure why, but TypeScript won't compile without this.
-    "node_modules/assert-never"
+    "src"
   ],
   "exclude": [
     "examples",

@@ -1,5 +1,5 @@
-import assertNever from "assert-never";
 import * as ts from "typescript";
+import assertNever from "../../assert-never";
 import {
   Api,
   ArrayType,

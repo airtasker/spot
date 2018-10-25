@@ -1,4 +1,4 @@
-import assertNever from "assert-never";
+import assertNever from "../../assert-never";
 import { Type } from "../../models";
 import compact = require("lodash/compact");
 
