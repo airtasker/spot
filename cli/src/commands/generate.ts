@@ -12,7 +12,7 @@ import { generateTypesSource } from "../../../lib/src/generators/typescript/type
 import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
 import { Api } from "../../../lib/src/models";
 import { parsePath } from "../../../lib/src/parser";
-import { outputFile } from "../io/output";
+import { outputFile } from "../../../lib/src/io/output";
 import sortBy = require("lodash/sortBy");
 
 export default class Generate extends Command {
