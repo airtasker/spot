@@ -33,7 +33,7 @@ Generated the following files:
 class Api {
   @endpoint({
     method: "POST",
-    path: "/users/create"
+    path: "/users"
   })
   createUser(@request req: CreateUserRequest): CreateUserResponse {
     throw "contract";
