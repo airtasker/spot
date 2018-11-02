@@ -1,7 +1,49 @@
 @zenclabs/api
 ===
 
+A TypeScript-based DSL to generate API contracts (OpenAPI, Swagger, JSON Schema, API Blueprint), client SDKs (TypeScript, Swift, Kotlin) or even server boilerplate (e.g. Express).
 
+Example of an API definition file `api.ts` which defines a single `POST` endpoint to create a user:
+```typescript
+import { api, endpoint, request } from "@zenclabs/api";
+
+@api()
+class Api {
+  @endpoint({
+    method: "POST",
+    path: "/users"
+  })
+  createUser(@request req: CreateUserRequest): CreateUserResponse {
+    throw "contract";
+  }
+}
+
+interface CreateUserRequest {
+  firstName: string;
+  lastName: string;
+}
+
+interface CreateUserResponse {
+  success: boolean;
+}
+```
+
+You can pass the definition above to a generator by simply running:
+```sh
+npx @zenclabs/api generate --api api.ts
+```
+
+This is work in progress as of 3 Nov 2018:
+- [x] Functional TypeScript DSL
+- [x] Support for multiple files (using import statements)
+- [x] OpenAPI 3 generator
+- [ ] OpenAPI 2 generator
+- [x] JSON Schema generator
+- [ ] API Blueprint generator
+- [x] TypeScript axios-based client generator
+- [x] TypeScript express-based server boilerplate generator
+- [ ] Swift client generator
+- [ ] Kotlin client generator
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@zenclabs/api.svg)](https://npmjs.org/package/@zenclabs/api)
