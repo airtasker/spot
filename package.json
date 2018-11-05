@@ -59,6 +59,6 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc -b --force && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",
     "test": "jest",
-    "version": "oclif-dev readme && git add README.md"
+    "release": "yarn version && oclif-dev readme && git add README.md && git commit README.md -m \"Update README\" && git push && npm publish"
   }
 }
