@@ -2,6 +2,7 @@ import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
 import * as path from "path";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
+import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi-2";
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi-3";
 import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
 import {
@@ -10,9 +11,9 @@ import {
 } from "../../../lib/src/generators/typescript/express-server";
 import { generateTypesSource } from "../../../lib/src/generators/typescript/types";
 import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
+import { outputFile } from "../../../lib/src/io/output";
 import { Api } from "../../../lib/src/models";
 import { parsePath } from "../../../lib/src/parser";
-import { outputFile } from "../../../lib/src/io/output";
 import sortBy = require("lodash/sortBy");
 
 export default class Generate extends Command {
@@ -142,6 +143,14 @@ const generators: {
     }),
     yaml: api => ({
       "types.yml": generateJsonSchema(api, "yaml")
+    })
+  },
+  "openapi-2": {
+    json: api => ({
+      "api.json": generateOpenApiV2(api, "json")
+    }),
+    yaml: api => ({
+      "api.yml": generateOpenApiV2(api, "yaml")
     })
   },
   "openapi-3": {

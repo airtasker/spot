@@ -1,0 +1,636 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"tags\\": [
+    {
+      \\"name\\": \\"TODO\\"
+    }
+  ],
+  \\"info\\": {
+    \\"version\\": \\"0.0.0\\",
+    \\"title\\": \\"TODO\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
+  },
+  \\"paths\\": {
+    \\"/users/create\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"createUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [],
+        \\"requestBody\\": {
+          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
+        },
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}-confirmed\\": {
+      \\"delete\\": {
+        \\"operationId\\": \\"deleteUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"nullable\\": true
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"403\\": {
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"message\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"signedInAs\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"message\\",
+                \\"signedInAs\\"
+              ]
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"message\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"message\\"
+              ]
+            },
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"getUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"age\\": {
+                  \\"type\\": \\"number\\"
+                }
+              },
+              \\"required\\": [
+                \\"name\\"
+              ]
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    }
+  },
+  \\"definitions\\": {
+    \\"CreateUserRequest\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"name\\"
+      ]
+    },
+    \\"CreateUserResponse\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"success\\": {
+          \\"type\\": \\"boolean\\"
+        }
+      },
+      \\"required\\": [
+        \\"success\\"
+      ]
+    },
+    \\"GetUserResponse\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"name\\"
+      ]
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator produces valid code multi-file: yaml 1`] = `
+"swagger: '2.0'
+tags:
+  - name: TODO
+info:
+  version: 0.0.0
+  title: TODO
+  contact:
+    name: TODO
+paths:
+  /users/create:
+    post:
+      operationId: createUser
+      description: TODO
+      tags:
+        - TODO
+      parameters: []
+      requestBody:
+        $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          schema:
+            $ref: '#/components/schemas/CreateUserResponse'
+          description: ''
+        default:
+          description: ''
+  '/users/{userId}-confirmed':
+    delete:
+      operationId: deleteUser
+      description: TODO
+      tags:
+        - TODO
+      parameters:
+        - in: path
+          name: userId
+          description: TODO
+          type: string
+          required: true
+      responses:
+        '200':
+          schema:
+            nullable: true
+          description: ''
+        '403':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              signedInAs:
+                type: string
+            required:
+              - message
+              - signedInAs
+          description: ''
+        default:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+          description: ''
+  '/users/{userId}':
+    get:
+      operationId: getUser
+      description: TODO
+      tags:
+        - TODO
+      parameters:
+        - in: path
+          name: userId
+          description: TODO
+          type: string
+          required: true
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              age:
+                type: number
+            required:
+              - name
+          description: ''
+        default:
+          description: ''
+definitions:
+  CreateUserRequest:
+    type: object
+    properties:
+      name:
+        type: string
+    required:
+      - name
+  CreateUserResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+    required:
+      - success
+  GetUserResponse:
+    type: object
+    properties:
+      name:
+        type: string
+    required:
+      - name
+"
+`;
+
+exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"tags\\": [
+    {
+      \\"name\\": \\"TODO\\"
+    }
+  ],
+  \\"info\\": {
+    \\"version\\": \\"0.0.0\\",
+    \\"title\\": \\"TODO\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
+  },
+  \\"paths\\": {
+    \\"/users/create\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"createUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [],
+        \\"requestBody\\": {
+          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
+        },
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"getUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"age\\": {
+                  \\"type\\": \\"number\\"
+                }
+              },
+              \\"required\\": [
+                \\"name\\"
+              ]
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}-confirmed\\": {
+      \\"delete\\": {
+        \\"operationId\\": \\"deleteUser\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"nullable\\": true
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"403\\": {
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"message\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"signedInAs\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"message\\",
+                \\"signedInAs\\"
+              ]
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"message\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"message\\"
+              ]
+            },
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    }
+  },
+  \\"definitions\\": {
+    \\"CreateUserRequest\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"name\\"
+      ]
+    },
+    \\"CreateUserResponse\\": {
+      \\"oneOf\\": [
+        {
+          \\"type\\": \\"object\\",
+          \\"properties\\": {
+            \\"success\\": {
+              \\"type\\": \\"boolean\\",
+              \\"enum\\": [
+                false
+              ]
+            },
+            \\"errors\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"string\\"
+              }
+            }
+          },
+          \\"required\\": [
+            \\"success\\",
+            \\"errors\\"
+          ]
+        },
+        {
+          \\"type\\": \\"object\\",
+          \\"properties\\": {
+            \\"success\\": {
+              \\"type\\": \\"boolean\\",
+              \\"enum\\": [
+                true
+              ]
+            },
+            \\"confirmation\\": {
+              \\"type\\": \\"string\\"
+            }
+          },
+          \\"required\\": [
+            \\"success\\",
+            \\"confirmation\\"
+          ]
+        }
+      ]
+    },
+    \\"GetUserResponse\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"name\\"
+      ]
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator produces valid code single-file: yaml 1`] = `
+"swagger: '2.0'
+tags:
+  - name: TODO
+info:
+  version: 0.0.0
+  title: TODO
+  contact:
+    name: TODO
+paths:
+  /users/create:
+    post:
+      operationId: createUser
+      description: TODO
+      tags:
+        - TODO
+      parameters: []
+      requestBody:
+        $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          schema:
+            $ref: '#/components/schemas/CreateUserResponse'
+          description: ''
+        default:
+          description: ''
+  '/users/{userId}':
+    get:
+      operationId: getUser
+      description: TODO
+      tags:
+        - TODO
+      parameters:
+        - in: path
+          name: userId
+          description: TODO
+          type: string
+          required: true
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              age:
+                type: number
+            required:
+              - name
+          description: ''
+        default:
+          description: ''
+  '/users/{userId}-confirmed':
+    delete:
+      operationId: deleteUser
+      description: TODO
+      tags:
+        - TODO
+      parameters:
+        - in: path
+          name: userId
+          description: TODO
+          type: string
+          required: true
+      responses:
+        '200':
+          schema:
+            nullable: true
+          description: ''
+        '403':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              signedInAs:
+                type: string
+            required:
+              - message
+              - signedInAs
+          description: ''
+        default:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+          description: ''
+definitions:
+  CreateUserRequest:
+    type: object
+    properties:
+      name:
+        type: string
+    required:
+      - name
+  CreateUserResponse:
+    oneOf:
+      - type: object
+        properties:
+          success:
+            type: boolean
+            enum:
+              - false
+          errors:
+            type: array
+            items:
+              type: string
+        required:
+          - success
+          - errors
+      - type: object
+        properties:
+          success:
+            type: boolean
+            enum:
+              - true
+          confirmation:
+            type: string
+        required:
+          - success
+          - confirmation
+  GetUserResponse:
+    type: object
+    properties:
+      name:
+        type: string
+    required:
+      - name
+"
+`;
