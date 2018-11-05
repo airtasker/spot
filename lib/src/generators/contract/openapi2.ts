@@ -3,17 +3,17 @@ import assertNever from "../../assert-never";
 import { Api, Type } from "../../models";
 import { isVoid } from "../../validator";
 import {
-  OpenAPI3SchemaType,
-  openApi3TypeSchema,
-  rejectVoidOpenApi3SchemaType
-} from "./openapi-3-schema";
+  OpenAPI2SchemaType,
+  openApi2TypeSchema,
+  rejectVoidOpenApi2SchemaType
+} from "./openapi2-schema";
 import identity = require("lodash/identity");
 import compact = require("lodash/compact");
 import pickBy = require("lodash/pickBy");
 import defaultTo = require("lodash/defaultTo");
 
-export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
-  const contract = openApiV3(api);
+export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
+  const contract = openApiV2(api);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -24,9 +24,9 @@ export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
   }
 }
 
-export function openApiV3(api: Api): OpenApiV3 {
+export function openApiV2(api: Api): OpenApiV2 {
   return {
-    openapi: "3.0.0",
+    swagger: "2.0",
     tags: [
       {
         name: "TODO"
@@ -56,19 +56,19 @@ export function openApiV3(api: Api): OpenApiV3 {
           tags: ["TODO"],
           parameters: compact(
             endpoint.path.map(
-              (pathComponent): OpenAPIV3Parameter | null =>
+              (pathComponent): OpenAPIV2Parameter | null =>
                 pathComponent.kind === "dynamic"
                   ? {
                       in: "path",
                       name: pathComponent.name,
                       description: "TODO",
-                      required: true,
-                      schema: rejectVoidOpenApi3SchemaType(
+                      ...rejectVoidOpenApi2SchemaType(
                         pathComponent.type,
                         `Unsupported void type for path component ${
                           pathComponent.name
                         }`
-                      )
+                      ),
+                      required: true
                     }
                   : null
             )
@@ -77,7 +77,7 @@ export function openApiV3(api: Api): OpenApiV3 {
             {
               requestBody: isVoid(api, endpoint.requestType)
                 ? undefined
-                : defaultTo(openApi3TypeSchema(endpoint.requestType), undefined)
+                : defaultTo(openApi2TypeSchema(endpoint.requestType), undefined)
             },
             identity
           ),
@@ -95,7 +95,7 @@ export function openApiV3(api: Api): OpenApiV3 {
                 );
                 return acc;
               },
-              {} as { [statusCode: string]: OpenAPIV3Response }
+              {} as { [statusCode: string]: OpenAPIV2Response }
             )
           }
         };
@@ -103,44 +103,38 @@ export function openApiV3(api: Api): OpenApiV3 {
       },
       {} as {
         [endpointPath: string]: {
-          [method: string]: OpenAPIV3Operation;
+          [method: string]: OpenAPIV2Operation;
         };
       }
     ),
-    components: {
-      schemas: Object.entries(api.types).reduce(
-        (acc, [typeName, type]) => {
-          acc[typeName] = rejectVoidOpenApi3SchemaType(
-            type,
-            `Unsupported void type ${typeName}`
-          );
-          return acc;
-        },
-        {} as { [typeName: string]: OpenAPI3SchemaType }
-      )
-    }
+    definitions: Object.entries(api.types).reduce(
+      (acc, [typeName, type]) => {
+        acc[typeName] = rejectVoidOpenApi2SchemaType(
+          type,
+          `Unsupported void type ${typeName}`
+        );
+        return acc;
+      },
+      {} as { [typeName: string]: OpenAPI2SchemaType }
+    )
   };
 }
 
-function response(api: Api, type: Type): OpenAPIV3Response {
-  const schemaType = openApi3TypeSchema(type);
+function response(api: Api, type: Type): OpenAPIV2Response {
+  const schemaType = openApi2TypeSchema(type);
   return {
     ...(schemaType
       ? {
-          content: {
-            "application/json": {
-              schema: schemaType
-            }
-          }
+          schema: schemaType
         }
       : {}),
     description: ""
   };
 }
 
-export interface OpenApiV3 {
-  openapi: "3.0.0";
-  tags?: OpenAPIV3TagObject[];
+export interface OpenApiV2 {
+  swagger: "2.0";
+  tags?: OpenAPIV2TagObject[];
   info: {
     version: string;
     title: string;
@@ -156,53 +150,43 @@ export interface OpenApiV3 {
       url?: string;
     };
   };
-  servers?: {
-    url: string;
-    description?: string;
-  }[];
+  host?: string;
   paths: {
     [endpointPath: string]: {
-      [method: string]: OpenAPIV3Operation;
+      [method: string]: OpenAPIV2Operation;
     };
   };
-  components: {
-    schemas: {
-      [typeName: string]: OpenAPI3SchemaType;
-    };
+  definitions: {
+    [typeName: string]: OpenAPI2SchemaType;
   };
 }
 
-export interface OpenAPIV3TagObject {
+export interface OpenAPIV2TagObject {
   name: string;
   description?: string;
 }
 
-export interface OpenAPIV3Operation {
+export interface OpenAPIV2Operation {
   operationId: string;
   description?: string;
   tags?: string[];
-  parameters: OpenAPIV3Parameter[];
-  requestBody?: OpenAPI3SchemaType;
+  parameters: OpenAPIV2Parameter[];
+  requestBody?: OpenAPI2SchemaType;
   responses: {
-    default?: OpenAPIV3Response;
+    default?: OpenAPIV2Response;
     // Note: we use | undefined because otherwise "default" would have to be required.
-    [statusCode: string]: OpenAPIV3Response | undefined;
+    [statusCode: string]: OpenAPIV2Response | undefined;
   };
 }
 
-export interface OpenAPIV3Parameter {
+export type OpenAPIV2Parameter = {
   in: "path" | "query";
   name: string;
   description?: string;
   required: boolean;
-  schema: OpenAPI3SchemaType;
-}
+} & OpenAPI2SchemaType;
 
-export interface OpenAPIV3Response {
-  content?: {
-    "application/json": {
-      schema: OpenAPI3SchemaType;
-    };
-  };
+export interface OpenAPIV2Response {
+  schema?: OpenAPI2SchemaType;
   description: string;
 }

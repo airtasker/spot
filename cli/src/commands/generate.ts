@@ -2,8 +2,8 @@ import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
 import * as path from "path";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
-import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi-2";
-import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi-3";
+import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
+import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
 import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
 import {
   generateEndpointHandlerSource,
@@ -145,7 +145,7 @@ const generators: {
       "types.yml": generateJsonSchema(api, "yaml")
     })
   },
-  "openapi-2": {
+  openapi2: {
     json: api => ({
       "api.json": generateOpenApiV2(api, "json")
     }),
@@ -153,7 +153,7 @@ const generators: {
       "api.yml": generateOpenApiV2(api, "yaml")
     })
   },
-  "openapi-3": {
+  openapi3: {
     json: api => ({
       "api.json": generateOpenApiV3(api, "json")
     }),

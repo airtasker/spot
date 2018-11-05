@@ -13,7 +13,7 @@ import {
   unionType,
   VOID
 } from "../../models";
-import { openApi2TypeSchema } from "./openapi-2-schema";
+import { openApi2TypeSchema } from "./openapi2-schema";
 
 describe("JSON Schema generator", () => {
   describe("generates type validator", () => {
