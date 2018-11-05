@@ -37,7 +37,7 @@ This is work in progress as of 3 Nov 2018:
 - [x] Functional TypeScript DSL
 - [x] Support for multiple files (using import statements)
 - [x] OpenAPI 3 generator
-- [ ] OpenAPI 2 generator
+- [x] OpenAPI 2 generator
 - [x] JSON Schema generator
 - [ ] API Blueprint generator
 - [x] TypeScript axios-based client generator
