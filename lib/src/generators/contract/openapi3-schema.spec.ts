@@ -13,9 +13,52 @@ import {
   unionType,
   VOID
 } from "../../models";
-import { openApi3TypeSchema } from "./openapi3-schema";
+import {
+  openApi3TypeSchema,
+  openApiV3ContentTypeSchema
+} from "./openapi3-schema";
 
 describe("JSON Schema generator", () => {
+  describe("generates content type validator", () => {
+    test("application/json", () => {
+      expect(
+        openApiV3ContentTypeSchema(
+          "application/json",
+          typeReference("OtherType")
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "content": Object {
+    "application/json": Object {
+      "schema": Object {
+        "$ref": "#/components/schemas/OtherType",
+      },
+    },
+  },
+}
+`);
+    });
+
+    test("text/html", () => {
+      expect(
+        openApiV3ContentTypeSchema(
+          "text/html",
+          typeReference("OtherType")
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "content": Object {
+    "text/html": Object {
+      "schema": Object {
+        "$ref": "#/components/schemas/OtherType",
+      },
+    },
+  },
+}
+`);
+    });
+  });
+
   describe("generates type validator", () => {
     test("void", () => {
       expect(openApi3TypeSchema(VOID)).toMatchInlineSnapshot(`null`);
