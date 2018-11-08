@@ -195,18 +195,17 @@ function extractEndpoint(
   if (requestContentTypeLiteral) {
     if (!isStringLiteral(requestContentTypeLiteral)) {
       throw panic(
-        `Invalid method in endpoint description: ${endpointDescriptionExpression.getText(
+        `Invalid request content type in endpoint description: ${endpointDescriptionExpression.getText(
           sourceFile
         )}`
       );
     }
     requestContentType = requestContentTypeLiteral.text;
-
   }
   if (!isHttpContentType(requestContentType)) {
     throw panic(`${method} is not a valid HTTP content type`);
   }
-  
+
   let successStatusCode;
   if (successStatusCodeLiteral) {
     if (!isNumericLiteral(successStatusCodeLiteral)) {

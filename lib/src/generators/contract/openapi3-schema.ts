@@ -28,7 +28,9 @@ export function openApiV3ContentTypeSchema(contentType: HttpContentType, type: T
       return {
         content: {
           "text/html": {
-            schema: openApi3TypeSchema(type)
+            schema: {
+              type: "string"
+            }
           }
         }
       };
@@ -157,7 +159,7 @@ export interface OpenAPI3SchemaApplicationJsonContentType extends OpenAPI3BaseSc
 export interface OpenAPI3SchemaTextHtmlContentType extends OpenAPI3BaseSchemaType {
   content: {
     'text/html': {
-      schema: OpenAPI3SchemaType | null
+      schema: OpenAPI3SchemaTypeString
     }
   }
 }
