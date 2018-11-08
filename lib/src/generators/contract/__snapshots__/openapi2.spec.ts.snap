@@ -20,6 +20,9 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [
+          \\"application/json\\"
+        ],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -51,6 +54,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -106,6 +110,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -195,6 +200,8 @@ paths:
     post:
       operationId: createUser
       description: TODO
+      consumes:
+        - application/json
       tags:
         - TODO
       parameters:
@@ -215,6 +222,7 @@ paths:
     delete:
       operationId: deleteUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:
@@ -251,6 +259,7 @@ paths:
     get:
       operationId: getUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:
@@ -318,6 +327,9 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [
+          \\"application/json\\"
+        ],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -349,6 +361,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -389,6 +402,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -525,6 +539,8 @@ paths:
     post:
       operationId: createUser
       description: TODO
+      consumes:
+        - application/json
       tags:
         - TODO
       parameters:
@@ -545,6 +561,7 @@ paths:
     get:
       operationId: getUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:
@@ -571,6 +588,7 @@ paths:
     delete:
       operationId: deleteUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:

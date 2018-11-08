@@ -2,11 +2,8 @@ import * as YAML from "js-yaml";
 import assertNever from "../../assert-never";
 import {Api, Endpoint, Type} from "../../models";
 import {isVoid} from "../../validator";
-import {
-  OpenAPI2SchemaType,
-  openApi2TypeSchema,
-  rejectVoidOpenApi2SchemaType
-} from "./openapi2-schema";
+import {OpenAPI2SchemaType, openApi2TypeSchema, rejectVoidOpenApi2SchemaType} from "./openapi2-schema";
+import {HttpContentType} from "@zenclabs/api";
 import compact = require("lodash/compact");
 import defaultTo = require("lodash/defaultTo");
 
@@ -23,27 +20,6 @@ export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
 }
 
 export function openApiV2(api: Api): OpenApiV2 {
-  function getParameters(endpoint: Endpoint): OpenAPIV2Parameter[] {
-    const parameters = endpoint.path.map(
-      (pathComponent): OpenAPIV2Parameter | null =>
-        pathComponent.kind === "dynamic"
-          ? {
-            in: "path",
-            name: pathComponent.name,
-            description: "TODO",
-            ...rejectVoidOpenApi2SchemaType(
-              pathComponent.type,
-              `Unsupported void type for path component ${
-                pathComponent.name
-                }`
-            ),
-            required: true
-          }
-          : null
-    ).concat([requestBody(api, endpoint.requestType)])
-    return compact(parameters);
-  }
-
   return {
     swagger: "2.0",
     tags: [
@@ -72,8 +48,9 @@ export function openApiV2(api: Api): OpenApiV2 {
         acc[openApiPath][endpoint.method.toLowerCase()] = {
           operationId: endpointName,
           description: "TODO",
+          consumes: consumes(api, endpoint),
           tags: ["TODO"],
-          parameters: getParameters(endpoint),
+          parameters: getParameters(api, endpoint),
           responses: {
             default: response(api, endpoint.genericErrorType),
             [(endpoint.successStatusCode || 200).toString(10)]: response(
@@ -111,6 +88,32 @@ export function openApiV2(api: Api): OpenApiV2 {
       {} as { [typeName: string]: OpenAPI2SchemaType }
     )
   };
+}
+
+function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
+  const parameters = endpoint.path.map(
+    (pathComponent): OpenAPIV2Parameter | null =>
+      pathComponent.kind === "dynamic"
+        ? {
+          in: "path",
+          name: pathComponent.name,
+          description: "TODO",
+          ...rejectVoidOpenApi2SchemaType(
+            pathComponent.type,
+            `Unsupported void type for path component ${
+              pathComponent.name
+              }`
+          ),
+          required: true
+        }
+        : null
+  ).concat([requestBody(api, endpoint.requestType)])
+  return compact(parameters);
+}
+
+function consumes(api: Api, endpoint: Endpoint): HttpContentType[] {
+  const contentType = isVoid(api, endpoint.requestType) ? null : endpoint.requestContentType;
+  return compact([contentType]);
 }
 
 function requestBody(api: Api, type: Type): OpenAPIV2Parameter | null {
@@ -173,6 +176,7 @@ export interface OpenAPIV2TagObject {
 export interface OpenAPIV2Operation {
   operationId: string;
   description?: string;
+  consumes?: HttpContentType[];
   tags?: string[];
   parameters: OpenAPIV2Parameter[];
   requestBody?: OpenAPI2SchemaType;
