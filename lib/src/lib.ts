@@ -15,6 +15,7 @@ export function endpoint(description: EndpointDescription) {
 export interface EndpointDescription {
   method: HttpMethod;
   path: string;
+  requestContentType?: HttpContentType;
   successStatusCode?: number;
 }
 
@@ -55,6 +56,20 @@ export function isHttpMethod(method: string): method is HttpMethod {
       return false;
   }
 }
+
+export function isHttpContentType(contentType: string): contentType is HttpContentType {
+  switch (contentType) {
+    case "application/json":
+    case "text/html":
+      return true;
+    default:
+      return false;
+  }
+}
+
+export type HttpContentType =
+  | "application/json"
+  | "text/html"
 
 export type HttpMethod =
   | "GET"

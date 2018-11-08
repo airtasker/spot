@@ -1,6 +1,6 @@
 import compact = require("lodash/compact");
 import uniq = require("lodash/uniq");
-import { HttpMethod } from "./lib";
+import {HttpContentType, HttpMethod} from "./lib";
 
 export interface Api {
   endpoints: {
@@ -15,6 +15,7 @@ export interface Endpoint {
   method: HttpMethod;
   path: PathComponent[];
   headers: Headers;
+  requestContentType?: HttpContentType;
   requestType: Type;
   responseType: Type;
   successStatusCode?: number;

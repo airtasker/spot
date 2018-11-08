@@ -1,7 +1,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as ts from "typescript";
-import { isHttpMethod } from "./lib";
+import { isHttpMethod, isHttpContentType } from "./lib";
 import {
   Api,
   arrayType,
@@ -168,8 +168,10 @@ function extractEndpoint(
   }
   const methodLiteral = endpointDescription.properties["method"];
   const pathLiteral = endpointDescription.properties["path"];
+  const requestContentTypeLiteral = endpointDescription.properties["requestContentType"];
   const successStatusCodeLiteral =
     endpointDescription.properties["successStatusCode"];
+
   if (!isStringLiteral(methodLiteral)) {
     throw panic(
       `Invalid method in endpoint description: ${endpointDescriptionExpression.getText(
@@ -188,6 +190,22 @@ function extractEndpoint(
       )}`
     );
   }
+
+  let requestContentType = "application/json";
+  if (requestContentTypeLiteral) {
+    if (!isStringLiteral(requestContentTypeLiteral)) {
+      throw panic(
+        `Invalid request content type in endpoint description: ${endpointDescriptionExpression.getText(
+          sourceFile
+        )}`
+      );
+    }
+    requestContentType = requestContentTypeLiteral.text;
+  }
+  if (!isHttpContentType(requestContentType)) {
+    throw panic(`${method} is not a valid HTTP content type`);
+  }
+
   let successStatusCode;
   if (successStatusCodeLiteral) {
     if (!isNumericLiteral(successStatusCodeLiteral)) {
@@ -439,6 +457,7 @@ function extractEndpoint(
   return {
     method,
     path: pathComponents,
+    requestContentType,
     headers,
     requestType,
     responseType,

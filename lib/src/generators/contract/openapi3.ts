@@ -5,6 +5,7 @@ import { isVoid } from "../../validator";
 import {
   OpenAPI3SchemaType,
   openApi3TypeSchema,
+  openApiV3ContentTypeSchema,
   rejectVoidOpenApi3SchemaType
 } from "./openapi3-schema";
 import identity = require("lodash/identity");
@@ -77,7 +78,10 @@ export function openApiV3(api: Api): OpenApiV3 {
             {
               requestBody: isVoid(api, endpoint.requestType)
                 ? undefined
-                : defaultTo(openApi3TypeSchema(endpoint.requestType), undefined)
+                : defaultTo(openApiV3ContentTypeSchema(
+                    defaultTo(endpoint.requestContentType, "application/json"),
+                    endpoint.requestType),
+                  undefined)
             },
             identity
           ),
