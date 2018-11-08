@@ -22,11 +22,7 @@ describe("JSON Schema generator", () => {
     });
 
     test("null", () => {
-      expect(openApi2TypeSchema(NULL)).toMatchInlineSnapshot(`
-Object {
-  "nullable": true,
-}
-`);
+      expect(openApi2TypeSchema(NULL)).toMatchInlineSnapshot(`null`);
     });
 
     test("boolean", () => {
@@ -189,7 +185,7 @@ Object {
       expect(openApi2TypeSchema(unionType(STRING, NUMBER, BOOLEAN)))
         .toMatchInlineSnapshot(`
 Object {
-  "oneOf": Array [
+  "allOf": Array [
     Object {
       "type": "string",
     },
@@ -208,7 +204,7 @@ Object {
       expect(openApi2TypeSchema(typeReference("OtherType")))
         .toMatchInlineSnapshot(`
 Object {
-  "$ref": "#/components/schemas/OtherType",
+  "$ref": "#/definitions/OtherType",
 }
 `);
     });
