@@ -200,9 +200,9 @@ export type OpenAPIV2NonBodyParameter = {
 
 export type OpenAPIV2BodyParameter = {
   in: "body";
-  name: string;
+  name: "body";
   description?: string;
-  required: boolean;
+  required: true;
   schema: OpenAPI2SchemaType | undefined
 };
 
