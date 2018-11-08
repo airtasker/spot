@@ -41,16 +41,13 @@ Object {
 
     test("text/html", () => {
       expect(
-        openApiV3ContentTypeSchema(
-          "text/html",
-          typeReference("OtherType")
-        )
+        openApiV3ContentTypeSchema("text/html", typeReference("OtherType"))
       ).toMatchInlineSnapshot(`
 Object {
   "content": Object {
     "text/html": Object {
       "schema": Object {
-        "$ref": "#/components/schemas/OtherType",
+        "type": "string",
       },
     },
   },
