@@ -56,19 +56,17 @@ This is work in progress as of 3 Nov 2018:
 * [Commands](#commands)
 <!-- tocstop -->
 # Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @zenclabs/api
-$ api COMMAND
-running command...
-$ api (-v|--version|version)
-@zenclabs/api/0.1.21 darwin-x64 node-v10.13.0
-$ api --help [COMMAND]
-USAGE
-  $ api COMMAND
-...
+
+To get started and set up an API declaration in the current directory, run:
 ```
-<!-- usagestop -->
+npx @zenclabs/api init
+```
+
+You can then run a generator with:
+```
+npx @zenclabs/api generate --api api.ts
+```
+
 # Commands
 <!-- commands -->
 * [`api generate`](#api-generate)
