@@ -1,6 +1,6 @@
 {
   "name": "@zenclabs/api",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "author": "Francois Wouts",
   "bin": {
     "api": "./bin/run"
