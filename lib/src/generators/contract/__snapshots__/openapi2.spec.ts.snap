@@ -20,17 +20,27 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [
+          \\"application/json\\"
+        ],
         \\"tags\\": [
           \\"TODO\\"
         ],
-        \\"parameters\\": [],
-        \\"requestBody\\": {
-          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
-        },
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"body\\",
+            \\"name\\": \\"body\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/CreateUserRequest\\"
+            }
+          }
+        ],
         \\"responses\\": {
           \\"200\\": {
             \\"schema\\": {
-              \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+              \\"$ref\\": \\"#/definitions/CreateUserResponse\\"
             },
             \\"description\\": \\"\\"
           },
@@ -44,6 +54,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -58,9 +69,6 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
         ],
         \\"responses\\": {
           \\"200\\": {
-            \\"schema\\": {
-              \\"nullable\\": true
-            },
             \\"description\\": \\"\\"
           },
           \\"403\\": {
@@ -102,6 +110,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -191,15 +200,21 @@ paths:
     post:
       operationId: createUser
       description: TODO
+      consumes:
+        - application/json
       tags:
         - TODO
-      parameters: []
-      requestBody:
-        $ref: '#/components/schemas/CreateUserRequest'
+      parameters:
+        - in: body
+          name: body
+          description: TODO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUserRequest'
       responses:
         '200':
           schema:
-            $ref: '#/components/schemas/CreateUserResponse'
+            $ref: '#/definitions/CreateUserResponse'
           description: ''
         default:
           description: ''
@@ -207,6 +222,7 @@ paths:
     delete:
       operationId: deleteUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:
@@ -217,8 +233,6 @@ paths:
           required: true
       responses:
         '200':
-          schema:
-            nullable: true
           description: ''
         '403':
           schema:
@@ -245,6 +259,7 @@ paths:
     get:
       operationId: getUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:
@@ -312,17 +327,27 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [
+          \\"application/json\\"
+        ],
         \\"tags\\": [
           \\"TODO\\"
         ],
-        \\"parameters\\": [],
-        \\"requestBody\\": {
-          \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
-        },
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"body\\",
+            \\"name\\": \\"body\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/CreateUserRequest\\"
+            }
+          }
+        ],
         \\"responses\\": {
           \\"200\\": {
             \\"schema\\": {
-              \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+              \\"$ref\\": \\"#/definitions/CreateUserResponse\\"
             },
             \\"description\\": \\"\\"
           },
@@ -336,6 +361,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -376,6 +402,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
         \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
         ],
@@ -390,9 +417,6 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
         ],
         \\"responses\\": {
           \\"200\\": {
-            \\"schema\\": {
-              \\"nullable\\": true
-            },
             \\"description\\": \\"\\"
           },
           \\"403\\": {
@@ -444,46 +468,14 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       ]
     },
     \\"CreateUserResponse\\": {
-      \\"oneOf\\": [
-        {
-          \\"type\\": \\"object\\",
-          \\"properties\\": {
-            \\"success\\": {
-              \\"type\\": \\"boolean\\",
-              \\"enum\\": [
-                false
-              ]
-            },
-            \\"errors\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"string\\"
-              }
-            }
-          },
-          \\"required\\": [
-            \\"success\\",
-            \\"errors\\"
-          ]
-        },
-        {
-          \\"type\\": \\"object\\",
-          \\"properties\\": {
-            \\"success\\": {
-              \\"type\\": \\"boolean\\",
-              \\"enum\\": [
-                true
-              ]
-            },
-            \\"confirmation\\": {
-              \\"type\\": \\"string\\"
-            }
-          },
-          \\"required\\": [
-            \\"success\\",
-            \\"confirmation\\"
-          ]
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"success\\": {
+          \\"type\\": \\"boolean\\"
         }
+      },
+      \\"required\\": [
+        \\"success\\"
       ]
     },
     \\"GetUserResponse\\": {
@@ -515,15 +507,21 @@ paths:
     post:
       operationId: createUser
       description: TODO
+      consumes:
+        - application/json
       tags:
         - TODO
-      parameters: []
-      requestBody:
-        $ref: '#/components/schemas/CreateUserRequest'
+      parameters:
+        - in: body
+          name: body
+          description: TODO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUserRequest'
       responses:
         '200':
           schema:
-            $ref: '#/components/schemas/CreateUserResponse'
+            $ref: '#/definitions/CreateUserResponse'
           description: ''
         default:
           description: ''
@@ -531,6 +529,7 @@ paths:
     get:
       operationId: getUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:
@@ -557,6 +556,7 @@ paths:
     delete:
       operationId: deleteUser
       description: TODO
+      consumes: []
       tags:
         - TODO
       parameters:
@@ -567,8 +567,6 @@ paths:
           required: true
       responses:
         '200':
-          schema:
-            nullable: true
           description: ''
         '403':
           schema:
@@ -600,31 +598,12 @@ definitions:
     required:
       - name
   CreateUserResponse:
-    oneOf:
-      - type: object
-        properties:
-          success:
-            type: boolean
-            enum:
-              - false
-          errors:
-            type: array
-            items:
-              type: string
-        required:
-          - success
-          - errors
-      - type: object
-        properties:
-          success:
-            type: boolean
-            enum:
-              - true
-          confirmation:
-            type: string
-        required:
-          - success
-          - confirmation
+    type: object
+    properties:
+      success:
+        type: boolean
+    required:
+      - success
   GetUserResponse:
     type: object
     properties:

@@ -22,11 +22,7 @@ describe("JSON Schema generator", () => {
     });
 
     test("null", () => {
-      expect(openApi2TypeSchema(NULL)).toMatchInlineSnapshot(`
-Object {
-  "nullable": true,
-}
-`);
+      expect(openApi2TypeSchema(NULL)).toMatchInlineSnapshot(`null`);
     });
 
     test("boolean", () => {
@@ -186,29 +182,17 @@ Object {
     });
 
     test("union", () => {
-      expect(openApi2TypeSchema(unionType(STRING, NUMBER, BOOLEAN)))
-        .toMatchInlineSnapshot(`
-Object {
-  "oneOf": Array [
-    Object {
-      "type": "string",
-    },
-    Object {
-      "type": "number",
-    },
-    Object {
-      "type": "boolean",
-    },
-  ],
-}
-`);
+      expect(() => openApi2TypeSchema(unionType(STRING, NUMBER, BOOLEAN)))
+        .toThrowError(
+          "Unions are not supported in OpenAPI 2"
+        );
     });
 
     test("type reference", () => {
       expect(openApi2TypeSchema(typeReference("OtherType")))
         .toMatchInlineSnapshot(`
 Object {
-  "$ref": "#/components/schemas/OtherType",
+  "$ref": "#/definitions/OtherType",
 }
 `);
     });
