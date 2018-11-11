@@ -78,14 +78,8 @@ export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
     case "optional":
       throw new Error(`Unsupported top-level optional type`);
     case "union":
-      const types = type.types.map(t => openApi2TypeSchema(t));
-      const withoutNullTypes = compact(types);
-      if (withoutNullTypes.length !== types.length) {
-        throw new Error(`Unsupported void type in union`);
-      }
-      return {
-        allOf: withoutNullTypes
-      };
+      // Please have a look at https://github.com/OAI/OpenAPI-Specification/issues/333
+      throw new Error(`Unions are not supported in OpenAPI 2`);
     case "type-reference":
       return {
         $ref: `#/definitions/${type.typeName}`

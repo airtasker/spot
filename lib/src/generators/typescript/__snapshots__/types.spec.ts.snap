@@ -20,11 +20,7 @@ exports[`TypeScript types generator produces valid code single-file 1`] = `
 };
 
 export type CreateUserResponse = {
-    success: false;
-    errors: string[];
-} | {
-    success: true;
-    confirmation: string;
+    success: boolean;
 };
 
 export type GetUserResponse = {

@@ -468,46 +468,14 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       ]
     },
     \\"CreateUserResponse\\": {
-      \\"allOf\\": [
-        {
-          \\"type\\": \\"object\\",
-          \\"properties\\": {
-            \\"success\\": {
-              \\"type\\": \\"boolean\\",
-              \\"enum\\": [
-                false
-              ]
-            },
-            \\"errors\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"string\\"
-              }
-            }
-          },
-          \\"required\\": [
-            \\"success\\",
-            \\"errors\\"
-          ]
-        },
-        {
-          \\"type\\": \\"object\\",
-          \\"properties\\": {
-            \\"success\\": {
-              \\"type\\": \\"boolean\\",
-              \\"enum\\": [
-                true
-              ]
-            },
-            \\"confirmation\\": {
-              \\"type\\": \\"string\\"
-            }
-          },
-          \\"required\\": [
-            \\"success\\",
-            \\"confirmation\\"
-          ]
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"success\\": {
+          \\"type\\": \\"boolean\\"
         }
+      },
+      \\"required\\": [
+        \\"success\\"
       ]
     },
     \\"GetUserResponse\\": {
@@ -630,31 +598,12 @@ definitions:
     required:
       - name
   CreateUserResponse:
-    allOf:
-      - type: object
-        properties:
-          success:
-            type: boolean
-            enum:
-              - false
-          errors:
-            type: array
-            items:
-              type: string
-        required:
-          - success
-          - errors
-      - type: object
-        properties:
-          success:
-            type: boolean
-            enum:
-              - true
-          confirmation:
-            type: string
-        required:
-          - success
-          - confirmation
+    type: object
+    properties:
+      success:
+        type: boolean
+    required:
+      - success
   GetUserResponse:
     type: object
     properties:

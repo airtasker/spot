@@ -309,36 +309,12 @@ Object {
       },
     },
     "CreateUserResponse": Object {
-      "kind": "union",
-      "types": Array [
-        Object {
-          "kind": "object",
-          "properties": Object {
-            "errors": Object {
-              "elements": Object {
-                "kind": "string",
-              },
-              "kind": "array",
-            },
-            "success": Object {
-              "kind": "boolean-constant",
-              "value": false,
-            },
-          },
+      "kind": "object",
+      "properties": Object {
+        "success": Object {
+          "kind": "boolean",
         },
-        Object {
-          "kind": "object",
-          "properties": Object {
-            "confirmation": Object {
-              "kind": "string",
-            },
-            "success": Object {
-              "kind": "boolean-constant",
-              "value": true,
-            },
-          },
-        },
-      ],
+      },
     },
     "GetUserResponse": Object {
       "kind": "object",

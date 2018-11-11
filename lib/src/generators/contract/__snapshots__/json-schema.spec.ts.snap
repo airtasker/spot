@@ -84,42 +84,14 @@ exports[`JSON Schema generator produces valid code single-file: json 1`] = `
       ]
     },
     \\"CreateUserResponse\\": {
-      \\"oneOf\\": [
-        {
-          \\"type\\": \\"object\\",
-          \\"properties\\": {
-            \\"success\\": {
-              \\"type\\": \\"boolean\\",
-              \\"const\\": false
-            },
-            \\"errors\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"string\\"
-              }
-            }
-          },
-          \\"required\\": [
-            \\"success\\",
-            \\"errors\\"
-          ]
-        },
-        {
-          \\"type\\": \\"object\\",
-          \\"properties\\": {
-            \\"success\\": {
-              \\"type\\": \\"boolean\\",
-              \\"const\\": true
-            },
-            \\"confirmation\\": {
-              \\"type\\": \\"string\\"
-            }
-          },
-          \\"required\\": [
-            \\"success\\",
-            \\"confirmation\\"
-          ]
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"success\\": {
+          \\"type\\": \\"boolean\\"
         }
+      },
+      \\"required\\": [
+        \\"success\\"
       ]
     },
     \\"GetUserResponse\\": {
@@ -148,29 +120,12 @@ definitions:
     required:
       - name
   CreateUserResponse:
-    oneOf:
-      - type: object
-        properties:
-          success:
-            type: boolean
-            const: false
-          errors:
-            type: array
-            items:
-              type: string
-        required:
-          - success
-          - errors
-      - type: object
-        properties:
-          success:
-            type: boolean
-            const: true
-          confirmation:
-            type: string
-        required:
-          - success
-          - confirmation
+    type: object
+    properties:
+      success:
+        type: boolean
+    required:
+      - success
   GetUserResponse:
     type: object
     properties:
