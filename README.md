@@ -96,7 +96,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.21/build/cli/src/commands/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.22/build/cli/src/commands/generate.js)_
 
 ## `api help [COMMAND]`
 
@@ -134,5 +134,5 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/zenclabs/typed-api/blob/v0.1.21/build/cli/src/commands/init.js)_
+_See code: [build/cli/src/commands/init.js](https://github.com/zenclabs/typed-api/blob/v0.1.22/build/cli/src/commands/init.js)_
 <!-- commandsstop -->
