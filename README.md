@@ -69,17 +69,17 @@ npx @zenclabs/spot generate --api api.ts
 
 # Commands
 <!-- commands -->
-* [`api generate`](#api-generate)
-* [`api help [COMMAND]`](#api-help-command)
-* [`api init`](#api-init)
+* [`spot generate`](#spot-generate)
+* [`spot help [COMMAND]`](#spot-help-command)
+* [`spot init`](#spot-init)
 
-## `api generate`
+## `spot generate`
 
 Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats such as OpenAPI.
 
 ```
 USAGE
-  $ api generate
+  $ spot generate
 
 OPTIONS
   -a, --api=api              (required) Path to a TypeScript API definition
@@ -98,13 +98,13 @@ EXAMPLE
 
 _See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/v0.1.22/build/cli/src/commands/generate.js)_
 
-## `api help [COMMAND]`
+## `spot help [COMMAND]`
 
-display help for api
+display help for spot
 
 ```
 USAGE
-  $ api help [COMMAND]
+  $ spot help [COMMAND]
 
 ARGUMENTS
   COMMAND  command to show help for
@@ -115,13 +115,13 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
 
-## `api init`
+## `spot init`
 
 Generates the boilerplate for an API.
 
 ```
 USAGE
-  $ api init
+  $ spot init
 
 OPTIONS
   -h, --help  show CLI help
