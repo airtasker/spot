@@ -5,7 +5,7 @@ import {
   header,
   pathParam,
   specificError
-} from "@zenclabs/api";
+} from "@zenclabs/spot";
 
 @api()
 export class Api {

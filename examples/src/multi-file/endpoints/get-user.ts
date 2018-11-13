@@ -1,4 +1,4 @@
-import { api, endpoint, pathParam } from "@zenclabs/api";
+import { api, endpoint, pathParam } from "@zenclabs/spot";
 
 @api()
 export class Api {

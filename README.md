@@ -1,11 +1,11 @@
-@zenclabs/api
+@zenclabs/spot
 ===
 
 A TypeScript-based DSL to generate API contracts (OpenAPI, Swagger, JSON Schema, API Blueprint), client SDKs (TypeScript, Swift, Kotlin) or even server boilerplate (e.g. Express).
 
 Example of an API definition file `api.ts` which defines a single `POST` endpoint to create a user:
 ```typescript
-import { api, endpoint, request } from "@zenclabs/api";
+import { api, endpoint, request } from "@zenclabs/spot";
 
 @api()
 class Api {
@@ -30,7 +30,7 @@ interface CreateUserResponse {
 
 You can pass the definition above to a generator by simply running:
 ```sh
-npx @zenclabs/api generate --api api.ts
+npx @zenclabs/spot generate --api api.ts
 ```
 
 This is work in progress as of 3 Nov 2018:
@@ -46,10 +46,10 @@ This is work in progress as of 3 Nov 2018:
 - [ ] Kotlin client generator
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@zenclabs/api.svg)](https://npmjs.org/package/@zenclabs/api)
-[![CircleCI](https://circleci.com/gh/zenclabs/typed-api/tree/master.svg?style=shield)](https://circleci.com/gh/zenclabs/typed-api/tree/master)
-[![Downloads/week](https://img.shields.io/npm/dw/@zenclabs/api.svg)](https://npmjs.org/package/@zenclabs/api)
-[![License](https://img.shields.io/npm/l/@zenclabs/api.svg)](https://github.com/zenclabs/typed-api/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@zenclabs/spot.svg)](https://npmjs.org/package/@zenclabs/spot)
+[![CircleCI](https://circleci.com/gh/zenclabs/spot/tree/master.svg?style=shield)](https://circleci.com/gh/zenclabs/spot/tree/master)
+[![Downloads/week](https://img.shields.io/npm/dw/@zenclabs/spot.svg)](https://npmjs.org/package/@zenclabs/spot)
+[![License](https://img.shields.io/npm/l/@zenclabs/spot.svg)](https://github.com/zenclabs/spot/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -59,12 +59,12 @@ This is work in progress as of 3 Nov 2018:
 
 To get started and set up an API declaration in the current directory, run:
 ```
-npx @zenclabs/api init
+npx @zenclabs/spot init
 ```
 
 You can then run a generator with:
 ```
-npx @zenclabs/api generate --api api.ts
+npx @zenclabs/spot generate --api api.ts
 ```
 
 # Commands
@@ -96,7 +96,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/typed-api/blob/v0.1.22/build/cli/src/commands/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/v0.1.22/build/cli/src/commands/generate.js)_
 
 ## `api help [COMMAND]`
 
@@ -134,5 +134,5 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/zenclabs/typed-api/blob/v0.1.22/build/cli/src/commands/init.js)_
+_See code: [build/cli/src/commands/init.js](https://github.com/zenclabs/spot/blob/v0.1.22/build/cli/src/commands/init.js)_
 <!-- commandsstop -->

@@ -27,7 +27,7 @@ Generated the following files:
     outputFile(
       ".",
       "api.ts",
-      `import { api, endpoint, request } from "@zenclabs/api";
+      `import { api, endpoint, request } from "@zenclabs/spot";
 
 @api()
 class Api {
@@ -69,7 +69,7 @@ interface CreateUserResponse {
       false
     );
     outputFile(".", "package.json", JSON.stringify({}, null, 2), false);
-    execSync(`yarn add @zenclabs/api`, {
+    execSync(`yarn add @zenclabs/spot`, {
       stdio: "inherit"
     });
   }

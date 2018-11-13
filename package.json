@@ -1,11 +1,11 @@
 {
-  "name": "@zenclabs/api",
+  "name": "@zenclabs/spot",
   "version": "0.1.22",
   "author": "Francois Wouts",
   "bin": {
-    "api": "./bin/run"
+    "spot": "./bin/run"
   },
-  "bugs": "https://github.com/zenclabs/typed-api/issues",
+  "bugs": "https://github.com/zenclabs/spot/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -45,16 +45,16 @@
   ],
   "main": "index.js",
   "types": "index.d.ts",
-  "homepage": "https://github.com/zenclabs/typed-api",
+  "homepage": "https://github.com/zenclabs/spot",
   "license": "MIT",
   "oclif": {
     "commands": "./build/cli/src/commands",
-    "bin": "api",
+    "bin": "spot",
     "plugins": [
       "@oclif/plugin-help"
     ]
   },
-  "repository": "zenclabs/typed-api",
+  "repository": "zenclabs/spot",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc -b --force && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",

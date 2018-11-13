@@ -3,7 +3,7 @@ import assertNever from "../../assert-never";
 import {Api, Endpoint, Type} from "../../models";
 import {isVoid} from "../../validator";
 import {OpenAPI2SchemaType, openApi2TypeSchema, rejectVoidOpenApi2SchemaType} from "./openapi2-schema";
-import {HttpContentType} from "@zenclabs/api";
+import {HttpContentType} from "@zenclabs/spot";
 import compact = require("lodash/compact");
 import defaultTo = require("lodash/defaultTo");
 

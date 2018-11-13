@@ -1,7 +1,7 @@
 import assertNever from "../../assert-never";
 import { Type } from "../../models";
 import compact = require("lodash/compact");
-import {HttpContentType} from "@zenclabs/api";
+import {HttpContentType} from "@zenclabs/spot";
 
 export function rejectVoidOpenApi3SchemaType(
   type: Type,
