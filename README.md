@@ -1,7 +1,11 @@
-@zenclabs/spot
+Spot
 ===
 
-A TypeScript-based DSL to generate API contracts (OpenAPI, Swagger, JSON Schema, API Blueprint), client SDKs (TypeScript, Swift, Kotlin) or even server boilerplate (e.g. Express).
+**Spot** (*"Single Point Of Truth"*) is a concise, developer-friendly way to describe your API contract.
+
+Leveraging the TypeScript syntax, it lets you describe your API and generate any other API contract formats you need (OpenAPI, Swagger, JSON Schema, Pact, API Blueprint), client SDKs (TypeScript, Swift, Kotlin) or even server boilerplate (e.g. Express).
+
+You don't need to use TypeScript in your codebase to benefit from using Spot.
 
 Example of an API definition file `api.ts` which defines a single `POST` endpoint to create a user:
 ```typescript
@@ -33,17 +37,16 @@ You can pass the definition above to a generator by simply running:
 npx @zenclabs/spot generate --api api.ts
 ```
 
-This is work in progress as of 3 Nov 2018:
+This is work in progress as of 14 Nov 2018:
 - [x] Functional TypeScript DSL
 - [x] Support for multiple files (using import statements)
 - [x] OpenAPI 3 generator
 - [x] OpenAPI 2 generator
 - [x] JSON Schema generator
+- [ ] Pact generator
 - [ ] API Blueprint generator
 - [x] TypeScript axios-based client generator
 - [x] TypeScript express-based server boilerplate generator
-- [ ] Swift client generator
-- [ ] Kotlin client generator
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@zenclabs/spot.svg)](https://npmjs.org/package/@zenclabs/spot)
