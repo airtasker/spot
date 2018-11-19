@@ -168,7 +168,8 @@ function extractEndpoint(
   }
   const methodLiteral = endpointDescription.properties["method"];
   const pathLiteral = endpointDescription.properties["path"];
-  const requestContentTypeLiteral = endpointDescription.properties["requestContentType"];
+  const requestContentTypeLiteral =
+    endpointDescription.properties["requestContentType"];
   const successStatusCodeLiteral =
     endpointDescription.properties["successStatusCode"];
 

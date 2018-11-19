@@ -78,10 +78,16 @@ export function openApiV3(api: Api): OpenApiV3 {
             {
               requestBody: isVoid(api, endpoint.requestType)
                 ? undefined
-                : defaultTo(openApiV3ContentTypeSchema(
-                    defaultTo(endpoint.requestContentType, "application/json"),
-                    endpoint.requestType),
-                  undefined)
+                : defaultTo(
+                    openApiV3ContentTypeSchema(
+                      defaultTo(
+                        endpoint.requestContentType,
+                        "application/json"
+                      ),
+                      endpoint.requestType
+                    ),
+                    undefined
+                  )
             },
             identity
           ),
