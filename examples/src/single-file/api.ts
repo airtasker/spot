@@ -30,7 +30,7 @@ export class Api {
     path: "/users"
   })
   getUsers(
-    @queryParam() limit: number
+    @queryParam limit: Optional<number>
   ): Promise<{
     name: string;
     age?: number;

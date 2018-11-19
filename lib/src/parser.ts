@@ -321,28 +321,13 @@ function extractEndpoint(
       }
     } else if (queryParamDecorator) {
       const name = parameter.name.getText(sourceFile);
-      let required = false;
-      if (queryParamDecorator.arguments.length === 1) {
-        const queryParamDescription = extractLiteral(
-          sourceFile,
-          queryParamDecorator.arguments[0]
-        );
-        if (!isObjectLiteral(queryParamDescription)) {
-          throw panic(
-            `@queryParams() expects an object literal, got this instead: ${queryParamDecorator.arguments[0].getText(
-              sourceFile
-            )}`
-          );
-        }
-        const requiredProperty = queryParamDescription.properties["required"];
-        if (!requiredProperty || !isBooleanLiteral(requiredProperty)) {
-          throw panic(
-            `@queryParams() expects a boolean required, got this instead: ${queryParamDecorator.arguments[0].getText(
-              sourceFile
-            )}`
-          );
-        }
-        required = requiredProperty.value;
+
+      let required = true;
+      let queryParamsType = type;
+
+      if (type.kind === 'optional') {
+        required = false;
+        queryParamsType = type.optional;
       }
 
       if (queryParamComponents[name]) {
@@ -351,7 +336,7 @@ function extractEndpoint(
         const queryParamComponent : QueryParamComponent = {
           name: name,
           required: required,
-          type: type
+          type: queryParamsType
         };
         queryParams.push(queryParamComponent);
         queryParamComponents[queryParamComponent.name] = queryParamComponent;
