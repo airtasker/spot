@@ -182,10 +182,9 @@ Object {
     });
 
     test("union", () => {
-      expect(() => openApi2TypeSchema(unionType(STRING, NUMBER, BOOLEAN)))
-        .toThrowError(
-          "Unions are not supported in OpenAPI 2"
-        );
+      expect(() =>
+        openApi2TypeSchema(unionType(STRING, NUMBER, BOOLEAN))
+      ).toThrowError("Unions are not supported in OpenAPI 2");
     });
 
     test("type reference", () => {

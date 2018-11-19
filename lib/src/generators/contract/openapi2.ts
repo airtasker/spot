@@ -1,9 +1,13 @@
 import * as YAML from "js-yaml";
 import assertNever from "../../assert-never";
-import {Api, Endpoint, Type} from "../../models";
-import {isVoid} from "../../validator";
-import {OpenAPI2SchemaType, openApi2TypeSchema, rejectVoidOpenApi2SchemaType} from "./openapi2-schema";
-import {HttpContentType} from "@zenclabs/spot";
+import { Api, Endpoint, Type } from "../../models";
+import { isVoid } from "../../validator";
+import {
+  OpenAPI2SchemaType,
+  openApi2TypeSchema,
+  rejectVoidOpenApi2SchemaType
+} from "./openapi2-schema";
+import { HttpContentType } from "@zenclabs/spot";
 import compact = require("lodash/compact");
 import defaultTo = require("lodash/defaultTo");
 
@@ -131,19 +135,22 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
 }
 
 function consumes(api: Api, endpoint: Endpoint): HttpContentType[] {
-  const contentType = isVoid(api, endpoint.requestType) ? null : endpoint.requestContentType;
+  const contentType = isVoid(api, endpoint.requestType)
+    ? null
+    : endpoint.requestContentType;
   return compact([contentType]);
 }
 
 function requestBody(api: Api, type: Type): OpenAPIV2Parameter | null {
-  return isVoid(api, type) ? null :
-    {
-      in: "body",
-      name: "body",
-      description: "TODO",
-      required: true,
-      schema: defaultTo(openApi2TypeSchema(type), undefined)
-    }
+  return isVoid(api, type)
+    ? null
+    : {
+        in: "body",
+        name: "body",
+        description: "TODO",
+        required: true,
+        schema: defaultTo(openApi2TypeSchema(type), undefined)
+      };
 }
 
 function response(api: Api, type: Type): OpenAPIV2Response {
@@ -208,7 +215,7 @@ export interface OpenAPIV2Operation {
 
 export type OpenAPIV2Parameter =
   | OpenAPIV2BodyParameter
-  | OpenAPIV2NonBodyParameter
+  | OpenAPIV2NonBodyParameter;
 
 export type OpenAPIV2NonBodyParameter = {
   in: "path" | "query";
@@ -222,7 +229,7 @@ export type OpenAPIV2BodyParameter = {
   name: "body";
   description?: string;
   required: true;
-  schema: OpenAPI2SchemaType | undefined
+  schema: OpenAPI2SchemaType | undefined;
 };
 
 export interface OpenAPIV2Response {

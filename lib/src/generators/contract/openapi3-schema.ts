@@ -1,7 +1,7 @@
 import assertNever from "../../assert-never";
 import { Type } from "../../models";
 import compact = require("lodash/compact");
-import {HttpContentType} from "@zenclabs/spot";
+import { HttpContentType } from "@zenclabs/spot";
 
 export function rejectVoidOpenApi3SchemaType(
   type: Type,
@@ -14,7 +14,10 @@ export function rejectVoidOpenApi3SchemaType(
   return schemaType;
 }
 
-export function openApiV3ContentTypeSchema(contentType: HttpContentType, type: Type): OpenAPI3SchemaContentType {
+export function openApiV3ContentTypeSchema(
+  contentType: HttpContentType,
+  type: Type
+): OpenAPI3SchemaContentType {
   switch (contentType) {
     case "application/json":
       return {
@@ -146,22 +149,24 @@ export interface OpenAPI3BaseSchemaType {
 
 export type OpenAPI3SchemaContentType =
   | OpenAPI3SchemaApplicationJsonContentType
-  | OpenAPI3SchemaTextHtmlContentType
+  | OpenAPI3SchemaTextHtmlContentType;
 
-export interface OpenAPI3SchemaApplicationJsonContentType extends OpenAPI3BaseSchemaType {
+export interface OpenAPI3SchemaApplicationJsonContentType
+  extends OpenAPI3BaseSchemaType {
   content: {
-    'application/json': {
-      schema: OpenAPI3SchemaType | null
-    }
-  }
+    "application/json": {
+      schema: OpenAPI3SchemaType | null;
+    };
+  };
 }
 
-export interface OpenAPI3SchemaTextHtmlContentType extends OpenAPI3BaseSchemaType {
+export interface OpenAPI3SchemaTextHtmlContentType
+  extends OpenAPI3BaseSchemaType {
   content: {
-    'text/html': {
-      schema: OpenAPI3SchemaTypeString
-    }
-  }
+    "text/html": {
+      schema: OpenAPI3SchemaTypeString;
+    };
+  };
 }
 
 export interface OpenAPI3SchemaTypeObject extends OpenAPI3BaseSchemaType {
@@ -181,8 +186,7 @@ export interface OpenAPI3SchemaTypeOneOf extends OpenAPI3BaseSchemaType {
   oneOf: OpenAPI3SchemaType[];
 }
 
-export interface OpenAPI3SchemaTypeNull extends OpenAPI3BaseSchemaType {
-}
+export interface OpenAPI3SchemaTypeNull extends OpenAPI3BaseSchemaType {}
 
 export interface OpenAPI3SchemaTypeString extends OpenAPI3BaseSchemaType {
   type: "string";
