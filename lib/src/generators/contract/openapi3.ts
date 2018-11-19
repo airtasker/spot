@@ -1,6 +1,6 @@
 import * as YAML from "js-yaml";
 import assertNever from "../../assert-never";
-import { Api, Type } from "../../models";
+import {Api, Endpoint, Type} from "../../models";
 import { isVoid } from "../../validator";
 import {
   OpenAPI3SchemaType,
@@ -55,25 +55,7 @@ export function openApiV3(api: Api): OpenApiV3 {
           operationId: endpointName,
           description: "TODO",
           tags: ["TODO"],
-          parameters: compact(
-            endpoint.path.map(
-              (pathComponent): OpenAPIV3Parameter | null =>
-                pathComponent.kind === "dynamic"
-                  ? {
-                      in: "path",
-                      name: pathComponent.name,
-                      description: "TODO",
-                      required: true,
-                      schema: rejectVoidOpenApi3SchemaType(
-                        pathComponent.type,
-                        `Unsupported void type for path component ${
-                          pathComponent.name
-                        }`
-                      )
-                    }
-                  : null
-            )
-          ),
+          parameters: getParameters(api, endpoint),
           ...pickBy(
             {
               requestBody: isVoid(api, endpoint.requestType)
@@ -124,6 +106,44 @@ export function openApiV3(api: Api): OpenApiV3 {
       )
     }
   };
+}
+
+function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
+  const parameters = endpoint.path.map(
+    (pathComponent): OpenAPIV3Parameter | null =>
+      pathComponent.kind === "dynamic"
+        ? {
+          in: "path",
+          name: pathComponent.name,
+          description: "TODO",
+          required: true,
+          schema: rejectVoidOpenApi3SchemaType(
+            pathComponent.type,
+            `Unsupported void type for path component ${
+              pathComponent.name
+              }`
+          )
+        }
+        : null
+  ).concat(
+    endpoint.queryParams.map(
+      (queryComponent) : OpenAPIV3Parameter => {
+        return {
+          in: "query",
+          name: queryComponent.name,
+          description: "TODO",
+          required: queryComponent.required,
+          schema: rejectVoidOpenApi3SchemaType(
+            queryComponent.type,
+            `Unsupported void type for query params${
+              queryComponent.name
+              }`
+          )
+        }
+      }
+    )
+  );
+  return compact(parameters);
 }
 
 function response(api: Api, type: Type): OpenAPIV3Response {

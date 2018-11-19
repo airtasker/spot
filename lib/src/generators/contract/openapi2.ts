@@ -107,7 +107,26 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
           required: true
         }
         : null
-  ).concat([requestBody(api, endpoint.requestType)])
+  )
+  .concat([requestBody(api, endpoint.requestType)])
+  .concat(
+    endpoint.queryParams.map(
+      (queryComponent) : OpenAPIV2Parameter => {
+        return {
+          in: "query",
+          name: queryComponent.name,
+          description: "TODO",
+          ...rejectVoidOpenApi2SchemaType(
+            queryComponent.type,
+            `Unsupported void type for path component ${
+              queryComponent.name
+              }`
+          ),
+          required: queryComponent.required
+        }
+      }
+    )
+  );
   return compact(parameters);
 }
 

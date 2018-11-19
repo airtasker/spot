@@ -18,6 +18,7 @@ import {
   objectType,
   optionalType,
   PathComponent,
+  QueryParamComponent,
   SpecificError,
   STRING,
   stringConstant,
@@ -260,6 +261,8 @@ function extractEndpoint(
   }
   let requestType: Type = VOID;
   const headers: Headers = {};
+  const queryParams: QueryParamComponent[] = [];
+  const queryParamComponents: { [name: string] : QueryParamComponent } = {};
   for (const parameter of methodDeclaration.parameters) {
     const requestDecorator = extractSingleDecorator(
       sourceFile,
@@ -275,6 +278,11 @@ function extractEndpoint(
       sourceFile,
       parameter,
       "header"
+    );
+    const queryParamDecorator = extractSingleDecorator(
+      sourceFile,
+      parameter,
+      "queryParam"
     );
     if (parameter.questionToken) {
       throw panic(
@@ -310,6 +318,43 @@ function extractEndpoint(
             dynamicPathComponents
           ).join(", ")}], got this instead: ${name}`
         );
+      }
+    } else if (queryParamDecorator) {
+      const name = parameter.name.getText(sourceFile);
+      let required = false;
+      if (queryParamDecorator.arguments.length === 1) {
+        const queryParamDescription = extractLiteral(
+          sourceFile,
+          queryParamDecorator.arguments[0]
+        );
+        if (!isObjectLiteral(queryParamDescription)) {
+          throw panic(
+            `@queryParams() expects an object literal, got this instead: ${queryParamDecorator.arguments[0].getText(
+              sourceFile
+            )}`
+          );
+        }
+        const requiredProperty = queryParamDescription.properties["required"];
+        if (!requiredProperty || !isBooleanLiteral(requiredProperty)) {
+          throw panic(
+            `@queryParams() expects a boolean required, got this instead: ${queryParamDecorator.arguments[0].getText(
+              sourceFile
+            )}`
+          );
+        }
+        required = requiredProperty.value;
+      }
+
+      if (queryParamComponents[name]) {
+        throw panic(`Found multiple query parameters named ${name}`);
+      } else {
+        const queryParamComponent : QueryParamComponent = {
+          name: name,
+          required: required,
+          type: type
+        };
+        queryParams.push(queryParamComponent);
+        queryParamComponents[queryParamComponent.name] = queryParamComponent;
       }
     } else if (headerDecorator) {
       const name = parameter.name.getText(sourceFile);
@@ -459,6 +504,7 @@ function extractEndpoint(
     path: pathComponents,
     requestContentType,
     headers,
+    queryParams,
     requestType,
     responseType,
     genericErrorType,

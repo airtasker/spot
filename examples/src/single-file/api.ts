@@ -4,7 +4,7 @@ import {
   genericError,
   header,
   Optional,
-  pathParam,
+  pathParam, queryParam,
   request,
   specificError
 } from "@zenclabs/spot";
@@ -22,6 +22,19 @@ export class Api {
     })
     authToken: Optional<string>
   ): CreateUserResponse {
+    throw new Error("Not implemented");
+  }
+
+  @endpoint({
+    method: "GET",
+    path: "/users"
+  })
+  getUsers(
+    @queryParam() limit: number
+  ): Promise<{
+    name: string;
+    age?: number;
+  }[]> {
     throw new Error("Not implemented");
   }
 

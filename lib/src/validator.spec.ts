@@ -33,6 +33,7 @@ describe("Validator", () => {
             }
           ],
           headers: {},
+          queryParams: [],
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
@@ -60,6 +61,7 @@ describe("Validator", () => {
             }
           ],
           headers: {},
+          queryParams: [],
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
@@ -99,6 +101,7 @@ describe("Validator", () => {
             }
           ],
           headers: {},
+          queryParams: [],
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
@@ -193,6 +196,7 @@ describe("Validator", () => {
             }
           ],
           headers: {},
+          queryParams: [],
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
@@ -230,6 +234,7 @@ describe("Validator", () => {
               type: STRING
             }
           },
+          queryParams: [],
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
@@ -318,6 +323,7 @@ describe("Validator", () => {
               type: unionType(STRING, objectType({}), arrayType(STRING))
             }
           },
+          queryParams: [],
           requestType: VOID,
           responseType: VOID,
           genericErrorType: VOID,
@@ -342,6 +348,83 @@ describe("Validator", () => {
       "Parameter headerStringOrObjectOrArray must be a string (either required or optional)"
     ]);
   });
+  it("rejects duplicate query parameters", () => {
+    const errors = validate({
+      endpoints: {
+        example: {
+          method: "GET",
+          path: [
+            {
+              kind: "static",
+              content: "/users/"
+            },
+            {
+              kind: "dynamic",
+              name: "userId",
+              type: STRING
+            }
+          ],
+          headers: {},
+          queryParams: [
+            {
+              name: "limit",
+              required: false,
+              type: NUMBER
+            },
+            {
+              name: "limit",
+              required: false,
+              type: NUMBER
+            }
+          ],
+          requestType: VOID,
+          responseType: VOID,
+          genericErrorType: VOID,
+          specificErrorTypes: {}
+        }
+      },
+      types: {}
+    });
+    expect(errors).toEqual([
+      "example defines the query parameter 'limit' multiple times"
+    ]);
+  });
+  it("rejects query parameter with type void", () => {
+    const errors = validate({
+      endpoints: {
+        example: {
+          method: "GET",
+          path: [
+            {
+              kind: "static",
+              content: "/users/"
+            },
+            {
+              kind: "dynamic",
+              name: "userId",
+              type: STRING
+            }
+          ],
+          headers: {},
+          queryParams: [
+            {
+              name: "limit",
+              required: false,
+              type: VOID
+            }
+          ],
+          requestType: VOID,
+          responseType: VOID,
+          genericErrorType: VOID,
+          specificErrorTypes: {}
+        }
+      },
+      types: {}
+    });
+    expect(errors).toEqual([
+      "example does not define a type for query parameter 'limit'"
+    ]);
+  });
   it("rejects request body for GET requests", () => {
     const errors = validate({
       endpoints: {
@@ -354,6 +437,7 @@ describe("Validator", () => {
             }
           ],
           headers: {},
+          queryParams: [],
           requestType: objectType({}),
           responseType: VOID,
           genericErrorType: VOID,
@@ -385,6 +469,7 @@ describe("Validator", () => {
             }
           ],
           headers: {},
+          queryParams: [],
           requestType: typeReference("missing2"),
           responseType: objectType({
             example: typeReference("missing3")
@@ -401,6 +486,7 @@ describe("Validator", () => {
             }
           ],
           headers: {},
+          queryParams: [],
           requestType: optionalType(typeReference("missing5")),
           responseType: unionType(
             arrayType(typeReference("missing6")),

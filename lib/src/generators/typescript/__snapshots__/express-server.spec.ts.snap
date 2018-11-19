@@ -56,6 +56,23 @@ exports[`TypeScript Express server generator produces valid code multi-file: end
 }"
 `;
 
+exports[`TypeScript Express server generator produces valid code multi-file: endpoint:getUsers 1`] = `
+"export async function getUsers(): Promise<{
+    error?: void;
+    status: number;
+    data: {
+        name: string;
+        age?: number;
+    }[];
+} | {
+    error: string;
+    status?: number;
+    data?: void;
+}> {
+    throw new Error(\\"Endpoint getUsers is not yet implemented!\\");
+}"
+`;
+
 exports[`TypeScript Express server generator produces valid code multi-file: server 1`] = `
 "import * as cors from \\"cors\\";
 
@@ -66,6 +83,8 @@ import * as validators from \\"./validators\\";
 import { createUser } from \\"./endpoints/createUser\\";
 
 import { deleteUser } from \\"./endpoints/deleteUser\\";
+
+import { getUsers } from \\"./endpoints/getUsers\\";
 
 import { getUser } from \\"./endpoints/getUser\\";
 
@@ -143,6 +162,28 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
     }
     catch (e) {
         console.error(\\"Endpoint deleteUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
+    }
+});
+
+app.get(\\"/users\\", async (req, res) => {
+    try {
+        const response = await getUsers();
+        if (\\"error\\" in response) {
+            res.status(response.status || 500);
+            res.end();
+        }
+        else {
+            if (!validators.validateGetUsers_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status || 200);
+            res.json(response.data);
+        }
+    }
+    catch (e) {
+        console.error(\\"Endpoint getUsers threw an unexpected error:\\\\n\\", e);
         res.status(500);
         res.json(\\"An unknown server error has occurred.\\");
     }
@@ -235,6 +276,23 @@ exports[`TypeScript Express server generator produces valid code single-file: en
 }"
 `;
 
+exports[`TypeScript Express server generator produces valid code single-file: endpoint:getUsers 1`] = `
+"export async function getUsers(): Promise<{
+    error?: void;
+    status: number;
+    data: {
+        name: string;
+        age?: number;
+    }[];
+} | {
+    error: string;
+    status?: number;
+    data?: void;
+}> {
+    throw new Error(\\"Endpoint getUsers is not yet implemented!\\");
+}"
+`;
+
 exports[`TypeScript Express server generator produces valid code single-file: server 1`] = `
 "import * as cors from \\"cors\\";
 
@@ -243,6 +301,8 @@ import * as express from \\"express\\";
 import * as validators from \\"./validators\\";
 
 import { createUser } from \\"./endpoints/createUser\\";
+
+import { getUsers } from \\"./endpoints/getUsers\\";
 
 import { getUser } from \\"./endpoints/getUser\\";
 
@@ -281,6 +341,28 @@ app.post(\\"/users/create\\", async (req, res) => {
     }
     catch (e) {
         console.error(\\"Endpoint createUser threw an unexpected error:\\\\n\\", e);
+        res.status(500);
+        res.json(\\"An unknown server error has occurred.\\");
+    }
+});
+
+app.get(\\"/users\\", async (req, res) => {
+    try {
+        const response = await getUsers();
+        if (\\"error\\" in response) {
+            res.status(response.status || 500);
+            res.end();
+        }
+        else {
+            if (!validators.validateGetUsers_response(response.data)) {
+                throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            res.status(response.status || 200);
+            res.json(response.data);
+        }
+    }
+    catch (e) {
+        console.error(\\"Endpoint getUsers threw an unexpected error:\\\\n\\", e);
         res.status(500);
         res.json(\\"An unknown server error has occurred.\\");
     }

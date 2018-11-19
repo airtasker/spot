@@ -94,6 +94,14 @@ export function pathParam(
   parameterIndex: number
 ) {}
 
+export function queryParam(description?: QueryParamDescription) {
+  return (target: any, propertyKey: string, parameterIndex: number) => {};
+}
+
+export interface QueryParamDescription {
+  required: boolean
+}
+
 export function header(description: HeaderDescription) {
   return (target: any, propertyKey: string, parameterIndex: number) => {};
 }
