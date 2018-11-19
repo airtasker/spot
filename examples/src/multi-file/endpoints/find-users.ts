@@ -1,4 +1,4 @@
-import {api, endpoint, Optional, queryParam} from "@zenclabs/spot";
+import { api, endpoint, Optional, queryParam } from "@zenclabs/spot";
 
 @api()
 export class Api {
@@ -8,10 +8,12 @@ export class Api {
   })
   getUsers(
     @queryParam limit: number
-  ): Promise<{
-    name: string;
-    age?: number;
-  }[]> {
+  ): Promise<
+    {
+      name: string;
+      age?: number;
+    }[]
+  > {
     throw new Error("Not implemented");
   }
 }

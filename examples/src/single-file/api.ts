@@ -4,7 +4,8 @@ import {
   genericError,
   header,
   Optional,
-  pathParam, queryParam,
+  pathParam,
+  queryParam,
   request,
   specificError
 } from "@zenclabs/spot";
@@ -31,10 +32,12 @@ export class Api {
   })
   getUsers(
     @queryParam limit: Optional<number>
-  ): Promise<{
-    name: string;
-    age?: number;
-  }[]> {
+  ): Promise<
+    {
+      name: string;
+      age?: number;
+    }[]
+  > {
     throw new Error("Not implemented");
   }
 
