@@ -101,7 +101,7 @@ export function queryParam(
 ) {}
 
 export interface QueryParamDescription {
-  required: boolean
+  required: boolean;
 }
 
 export function header(description: HeaderDescription) {

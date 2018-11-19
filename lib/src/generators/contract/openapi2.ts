@@ -95,42 +95,39 @@ export function openApiV2(api: Api): OpenApiV2 {
 }
 
 function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
-  const parameters = endpoint.path.map(
-    (pathComponent): OpenAPIV2Parameter | null =>
-      pathComponent.kind === "dynamic"
-        ? {
-          in: "path",
-          name: pathComponent.name,
-          description: "TODO",
-          ...rejectVoidOpenApi2SchemaType(
-            pathComponent.type,
-            `Unsupported void type for path component ${
-              pathComponent.name
-              }`
-          ),
-          required: true
-        }
-        : null
-  )
-  .concat([requestBody(api, endpoint.requestType)])
-  .concat(
-    endpoint.queryParams.map(
-      (queryComponent) : OpenAPIV2Parameter => {
-        return {
-          in: "query",
-          name: queryComponent.name,
-          description: "TODO",
-          ...rejectVoidOpenApi2SchemaType(
-            queryComponent.type,
-            `Unsupported void type for path component ${
-              queryComponent.name
-              }`
-          ),
-          required: queryComponent.required
-        }
-      }
+  const parameters = endpoint.path
+    .map(
+      (pathComponent): OpenAPIV2Parameter | null =>
+        pathComponent.kind === "dynamic"
+          ? {
+              in: "path",
+              name: pathComponent.name,
+              description: "TODO",
+              ...rejectVoidOpenApi2SchemaType(
+                pathComponent.type,
+                `Unsupported void type for path component ${pathComponent.name}`
+              ),
+              required: true
+            }
+          : null
     )
-  );
+    .concat([requestBody(api, endpoint.requestType)])
+    .concat(
+      endpoint.queryParams.map(
+        (queryComponent): OpenAPIV2Parameter => {
+          return {
+            in: "query",
+            name: queryComponent.name,
+            description: "TODO",
+            ...rejectVoidOpenApi2SchemaType(
+              queryComponent.type,
+              `Unsupported void type for path component ${queryComponent.name}`
+            ),
+            required: queryComponent.required
+          };
+        }
+      )
+    );
   return compact(parameters);
 }
 

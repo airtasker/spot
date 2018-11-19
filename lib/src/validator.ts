@@ -66,7 +66,7 @@ export function validate(api: Api): ErrorMessage[] {
         errors.push(
           `${endpointName} does not define a type for query parameter '${
             queryComponent.name
-            }'`
+          }'`
         );
       }
       if (queryParameterNames.has(queryComponent.name)) {

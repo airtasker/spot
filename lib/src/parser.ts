@@ -263,7 +263,7 @@ function extractEndpoint(
   let requestType: Type = VOID;
   const headers: Headers = {};
   const queryParams: QueryParamComponent[] = [];
-  const queryParamComponents: { [name: string] : QueryParamComponent } = {};
+  const queryParamComponents: { [name: string]: QueryParamComponent } = {};
   for (const parameter of methodDeclaration.parameters) {
     const requestDecorator = extractSingleDecorator(
       sourceFile,
@@ -326,7 +326,7 @@ function extractEndpoint(
       let required = true;
       let queryParamsType = type;
 
-      if (type.kind === 'optional') {
+      if (type.kind === "optional") {
         required = false;
         queryParamsType = type.optional;
       }
@@ -334,7 +334,7 @@ function extractEndpoint(
       if (queryParamComponents[name]) {
         throw panic(`Found multiple query parameters named ${name}`);
       } else {
-        const queryParamComponent : QueryParamComponent = {
+        const queryParamComponent: QueryParamComponent = {
           name: name,
           required: required,
           type: queryParamsType
