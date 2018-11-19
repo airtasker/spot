@@ -57,7 +57,9 @@ export function isHttpMethod(method: string): method is HttpMethod {
   }
 }
 
-export function isHttpContentType(contentType: string): contentType is HttpContentType {
+export function isHttpContentType(
+  contentType: string
+): contentType is HttpContentType {
   switch (contentType) {
     case "application/json":
     case "text/html":
@@ -67,9 +69,7 @@ export function isHttpContentType(contentType: string): contentType is HttpConte
   }
 }
 
-export type HttpContentType =
-  | "application/json"
-  | "text/html"
+export type HttpContentType = "application/json" | "text/html";
 
 export type HttpMethod =
   | "GET"
