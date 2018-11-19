@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 version: 2
-job_configuration:
+job_configuration: &job_configuration
     docker:
       - image: circleci/node:10-stretch
     working_directory: ~/repo
