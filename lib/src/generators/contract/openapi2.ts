@@ -141,9 +141,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
               header.type.kind === "optional"
                 ? header.type.optional
                 : header.type,
-              `Unsupported void type for header ${
-                header.headerFieldName
-              }`
+              `Unsupported void type for header ${header.headerFieldName}`
             ),
             required: header.type.kind !== "optional"
           };
