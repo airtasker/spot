@@ -123,7 +123,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
               queryComponent.type.kind === "optional"
                 ? queryComponent.type.optional
                 : queryComponent.type,
-              `Unsupported void type for path component ${queryComponent.name}`
+              `Unsupported void type for query params ${queryComponent.name}`
             ),
             required: queryComponent.type.kind !== "optional"
           };
@@ -141,7 +141,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
               header.type.kind === "optional"
                 ? header.type.optional
                 : header.type,
-              `Unsupported void type for path component ${
+              `Unsupported void type for header ${
                 header.headerFieldName
               }`
             ),

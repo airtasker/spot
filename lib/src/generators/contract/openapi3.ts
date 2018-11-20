@@ -161,7 +161,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
               header.type.kind === "optional"
                 ? header.type.optional
                 : header.type,
-              `Unsupported void type for query params${header.headerFieldName}`
+              `Unsupported void type for header ${header.headerFieldName}`
             )
           };
         }
