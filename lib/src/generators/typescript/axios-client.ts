@@ -123,9 +123,8 @@ function generateEndpointFunction(
           /*questionToken*/ undefined,
           typeNode(header.type)
         )
-      )
-      ,
-      ...endpoint.queryParams.map((queryParam) =>
+      ),
+      ...endpoint.queryParams.map(queryParam =>
         ts.createParameter(
           /*decorators*/ undefined,
           /*modifiers*/ undefined,

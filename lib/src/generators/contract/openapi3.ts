@@ -140,7 +140,9 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
             description: "TODO",
             required: queryComponent.type.kind === "optional",
             schema: rejectVoidOpenApi3SchemaType(
-              queryComponent.type.kind === "optional" ? queryComponent.type.optional : queryComponent.type,
+              queryComponent.type.kind === "optional"
+                ? queryComponent.type.optional
+                : queryComponent.type,
               `Unsupported void type for query params${queryComponent.name}`
             )
           };

@@ -1,9 +1,13 @@
 import * as YAML from "js-yaml";
 import assertNever from "../../assert-never";
-import {Api, Endpoint, Type} from "../../models";
-import {isVoid} from "../../validator";
-import {OpenAPI2SchemaType, openApi2TypeSchema, rejectVoidOpenApi2SchemaType} from "./openapi2-schema";
-import {HttpContentType} from "@zenclabs/spot";
+import { Api, Endpoint, Type } from "../../models";
+import { isVoid } from "../../validator";
+import {
+  OpenAPI2SchemaType,
+  openApi2TypeSchema,
+  rejectVoidOpenApi2SchemaType
+} from "./openapi2-schema";
+import { HttpContentType } from "@zenclabs/spot";
 import compact = require("lodash/compact");
 import defaultTo = require("lodash/defaultTo");
 
@@ -116,7 +120,9 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
             name: queryComponent.name,
             description: "TODO",
             ...rejectVoidOpenApi2SchemaType(
-              queryComponent.type.kind === "optional" ? queryComponent.type.optional : queryComponent.type,
+              queryComponent.type.kind === "optional"
+                ? queryComponent.type.optional
+                : queryComponent.type,
               `Unsupported void type for path component ${queryComponent.name}`
             ),
             required: queryComponent.type.kind === "optional"
