@@ -1,6 +1,6 @@
 {
   "name": "@zenclabs/spot",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "author": "Francois Wouts",
   "bin": {
     "spot": "./bin/run"
