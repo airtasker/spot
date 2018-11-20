@@ -39,6 +39,23 @@ exports[`TypeScript Express server generator produces valid code multi-file: end
 }"
 `;
 
+exports[`TypeScript Express server generator produces valid code multi-file: endpoint:findUsers 1`] = `
+"export async function findUsers(): Promise<{
+    error?: void;
+    status: number;
+    data: {
+        name: string;
+        age?: number;
+    }[];
+} | {
+    error: string;
+    status?: number;
+    data?: void;
+}> {
+    throw new Error(\\"Endpoint findUsers is not yet implemented!\\");
+}"
+`;
+
 exports[`TypeScript Express server generator produces valid code multi-file: endpoint:getUser 1`] = `
 "export async function getUser(userId: string): Promise<{
     error?: void;
@@ -56,23 +73,6 @@ exports[`TypeScript Express server generator produces valid code multi-file: end
 }"
 `;
 
-exports[`TypeScript Express server generator produces valid code multi-file: endpoint:getUsers 1`] = `
-"export async function getUsers(): Promise<{
-    error?: void;
-    status: number;
-    data: {
-        name: string;
-        age?: number;
-    }[];
-} | {
-    error: string;
-    status?: number;
-    data?: void;
-}> {
-    throw new Error(\\"Endpoint getUsers is not yet implemented!\\");
-}"
-`;
-
 exports[`TypeScript Express server generator produces valid code multi-file: server 1`] = `
 "import * as cors from \\"cors\\";
 
@@ -84,7 +84,7 @@ import { createUser } from \\"./endpoints/createUser\\";
 
 import { deleteUser } from \\"./endpoints/deleteUser\\";
 
-import { getUsers } from \\"./endpoints/getUsers\\";
+import { findUsers } from \\"./endpoints/findUsers\\";
 
 import { getUser } from \\"./endpoints/getUser\\";
 
@@ -169,13 +169,13 @@ app.delete(\\"/users/:userId-confirmed\\", async (req, res) => {
 
 app.get(\\"/users\\", async (req, res) => {
     try {
-        const response = await getUsers();
+        const response = await findUsers();
         if (\\"error\\" in response) {
             res.status(response.status || 500);
             res.end();
         }
         else {
-            if (!validators.validateGetUsers_response(response.data)) {
+            if (!validators.validateFindUsers_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
             res.status(response.status || 200);
@@ -183,7 +183,7 @@ app.get(\\"/users\\", async (req, res) => {
         }
     }
     catch (e) {
-        console.error(\\"Endpoint getUsers threw an unexpected error:\\\\n\\", e);
+        console.error(\\"Endpoint findUsers threw an unexpected error:\\\\n\\", e);
         res.status(500);
         res.json(\\"An unknown server error has occurred.\\");
     }
@@ -259,6 +259,23 @@ exports[`TypeScript Express server generator produces valid code single-file: en
 }"
 `;
 
+exports[`TypeScript Express server generator produces valid code single-file: endpoint:findUsers 1`] = `
+"export async function findUsers(): Promise<{
+    error?: void;
+    status: number;
+    data: {
+        name: string;
+        age?: number;
+    }[];
+} | {
+    error: string;
+    status?: number;
+    data?: void;
+}> {
+    throw new Error(\\"Endpoint findUsers is not yet implemented!\\");
+}"
+`;
+
 exports[`TypeScript Express server generator produces valid code single-file: endpoint:getUser 1`] = `
 "export async function getUser(userId: string): Promise<{
     error?: void;
@@ -276,23 +293,6 @@ exports[`TypeScript Express server generator produces valid code single-file: en
 }"
 `;
 
-exports[`TypeScript Express server generator produces valid code single-file: endpoint:getUsers 1`] = `
-"export async function getUsers(): Promise<{
-    error?: void;
-    status: number;
-    data: {
-        name: string;
-        age?: number;
-    }[];
-} | {
-    error: string;
-    status?: number;
-    data?: void;
-}> {
-    throw new Error(\\"Endpoint getUsers is not yet implemented!\\");
-}"
-`;
-
 exports[`TypeScript Express server generator produces valid code single-file: server 1`] = `
 "import * as cors from \\"cors\\";
 
@@ -302,7 +302,7 @@ import * as validators from \\"./validators\\";
 
 import { createUser } from \\"./endpoints/createUser\\";
 
-import { getUsers } from \\"./endpoints/getUsers\\";
+import { findUsers } from \\"./endpoints/findUsers\\";
 
 import { getUser } from \\"./endpoints/getUser\\";
 
@@ -348,13 +348,13 @@ app.post(\\"/users/create\\", async (req, res) => {
 
 app.get(\\"/users\\", async (req, res) => {
     try {
-        const response = await getUsers();
+        const response = await findUsers();
         if (\\"error\\" in response) {
             res.status(response.status || 500);
             res.end();
         }
         else {
-            if (!validators.validateGetUsers_response(response.data)) {
+            if (!validators.validateFindUsers_response(response.data)) {
                 throw new Error(\`Invalid successful response: \${JSON.stringify(response.data, null, 2)}\`);
             }
             res.status(response.status || 200);
@@ -362,7 +362,7 @@ app.get(\\"/users\\", async (req, res) => {
         }
     }
     catch (e) {
-        console.error(\\"Endpoint getUsers threw an unexpected error:\\\\n\\", e);
+        console.error(\\"Endpoint findUsers threw an unexpected error:\\\\n\\", e);
         res.status(500);
         res.json(\\"An unknown server error has occurred.\\");
     }

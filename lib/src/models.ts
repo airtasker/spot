@@ -62,7 +62,6 @@ export interface Header {
 export interface QueryParamComponent {
   name: string;
   type: Type;
-  required: boolean;
 }
 
 export interface SpecificError {

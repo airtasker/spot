@@ -30,8 +30,9 @@ export class Api {
     method: "GET",
     path: "/users"
   })
-  getUsers(
-    @queryParam limit: Optional<number>
+  findUsers(
+    @queryParam limit: number,
+    @queryParam search_term: Optional<string>
   ): Promise<
     {
       name: string;

@@ -108,7 +108,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
     },
     \\"/users\\": {
       \\"get\\": {
-        \\"operationId\\": \\"getUsers\\",
+        \\"operationId\\": \\"findUsers\\",
         \\"description\\": \\"TODO\\",
         \\"consumes\\": [],
         \\"tags\\": [
@@ -120,6 +120,13 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"number\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
             \\"required\\": true
           }
         ],
@@ -301,7 +308,7 @@ paths:
           description: ''
   /users:
     get:
-      operationId: getUsers
+      operationId: findUsers
       description: TODO
       consumes: []
       tags:
@@ -311,6 +318,11 @@ paths:
           name: limit
           description: TODO
           type: number
+          required: false
+        - in: query
+          name: search_term
+          description: TODO
+          type: string
           required: true
       responses:
         '200':
@@ -432,7 +444,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
     },
     \\"/users\\": {
       \\"get\\": {
-        \\"operationId\\": \\"getUsers\\",
+        \\"operationId\\": \\"findUsers\\",
         \\"description\\": \\"TODO\\",
         \\"consumes\\": [],
         \\"tags\\": [
@@ -445,6 +457,13 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"number\\",
             \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
           }
         ],
         \\"responses\\": {
@@ -644,7 +663,7 @@ paths:
           description: ''
   /users:
     get:
-      operationId: getUsers
+      operationId: findUsers
       description: TODO
       consumes: []
       tags:
@@ -655,6 +674,11 @@ paths:
           description: TODO
           type: number
           required: false
+        - in: query
+          name: search_term
+          description: TODO
+          type: string
+          required: true
       responses:
         '200':
           schema:

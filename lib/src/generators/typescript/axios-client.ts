@@ -124,6 +124,17 @@ function generateEndpointFunction(
           typeNode(header.type)
         )
       )
+      ,
+      ...endpoint.queryParams.map((queryParam) =>
+        ts.createParameter(
+          /*decorators*/ undefined,
+          /*modifiers*/ undefined,
+          /*dotDotDotToken*/ undefined,
+          queryParam.name,
+          /*questionToken*/ undefined,
+          typeNode(queryParam.type)
+        )
+      )
     ],
     promiseTypeNode(unionType(...generateReturnTypes(endpoint))),
     generateEndpointBody(endpointName, endpoint, includeRequest)

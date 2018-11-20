@@ -108,7 +108,7 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
     }
 }
 
-export async function getUsers(): Promise<{
+export async function findUsers(limit: number, search_term: string | void): Promise<{
     kind: \\"success\\";
     data: {
         name: string;
@@ -127,7 +127,7 @@ export async function getUsers(): Promise<{
     });
     switch (response.status) {
         default: if (response.status >= 200 && response.status < 300) {
-            if (!validators.validateGetUsers_response(response.data)) {
+            if (!validators.validateFindUsers_response(response.data)) {
                 throw new Error(\`Invalid response for successful status code: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -136,7 +136,7 @@ export async function getUsers(): Promise<{
             };
         }
         else {
-            if (!validators.validateGetUsers_genericError(response.data)) {
+            if (!validators.validateFindUsers_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -240,7 +240,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
     }
 }
 
-export async function getUsers(): Promise<{
+export async function findUsers(limit: number, search_term: string | void): Promise<{
     kind: \\"success\\";
     data: {
         name: string;
@@ -259,7 +259,7 @@ export async function getUsers(): Promise<{
     });
     switch (response.status) {
         default: if (response.status >= 200 && response.status < 300) {
-            if (!validators.validateGetUsers_response(response.data)) {
+            if (!validators.validateFindUsers_response(response.data)) {
                 throw new Error(\`Invalid response for successful status code: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {
@@ -268,7 +268,7 @@ export async function getUsers(): Promise<{
             };
         }
         else {
-            if (!validators.validateGetUsers_genericError(response.data)) {
+            if (!validators.validateFindUsers_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {

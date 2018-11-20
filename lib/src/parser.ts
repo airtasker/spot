@@ -323,21 +323,12 @@ function extractEndpoint(
     } else if (queryParamDecorator) {
       const name = parameter.name.getText(sourceFile);
 
-      let required = true;
-      let queryParamsType = type;
-
-      if (type.kind === "optional") {
-        required = false;
-        queryParamsType = type.optional;
-      }
-
       if (queryParamComponents[name]) {
         throw panic(`Found multiple query parameters named ${name}`);
       } else {
         const queryParamComponent: QueryParamComponent = {
           name: name,
-          required: required,
-          type: queryParamsType
+          type: type
         };
         queryParams.push(queryParamComponent);
         queryParamComponents[queryParamComponent.name] = queryParamComponent;

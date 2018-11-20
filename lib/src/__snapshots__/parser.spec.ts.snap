@@ -97,6 +97,58 @@ Object {
         },
       },
     },
+    "findUsers": Object {
+      "genericErrorType": Object {
+        "kind": "void",
+      },
+      "headers": Object {},
+      "method": "GET",
+      "path": Array [
+        Object {
+          "content": "/users",
+          "kind": "static",
+        },
+      ],
+      "queryParams": Array [
+        Object {
+          "name": "limit",
+          "type": Object {
+            "kind": "number",
+          },
+        },
+        Object {
+          "name": "search_term",
+          "type": Object {
+            "kind": "optional",
+            "optional": Object {
+              "kind": "string",
+            },
+          },
+        },
+      ],
+      "requestContentType": "application/json",
+      "requestType": Object {
+        "kind": "void",
+      },
+      "responseType": Object {
+        "elements": Object {
+          "kind": "object",
+          "properties": Object {
+            "age": Object {
+              "kind": "optional",
+              "optional": Object {
+                "kind": "number",
+              },
+            },
+            "name": Object {
+              "kind": "string",
+            },
+          },
+        },
+        "kind": "array",
+      },
+      "specificErrorTypes": Object {},
+    },
     "getUser": Object {
       "genericErrorType": Object {
         "kind": "void",
@@ -134,50 +186,6 @@ Object {
             "kind": "string",
           },
         },
-      },
-      "specificErrorTypes": Object {},
-    },
-    "getUsers": Object {
-      "genericErrorType": Object {
-        "kind": "void",
-      },
-      "headers": Object {},
-      "method": "GET",
-      "path": Array [
-        Object {
-          "content": "/users",
-          "kind": "static",
-        },
-      ],
-      "queryParams": Array [
-        Object {
-          "name": "limit",
-          "required": true,
-          "type": Object {
-            "kind": "number",
-          },
-        },
-      ],
-      "requestContentType": "application/json",
-      "requestType": Object {
-        "kind": "void",
-      },
-      "responseType": Object {
-        "elements": Object {
-          "kind": "object",
-          "properties": Object {
-            "age": Object {
-              "kind": "optional",
-              "optional": Object {
-                "kind": "number",
-              },
-            },
-            "name": Object {
-              "kind": "string",
-            },
-          },
-        },
-        "kind": "array",
       },
       "specificErrorTypes": Object {},
     },
@@ -308,6 +316,58 @@ Object {
         },
       },
     },
+    "findUsers": Object {
+      "genericErrorType": Object {
+        "kind": "void",
+      },
+      "headers": Object {},
+      "method": "GET",
+      "path": Array [
+        Object {
+          "content": "/users",
+          "kind": "static",
+        },
+      ],
+      "queryParams": Array [
+        Object {
+          "name": "limit",
+          "type": Object {
+            "kind": "number",
+          },
+        },
+        Object {
+          "name": "search_term",
+          "type": Object {
+            "kind": "optional",
+            "optional": Object {
+              "kind": "string",
+            },
+          },
+        },
+      ],
+      "requestContentType": "application/json",
+      "requestType": Object {
+        "kind": "void",
+      },
+      "responseType": Object {
+        "elements": Object {
+          "kind": "object",
+          "properties": Object {
+            "age": Object {
+              "kind": "optional",
+              "optional": Object {
+                "kind": "number",
+              },
+            },
+            "name": Object {
+              "kind": "string",
+            },
+          },
+        },
+        "kind": "array",
+      },
+      "specificErrorTypes": Object {},
+    },
     "getUser": Object {
       "genericErrorType": Object {
         "kind": "void",
@@ -345,50 +405,6 @@ Object {
             "kind": "string",
           },
         },
-      },
-      "specificErrorTypes": Object {},
-    },
-    "getUsers": Object {
-      "genericErrorType": Object {
-        "kind": "void",
-      },
-      "headers": Object {},
-      "method": "GET",
-      "path": Array [
-        Object {
-          "content": "/users",
-          "kind": "static",
-        },
-      ],
-      "queryParams": Array [
-        Object {
-          "name": "limit",
-          "required": false,
-          "type": Object {
-            "kind": "number",
-          },
-        },
-      ],
-      "requestContentType": "application/json",
-      "requestType": Object {
-        "kind": "void",
-      },
-      "responseType": Object {
-        "elements": Object {
-          "kind": "object",
-          "properties": Object {
-            "age": Object {
-              "kind": "optional",
-              "optional": Object {
-                "kind": "number",
-              },
-            },
-            "name": Object {
-              "kind": "string",
-            },
-          },
-        },
-        "kind": "array",
       },
       "specificErrorTypes": Object {},
     },

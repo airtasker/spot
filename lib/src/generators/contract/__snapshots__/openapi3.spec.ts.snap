@@ -124,7 +124,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
     },
     \\"/users\\": {
       \\"get\\": {
-        \\"operationId\\": \\"getUsers\\",
+        \\"operationId\\": \\"findUsers\\",
         \\"description\\": \\"TODO\\",
         \\"tags\\": [
           \\"TODO\\"
@@ -134,9 +134,18 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
-            \\"required\\": true,
+            \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"number\\"
+            }
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
             }
           }
         ],
@@ -336,7 +345,7 @@ paths:
           description: ''
   /users:
     get:
-      operationId: getUsers
+      operationId: findUsers
       description: TODO
       tags:
         - TODO
@@ -344,9 +353,15 @@ paths:
         - in: query
           name: limit
           description: TODO
-          required: true
+          required: false
           schema:
             type: number
+        - in: query
+          name: search_term
+          description: TODO
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -472,7 +487,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
     },
     \\"/users\\": {
       \\"get\\": {
-        \\"operationId\\": \\"getUsers\\",
+        \\"operationId\\": \\"findUsers\\",
         \\"description\\": \\"TODO\\",
         \\"tags\\": [
           \\"TODO\\"
@@ -485,6 +500,15 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
             \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"number\\"
+            }
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
             }
           }
         ],
@@ -711,7 +735,7 @@ paths:
           description: ''
   /users:
     get:
-      operationId: getUsers
+      operationId: findUsers
       description: TODO
       tags:
         - TODO
@@ -722,6 +746,12 @@ paths:
           required: false
           schema:
             type: number
+        - in: query
+          name: search_term
+          description: TODO
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           content:

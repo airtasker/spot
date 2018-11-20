@@ -48,18 +48,18 @@ export function validateDeleteUser_specificErrorForbidden(value: any): value is 
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"message\\"] === \\"string\\" && typeof value[\\"signedInAs\\"] === \\"string\\";
 }
 
-export function validateGetUsers_request(value: any): value is void {
+export function validateFindUsers_request(value: any): value is void {
     return value === undefined;
 }
 
-export function validateGetUsers_response(value: any): value is {
+export function validateFindUsers_response(value: any): value is {
     name: string;
     age?: number;
 }[] {
     return value instanceof Array && value.reduce((acc, curr) => acc && (!(curr === null) && typeof curr === \\"object\\" && typeof curr[\\"name\\"] === \\"string\\" && (curr[\\"age\\"] === undefined || typeof curr[\\"age\\"] === \\"number\\")), true);
 }
 
-export function validateGetUsers_genericError(value: any): value is void {
+export function validateFindUsers_genericError(value: any): value is void {
     return value === undefined;
 }
 
@@ -114,18 +114,18 @@ export function validateCreateUser_genericError(value: any): value is void {
     return value === undefined;
 }
 
-export function validateGetUsers_request(value: any): value is void {
+export function validateFindUsers_request(value: any): value is void {
     return value === undefined;
 }
 
-export function validateGetUsers_response(value: any): value is {
+export function validateFindUsers_response(value: any): value is {
     name: string;
     age?: number;
 }[] {
     return value instanceof Array && value.reduce((acc, curr) => acc && (!(curr === null) && typeof curr === \\"object\\" && typeof curr[\\"name\\"] === \\"string\\" && (curr[\\"age\\"] === undefined || typeof curr[\\"age\\"] === \\"number\\")), true);
 }
 
-export function validateGetUsers_genericError(value: any): value is void {
+export function validateFindUsers_genericError(value: any): value is void {
     return value === undefined;
 }
 
