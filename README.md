@@ -72,7 +72,34 @@ npx @zenclabs/spot generate --api api.ts
 
 # Commands
 <!-- commands -->
+* [`spot generate`](#spot-generate)
 * [`spot help [COMMAND]`](#spot-help-command)
+* [`spot init`](#spot-init)
+
+## `spot generate`
+
+Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats such as OpenAPI.
+
+```
+USAGE
+  $ spot generate
+
+OPTIONS
+  -a, --api=api              (required) Path to a TypeScript API definition
+  -g, --generator=generator  Generator to run
+  -h, --help                 show CLI help
+  -l, --language=language    Language to generate
+  -o, --out=out              Directory in which to output generated files
+
+EXAMPLE
+  $ api generate --language typescript --generator axios-client --out src/
+  Generated the following files:
+  - src/types.ts
+  - src/validators.ts
+  - src/client.ts
+```
+
+_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/v0.1.24/build/cli/src/commands/generate.js)_
 
 ## `spot help [COMMAND]`
 
@@ -90,4 +117,25 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
+
+## `spot init`
+
+Generates the boilerplate for an API.
+
+```
+USAGE
+  $ spot init
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ api init
+  Generated the following files:
+  - api.ts
+  - tsconfig.json
+  - package.json
+```
+
+_See code: [build/cli/src/commands/init.js](https://github.com/zenclabs/spot/blob/v0.1.24/build/cli/src/commands/init.js)_
 <!-- commandsstop -->
