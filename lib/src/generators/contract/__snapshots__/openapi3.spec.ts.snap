@@ -23,7 +23,17 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"tags\\": [
           \\"TODO\\"
         ],
-        \\"parameters\\": [],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
         \\"requestBody\\": {
           \\"content\\": {
             \\"application/json\\": {
@@ -61,6 +71,15 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
             \\"description\\": \\"TODO\\",
             \\"required\\": true,
             \\"schema\\": {
@@ -134,7 +153,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
-            \\"required\\": false,
+            \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"number\\"
             }
@@ -143,7 +162,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
             \\"description\\": \\"TODO\\",
-            \\"required\\": true,
+            \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"string\\"
             }
@@ -283,7 +302,13 @@ paths:
       description: TODO
       tags:
         - TODO
-      parameters: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: TODO
+          required: false
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -307,6 +332,12 @@ paths:
       parameters:
         - in: path
           name: userId
+          description: TODO
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
           description: TODO
           required: true
           schema:
@@ -353,13 +384,13 @@ paths:
         - in: query
           name: limit
           description: TODO
-          required: false
+          required: true
           schema:
             type: number
         - in: query
           name: search_term
           description: TODO
-          required: true
+          required: false
           schema:
             type: string
       responses:
@@ -458,7 +489,17 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"tags\\": [
           \\"TODO\\"
         ],
-        \\"parameters\\": [],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
         \\"requestBody\\": {
           \\"content\\": {
             \\"application/json\\": {
@@ -497,7 +538,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
-            \\"required\\": false,
+            \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"number\\"
             }
@@ -506,7 +547,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
             \\"description\\": \\"TODO\\",
-            \\"required\\": true,
+            \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"string\\"
             }
@@ -600,6 +641,15 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
             \\"description\\": \\"TODO\\",
             \\"required\\": true,
             \\"schema\\": {
@@ -718,7 +768,13 @@ paths:
       description: TODO
       tags:
         - TODO
-      parameters: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: TODO
+          required: false
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -743,13 +799,13 @@ paths:
         - in: query
           name: limit
           description: TODO
-          required: false
+          required: true
           schema:
             type: number
         - in: query
           name: search_term
           description: TODO
-          required: true
+          required: false
           schema:
             type: string
       responses:
@@ -808,6 +864,12 @@ paths:
       parameters:
         - in: path
           name: userId
+          description: TODO
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
           description: TODO
           required: true
           schema:

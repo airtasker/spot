@@ -125,7 +125,27 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
                 : queryComponent.type,
               `Unsupported void type for path component ${queryComponent.name}`
             ),
-            required: queryComponent.type.kind === "optional"
+            required: queryComponent.type.kind !== "optional"
+          };
+        }
+      )
+    )
+    .concat(
+      Object.entries(endpoint.headers).map(
+        ([headerName, header]): OpenAPIV2Parameter => {
+          return {
+            in: "header",
+            name: header.headerFieldName,
+            description: "TODO",
+            ...rejectVoidOpenApi2SchemaType(
+              header.type.kind === "optional"
+                ? header.type.optional
+                : header.type,
+              `Unsupported void type for path component ${
+                header.headerFieldName
+              }`
+            ),
+            required: header.type.kind !== "optional"
           };
         }
       )
@@ -217,7 +237,7 @@ export type OpenAPIV2Parameter =
   | OpenAPIV2NonBodyParameter;
 
 export type OpenAPIV2NonBodyParameter = {
-  in: "path" | "query";
+  in: "path" | "query" | "header";
   name: string;
   description?: string;
   required: boolean;

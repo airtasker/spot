@@ -138,12 +138,30 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
             in: "query",
             name: queryComponent.name,
             description: "TODO",
-            required: queryComponent.type.kind === "optional",
+            required: queryComponent.type.kind !== "optional",
             schema: rejectVoidOpenApi3SchemaType(
               queryComponent.type.kind === "optional"
                 ? queryComponent.type.optional
                 : queryComponent.type,
               `Unsupported void type for query params${queryComponent.name}`
+            )
+          };
+        }
+      )
+    )
+    .concat(
+      Object.entries(endpoint.headers).map(
+        ([headerName, header]): OpenAPIV3Parameter => {
+          return {
+            in: "header",
+            name: header.headerFieldName,
+            description: "TODO",
+            required: header.type.kind !== "optional",
+            schema: rejectVoidOpenApi3SchemaType(
+              header.type.kind === "optional"
+                ? header.type.optional
+                : header.type,
+              `Unsupported void type for query params${header.headerFieldName}`
             )
           };
         }
@@ -221,7 +239,7 @@ export interface OpenAPIV3Operation {
 }
 
 export interface OpenAPIV3Parameter {
-  in: "path" | "query";
+  in: "path" | "query" | "header";
   name: string;
   description?: string;
   required: boolean;
