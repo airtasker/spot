@@ -35,6 +35,13 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/CreateUserRequest\\"
             }
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": false
           }
         ],
         \\"responses\\": {
@@ -62,6 +69,13 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"string\\",
             \\"required\\": true
@@ -120,14 +134,14 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"number\\",
-            \\"required\\": false
+            \\"required\\": true
           },
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"string\\",
-            \\"required\\": true
+            \\"required\\": false
           }
         ],
         \\"responses\\": {
@@ -262,6 +276,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/CreateUserRequest'
+        - in: header
+          name: Authorization
+          description: TODO
+          type: string
+          required: false
       responses:
         '200':
           schema:
@@ -279,6 +298,11 @@ paths:
       parameters:
         - in: path
           name: userId
+          description: TODO
+          type: string
+          required: true
+        - in: header
+          name: Authorization
           description: TODO
           type: string
           required: true
@@ -318,12 +342,12 @@ paths:
           name: limit
           description: TODO
           type: number
-          required: false
+          required: true
         - in: query
           name: search_term
           description: TODO
           type: string
-          required: true
+          required: false
       responses:
         '200':
           schema:
@@ -427,6 +451,13 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/CreateUserRequest\\"
             }
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": false
           }
         ],
         \\"responses\\": {
@@ -456,14 +487,14 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"number\\",
-            \\"required\\": false
+            \\"required\\": true
           },
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"string\\",
-            \\"required\\": true
+            \\"required\\": false
           }
         ],
         \\"responses\\": {
@@ -546,6 +577,13 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
             \\"description\\": \\"TODO\\",
             \\"type\\": \\"string\\",
             \\"required\\": true
@@ -654,6 +692,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/CreateUserRequest'
+        - in: header
+          name: Authorization
+          description: TODO
+          type: string
+          required: false
       responses:
         '200':
           schema:
@@ -673,12 +716,12 @@ paths:
           name: limit
           description: TODO
           type: number
-          required: false
+          required: true
         - in: query
           name: search_term
           description: TODO
           type: string
-          required: true
+          required: false
       responses:
         '200':
           schema:
@@ -732,6 +775,11 @@ paths:
       parameters:
         - in: path
           name: userId
+          description: TODO
+          type: string
+          required: true
+        - in: header
+          name: Authorization
           description: TODO
           type: string
           required: true
