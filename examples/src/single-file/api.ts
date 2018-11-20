@@ -5,6 +5,7 @@ import {
   header,
   Optional,
   pathParam,
+  queryParam,
   request,
   specificError
 } from "@zenclabs/spot";
@@ -22,6 +23,22 @@ export class Api {
     })
     authToken: Optional<string>
   ): CreateUserResponse {
+    throw new Error("Not implemented");
+  }
+
+  @endpoint({
+    method: "GET",
+    path: "/users"
+  })
+  findUsers(
+    @queryParam limit: number,
+    @queryParam search_term: Optional<string>
+  ): Promise<
+    {
+      name: string;
+      age?: number;
+    }[]
+  > {
     throw new Error("Not implemented");
   }
 

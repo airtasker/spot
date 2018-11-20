@@ -15,6 +15,7 @@ export interface Endpoint {
   method: HttpMethod;
   path: PathComponent[];
   headers: Headers;
+  queryParams: QueryParamComponent[];
   requestContentType?: HttpContentType;
   requestType: Type;
   responseType: Type;
@@ -55,6 +56,11 @@ export interface Headers {
 
 export interface Header {
   headerFieldName: string;
+  type: Type;
+}
+
+export interface QueryParamComponent {
+  name: string;
   type: Type;
 }
 

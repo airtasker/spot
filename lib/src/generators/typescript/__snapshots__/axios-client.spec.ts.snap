@@ -108,6 +108,45 @@ export async function deleteUser(userId: string, authToken: string): Promise<{
     }
 }
 
+export async function findUsers(limit: number, search_term: string | void): Promise<{
+    kind: \\"success\\";
+    data: {
+        name: string;
+        age?: number;
+    }[];
+} | {
+    kind: \\"unknown-error\\";
+    data?: void;
+}> {
+    const response = await axios({
+        url: \\"/users\\",
+        method: \\"GET\\",
+        responseType: \\"json\\",
+        headers: {},
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateFindUsers_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateFindUsers_genericError(response.data)) {
+                throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}
+
 export async function getUser(userId: string): Promise<{
     kind: \\"success\\";
     data: {
@@ -191,6 +230,45 @@ export async function createUser(request: CreateUserRequest, authToken: string |
         }
         else {
             if (!validators.validateCreateUser_genericError(response.data)) {
+                throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            return {
+                kind: \\"unknown-error\\",
+                data: response.data
+            };
+        }
+    }
+}
+
+export async function findUsers(limit: number, search_term: string | void): Promise<{
+    kind: \\"success\\";
+    data: {
+        name: string;
+        age?: number;
+    }[];
+} | {
+    kind: \\"unknown-error\\";
+    data?: void;
+}> {
+    const response = await axios({
+        url: \\"/users\\",
+        method: \\"GET\\",
+        responseType: \\"json\\",
+        headers: {},
+        validateStatus: () => true
+    });
+    switch (response.status) {
+        default: if (response.status >= 200 && response.status < 300) {
+            if (!validators.validateFindUsers_response(response.data)) {
+                throw new Error(\`Invalid response for successful status code: \${JSON.stringify(response.data, null, 2)}\`);
+            }
+            return {
+                kind: \\"success\\",
+                data: response.data
+            };
+        }
+        else {
+            if (!validators.validateFindUsers_genericError(response.data)) {
                 throw new Error(\`Invalid response for unknown error: \${JSON.stringify(response.data, null, 2)}\`);
             }
             return {

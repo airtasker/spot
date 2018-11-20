@@ -59,6 +59,25 @@ export function validate(api: Api): ErrorMessage[] {
       }
       usedHeaderFieldNames.add(header.headerFieldName);
     }
+    const queryParameterNames = new Set<string>();
+    for (const queryComponent of endpoint.queryParams) {
+      validateType(api, queryComponent.type, errors);
+      if (isVoid(api, queryComponent.type)) {
+        errors.push(
+          `${endpointName} does not define a type for query parameter '${
+            queryComponent.name
+          }'`
+        );
+      }
+      if (queryParameterNames.has(queryComponent.name)) {
+        errors.push(
+          `${endpointName} defines the query parameter '${
+            queryComponent.name
+          }' multiple times`
+        );
+      }
+      queryParameterNames.add(queryComponent.name);
+    }
     validateType(api, endpoint.requestType, errors);
     validateType(api, endpoint.responseType, errors);
     validateType(api, endpoint.genericErrorType, errors);

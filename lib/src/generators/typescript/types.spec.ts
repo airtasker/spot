@@ -52,6 +52,7 @@ describe("TypeScript types generator", () => {
             method: "POST",
             path: [],
             headers: {},
+            queryParams: [],
             requestType: STRING,
             responseType: STRING,
             genericErrorType: STRING,

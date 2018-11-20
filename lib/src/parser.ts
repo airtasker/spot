@@ -18,6 +18,7 @@ import {
   objectType,
   optionalType,
   PathComponent,
+  QueryParamComponent,
   SpecificError,
   STRING,
   stringConstant,
@@ -261,6 +262,8 @@ function extractEndpoint(
   }
   let requestType: Type = VOID;
   const headers: Headers = {};
+  const queryParams: QueryParamComponent[] = [];
+  const queryParamComponents: { [name: string]: QueryParamComponent } = {};
   for (const parameter of methodDeclaration.parameters) {
     const requestDecorator = extractSingleDecorator(
       sourceFile,
@@ -276,6 +279,11 @@ function extractEndpoint(
       sourceFile,
       parameter,
       "header"
+    );
+    const queryParamDecorator = extractSingleDecorator(
+      sourceFile,
+      parameter,
+      "queryParam"
     );
     if (parameter.questionToken) {
       throw panic(
@@ -311,6 +319,19 @@ function extractEndpoint(
             dynamicPathComponents
           ).join(", ")}], got this instead: ${name}`
         );
+      }
+    } else if (queryParamDecorator) {
+      const name = parameter.name.getText(sourceFile);
+
+      if (queryParamComponents[name]) {
+        throw panic(`Found multiple query parameters named ${name}`);
+      } else {
+        const queryParamComponent: QueryParamComponent = {
+          name: name,
+          type: type
+        };
+        queryParams.push(queryParamComponent);
+        queryParamComponents[queryParamComponent.name] = queryParamComponent;
       }
     } else if (headerDecorator) {
       const name = parameter.name.getText(sourceFile);
@@ -460,6 +481,7 @@ function extractEndpoint(
     path: pathComponents,
     requestContentType,
     headers,
+    queryParams,
     requestType,
     responseType,
     genericErrorType,

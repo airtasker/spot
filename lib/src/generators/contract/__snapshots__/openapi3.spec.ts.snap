@@ -122,6 +122,64 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         }
       }
     },
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"findUsers\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"limit\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"number\\"
+            }
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"age\\": {
+                        \\"type\\": \\"number\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
     \\"/users/{userId}\\": {
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
@@ -285,6 +343,43 @@ paths:
                 required:
                   - message
           description: ''
+  /users:
+    get:
+      operationId: findUsers
+      description: TODO
+      tags:
+        - TODO
+      parameters:
+        - in: query
+          name: limit
+          description: TODO
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: search_term
+          description: TODO
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    age:
+                      type: number
+                  required:
+                    - name
+          description: ''
+        default:
+          description: ''
   '/users/{userId}':
     get:
       operationId: getUser
@@ -379,6 +474,64 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
               \\"application/json\\": {
                 \\"schema\\": {
                   \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"findUsers\\",
+        \\"description\\": \\"TODO\\",
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"limit\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"number\\"
+            }
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"age\\": {
+                        \\"type\\": \\"number\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"name\\"
+                    ]
+                  }
                 }
               }
             },
@@ -577,6 +730,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateUserResponse'
+          description: ''
+        default:
+          description: ''
+  /users:
+    get:
+      operationId: findUsers
+      description: TODO
+      tags:
+        - TODO
+      parameters:
+        - in: query
+          name: limit
+          description: TODO
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: search_term
+          description: TODO
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    age:
+                      type: number
+                  required:
+                    - name
           description: ''
         default:
           description: ''

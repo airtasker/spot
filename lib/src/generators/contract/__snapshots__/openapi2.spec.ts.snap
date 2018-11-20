@@ -106,6 +106,57 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
         }
       }
     },
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"findUsers\\",
+        \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"limit\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"number\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"age\\": {
+                    \\"type\\": \\"number\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"name\\"
+                ]
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
     \\"/users/{userId}\\": {
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
@@ -255,6 +306,40 @@ paths:
             required:
               - message
           description: ''
+  /users:
+    get:
+      operationId: findUsers
+      description: TODO
+      consumes: []
+      tags:
+        - TODO
+      parameters:
+        - in: query
+          name: limit
+          description: TODO
+          type: number
+          required: false
+        - in: query
+          name: search_term
+          description: TODO
+          type: string
+          required: true
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                age:
+                  type: number
+              required:
+                - name
+          description: ''
+        default:
+          description: ''
   '/users/{userId}':
     get:
       operationId: getUser
@@ -348,6 +433,57 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
           \\"200\\": {
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/CreateUserResponse\\"
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"findUsers\\",
+        \\"description\\": \\"TODO\\",
+        \\"consumes\\": [],
+        \\"tags\\": [
+          \\"TODO\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"limit\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"number\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search_term\\",
+            \\"description\\": \\"TODO\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"age\\": {
+                    \\"type\\": \\"number\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"name\\"
+                ]
+              }
             },
             \\"description\\": \\"\\"
           },
@@ -522,6 +658,40 @@ paths:
         '200':
           schema:
             $ref: '#/definitions/CreateUserResponse'
+          description: ''
+        default:
+          description: ''
+  /users:
+    get:
+      operationId: findUsers
+      description: TODO
+      consumes: []
+      tags:
+        - TODO
+      parameters:
+        - in: query
+          name: limit
+          description: TODO
+          type: number
+          required: false
+        - in: query
+          name: search_term
+          description: TODO
+          type: string
+          required: true
+      responses:
+        '200':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                age:
+                  type: number
+              required:
+                - name
           description: ''
         default:
           description: ''
