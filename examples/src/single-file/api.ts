@@ -7,7 +7,8 @@ import {
   pathParam,
   queryParam,
   request,
-  specificError
+  specificError,
+  response
 } from "@zenclabs/spot";
 
 @api()
@@ -23,7 +24,7 @@ export class Api {
     })
     authToken: Optional<string>
   ): CreateUserResponse {
-    throw new Error("Not implemented");
+    return response();
   }
 
   @endpoint({
@@ -39,7 +40,7 @@ export class Api {
       age?: number;
     }[]
   > {
-    throw new Error("Not implemented");
+    return response();
   }
 
   @endpoint({
@@ -52,7 +53,7 @@ export class Api {
     name: string;
     age?: number;
   }> {
-    throw new Error("Not implemented");
+    return response();
   }
 
   @endpoint({
@@ -76,7 +77,7 @@ export class Api {
     })
     authToken: string
   ): null {
-    throw new Error("Not implemented");
+    return response();
   }
 }
 

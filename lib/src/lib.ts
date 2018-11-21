@@ -108,4 +108,8 @@ export interface HeaderDescription {
   name: string;
 }
 
+export function response<T>(): T {
+  throw "This is just a dummy response. The API contract is not evaluated at run-time."
+}
+
 export type Optional<T> = T | void;
