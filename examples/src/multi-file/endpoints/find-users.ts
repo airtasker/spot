@@ -1,4 +1,4 @@
-import { api, endpoint, Optional, queryParam } from "@zenclabs/spot";
+import { api, endpoint, Optional, queryParam, response } from "@zenclabs/spot";
 
 @api()
 export class Api {
@@ -15,6 +15,6 @@ export class Api {
       age?: number;
     }[]
   > {
-    throw new Error("Not implemented");
+    return response();
   }
 }

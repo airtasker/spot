@@ -1,4 +1,4 @@
-import { api, endpoint, pathParam } from "@zenclabs/spot";
+import { api, endpoint, pathParam, response } from "@zenclabs/spot";
 
 @api()
 export class Api {
@@ -12,6 +12,6 @@ export class Api {
     name: string;
     age?: number;
   }> {
-    throw new Error("Not implemented");
+    return response();
   }
 }

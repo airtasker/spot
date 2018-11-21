@@ -27,7 +27,7 @@ Generated the following files:
     outputFile(
       ".",
       "api.ts",
-      `import { api, endpoint, request } from "@zenclabs/spot";
+      `import { api, endpoint, request, response } from "@zenclabs/spot";
 
 @api()
 class Api {
@@ -36,7 +36,7 @@ class Api {
     path: "/users"
   })
   createUser(@request req: CreateUserRequest): CreateUserResponse {
-    throw "contract";
+    return response();
   }
 }
 

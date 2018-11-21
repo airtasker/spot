@@ -4,7 +4,8 @@ import {
   genericError,
   header,
   pathParam,
-  specificError
+  specificError,
+  response
 } from "@zenclabs/spot";
 
 @api()
@@ -30,6 +31,6 @@ export class Api {
     })
     authToken: string
   ): null {
-    throw new Error("Not implemented");
+    return response();
   }
 }
