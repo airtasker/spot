@@ -24,12 +24,13 @@ describe("Validator", () => {
           path: [
             {
               kind: "static",
-              content: "/users/"
+              content: "/users/",
             },
             {
               kind: "dynamic",
               name: "userId",
-              type: STRING
+              type: STRING,
+              description: "My description"
             }
           ],
           headers: {},
@@ -57,7 +58,8 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "userId",
-              type: VOID
+              type: VOID,
+              description: "My description"
             }
           ],
           headers: {},
@@ -88,7 +90,8 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "userId",
-              type: NUMBER
+              type: NUMBER,
+              description: "My description"
             },
             {
               kind: "static",
@@ -97,7 +100,8 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "userId",
-              type: NUMBER
+              type: NUMBER,
+              description: "My description"
             }
           ],
           headers: {},
@@ -127,72 +131,86 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "paramNumber",
-              type: NUMBER
+              type: NUMBER,
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramString",
-              type: STRING
+              type: STRING,
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramStringConstant",
-              type: stringConstant("abc")
+              type: stringConstant("abc"),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramIntegerContant",
-              type: integerConstant(123)
+              type: integerConstant(123),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramStringOrNumber",
-              type: unionType(STRING, NUMBER)
+              type: unionType(STRING, NUMBER),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramVoid",
-              type: VOID
+              type: VOID,
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramNull",
-              type: NULL
+              type: NULL,
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramBoolean",
-              type: BOOLEAN
+              type: BOOLEAN,
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramBooleanConstantTrue",
-              type: booleanConstant(true)
+              type: booleanConstant(true),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramBooleanConstantFalse",
-              type: booleanConstant(false)
+              type: booleanConstant(false),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramObjectType",
-              type: objectType({})
+              type: objectType({}),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramStringArray",
-              type: arrayType(STRING)
+              type: arrayType(STRING),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramOptionalString",
-              type: optionalType(STRING)
+              type: optionalType(STRING),
+              description: "My description"
             },
             {
               kind: "dynamic",
               name: "paramStringOrObjectOrArray",
-              type: unionType(STRING, objectType({}), arrayType(STRING))
+              type: unionType(STRING, objectType({}), arrayType(STRING)),
+              description: "My description"
             }
           ],
           headers: {},
@@ -361,7 +379,8 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "userId",
-              type: STRING
+              type: STRING,
+              description: "My description"
             }
           ],
           headers: {},
@@ -400,7 +419,8 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "userId",
-              type: STRING
+              type: STRING,
+              description: "My description"
             }
           ],
           headers: {},
@@ -462,7 +482,8 @@ describe("Validator", () => {
             {
               kind: "dynamic",
               name: "param",
-              type: typeReference("missing1")
+              type: typeReference("missing1"),
+              description: "My description"
             }
           ],
           headers: {},

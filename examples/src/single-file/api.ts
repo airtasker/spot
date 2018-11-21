@@ -47,7 +47,8 @@ export class Api {
     path: "/users/:userId"
   })
   getUser(
-    @pathParam userId: string
+    @pathParam({ description: "User unique identifier" })
+    userId: string
   ): Promise<{
     name: string;
     age?: number;
@@ -70,7 +71,7 @@ export class Api {
     statusCode: 403
   })
   deleteUser(
-    @pathParam userId: string,
+    @pathParam() userId: string,
     @header({
       name: "Authorization"
     })

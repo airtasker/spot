@@ -238,7 +238,8 @@ function extractEndpoint(
               ? undefined
               : nextNonNamePositionRelative
           ),
-          type: VOID
+          type: VOID,
+          description: 'TODO'
         };
         pathComponents.push(dynamicPathComponent);
         dynamicPathComponents[dynamicPathComponent.name] = dynamicPathComponent;
@@ -320,6 +321,35 @@ function extractEndpoint(
           ).join(", ")}], got this instead: ${name}`
         );
       }
+      if (pathParamDecorator.arguments.length > 1) {
+        throw panic(
+          `Expected exactly one or no arguments for @pathParam(), got ${
+            pathParamDecorator.arguments.length
+          }`
+        );
+      }
+      if (pathParamDecorator.arguments.length === 1) {
+        const pathParamDescription = extractLiteral(
+          sourceFile,
+          pathParamDecorator.arguments[0]
+        );
+        if (!isObjectLiteral(pathParamDescription)) {
+          throw panic(
+            `@pathParam() expects an object literal, got this instead: ${pathParamDecorator.arguments[0].getText(
+              sourceFile
+            )}`
+          );
+        }
+        const descriptionProperty = pathParamDescription.properties["description"];
+        if (!descriptionProperty || !isStringLiteral(descriptionProperty)) {
+          throw panic(
+            `@pathParam() expects a string description, got this instead: ${pathParamDecorator.arguments[0].getText(
+              sourceFile
+            )}`
+          );
+        }
+        dynamicPathComponents[name].description = descriptionProperty.text;
+      }
     } else if (queryParamDecorator) {
       const name = parameter.name.getText(sourceFile);
 
@@ -340,7 +370,7 @@ function extractEndpoint(
       }
       if (headerDecorator.arguments.length !== 1) {
         throw panic(
-          `Expected exactly one argument for @header(), gpt ${
+          `Expected exactly one argument for @header(), got ${
             headerDecorator.arguments.length
           }`
         );

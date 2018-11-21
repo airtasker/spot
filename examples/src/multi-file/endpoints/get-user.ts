@@ -7,7 +7,7 @@ export class Api {
     path: "/users/:userId"
   })
   getUser(
-    @pathParam userId: string
+    @pathParam() userId: string
   ): Promise<{
     name: string;
     age?: number;

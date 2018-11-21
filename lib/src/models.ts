@@ -48,6 +48,7 @@ export interface DynamicPathComponent {
   kind: "dynamic";
   name: string;
   type: Type;
+  description: string;
 }
 
 export interface Headers {
