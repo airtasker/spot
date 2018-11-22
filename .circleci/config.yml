@@ -4,9 +4,9 @@
 #
 version: 2
 job_configuration: &job_configuration
-    docker:
-      - image: circleci/node:10-stretch
-    working_directory: ~/repo
+  docker:
+    - image: circleci/node:10-stretch
+  working_directory: ~/repo
 jobs:
   build-and-test:
     <<: *job_configuration
@@ -16,9 +16,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v3-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v3-dependencies-
+            - v3-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v3-dependencies-
 
       - run: yarn install
 
@@ -65,8 +65,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
       - run: yarn install
       - save_cache:
           paths:
@@ -77,9 +77,39 @@ jobs:
           command: |
             ./node_modules/.bin/prettier --list-different "**/*.js" "**/*.jsx" "**/*.ts" "**/*.tsx"
 
+  publish:
+    <<: *job_configuration
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+      - run:
+          name: Publish
+          command: |
+            npm publish
+
 workflows:
   version: 2
   build-and-test:
     jobs:
       - build-and-test
       - prettier-check
+      - publish:
+          requires:
+            - build-and-test
+            - prettier-check
+        filters:
+          tags:
+            only: /^release/.*/
+          branches:
+            ignore: /.*/
