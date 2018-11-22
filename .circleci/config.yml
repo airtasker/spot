@@ -108,8 +108,8 @@ workflows:
           requires:
             - build-and-test
             - prettier-check
-        filters:
-          tags:
-            only: /^release/.*/
-          branches:
-            ignore: /.*/
+          filters:
+            tags:
+              only: /^release/.*/
+            branches:
+              ignore: /.*/
