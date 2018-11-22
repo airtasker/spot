@@ -102,8 +102,14 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build-and-test
-      - prettier-check
+      - build-and-test:
+          filters:
+            tags:
+              only: /^release.*$/
+      - prettier-check:
+          filters:
+            tags:
+              only: /^release.*$/
       - publish:
           requires:
             - build-and-test
