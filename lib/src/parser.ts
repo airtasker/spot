@@ -575,6 +575,31 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
       const typeParameter = type.typeArguments[0];
       return optionalType(extractType(sourceFile, typeParameter));
     }
+
+    if (typeName === "Int32") {
+      return {
+        kind: "int32"
+      };
+    }
+
+    if (typeName === "Int64") {
+      return {
+        kind: "int64"
+      };
+    }
+
+    if (typeName === "Float") {
+      return {
+        kind: "float"
+      };
+    }
+
+    if (typeName === "Double") {
+      return {
+        kind: "double"
+      };
+    }
+
     return {
       kind: "type-reference",
       typeName

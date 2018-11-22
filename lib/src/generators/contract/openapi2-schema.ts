@@ -1,6 +1,6 @@
 import assertNever from "../../assert-never";
 import { Type } from "../../models";
-import compact = require("lodash/compact");
+import { OpenAPI3BaseSchemaType } from "./openapi3-schema";
 
 export function rejectVoidOpenApi2SchemaType(
   type: Type,
@@ -45,6 +45,26 @@ export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
       return {
         type: "integer",
         enum: [type.value]
+      };
+    case "int32":
+      return {
+        type: "integer",
+        format: "int32"
+      };
+    case "int64":
+      return {
+        type: "integer",
+        format: "int64"
+      };
+    case "float":
+      return {
+        type: "number",
+        format: "float"
+      };
+    case "double":
+      return {
+        type: "number",
+        format: "double"
       };
     case "object":
       return Object.entries(type.properties).reduce(
@@ -96,6 +116,8 @@ export type OpenAPI2SchemaType =
   | OpenAPI2SchemaTypeNull
   | OpenAPI2SchemaTypeString
   | OpenAPI2SchemaTypeNumber
+  | OpenAPI2SchemaTypeInt
+  | OpenAPI2SchemaTypeFloatDouble
   | OpenAPI2SchemaTypeInteger
   | OpenAPI2SchemaTypeBoolean
   | OpenAPI2SchemaTypeReference;
@@ -141,6 +163,16 @@ export interface OpenAPI2SchemaTypeNumber extends OpenAPI2BaseSchemaType {
 export interface OpenAPI2SchemaTypeInteger extends OpenAPI2BaseSchemaType {
   type: "integer";
   enum?: number[];
+}
+
+export interface OpenAPI2SchemaTypeInt extends OpenAPI3BaseSchemaType {
+  type: "integer";
+  format: "int32" | "int64";
+}
+
+export interface OpenAPI2SchemaTypeFloatDouble extends OpenAPI3BaseSchemaType {
+  type: "number";
+  format: "float" | "double";
 }
 
 export interface OpenAPI2SchemaTypeBoolean extends OpenAPI2BaseSchemaType {

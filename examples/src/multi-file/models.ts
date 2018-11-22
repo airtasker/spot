@@ -5,7 +5,3 @@ export interface CreateUserRequest {
 export interface CreateUserResponse {
   success: boolean;
 }
-
-export interface GetUserResponse {
-  name: string;
-}

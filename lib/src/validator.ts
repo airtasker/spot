@@ -101,6 +101,10 @@ function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
     case "string-constant":
     case "number":
     case "integer-constant":
+    case "int32":
+    case "int64":
+    case "float":
+    case "double":
       break;
     case "object":
       for (const property of Object.values(type.properties)) {
@@ -139,6 +143,10 @@ function ensureStringOrNumber(
     case "string-constant":
     case "number":
     case "integer-constant":
+    case "int32":
+    case "int64":
+    case "float":
+    case "double":
       // That's fine.
       return;
     case "type-reference":

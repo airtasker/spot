@@ -77,6 +77,26 @@ export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
         type: "integer",
         enum: [type.value]
       };
+    case "int32":
+      return {
+        type: "integer",
+        format: "int32"
+      };
+    case "int64":
+      return {
+        type: "integer",
+        format: "int64"
+      };
+    case "float":
+      return {
+        type: "number",
+        format: "float"
+      };
+    case "double":
+      return {
+        type: "number",
+        format: "double"
+      };
     case "object":
       return Object.entries(type.properties).reduce(
         (acc, [name, type]) => {
@@ -133,6 +153,8 @@ export type OpenAPI3SchemaType =
   | OpenAPI3SchemaTypeNull
   | OpenAPI3SchemaTypeString
   | OpenAPI3SchemaTypeNumber
+  | OpenAPI3SchemaTypeInt
+  | OpenAPI3SchemaTypeFloatDouble
   | OpenAPI3SchemaTypeInteger
   | OpenAPI3SchemaTypeBoolean
   | OpenAPI3SchemaTypeReference;
@@ -201,6 +223,16 @@ export interface OpenAPI3SchemaTypeNumber extends OpenAPI3BaseSchemaType {
 export interface OpenAPI3SchemaTypeInteger extends OpenAPI3BaseSchemaType {
   type: "integer";
   enum?: number[];
+}
+
+export interface OpenAPI3SchemaTypeInt extends OpenAPI3BaseSchemaType {
+  type: "integer";
+  format: "int32" | "int64";
+}
+
+export interface OpenAPI3SchemaTypeFloatDouble extends OpenAPI3BaseSchemaType {
+  type: "number";
+  format: "float" | "double";
 }
 
 export interface OpenAPI3SchemaTypeBoolean extends OpenAPI3BaseSchemaType {

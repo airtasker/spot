@@ -1,4 +1,12 @@
-import { api, endpoint, Optional, queryParam, response } from "@zenclabs/spot";
+import {
+  api,
+  endpoint,
+  Float,
+  Int32,
+  Optional,
+  queryParam,
+  response
+} from "@zenclabs/spot";
 
 @api()
 export class Api {
@@ -7,12 +15,12 @@ export class Api {
     path: "/users"
   })
   findUsers(
-    @queryParam limit: number,
+    @queryParam limit: Int32,
     @queryParam search_term: Optional<string>
   ): Promise<
     {
       name: string;
-      age?: number;
+      age?: Float;
     }[]
   > {
     return response();
