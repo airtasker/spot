@@ -93,7 +93,7 @@ export function pathParam(description?: PathDescription) {
 }
 
 export interface PathDescription {
-  description: string
+  description: string;
 }
 
 export function queryParam(

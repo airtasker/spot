@@ -24,7 +24,7 @@ describe("Validator", () => {
           path: [
             {
               kind: "static",
-              content: "/users/",
+              content: "/users/"
             },
             {
               kind: "dynamic",

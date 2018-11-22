@@ -47,8 +47,7 @@ export class Api {
     path: "/users/:userId"
   })
   getUser(
-    @pathParam({ description: "User unique identifier" })
-    userId: string
+    @pathParam({ description: "User unique identifier" }) userId: string
   ): Promise<{
     name: string;
     age?: number;

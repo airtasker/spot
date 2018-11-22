@@ -340,7 +340,8 @@ function extractEndpoint(
             )}`
           );
         }
-        const descriptionProperty = pathParamDescription.properties["description"];
+        const descriptionProperty =
+          pathParamDescription.properties["description"];
         if (!descriptionProperty || !isStringLiteral(descriptionProperty)) {
           throw panic(
             `@pathParam() expects a string description, got this instead: ${pathParamDecorator.arguments[0].getText(
