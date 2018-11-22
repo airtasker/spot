@@ -88,11 +88,13 @@ export function request(
   parameterIndex: number
 ) {}
 
-export function pathParam(
-  target: any,
-  propertyKey: string,
-  parameterIndex: number
-) {}
+export function pathParam(description?: PathDescription) {
+  return (target: any, propertyKey: string, parameterIndex: number) => {};
+}
+
+export interface PathDescription {
+  description: string;
+}
 
 export function queryParam(
   target: any,

@@ -122,7 +122,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
           ? {
               in: "path",
               name: pathComponent.name,
-              description: "TODO",
+              description: pathComponent.description,
               required: true,
               schema: rejectVoidOpenApi3SchemaType(
                 pathComponent.type,

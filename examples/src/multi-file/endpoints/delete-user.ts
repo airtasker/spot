@@ -25,7 +25,7 @@ export class Api {
     statusCode: 403
   })
   deleteUser(
-    @pathParam userId: string,
+    @pathParam() userId: string,
     @header({
       name: "Authorization"
     })

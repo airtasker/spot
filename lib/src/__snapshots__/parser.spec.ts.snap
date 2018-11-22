@@ -61,6 +61,7 @@ Object {
           "kind": "static",
         },
         Object {
+          "description": "",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {
@@ -161,6 +162,7 @@ Object {
           "kind": "static",
         },
         Object {
+          "description": "User unique identifier",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {
@@ -280,6 +282,7 @@ Object {
           "kind": "static",
         },
         Object {
+          "description": "",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {
@@ -380,6 +383,7 @@ Object {
           "kind": "static",
         },
         Object {
+          "description": "User unique identifier",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {

@@ -102,7 +102,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
           ? {
               in: "path",
               name: pathComponent.name,
-              description: "TODO",
+              description: pathComponent.description,
               ...rejectVoidOpenApi2SchemaType(
                 pathComponent.type,
                 `Unsupported void type for path component ${pathComponent.name}`
