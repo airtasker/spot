@@ -57,6 +57,10 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
         const: type.value
       };
     case "number":
+    case "int32":
+    case "int64":
+    case "float":
+    case "double":
       return {
         type: "number"
       };

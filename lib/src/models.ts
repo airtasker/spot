@@ -168,6 +168,22 @@ export interface IntegerConstantType {
   value: number;
 }
 
+export const INT32: Int32Type = {
+  kind: "int32"
+};
+
+export const INT64: Int64Type = {
+  kind: "int64"
+};
+
+export const FLOAT: FloatType = {
+  kind: "float"
+};
+
+export const DOUBLE: DoubleType = {
+  kind: "double"
+};
+
 export interface Int32Type {
   kind: "int32";
 }
