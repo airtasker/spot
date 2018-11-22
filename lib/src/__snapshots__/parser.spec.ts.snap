@@ -61,7 +61,7 @@ Object {
           "kind": "static",
         },
         Object {
-          "description": "TODO",
+          "description": "",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {
@@ -162,7 +162,7 @@ Object {
           "kind": "static",
         },
         Object {
-          "description": "TODO",
+          "description": "",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {
@@ -282,7 +282,7 @@ Object {
           "kind": "static",
         },
         Object {
-          "description": "TODO",
+          "description": "",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {
