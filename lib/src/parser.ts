@@ -239,7 +239,7 @@ function extractEndpoint(
               : nextNonNamePositionRelative
           ),
           type: VOID,
-          description: 'TODO'
+          description: ""
         };
         pathComponents.push(dynamicPathComponent);
         dynamicPathComponents[dynamicPathComponent.name] = dynamicPathComponent;
