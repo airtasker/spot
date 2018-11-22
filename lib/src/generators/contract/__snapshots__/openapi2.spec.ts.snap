@@ -183,7 +183,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
-            \\"description\\": \\"\\",
+            \\"description\\": \\"User unique identifier\\",
             \\"type\\": \\"string\\",
             \\"required\\": true
           }
@@ -374,7 +374,7 @@ paths:
       parameters:
         - in: path
           name: userId
-          description: ''
+          description: User unique identifier
           type: string
           required: true
       responses:

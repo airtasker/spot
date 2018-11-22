@@ -162,7 +162,7 @@ Object {
           "kind": "static",
         },
         Object {
-          "description": "",
+          "description": "User unique identifier",
           "kind": "dynamic",
           "name": "userId",
           "type": Object {

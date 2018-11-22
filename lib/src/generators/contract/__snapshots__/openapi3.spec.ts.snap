@@ -210,7 +210,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
-            \\"description\\": \\"\\",
+            \\"description\\": \\"User unique identifier\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -420,7 +420,7 @@ paths:
       parameters:
         - in: path
           name: userId
-          description: ''
+          description: User unique identifier
           required: true
           schema:
             type: string
