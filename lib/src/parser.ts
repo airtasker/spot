@@ -576,34 +576,29 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
       return optionalType(extractType(sourceFile, typeParameter));
     }
 
-    if (typeName === "Int32") {
-      return {
-        kind: "int32"
-      };
+    switch (typeName) {
+      case "Int32":
+        return {
+          kind: "int32"
+        };
+      case "Int64":
+        return {
+          kind: "int64"
+        };
+      case "Float":
+        return {
+          kind: "float"
+        };
+      case "Double":
+        return {
+          kind: "double"
+        };
+      default:
+        return {
+          kind: "type-reference",
+          typeName
+        };
     }
-
-    if (typeName === "Int64") {
-      return {
-        kind: "int64"
-      };
-    }
-
-    if (typeName === "Float") {
-      return {
-        kind: "float"
-      };
-    }
-
-    if (typeName === "Double") {
-      return {
-        kind: "double"
-      };
-    }
-
-    return {
-      kind: "type-reference",
-      typeName
-    };
   } else {
     throw panic(
       `Expected a plain type identifier, got this instead: ${type.getText(
