@@ -99,7 +99,8 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/v0.1.24/build/cli/src/commands/generate.js)_
+_See code: [cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/generate.ts)_
+ 
 
 ## `spot help [COMMAND]`
 
@@ -137,5 +138,5 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/zenclabs/spot/blob/v0.1.24/build/cli/src/commands/init.js)_
+_See code: [cli/src/commands/init.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/init.ts)_
 <!-- commandsstop -->
