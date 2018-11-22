@@ -110,6 +110,6 @@ workflows:
             - prettier-check
           filters:
             tags:
-              only: /^release/.*/
+              only: /^release\/.*/
             branches:
               ignore: /.*/
