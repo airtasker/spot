@@ -4,6 +4,10 @@ import {
   arrayType,
   BOOLEAN,
   booleanConstant,
+  DOUBLE,
+  FLOAT,
+  INT32,
+  INT64,
   integerConstant,
   NULL,
   NUMBER,
@@ -104,6 +108,38 @@ Object {
 
     test("number", () => {
       expect(jsonTypeSchema(NUMBER)).toMatchInlineSnapshot(`
+Object {
+  "type": "number",
+}
+`);
+    });
+
+    test("int32", () => {
+      expect(jsonTypeSchema(INT32)).toMatchInlineSnapshot(`
+Object {
+  "type": "number",
+}
+`);
+    });
+
+    test("int64", () => {
+      expect(jsonTypeSchema(INT64)).toMatchInlineSnapshot(`
+Object {
+  "type": "number",
+}
+`);
+    });
+
+    test("float", () => {
+      expect(jsonTypeSchema(FLOAT)).toMatchInlineSnapshot(`
+Object {
+  "type": "number",
+}
+`);
+    });
+
+    test("double", () => {
+      expect(jsonTypeSchema(DOUBLE)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }

@@ -1,8 +1,11 @@
 import {
   api,
   endpoint,
+  Float,
   genericError,
   header,
+  Int32,
+  Int64,
   Optional,
   pathParam,
   queryParam,
@@ -32,12 +35,12 @@ export class Api {
     path: "/users"
   })
   findUsers(
-    @queryParam limit: number,
+    @queryParam limit: Int32,
     @queryParam search_term: Optional<string>
   ): Promise<
     {
       name: string;
-      age?: number;
+      age?: Float;
     }[]
   > {
     return response();
@@ -48,10 +51,10 @@ export class Api {
     path: "/users/:userId"
   })
   getUser(
-    @pathParam({ description: "User unique identifier" }) userId: string
+    @pathParam({ description: "User unique identifier" }) userId: Int64
   ): Promise<{
     name: string;
-    age?: number;
+    age?: Float;
   }> {
     return response();
   }
@@ -71,7 +74,7 @@ export class Api {
     statusCode: 403
   })
   deleteUser(
-    @pathParam() userId: string,
+    @pathParam() userId: Int64,
     @header({
       name: "Authorization"
     })
@@ -87,8 +90,4 @@ export interface CreateUserRequest {
 
 export interface CreateUserResponse {
   success: boolean;
-}
-
-export interface GetUserResponse {
-  name: string;
 }

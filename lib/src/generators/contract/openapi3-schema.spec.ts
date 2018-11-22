@@ -2,6 +2,10 @@ import {
   arrayType,
   BOOLEAN,
   booleanConstant,
+  DOUBLE,
+  FLOAT,
+  INT32,
+  INT64,
   integerConstant,
   NULL,
   NUMBER,
@@ -119,6 +123,42 @@ Object {
     test("number", () => {
       expect(openApi3TypeSchema(NUMBER)).toMatchInlineSnapshot(`
 Object {
+  "type": "number",
+}
+`);
+    });
+
+    test("int32", () => {
+      expect(openApi3TypeSchema(INT32)).toMatchInlineSnapshot(`
+Object {
+  "format": "int32",
+  "type": "integer",
+}
+`);
+    });
+
+    test("int64", () => {
+      expect(openApi3TypeSchema(INT64)).toMatchInlineSnapshot(`
+Object {
+  "format": "int64",
+  "type": "integer",
+}
+`);
+    });
+
+    test("float", () => {
+      expect(openApi3TypeSchema(FLOAT)).toMatchInlineSnapshot(`
+Object {
+  "format": "float",
+  "type": "number",
+}
+`);
+    });
+
+    test("double", () => {
+      expect(openApi3TypeSchema(DOUBLE)).toMatchInlineSnapshot(`
+Object {
+  "format": "double",
   "type": "number",
 }
 `);

@@ -5,7 +5,8 @@ import {
   header,
   pathParam,
   specificError,
-  response
+  response,
+  Int64
 } from "@zenclabs/spot";
 
 @api()
@@ -25,7 +26,7 @@ export class Api {
     statusCode: 403
   })
   deleteUser(
-    @pathParam() userId: string,
+    @pathParam() userId: Int64,
     @header({
       name: "Authorization"
     })

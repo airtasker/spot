@@ -1,4 +1,11 @@
-import { api, endpoint, pathParam, response } from "@zenclabs/spot";
+import {
+  api,
+  endpoint,
+  Float,
+  Int64,
+  pathParam,
+  response
+} from "@zenclabs/spot";
 
 @api()
 export class Api {
@@ -7,10 +14,10 @@ export class Api {
     path: "/users/:userId"
   })
   getUser(
-    @pathParam({ description: "User unique identifier" }) userId: string
+    @pathParam({ description: "User unique identifier" }) userId: Int64
   ): Promise<{
     name: string;
-    age?: number;
+    age?: Float;
   }> {
     return response();
   }

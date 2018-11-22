@@ -70,7 +70,8 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
             \\"description\\": \\"\\",
-            \\"type\\": \\"string\\",
+            \\"type\\": \\"integer\\",
+            \\"format\\": \\"int64\\",
             \\"required\\": true
           },
           {
@@ -133,7 +134,8 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
-            \\"type\\": \\"number\\",
+            \\"type\\": \\"integer\\",
+            \\"format\\": \\"int32\\",
             \\"required\\": true
           },
           {
@@ -155,7 +157,8 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
                     \\"type\\": \\"string\\"
                   },
                   \\"age\\": {
-                    \\"type\\": \\"number\\"
+                    \\"type\\": \\"number\\",
+                    \\"format\\": \\"float\\"
                   }
                 },
                 \\"required\\": [
@@ -184,7 +187,8 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
             \\"description\\": \\"User unique identifier\\",
-            \\"type\\": \\"string\\",
+            \\"type\\": \\"integer\\",
+            \\"format\\": \\"int64\\",
             \\"required\\": true
           }
         ],
@@ -197,7 +201,8 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
                   \\"type\\": \\"string\\"
                 },
                 \\"age\\": {
-                  \\"type\\": \\"number\\"
+                  \\"type\\": \\"number\\",
+                  \\"format\\": \\"float\\"
                 }
               },
               \\"required\\": [
@@ -234,17 +239,6 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       },
       \\"required\\": [
         \\"success\\"
-      ]
-    },
-    \\"GetUserResponse\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"name\\": {
-          \\"type\\": \\"string\\"
-        }
-      },
-      \\"required\\": [
-        \\"name\\"
       ]
     }
   }
@@ -299,7 +293,8 @@ paths:
         - in: path
           name: userId
           description: ''
-          type: string
+          type: integer
+          format: int64
           required: true
         - in: header
           name: Authorization
@@ -341,7 +336,8 @@ paths:
         - in: query
           name: limit
           description: TODO
-          type: number
+          type: integer
+          format: int32
           required: true
         - in: query
           name: search_term
@@ -359,6 +355,7 @@ paths:
                   type: string
                 age:
                   type: number
+                  format: float
               required:
                 - name
           description: ''
@@ -375,7 +372,8 @@ paths:
         - in: path
           name: userId
           description: User unique identifier
-          type: string
+          type: integer
+          format: int64
           required: true
       responses:
         '200':
@@ -386,6 +384,7 @@ paths:
                 type: string
               age:
                 type: number
+                format: float
             required:
               - name
           description: ''
@@ -406,13 +405,6 @@ definitions:
         type: boolean
     required:
       - success
-  GetUserResponse:
-    type: object
-    properties:
-      name:
-        type: string
-    required:
-      - name
 "
 `;
 
@@ -486,7 +478,8 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
             \\"description\\": \\"TODO\\",
-            \\"type\\": \\"number\\",
+            \\"type\\": \\"integer\\",
+            \\"format\\": \\"int32\\",
             \\"required\\": true
           },
           {
@@ -508,7 +501,8 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
                     \\"type\\": \\"string\\"
                   },
                   \\"age\\": {
-                    \\"type\\": \\"number\\"
+                    \\"type\\": \\"number\\",
+                    \\"format\\": \\"float\\"
                   }
                 },
                 \\"required\\": [
@@ -537,7 +531,8 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
             \\"description\\": \\"User unique identifier\\",
-            \\"type\\": \\"string\\",
+            \\"type\\": \\"integer\\",
+            \\"format\\": \\"int64\\",
             \\"required\\": true
           }
         ],
@@ -550,7 +545,8 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
                   \\"type\\": \\"string\\"
                 },
                 \\"age\\": {
-                  \\"type\\": \\"number\\"
+                  \\"type\\": \\"number\\",
+                  \\"format\\": \\"float\\"
                 }
               },
               \\"required\\": [
@@ -578,7 +574,8 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
             \\"in\\": \\"path\\",
             \\"name\\": \\"userId\\",
             \\"description\\": \\"\\",
-            \\"type\\": \\"string\\",
+            \\"type\\": \\"integer\\",
+            \\"format\\": \\"int64\\",
             \\"required\\": true
           },
           {
@@ -651,17 +648,6 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"required\\": [
         \\"success\\"
       ]
-    },
-    \\"GetUserResponse\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"name\\": {
-          \\"type\\": \\"string\\"
-        }
-      },
-      \\"required\\": [
-        \\"name\\"
-      ]
     }
   }
 }"
@@ -715,7 +701,8 @@ paths:
         - in: query
           name: limit
           description: TODO
-          type: number
+          type: integer
+          format: int32
           required: true
         - in: query
           name: search_term
@@ -733,6 +720,7 @@ paths:
                   type: string
                 age:
                   type: number
+                  format: float
               required:
                 - name
           description: ''
@@ -749,7 +737,8 @@ paths:
         - in: path
           name: userId
           description: User unique identifier
-          type: string
+          type: integer
+          format: int64
           required: true
       responses:
         '200':
@@ -760,6 +749,7 @@ paths:
                 type: string
               age:
                 type: number
+                format: float
             required:
               - name
           description: ''
@@ -776,7 +766,8 @@ paths:
         - in: path
           name: userId
           description: ''
-          type: string
+          type: integer
+          format: int64
           required: true
         - in: header
           name: Authorization
@@ -822,12 +813,5 @@ definitions:
         type: boolean
     required:
       - success
-  GetUserResponse:
-    type: object
-    properties:
-      name:
-        type: string
-    required:
-      - name
 "
 `;

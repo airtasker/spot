@@ -17,7 +17,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
 `;
 
 exports[`TypeScript Express server generator produces valid code multi-file: endpoint:deleteUser 1`] = `
-"export async function deleteUser(userId: string, authToken: string): Promise<{
+"export async function deleteUser(userId: number, authToken: string): Promise<{
     error?: void;
     status: number;
     data: null;
@@ -57,7 +57,7 @@ exports[`TypeScript Express server generator produces valid code multi-file: end
 `;
 
 exports[`TypeScript Express server generator produces valid code multi-file: endpoint:getUser 1`] = `
-"export async function getUser(userId: string): Promise<{
+"export async function getUser(userId: number): Promise<{
     error?: void;
     status: number;
     data: {
@@ -237,7 +237,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
 `;
 
 exports[`TypeScript Express server generator produces valid code single-file: endpoint:deleteUser 1`] = `
-"export async function deleteUser(userId: string, authToken: string): Promise<{
+"export async function deleteUser(userId: number, authToken: string): Promise<{
     error?: void;
     status: number;
     data: null;
@@ -277,7 +277,7 @@ exports[`TypeScript Express server generator produces valid code single-file: en
 `;
 
 exports[`TypeScript Express server generator produces valid code single-file: endpoint:getUser 1`] = `
-"export async function getUser(userId: string): Promise<{
+"export async function getUser(userId: number): Promise<{
     error?: void;
     status: number;
     data: {

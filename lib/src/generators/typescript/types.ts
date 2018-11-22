@@ -45,6 +45,10 @@ export function typeNode(type: Type): ts.TypeNode {
     case "string-constant":
       return stringConstantTypeNode(type.value);
     case "number":
+    case "float":
+    case "double":
+    case "int32":
+    case "int64":
       return NUMBER_TYPE_NODE;
     case "integer-constant":
       return integerConstantTypeNode(type.value);

@@ -3,7 +3,7 @@
 exports[`TypeScript axios client generator produces valid code multi-file 1`] = `
 "import axios from \\"axios\\";
 
-import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./types\\";
+import { CreateUserRequest, CreateUserResponse } from \\"./types\\";
 
 import * as validators from \\"./validators\\";
 
@@ -50,7 +50,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
     }
 }
 
-export async function deleteUser(userId: string, authToken: string): Promise<{
+export async function deleteUser(userId: number, authToken: string): Promise<{
     kind: \\"success\\";
     data: null;
 } | {
@@ -147,7 +147,7 @@ export async function findUsers(limit: number, search_term: string | void): Prom
     }
 }
 
-export async function getUser(userId: string): Promise<{
+export async function getUser(userId: number): Promise<{
     kind: \\"success\\";
     data: {
         name: string;
@@ -193,7 +193,7 @@ export async function getUser(userId: string): Promise<{
 exports[`TypeScript axios client generator produces valid code single-file 1`] = `
 "import axios from \\"axios\\";
 
-import { CreateUserRequest, CreateUserResponse, GetUserResponse } from \\"./types\\";
+import { CreateUserRequest, CreateUserResponse } from \\"./types\\";
 
 import * as validators from \\"./validators\\";
 
@@ -279,7 +279,7 @@ export async function findUsers(limit: number, search_term: string | void): Prom
     }
 }
 
-export async function getUser(userId: string): Promise<{
+export async function getUser(userId: number): Promise<{
     kind: \\"success\\";
     data: {
         name: string;
@@ -321,7 +321,7 @@ export async function getUser(userId: string): Promise<{
     }
 }
 
-export async function deleteUser(userId: string, authToken: string): Promise<{
+export async function deleteUser(userId: number, authToken: string): Promise<{
     kind: \\"success\\";
     data: null;
 } | {

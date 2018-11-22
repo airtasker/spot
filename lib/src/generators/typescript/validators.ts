@@ -136,6 +136,10 @@ function validator(type: Type, parameter: ts.Expression): ts.Expression {
       return stringValidator(parameter);
     case "string-constant":
       return stringConstantValidator(type.value, parameter);
+    case "int32":
+    case "int64":
+    case "float":
+    case "double":
     case "number":
       return numberValidator(parameter);
     case "integer-constant":

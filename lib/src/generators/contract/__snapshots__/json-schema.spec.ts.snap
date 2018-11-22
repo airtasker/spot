@@ -25,17 +25,6 @@ exports[`JSON Schema generator produces valid code multi-file: json 1`] = `
       \\"required\\": [
         \\"success\\"
       ]
-    },
-    \\"GetUserResponse\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"name\\": {
-          \\"type\\": \\"string\\"
-        }
-      },
-      \\"required\\": [
-        \\"name\\"
-      ]
     }
   }
 }"
@@ -58,13 +47,6 @@ definitions:
         type: boolean
     required:
       - success
-  GetUserResponse:
-    type: object
-    properties:
-      name:
-        type: string
-    required:
-      - name
 "
 `;
 
@@ -93,17 +75,6 @@ exports[`JSON Schema generator produces valid code single-file: json 1`] = `
       \\"required\\": [
         \\"success\\"
       ]
-    },
-    \\"GetUserResponse\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"name\\": {
-          \\"type\\": \\"string\\"
-        }
-      },
-      \\"required\\": [
-        \\"name\\"
-      ]
     }
   }
 }"
@@ -126,12 +97,5 @@ definitions:
         type: boolean
     required:
       - success
-  GetUserResponse:
-    type: object
-    properties:
-      name:
-        type: string
-    required:
-      - name
 "
 `;

@@ -575,10 +575,30 @@ function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
       const typeParameter = type.typeArguments[0];
       return optionalType(extractType(sourceFile, typeParameter));
     }
-    return {
-      kind: "type-reference",
-      typeName
-    };
+
+    switch (typeName) {
+      case "Int32":
+        return {
+          kind: "int32"
+        };
+      case "Int64":
+        return {
+          kind: "int64"
+        };
+      case "Float":
+        return {
+          kind: "float"
+        };
+      case "Double":
+        return {
+          kind: "double"
+        };
+      default:
+        return {
+          kind: "type-reference",
+          typeName
+        };
+    }
   } else {
     throw panic(
       `Expected a plain type identifier, got this instead: ${type.getText(

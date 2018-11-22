@@ -79,6 +79,10 @@ export type Type =
   | StringConstantType
   | NumberType
   | IntegerConstantType
+  | Int32Type
+  | Int64Type
+  | FloatType
+  | DoubleType
   | ObjectType
   | ArrayType
   | OptionalType
@@ -162,6 +166,38 @@ export function integerConstant(value: number): IntegerConstantType {
 export interface IntegerConstantType {
   kind: "integer-constant";
   value: number;
+}
+
+export const INT32: Int32Type = {
+  kind: "int32"
+};
+
+export const INT64: Int64Type = {
+  kind: "int64"
+};
+
+export const FLOAT: FloatType = {
+  kind: "float"
+};
+
+export const DOUBLE: DoubleType = {
+  kind: "double"
+};
+
+export interface Int32Type {
+  kind: "int32";
+}
+
+export interface Int64Type {
+  kind: "int64";
+}
+
+export interface FloatType {
+  kind: "float";
+}
+
+export interface DoubleType {
+  kind: "double";
 }
 
 export function objectType(properties: { [key: string]: Type }): ObjectType {

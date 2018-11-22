@@ -2,6 +2,10 @@ import {
   arrayType,
   BOOLEAN,
   booleanConstant,
+  DOUBLE,
+  FLOAT,
+  INT32,
+  INT64,
   integerConstant,
   NULL,
   NUMBER,
@@ -14,6 +18,7 @@ import {
   VOID
 } from "../../models";
 import { openApi2TypeSchema } from "./openapi2-schema";
+import { jsonTypeSchema } from "./json-schema";
 
 describe("JSON Schema generator", () => {
   describe("generates type validator", () => {
@@ -75,6 +80,42 @@ Object {
     test("number", () => {
       expect(openApi2TypeSchema(NUMBER)).toMatchInlineSnapshot(`
 Object {
+  "type": "number",
+}
+`);
+    });
+
+    test("int32", () => {
+      expect(openApi2TypeSchema(INT32)).toMatchInlineSnapshot(`
+Object {
+  "format": "int32",
+  "type": "integer",
+}
+`);
+    });
+
+    test("int64", () => {
+      expect(openApi2TypeSchema(INT64)).toMatchInlineSnapshot(`
+Object {
+  "format": "int64",
+  "type": "integer",
+}
+`);
+    });
+
+    test("float", () => {
+      expect(openApi2TypeSchema(FLOAT)).toMatchInlineSnapshot(`
+Object {
+  "format": "float",
+  "type": "number",
+}
+`);
+    });
+
+    test("double", () => {
+      expect(openApi2TypeSchema(DOUBLE)).toMatchInlineSnapshot(`
+Object {
+  "format": "double",
   "type": "number",
 }
 `);
