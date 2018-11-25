@@ -245,12 +245,12 @@ describe("Validator", () => {
           headers: {
             header1: {
               headerFieldName: "duplicate",
-              description: '',
+              description: "",
               type: STRING
             },
             header2: {
               headerFieldName: "duplicate",
-              description: '',
+              description: "",
               type: STRING
             }
           },
@@ -276,87 +276,87 @@ describe("Validator", () => {
           headers: {
             headerRequiredString: {
               headerFieldName: "required-string",
-              description: '',
+              description: "",
               type: STRING
             },
             headerOptionalString: {
               headerFieldName: "optional-string",
-              description: '',
+              description: "",
               type: optionalType(STRING)
             },
             headerRequiredStringConstant: {
               headerFieldName: "required-string-constant",
-              description: '',
+              description: "",
               type: stringConstant("abc")
             },
             headerOptionalStringConstant: {
               headerFieldName: "optional-string-constant",
-              description: '',
+              description: "",
               type: optionalType(stringConstant("abc"))
             },
             headerUnionStringConstants: {
               headerFieldName: "union-string-constant",
-              description: '',
+              description: "",
               type: unionType(stringConstant("abc"), stringConstant("def"))
             },
             headerOptionalReferenceString: {
               headerFieldName: "optional-reference-string",
-              description: '',
+              description: "",
               type: optionalType(typeReference("StringAlias"))
             },
             headerNumber: {
               headerFieldName: "number",
-              description: '',
+              description: "",
               type: NUMBER
             },
             headerIntegerConstant: {
               headerFieldName: "integer-constant",
-              description: '',
+              description: "",
               type: integerConstant(123)
             },
             headerStringOrNumber: {
               headerFieldName: "string-or-number",
-              description: '',
+              description: "",
               type: unionType(STRING, NUMBER)
             },
             headerVoid: {
               headerFieldName: "void",
-              description: '',
+              description: "",
               type: VOID
             },
             headerNull: {
               headerFieldName: "null",
-              description: '',
+              description: "",
               type: NULL
             },
             headerBoolean: {
               headerFieldName: "boolean",
-              description: '',
+              description: "",
               type: BOOLEAN
             },
             headerBooleanConstantTrue: {
               headerFieldName: "boolean-constant-true",
-              description: '',
+              description: "",
               type: booleanConstant(true)
             },
             headerBooleanConstantFalse: {
               headerFieldName: "boolean-constant-false",
-              description: '',
+              description: "",
               type: booleanConstant(false)
             },
             headerObjectType: {
               headerFieldName: "object-type",
-              description: '',
+              description: "",
               type: objectType({})
             },
             headerStringArray: {
               headerFieldName: "string-array",
-              description: '',
+              description: "",
               type: arrayType(STRING)
             },
             headerStringOrObjectOrArray: {
               headerFieldName: "string-or-object-or-array",
-              description: '',
+              description: "",
               type: unionType(STRING, objectType({}), arrayType(STRING))
             }
           },

@@ -396,7 +396,7 @@ function extractEndpoint(
         );
       }
       const descriptionProperty = headerDescription.properties["description"];
-      let description = '';
+      let description = "";
       if (!nameProperty || !isStringLiteral(nameProperty)) {
         throw panic(
           `@header() expects a string name, got this instead: ${headerDecorator.arguments[0].getText(
@@ -406,7 +406,7 @@ function extractEndpoint(
       }
 
       if (descriptionProperty) {
-        if(!isStringLiteral(descriptionProperty)) {
+        if (!isStringLiteral(descriptionProperty)) {
           throw panic(
             `@header() expects a string description, got this instead: ${headerDecorator.arguments[0].getText(
               sourceFile
