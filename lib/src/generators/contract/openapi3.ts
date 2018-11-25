@@ -155,7 +155,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
           return {
             in: "header",
             name: header.headerFieldName,
-            description: "TODO",
+            description: header.description,
             required: header.type.kind !== "optional",
             schema: rejectVoidOpenApi3SchemaType(
               header.type.kind === "optional"

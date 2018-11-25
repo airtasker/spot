@@ -27,7 +27,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"header\\",
             \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"This is the authorization token\\",
             \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -81,7 +81,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"header\\",
             \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -299,7 +299,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
-          description: TODO
+          description: This is the authorization token
           required: false
           schema:
             type: string
@@ -333,7 +333,7 @@ paths:
             format: int64
         - in: header
           name: Authorization
-          description: TODO
+          description: ''
           required: true
           schema:
             type: string
@@ -485,7 +485,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"header\\",
             \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"This is the authorization token\\",
             \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -647,7 +647,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"header\\",
             \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -757,7 +757,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
-          description: TODO
+          description: This is the authorization token
           required: false
           schema:
             type: string
@@ -861,7 +861,7 @@ paths:
             format: int64
         - in: header
           name: Authorization
-          description: TODO
+          description: ''
           required: true
           schema:
             type: string

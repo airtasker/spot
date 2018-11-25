@@ -108,6 +108,7 @@ export function header(description: HeaderDescription) {
 
 export interface HeaderDescription {
   name: string;
+  description?: string;
 }
 
 export function response<T>(): T {

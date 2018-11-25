@@ -23,7 +23,8 @@ export class Api {
   createUser(
     @request req: CreateUserRequest,
     @header({
-      name: "Authorization"
+      name: "Authorization",
+      description: "This is the authorization token"
     })
     authToken: Optional<string>
   ): CreateUserResponse {
