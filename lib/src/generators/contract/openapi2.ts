@@ -136,7 +136,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
           return {
             in: "header",
             name: header.headerFieldName,
-            description: "TODO",
+            description: header.description,
             ...rejectVoidOpenApi2SchemaType(
               header.type.kind === "optional"
                 ? header.type.optional

@@ -245,10 +245,12 @@ describe("Validator", () => {
           headers: {
             header1: {
               headerFieldName: "duplicate",
+              description: '',
               type: STRING
             },
             header2: {
               headerFieldName: "duplicate",
+              description: '',
               type: STRING
             }
           },
@@ -274,70 +276,87 @@ describe("Validator", () => {
           headers: {
             headerRequiredString: {
               headerFieldName: "required-string",
+              description: '',
               type: STRING
             },
             headerOptionalString: {
               headerFieldName: "optional-string",
+              description: '',
               type: optionalType(STRING)
             },
             headerRequiredStringConstant: {
               headerFieldName: "required-string-constant",
+              description: '',
               type: stringConstant("abc")
             },
             headerOptionalStringConstant: {
               headerFieldName: "optional-string-constant",
+              description: '',
               type: optionalType(stringConstant("abc"))
             },
             headerUnionStringConstants: {
               headerFieldName: "union-string-constant",
+              description: '',
               type: unionType(stringConstant("abc"), stringConstant("def"))
             },
             headerOptionalReferenceString: {
               headerFieldName: "optional-reference-string",
+              description: '',
               type: optionalType(typeReference("StringAlias"))
             },
             headerNumber: {
               headerFieldName: "number",
+              description: '',
               type: NUMBER
             },
             headerIntegerConstant: {
               headerFieldName: "integer-constant",
+              description: '',
               type: integerConstant(123)
             },
             headerStringOrNumber: {
               headerFieldName: "string-or-number",
+              description: '',
               type: unionType(STRING, NUMBER)
             },
             headerVoid: {
               headerFieldName: "void",
+              description: '',
               type: VOID
             },
             headerNull: {
               headerFieldName: "null",
+              description: '',
               type: NULL
             },
             headerBoolean: {
               headerFieldName: "boolean",
+              description: '',
               type: BOOLEAN
             },
             headerBooleanConstantTrue: {
               headerFieldName: "boolean-constant-true",
+              description: '',
               type: booleanConstant(true)
             },
             headerBooleanConstantFalse: {
               headerFieldName: "boolean-constant-false",
+              description: '',
               type: booleanConstant(false)
             },
             headerObjectType: {
               headerFieldName: "object-type",
+              description: '',
               type: objectType({})
             },
             headerStringArray: {
               headerFieldName: "string-array",
+              description: '',
               type: arrayType(STRING)
             },
             headerStringOrObjectOrArray: {
               headerFieldName: "string-or-object-or-array",
+              description: '',
               type: unionType(STRING, objectType({}), arrayType(STRING))
             }
           },

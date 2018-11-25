@@ -9,6 +9,7 @@ Object {
       },
       "headers": Object {
         "authToken": Object {
+          "description": "This is the authorization token",
           "headerFieldName": "Authorization",
           "type": Object {
             "kind": "optional",
@@ -48,6 +49,7 @@ Object {
       },
       "headers": Object {
         "authToken": Object {
+          "description": "",
           "headerFieldName": "Authorization",
           "type": Object {
             "kind": "string",
@@ -222,6 +224,7 @@ Object {
       },
       "headers": Object {
         "authToken": Object {
+          "description": "This is the authorization token",
           "headerFieldName": "Authorization",
           "type": Object {
             "kind": "optional",
@@ -261,6 +264,7 @@ Object {
       },
       "headers": Object {
         "authToken": Object {
+          "description": "",
           "headerFieldName": "Authorization",
           "type": Object {
             "kind": "string",

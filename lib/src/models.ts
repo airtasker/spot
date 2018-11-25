@@ -57,6 +57,7 @@ export interface Headers {
 
 export interface Header {
   headerFieldName: string;
+  description: string;
   type: Type;
 }
 
