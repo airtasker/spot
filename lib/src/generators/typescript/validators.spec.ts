@@ -15,7 +15,7 @@ import {
   unionType,
   VOID
 } from "../../models";
-import { parsePath } from "../../parser";
+import { parsePath } from "../../parsing/file-parser";
 import { generateValidatorsSource } from "./validators";
 
 const EXAMPLES_DIR = path.join(

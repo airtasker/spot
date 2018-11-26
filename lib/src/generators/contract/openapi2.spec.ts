@@ -1,6 +1,6 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import { parsePath } from "../../parser";
+import { parsePath } from "../../parsing/file-parser";
 import { generateOpenApiV2 } from "./openapi2";
 
 const EXAMPLES_DIR = path.join(
