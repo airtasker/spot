@@ -106,10 +106,14 @@ workflows:
           filters:
             tags:
               only: /^release.*$/
+            branches:
+              only: /.*/
       - prettier-check:
           filters:
             tags:
               only: /^release.*$/
+            branches:
+              only: /.*/
       - publish:
           requires:
             - build-and-test
