@@ -131,7 +131,7 @@ OPTIONS
   -h, --help  show CLI help
 
 EXAMPLE
-  $ api init
+  $ spot init
   Generated the following files:
   - api.ts
   - tsconfig.json
