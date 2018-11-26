@@ -36,8 +36,9 @@ export class Api {
     path: "/users"
   })
   findUsers(
-    @queryParam limit: Int32,
-    @queryParam search_term: Optional<string>
+    @queryParam({ description: "Limit number of returned results" })
+    limit: Int32,
+    @queryParam() search_term: Optional<string>
   ): Promise<
     {
       name: string;

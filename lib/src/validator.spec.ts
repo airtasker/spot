@@ -406,10 +406,12 @@ describe("Validator", () => {
           queryParams: [
             {
               name: "limit",
+              description: "",
               type: NUMBER
             },
             {
               name: "limit",
+              description: "",
               type: NUMBER
             }
           ],
@@ -446,6 +448,7 @@ describe("Validator", () => {
           queryParams: [
             {
               name: "limit",
+              description: "",
               type: VOID
             }
           ],

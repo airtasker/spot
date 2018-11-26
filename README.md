@@ -17,7 +17,9 @@ class Api {
     method: "POST",
     path: "/users"
   })
-  createUser(@request req: CreateUserRequest): CreateUserResponse {
+  createUser(
+    @request req: CreateUserRequest
+  ): CreateUserResponse {
     throw "contract";
   }
 }
@@ -99,8 +101,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/generate.ts)_
- 
+_See code: [cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/generate.ts)_
 
 ## `spot help [COMMAND]`
 

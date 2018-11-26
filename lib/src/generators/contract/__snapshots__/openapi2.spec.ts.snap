@@ -133,7 +133,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"Limit number of returned results\\",
             \\"type\\": \\"integer\\",
             \\"format\\": \\"int32\\",
             \\"required\\": true
@@ -141,7 +141,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"\\",
             \\"type\\": \\"string\\",
             \\"required\\": false
           }
@@ -335,13 +335,13 @@ paths:
       parameters:
         - in: query
           name: limit
-          description: TODO
+          description: Limit number of returned results
           type: integer
           format: int32
           required: true
         - in: query
           name: search_term
-          description: TODO
+          description: ''
           type: string
           required: false
       responses:
@@ -477,7 +477,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"Limit number of returned results\\",
             \\"type\\": \\"integer\\",
             \\"format\\": \\"int32\\",
             \\"required\\": true
@@ -485,7 +485,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"\\",
             \\"type\\": \\"string\\",
             \\"required\\": false
           }
@@ -700,13 +700,13 @@ paths:
       parameters:
         - in: query
           name: limit
-          description: TODO
+          description: Limit number of returned results
           type: integer
           format: int32
           required: true
         - in: query
           name: search_term
-          description: TODO
+          description: ''
           type: string
           required: false
       responses:

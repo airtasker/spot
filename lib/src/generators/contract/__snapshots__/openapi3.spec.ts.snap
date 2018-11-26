@@ -153,7 +153,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"Limit number of returned results\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"integer\\",
@@ -163,7 +163,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"\\",
             \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -378,14 +378,14 @@ paths:
       parameters:
         - in: query
           name: limit
-          description: TODO
+          description: Limit number of returned results
           required: true
           schema:
             type: integer
             format: int32
         - in: query
           name: search_term
-          description: TODO
+          description: ''
           required: false
           schema:
             type: string
@@ -529,7 +529,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"limit\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"Limit number of returned results\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"integer\\",
@@ -539,7 +539,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
           {
             \\"in\\": \\"query\\",
             \\"name\\": \\"search_term\\",
-            \\"description\\": \\"TODO\\",
+            \\"description\\": \\"\\",
             \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"string\\"
@@ -784,14 +784,14 @@ paths:
       parameters:
         - in: query
           name: limit
-          description: TODO
+          description: Limit number of returned results
           required: true
           schema:
             type: integer
             format: int32
         - in: query
           name: search_term
-          description: TODO
+          description: ''
           required: false
           schema:
             type: string

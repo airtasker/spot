@@ -63,6 +63,7 @@ export interface Header {
 
 export interface QueryParamComponent {
   name: string;
+  description: string;
   type: Type;
 }
 

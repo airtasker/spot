@@ -96,11 +96,13 @@ export interface PathDescription {
   description: string;
 }
 
-export function queryParam(
-  target: any,
-  propertyKey: string,
-  parameterIndex: number
-) {}
+export function queryParam(description?: QueryParamDescription) {
+  return (target: any, propertyKey: string, parameterIndex: number) => {};
+}
+
+export interface QueryParamDescription {
+  description: string;
+}
 
 export function header(description: HeaderDescription) {
   return (target: any, propertyKey: string, parameterIndex: number) => {};
