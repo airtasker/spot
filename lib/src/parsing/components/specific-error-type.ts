@@ -2,14 +2,12 @@ import * as ts from "typescript";
 import { SpecificError } from "../../models";
 import { Decorator, extractMultipleDecorators } from "../decorators";
 import {
-  extractLiteral,
   isNumericLiteral,
   isObjectLiteral,
   isStringLiteral,
   Literal
 } from "../literal-parser";
 import { panic } from "../panic";
-import { extractType } from "../type-parser";
 
 /**
  * Returns the list of specific errors attached to an endpoint.
@@ -43,6 +41,7 @@ export function extractSpecificErrorTypes(
   for (const specificErrorDecorator of specificErrorDecorators) {
     const [name, specificError] = extractSpecificError(
       sourceFile,
+      methodDeclaration,
       specificErrorDecorator
     );
     specificErrorTypes[name] = specificError;
@@ -52,6 +51,7 @@ export function extractSpecificErrorTypes(
 
 function extractSpecificError(
   sourceFile: ts.SourceFile,
+  methodDeclaration: ts.MethodDeclaration,
   specificErrorDecorator: Decorator
 ): [string /*name */, SpecificError] {
   if (specificErrorDecorator.typeParameters.length !== 1) {
@@ -61,10 +61,7 @@ function extractSpecificError(
       }`
     );
   }
-  const errorResponseType = extractType(
-    sourceFile,
-    specificErrorDecorator.typeParameters[0]
-  );
+  const errorResponseType = specificErrorDecorator.typeParameters[0];
   if (specificErrorDecorator.arguments.length !== 1) {
     throw panic(
       `Expected exactly one argument for @specificError(), got ${
@@ -74,13 +71,10 @@ function extractSpecificError(
   }
   let errorDescription: Literal;
   if (specificErrorDecorator.arguments.length === 1) {
-    errorDescription = extractLiteral(
-      sourceFile,
-      specificErrorDecorator.arguments[0]
-    );
+    errorDescription = specificErrorDecorator.arguments[0];
     if (!isObjectLiteral(errorDescription)) {
       throw panic(
-        `@specificError() expects an object literal, got this instead: ${specificErrorDecorator.arguments[0].getText(
+        `@specificError() expects an object literal, got this instead: ${methodDeclaration.getText(
           sourceFile
         )}`
       );
@@ -94,7 +88,7 @@ function extractSpecificError(
   const name = errorDescription.properties["name"];
   if (!name || !isStringLiteral(name)) {
     throw panic(
-      `@specificError() expects a string name, got this instead: ${specificErrorDecorator.arguments[0].getText(
+      `@specificError() expects a string name, got this instead: ${methodDeclaration.getText(
         sourceFile
       )}`
     );
@@ -102,7 +96,7 @@ function extractSpecificError(
   const statusCode = errorDescription.properties["statusCode"];
   if (!statusCode || !isNumericLiteral(statusCode)) {
     throw panic(
-      `@specificError() expects a numeric status code, got this instead: ${specificErrorDecorator.arguments[0].getText(
+      `@specificError() expects a numeric status code, got this instead: ${methodDeclaration.getText(
         sourceFile
       )}`
     );

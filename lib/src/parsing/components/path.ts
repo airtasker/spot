@@ -2,7 +2,6 @@ import * as ts from "typescript";
 import { DynamicPathComponent, PathComponent, VOID } from "../../models";
 import { extractSingleDecorator } from "../decorators";
 import {
-  extractLiteral,
   isObjectLiteral,
   isStringLiteral,
   ObjectLiteral
@@ -31,13 +30,12 @@ import { extractParameterType } from "./parameter-type";
 export function extractPath(
   sourceFile: ts.SourceFile,
   methodDeclaration: ts.MethodDeclaration,
-  endpointDescriptionExpression: ts.Expression,
   endpointDescription: ObjectLiteral
 ): PathComponent[] {
   const pathLiteral = endpointDescription.properties["path"];
   if (!isStringLiteral(pathLiteral)) {
     throw panic(
-      `Invalid path in endpoint description: ${endpointDescriptionExpression.getText(
+      `Invalid path in endpoint description: ${methodDeclaration.getText(
         sourceFile
       )}`
     );
@@ -85,13 +83,19 @@ export function extractPath(
     } while (componentStartPosition !== -1);
   }
   for (const parameter of methodDeclaration.parameters) {
-    processPathParameter(sourceFile, parameter, dynamicPathComponents);
+    processPathParameter(
+      sourceFile,
+      methodDeclaration,
+      parameter,
+      dynamicPathComponents
+    );
   }
   return pathComponents;
 }
 
 function processPathParameter(
   sourceFile: ts.SourceFile,
+  methodDeclaration: ts.MethodDeclaration,
   parameter: ts.ParameterDeclaration,
   dynamicPathComponents: { [name: string]: DynamicPathComponent }
 ) {
@@ -124,13 +128,10 @@ function processPathParameter(
     );
   }
   if (pathParamDecorator.arguments.length === 1) {
-    const pathParamDescription = extractLiteral(
-      sourceFile,
-      pathParamDecorator.arguments[0]
-    );
+    const pathParamDescription = pathParamDecorator.arguments[0];
     if (!isObjectLiteral(pathParamDescription)) {
       throw panic(
-        `@pathParam() expects an object literal, got this instead: ${pathParamDecorator.arguments[0].getText(
+        `@pathParam() expects an object literal, got this instead: ${methodDeclaration.getText(
           sourceFile
         )}`
       );
@@ -138,7 +139,7 @@ function processPathParameter(
     const descriptionProperty = pathParamDescription.properties["description"];
     if (!descriptionProperty || !isStringLiteral(descriptionProperty)) {
       throw panic(
-        `@pathParam() expects a string description, got this instead: ${pathParamDecorator.arguments[0].getText(
+        `@pathParam() expects a string description, got this instead: ${methodDeclaration.getText(
           sourceFile
         )}`
       );

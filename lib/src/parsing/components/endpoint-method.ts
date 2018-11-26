@@ -1,7 +1,7 @@
 import * as ts from "typescript";
 import { Api, Endpoint } from "../../models";
 import { extractSingleDecorator } from "../decorators";
-import { extractLiteral, isObjectLiteral } from "../literal-parser";
+import { isObjectLiteral } from "../literal-parser";
 import { panic } from "../panic";
 import { extractGenericErrorType } from "./generic-error-type";
 import { extractHeaders } from "./headers";
@@ -57,37 +57,24 @@ export function parseEndpointMethod(
     );
   }
   // @endpoint() expects to be passed an object literal to define its method, path, etc.
-  const endpointDescriptionExpression = endpointDecorator.arguments[0];
-  const endpointDescription = extractLiteral(
-    sourceFile,
-    endpointDescriptionExpression
-  );
+  const endpointDescription = endpointDecorator.arguments[0];
   if (!isObjectLiteral(endpointDescription)) {
     throw panic(
-      `@endpoint() expects an object literal, got this instead: ${endpointDescriptionExpression.getText(
+      `@endpoint() expects an object literal, got this instead: ${methodDeclaration.getText(
         sourceFile
       )}`
     );
   }
   const endpoint: Endpoint = {
-    method: extractMethod(
-      sourceFile,
-      endpointDescriptionExpression,
-      endpointDescription
-    ),
-    path: extractPath(
-      sourceFile,
-      methodDeclaration,
-      endpointDescriptionExpression,
-      endpointDescription
-    ),
+    method: extractMethod(sourceFile, methodDeclaration, endpointDescription),
+    path: extractPath(sourceFile, methodDeclaration, endpointDescription),
     requestContentType: extractRequestContentType(
       sourceFile,
-      endpointDescriptionExpression,
+      methodDeclaration,
       endpointDescription
     ),
-    headers: extractHeaders(sourceFile, methodDeclaration.parameters),
-    queryParams: extractQueryParams(sourceFile, methodDeclaration.parameters),
+    headers: extractHeaders(sourceFile, methodDeclaration),
+    queryParams: extractQueryParams(sourceFile, methodDeclaration),
     requestType: extractRequestType(sourceFile, methodDeclaration.parameters),
     responseType: extractResponseType(sourceFile, methodDeclaration),
     genericErrorType: extractGenericErrorType(sourceFile, methodDeclaration),
@@ -97,7 +84,7 @@ export function parseEndpointMethod(
     ),
     ...extractSuccessStatusCode(
       sourceFile,
-      endpointDescriptionExpression,
+      methodDeclaration,
       endpointDescription
     )
   };

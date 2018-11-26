@@ -22,7 +22,7 @@ import { panic } from "../panic";
  */
 export function extractRequestContentType(
   sourceFile: ts.SourceFile,
-  endpointDescriptionExpression: ts.Expression,
+  methodDeclaration: ts.MethodDeclaration,
   endpointDescription: ObjectLiteral
 ): HttpContentType {
   const requestContentTypeLiteral =
@@ -31,7 +31,7 @@ export function extractRequestContentType(
   if (requestContentTypeLiteral) {
     if (!isStringLiteral(requestContentTypeLiteral)) {
       throw panic(
-        `Invalid request content type in endpoint description: ${endpointDescriptionExpression.getText(
+        `Invalid request content type in endpoint description: ${methodDeclaration.getText(
           sourceFile
         )}`
       );
