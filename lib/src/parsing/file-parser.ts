@@ -3,7 +3,7 @@ import * as path from "path";
 import * as ts from "typescript";
 import { Api } from "../models";
 import { validate } from "../validator";
-import { parseApiClass } from "./api-class-parser";
+import { parseApiClass } from "./components/api-class";
 import { extractSingleDecorator } from "./decorators";
 import { panic } from "./panic";
 import { extractObjectType, extractType } from "./type-parser";
