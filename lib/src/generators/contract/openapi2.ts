@@ -118,7 +118,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
           return {
             in: "query",
             name: queryComponent.name,
-            description: "TODO",
+            description: queryComponent.description,
             ...rejectVoidOpenApi2SchemaType(
               queryComponent.type.kind === "optional"
                 ? queryComponent.type.optional

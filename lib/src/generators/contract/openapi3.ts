@@ -137,7 +137,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
           return {
             in: "query",
             name: queryComponent.name,
-            description: "TODO",
+            description: queryComponent.description,
             required: queryComponent.type.kind !== "optional",
             schema: rejectVoidOpenApi3SchemaType(
               queryComponent.type.kind === "optional"

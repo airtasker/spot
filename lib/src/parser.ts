@@ -359,10 +359,42 @@ function extractEndpoint(
       } else {
         const queryParamComponent: QueryParamComponent = {
           name: name,
+          description: "",
           type: type
         };
         queryParams.push(queryParamComponent);
         queryParamComponents[queryParamComponent.name] = queryParamComponent;
+      }
+
+      if (queryParamDecorator.arguments.length > 1) {
+        throw panic(
+          `Expected exactly one or no arguments for @queryParam(), got ${
+            queryParamDecorator.arguments.length
+          }`
+        );
+      }
+      if (queryParamDecorator.arguments.length === 1) {
+        const queryParamDescription = extractLiteral(
+          sourceFile,
+          queryParamDecorator.arguments[0]
+        );
+        if (!isObjectLiteral(queryParamDescription)) {
+          throw panic(
+            `@queryParam() expects an object literal, got this instead: ${queryParamDecorator.arguments[0].getText(
+              sourceFile
+            )}`
+          );
+        }
+        const descriptionProperty =
+          queryParamDescription.properties["description"];
+        if (!descriptionProperty || !isStringLiteral(descriptionProperty)) {
+          throw panic(
+            `@queryParam() expects a string description, got this instead: ${queryParamDecorator.arguments[0].getText(
+              sourceFile
+            )}`
+          );
+        }
+        queryParamComponents[name].description = descriptionProperty.text;
       }
     } else if (headerDecorator) {
       const name = parameter.name.getText(sourceFile);
@@ -397,14 +429,6 @@ function extractEndpoint(
       }
       const descriptionProperty = headerDescription.properties["description"];
       let description = "";
-      if (!nameProperty || !isStringLiteral(nameProperty)) {
-        throw panic(
-          `@header() expects a string name, got this instead: ${headerDecorator.arguments[0].getText(
-            sourceFile
-          )}`
-        );
-      }
-
       if (descriptionProperty) {
         if (!isStringLiteral(descriptionProperty)) {
           throw panic(
