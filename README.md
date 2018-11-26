@@ -102,7 +102,7 @@ EXAMPLE
 ```
 
 _See code: [cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/generate.ts)_
- 
+
 
 ## `spot help [COMMAND]`
 
