@@ -94,7 +94,7 @@ OPTIONS
   -o, --out=out              Directory in which to output generated files
 
 EXAMPLE
-  $ api generate --language typescript --generator axios-client --out src/
+  $ spot generate --language typescript --generator axios-client --out src/
   Generated the following files:
   - src/types.ts
   - src/validators.ts
