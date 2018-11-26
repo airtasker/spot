@@ -1,161 +1,111 @@
-import * as fs from "fs-extra";
-import * as path from "path";
 import * as ts from "typescript";
-import { isHttpMethod, isHttpContentType } from "./lib";
+import { isHttpContentType, isHttpMethod } from "../lib";
 import {
   Api,
-  arrayType,
-  ArrayType,
-  BOOLEAN,
-  booleanConstant,
   DynamicPathComponent,
   Endpoint,
   Headers,
-  integerConstant,
-  NULL,
-  NUMBER,
-  ObjectType,
-  objectType,
-  optionalType,
   PathComponent,
   QueryParamComponent,
   SpecificError,
-  STRING,
-  stringConstant,
   Type,
-  unionType,
   VOID
-} from "./models";
-import { validate } from "./validator";
+} from "../models";
+import {
+  extractMultipleDecorators,
+  extractSingleDecorator
+} from "./decorators";
+import {
+  extractLiteral,
+  isNumericLiteral,
+  isObjectLiteral,
+  isStringLiteral,
+  Literal
+} from "./literal-parser";
+import { panic } from "./panic";
+import { extractType } from "./type-parser";
 
-export async function parsePath(sourcePath: string): Promise<Api> {
-  const api: Api = {
-    endpoints: {},
-    types: {}
-  };
-  await parseFileRecursively(api, new Set(), sourcePath);
-  const errors = validate(api);
-  if (errors.length > 0) {
-    throw panic(errors.join("\n"));
-  }
-  return api;
-}
-
-async function parseFileRecursively(
-  api: Api,
-  visitedPaths: Set<string>,
-  sourcePath: string
-): Promise<void> {
-  if (!(await fs.existsSync(sourcePath))) {
-    if (await fs.existsSync(sourcePath + ".ts")) {
-      sourcePath += ".ts";
-    } else {
-      throw panic(`No source file found at ${sourcePath}`);
-    }
-  }
-  if (
-    visitedPaths.has(sourcePath) ||
-    path.resolve(sourcePath).startsWith(__dirname)
-  ) {
-    return;
-  } else {
-    visitedPaths.add(sourcePath);
-  }
-  const fileContent = await fs.readFile(sourcePath, "utf8");
-  const sourceFile = ts.createSourceFile(
-    path.basename(sourcePath),
-    fileContent,
-    ts.ScriptTarget.Latest
-  );
-  for (const statement of sourceFile.statements) {
-    if (ts.isImportDeclaration(statement)) {
-      if (!ts.isStringLiteral(statement.moduleSpecifier)) {
-        throw panic(
-          `Unsupported import statement: ${statement.moduleSpecifier.getText(
-            sourceFile
-          )}`
-        );
-      }
-      const importPath = statement.moduleSpecifier.text;
-      if (!importPath.startsWith(".")) {
-        // This is not a relative import, we'll ignore it.
-        continue;
-      }
-      await parseFileRecursively(
-        api,
-        visitedPaths,
-        path.join(sourcePath, "..", importPath)
-      );
-    } else if (ts.isClassDeclaration(statement)) {
-      const apiDecorator = extractSingleDecorator(sourceFile, statement, "api");
-      if (apiDecorator) {
-        parseApiDeclaration(sourceFile, statement, api);
-      }
-    } else if (ts.isTypeAliasDeclaration(statement)) {
-      const name = statement.name.getText(sourceFile);
-      api.types[name] = extractType(sourceFile, statement.type);
-    } else if (ts.isInterfaceDeclaration(statement)) {
-      const name = statement.name.getText(sourceFile);
-      api.types[name] = extractObjectType(sourceFile, statement);
-    }
-  }
-}
-
-function parseApiDeclaration(
+/**
+ * Parses a top-level API class definition and the endpoints it defines, such as:
+ * ```
+ * @api()
+ * class Api {
+ *   @endpoint({
+ *     method: "POST",
+ *     path: "/users"
+ *   })
+ *   createUser(@request req: CreateUserRequest): CreateUserResponse {
+ *     throw "contract";
+ *   }
+ * }
+ * ```
+ */
+export function parseApiClass(
   sourceFile: ts.SourceFile,
   classDeclaration: ts.ClassDeclaration,
   api: Api
 ): void {
   for (const member of classDeclaration.members) {
     if (ts.isMethodDeclaration(member)) {
-      const endpointDecorator = extractSingleDecorator(
-        sourceFile,
-        member,
-        "endpoint"
-      );
-      if (endpointDecorator) {
-        const genericErrorDecorator = extractSingleDecorator(
-          sourceFile,
-          member,
-          "genericError"
-        );
-        const specificErrorDecorators = extractDecorators(
-          sourceFile,
-          member,
-          "specificError"
-        );
-        const endpointName = member.name.getText(sourceFile);
-        if (api.endpoints[endpointName]) {
-          throw panic(
-            `Found multiple definitions of the same endpoint ${endpointName}`
-          );
-        }
-        if (endpointDecorator.arguments.length !== 1) {
-          throw panic(
-            `Expected exactly one argument for @endpoint(), got ${
-              endpointDecorator.arguments.length
-            }`
-          );
-        }
-        api.endpoints[endpointName] = extractEndpoint(
-          sourceFile,
-          endpointDecorator.arguments[0],
-          genericErrorDecorator,
-          specificErrorDecorators,
-          member
-        );
-      }
+      parseEndpointMethod(sourceFile, member, api);
     }
   }
 }
 
-function extractEndpoint(
+/**
+ * Parses a method of an API class definition, such as:
+ * ```
+ * @endpoint({
+ *   method: "POST",
+ *   path: "/users"
+ * })
+ * createUser(@request req: CreateUserRequest): CreateUserResponse {
+ *   throw "contract";
+ * }
+ * ```
+ *
+ * Methods that do not have an @endpoint() decorator will be ignored.
+ *
+ * @param sourceFile The TypeScript source file.
+ * @param methodDeclaration A method declaration.
+ */
+function parseEndpointMethod(
   sourceFile: ts.SourceFile,
-  endpointDescriptionExpression: ts.Expression,
-  genericErrorDecorator: Decorator | null,
-  specificErrorDecorators: Decorator[],
-  methodDeclaration: ts.MethodDeclaration
-): Endpoint {
+  methodDeclaration: ts.MethodDeclaration,
+  api: Api
+): void {
+  const endpointDecorator = extractSingleDecorator(
+    sourceFile,
+    methodDeclaration,
+    "endpoint"
+  );
+  if (!endpointDecorator) {
+    return;
+  }
+  const endpointName = methodDeclaration.name.getText(sourceFile);
+  if (api.endpoints[endpointName]) {
+    throw panic(
+      `Found multiple definitions of the same endpoint ${endpointName}`
+    );
+  }
+  const genericErrorDecorator = extractSingleDecorator(
+    sourceFile,
+    methodDeclaration,
+    "genericError"
+  );
+  const specificErrorDecorators = extractMultipleDecorators(
+    sourceFile,
+    methodDeclaration,
+    "specificError"
+  );
+  if (endpointDecorator.arguments.length !== 1) {
+    throw panic(
+      `Expected exactly one argument for @endpoint(), got ${
+        endpointDecorator.arguments.length
+      }`
+    );
+  }
+  const endpointDescriptionExpression = endpointDecorator.arguments[0];
   const endpointDescription = extractLiteral(
     sourceFile,
     endpointDescriptionExpression
@@ -552,7 +502,7 @@ function extractEndpoint(
       type: errorResponseType
     };
   }
-  return {
+  const endpoint: Endpoint = {
     method,
     path: pathComponents,
     requestContentType,
@@ -564,351 +514,5 @@ function extractEndpoint(
     specificErrorTypes,
     ...(successStatusCode ? { successStatusCode } : {})
   };
-}
-
-function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
-  switch (type.kind) {
-    case ts.SyntaxKind.VoidKeyword:
-      return VOID;
-    case ts.SyntaxKind.StringKeyword:
-      return STRING;
-    case ts.SyntaxKind.NumberKeyword:
-      return NUMBER;
-    case ts.SyntaxKind.BooleanKeyword:
-      return BOOLEAN;
-  }
-  if (ts.isTypeLiteralNode(type)) {
-    return extractObjectType(sourceFile, type);
-  } else if (ts.isArrayTypeNode(type)) {
-    return extractArrayType(sourceFile, type);
-  } else if (ts.isLiteralTypeNode(type)) {
-    const literal = extractLiteral(sourceFile, type.literal);
-    switch (literal.kind) {
-      case "string": {
-        return stringConstant(literal.text);
-      }
-      case "number": {
-        if (!literal.text.match(/^-?\d+$/)) {
-          throw panic(
-            `Expected an integer, got this instead: ${type.getText(sourceFile)}`
-          );
-        }
-        return integerConstant(parseInt(literal.text));
-      }
-      case "boolean": {
-        return booleanConstant(literal.value);
-      }
-      default:
-        throw panic(
-          `Unexpected literal in type definition: ${type.getText(sourceFile)}`
-        );
-    }
-  } else if (ts.isToken(type) && type.kind === ts.SyntaxKind.NullKeyword) {
-    return NULL;
-  } else if (ts.isUnionTypeNode(type)) {
-    return extractUnionType(sourceFile, type);
-  } else if (ts.isTypeReferenceNode(type) && ts.isIdentifier(type.typeName)) {
-    const typeName = type.typeName.getText(sourceFile);
-    if (typeName === "Optional") {
-      if (!type.typeArguments || type.typeArguments.length !== 1) {
-        throw panic(
-          `Expected exacty one type parameter for Optional, got this instead: ${type.getText(
-            sourceFile
-          )}`
-        );
-      }
-      const typeParameter = type.typeArguments[0];
-      return optionalType(extractType(sourceFile, typeParameter));
-    }
-
-    switch (typeName) {
-      case "Int32":
-        return {
-          kind: "int32"
-        };
-      case "Int64":
-        return {
-          kind: "int64"
-        };
-      case "Float":
-        return {
-          kind: "float"
-        };
-      case "Double":
-        return {
-          kind: "double"
-        };
-      default:
-        return {
-          kind: "type-reference",
-          typeName
-        };
-    }
-  } else {
-    throw panic(
-      `Expected a plain type identifier, got this instead: ${type.getText(
-        sourceFile
-      )}`
-    );
-  }
-}
-
-function extractObjectType(
-  sourceFile: ts.SourceFile,
-  declaration: ts.TypeLiteralNode | ts.InterfaceDeclaration
-): ObjectType {
-  const properties: {
-    [key: string]: Type;
-  } = {};
-  for (const member of declaration.members) {
-    if (
-      !member.name ||
-      !ts.isIdentifier(member.name) ||
-      !ts.isPropertySignature(member) ||
-      !member.type
-    ) {
-      throw panic(
-        `Expected a named and typed property, got this instead: ${member.getText(
-          sourceFile
-        )}`
-      );
-    }
-    let type = extractType(sourceFile, member.type);
-    if (member.questionToken) {
-      type = optionalType(type);
-    }
-    properties[member.name.getText(sourceFile)] = type;
-  }
-  return objectType(properties);
-}
-
-function extractArrayType(
-  sourceFile: ts.SourceFile,
-  declaration: ts.ArrayTypeNode
-): ArrayType {
-  return arrayType(extractType(sourceFile, declaration.elementType));
-}
-
-function extractUnionType(
-  sourceFile: ts.SourceFile,
-  declaration: ts.UnionTypeNode
-): Type {
-  return unionType(...declaration.types.map(t => extractType(sourceFile, t)));
-}
-
-type Literal =
-  | ObjectLiteral
-  | ArrayLiteral
-  | StringLiteral
-  | NumericLiteral
-  | BooleanLiteral;
-
-function extractLiteral(
-  sourceFile: ts.SourceFile,
-  expression: ts.Node
-): Literal {
-  if (ts.isObjectLiteralExpression(expression)) {
-    return extractObjectLiteral(sourceFile, expression);
-  } else if (ts.isArrayLiteralExpression(expression)) {
-    return extractArrayLiteral(sourceFile, expression);
-  } else if (ts.isStringLiteral(expression)) {
-    return extractStringLiteral(sourceFile, expression);
-  } else if (ts.isNumericLiteral(expression)) {
-    return extractNumericLiteral(sourceFile, expression);
-  } else if (
-    expression.kind === ts.SyntaxKind.TrueKeyword ||
-    expression.kind === ts.SyntaxKind.FalseKeyword
-  ) {
-    return extractBooleanLiteral(sourceFile, expression);
-  } else {
-    throw panic(`Expected a literal, found ${expression.getText(sourceFile)}`);
-  }
-}
-
-interface ObjectLiteral {
-  kind: "object";
-  properties: {
-    [key: string]: Literal;
-  };
-}
-
-export function isObjectLiteral(literal?: Literal): literal is ObjectLiteral {
-  return literal !== undefined && literal.kind === "object";
-}
-
-function extractObjectLiteral(
-  sourceFile: ts.SourceFile,
-  expression: ts.ObjectLiteralExpression
-): ObjectLiteral {
-  const objectLiteral: ObjectLiteral = {
-    kind: "object",
-    properties: {}
-  };
-  for (const property of expression.properties) {
-    if (!ts.isPropertyAssignment(property)) {
-      throw panic(
-        `Unsupported property syntax: ${property.getText(sourceFile)}`
-      );
-    }
-    if (!ts.isIdentifier(property.name)) {
-      throw panic(
-        `The following should be a plain identifier: ${property.name.getText(
-          sourceFile
-        )}`
-      );
-    }
-    objectLiteral.properties[
-      property.name.getText(sourceFile)
-    ] = extractLiteral(sourceFile, property.initializer);
-  }
-  return objectLiteral;
-}
-
-interface ArrayLiteral {
-  kind: "array";
-  elements: Literal[];
-}
-
-export function isArrayLiteral(literal?: Literal): literal is ArrayLiteral {
-  return literal !== undefined && literal.kind === "array";
-}
-
-function extractArrayLiteral(
-  sourceFile: ts.SourceFile,
-  expression: ts.ArrayLiteralExpression
-): ArrayLiteral {
-  return {
-    kind: "array",
-    elements: expression.elements.map(e => extractLiteral(sourceFile, e))
-  };
-}
-
-interface StringLiteral {
-  kind: "string";
-  text: string;
-}
-
-export function isStringLiteral(literal?: Literal): literal is StringLiteral {
-  return literal !== undefined && literal.kind === "string";
-}
-
-function extractStringLiteral(
-  sourceFile: ts.SourceFile,
-  expression: ts.StringLiteral
-): StringLiteral {
-  const literal = expression.getText(sourceFile);
-  return {
-    kind: "string",
-    // TODO: Unescape strings.
-    text: literal.substr(1, literal.length - 2)
-  };
-}
-
-interface NumericLiteral {
-  kind: "number";
-  text: string;
-}
-
-export function isNumericLiteral(literal?: Literal): literal is NumericLiteral {
-  return literal !== undefined && literal.kind === "number";
-}
-
-function extractNumericLiteral(
-  sourceFile: ts.SourceFile,
-  expression: ts.NumericLiteral
-): NumericLiteral {
-  const literal = expression.getText(sourceFile);
-  return {
-    kind: "number",
-    text: literal
-  };
-}
-
-interface BooleanLiteral {
-  kind: "boolean";
-  value: boolean;
-}
-
-export function isBooleanLiteral(literal?: Literal): literal is BooleanLiteral {
-  return literal !== undefined && literal.kind === "boolean";
-}
-
-function extractBooleanLiteral(
-  sourceFile: ts.SourceFile,
-  expression: ts.Node
-): BooleanLiteral {
-  return {
-    kind: "boolean",
-    value: expression.kind === ts.SyntaxKind.TrueKeyword
-  };
-}
-
-function extractSingleDecorator(
-  sourceFile: ts.SourceFile,
-  node: ts.Node,
-  decoratorName: string
-): Decorator | null {
-  const decorators = extractDecorators(sourceFile, node, decoratorName);
-  if (decorators.length === 1) {
-    return decorators[0];
-  } else if (decorators.length > 1) {
-    throw panic(
-      `Expected a single @${decoratorName} decorator, found ${
-        decorators.length
-      }`
-    );
-  } else {
-    return null;
-  }
-}
-
-function extractDecorators(
-  sourceFile: ts.SourceFile,
-  node: ts.Node,
-  decoratorName: string
-): Decorator[] {
-  const decorators: Decorator[] = [];
-  if (node.decorators) {
-    for (const decorator of node.decorators) {
-      if (
-        ts.isIdentifier(decorator.expression) &&
-        decorator.expression.getText(sourceFile) === decoratorName
-      ) {
-        decorators.push({
-          typeParameters: [],
-          arguments: []
-        });
-      } else if (ts.isCallExpression(decorator.expression)) {
-        if (
-          ts.isIdentifier(decorator.expression.expression) &&
-          decorator.expression.expression.getText(sourceFile) === decoratorName
-        ) {
-          decorators.push({
-            typeParameters: [...(decorator.expression.typeArguments || [])],
-            arguments: [...decorator.expression.arguments]
-          });
-        }
-      }
-    }
-  }
-  return decorators;
-}
-
-interface Decorator {
-  typeParameters: ts.TypeNode[];
-  arguments: ts.Expression[];
-}
-
-function panic(nodeOrMessage: ts.Node | string) {
-  if (typeof nodeOrMessage === "string") {
-    return new Error(nodeOrMessage);
-  }
-  let syntaxKind = "unknown";
-  for (const [key, value] of Object.entries(ts.SyntaxKind)) {
-    if (nodeOrMessage.kind === value) {
-      syntaxKind = key;
-      break;
-    }
-  }
-  return new Error(syntaxKind + ": " + JSON.stringify(nodeOrMessage, null, 2));
+  api.endpoints[endpointName] = endpoint;
 }
