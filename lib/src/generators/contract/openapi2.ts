@@ -7,7 +7,7 @@ import {
   openApi2TypeSchema,
   rejectVoidOpenApi2SchemaType
 } from "./openapi2-schema";
-import { HttpContentType } from "@zenclabs/spot";
+import { HttpContentType } from "@airtasker/spot";
 import compact = require("lodash/compact");
 import defaultTo = require("lodash/defaultTo");
 

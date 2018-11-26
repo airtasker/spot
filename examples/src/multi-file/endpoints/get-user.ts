@@ -5,7 +5,7 @@ import {
   Int64,
   pathParam,
   response
-} from "@zenclabs/spot";
+} from "@airtasker/spot";
 
 @api()
 export class Api {
