@@ -6,7 +6,7 @@ import {
   Optional,
   queryParam,
   response
-} from "@zenclabs/spot";
+} from "@airtasker/spot";
 
 @api()
 export class Api {

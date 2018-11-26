@@ -9,7 +9,7 @@ You don't need to use TypeScript in your codebase to benefit from using Spot.
 
 Example of an API definition file `api.ts` which defines a single `POST` endpoint to create a user:
 ```typescript
-import { api, endpoint, request } from "@zenclabs/spot";
+import { api, endpoint, request } from "@airtasker/spot";
 
 @api()
 class Api {
@@ -34,7 +34,7 @@ interface CreateUserResponse {
 
 You can pass the definition above to a generator by simply running:
 ```sh
-npx @zenclabs/spot generate --api api.ts
+npx @airtasker/spot generate --api api.ts
 ```
 
 This is work in progress as of 14 Nov 2018:
@@ -49,10 +49,10 @@ This is work in progress as of 14 Nov 2018:
 - [x] TypeScript express-based server boilerplate generator
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@zenclabs/spot.svg)](https://npmjs.org/package/@zenclabs/spot)
-[![CircleCI](https://circleci.com/gh/zenclabs/spot/tree/master.svg?style=shield)](https://circleci.com/gh/zenclabs/spot/tree/master)
-[![Downloads/week](https://img.shields.io/npm/dw/@zenclabs/spot.svg)](https://npmjs.org/package/@zenclabs/spot)
-[![License](https://img.shields.io/npm/l/@zenclabs/spot.svg)](https://github.com/zenclabs/spot/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@airtasker/spot.svg)](https://npmjs.org/package/@airtasker/spot)
+[![CircleCI](https://circleci.com/gh/airtasker/spot/tree/master.svg?style=shield)](https://circleci.com/gh/airtasker/spot/tree/master)
+[![Downloads/week](https://img.shields.io/npm/dw/@airtasker/spot.svg)](https://npmjs.org/package/@airtasker/spot)
+[![License](https://img.shields.io/npm/l/@airtasker/spot.svg)](https://github.com/airtasker/spot/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -62,12 +62,12 @@ This is work in progress as of 14 Nov 2018:
 
 To get started and set up an API declaration in the current directory, run:
 ```
-npx @zenclabs/spot init
+npx @airtasker/spot init
 ```
 
 You can then run a generator with:
 ```
-npx @zenclabs/spot generate --api api.ts
+npx @airtasker/spot generate --api api.ts
 ```
 
 # Commands
@@ -99,7 +99,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/generate.ts)_
+_See code: [cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/generate.ts)_
  
 
 ## `spot help [COMMAND]`
@@ -131,12 +131,12 @@ OPTIONS
   -h, --help  show CLI help
 
 EXAMPLE
-  $ api init
+  $ spot init
   Generated the following files:
   - api.ts
   - tsconfig.json
   - package.json
 ```
 
-_See code: [cli/src/commands/init.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/init.ts)_
+_See code: [cli/src/commands/init.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/init.ts)_
 <!-- commandsstop -->

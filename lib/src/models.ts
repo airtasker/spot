@@ -79,11 +79,11 @@ export type Type =
   | StringType
   | StringConstantType
   | NumberType
-  | IntegerConstantType
   | Int32Type
   | Int64Type
   | FloatType
   | DoubleType
+  | IntegerConstantType
   | ObjectType
   | ArrayType
   | OptionalType
