@@ -17,7 +17,9 @@ class Api {
     method: "POST",
     path: "/users"
   })
-  createUser(@request req: CreateUserRequest): CreateUserResponse {
+  createUser(
+    @request req: CreateUserRequest
+  ): CreateUserResponse {
     throw "contract";
   }
 }
