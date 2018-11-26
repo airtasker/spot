@@ -1,11 +1,11 @@
 {
-  "name": "@zenclabs/spot",
+  "name": "@airtasker/spot",
   "version": "0.1.25",
   "author": "Francois Wouts",
   "bin": {
     "spot": "./bin/run"
   },
-  "bugs": "https://github.com/zenclabs/spot/issues",
+  "bugs": "https://github.com/airtasker/spot/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -45,7 +45,7 @@
   ],
   "main": "index.js",
   "types": "index.d.ts",
-  "homepage": "https://github.com/zenclabs/spot",
+  "homepage": "https://github.com/airtasker/spot",
   "license": "MIT",
   "oclif": {
     "commands": "./build/cli/src/commands",
@@ -54,7 +54,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "zenclabs/spot",
+  "repository": "airtasker/spot",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc -b --force && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",

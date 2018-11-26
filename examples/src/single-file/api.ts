@@ -12,7 +12,7 @@ import {
   request,
   specificError,
   response
-} from "@zenclabs/spot";
+} from "@airtasker/spot";
 
 @api()
 export class Api {

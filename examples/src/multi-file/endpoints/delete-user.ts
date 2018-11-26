@@ -7,7 +7,7 @@ import {
   specificError,
   response,
   Int64
-} from "@zenclabs/spot";
+} from "@airtasker/spot";
 
 @api()
 export class Api {

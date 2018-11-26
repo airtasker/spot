@@ -5,7 +5,7 @@ import {
   Optional,
   request,
   response
-} from "@zenclabs/spot";
+} from "@airtasker/spot";
 import { CreateUserRequest, CreateUserResponse } from "../models";
 
 @api()
