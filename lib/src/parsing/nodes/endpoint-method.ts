@@ -3,16 +3,16 @@ import { Api, Endpoint } from "../../models";
 import { extractSingleDecorator } from "../decorators";
 import { isObjectLiteral } from "../literal-parser";
 import { panic } from "../panic";
-import { extractGenericErrorType } from "./generic-error-type";
-import { extractHeaders } from "./headers";
-import { extractMethod } from "./method";
-import { extractPath } from "./path";
-import { extractQueryParams } from "./query-parameters";
-import { extractRequestContentType } from "./request-content-type";
-import { extractRequestType } from "./request-type";
-import { extractResponseType } from "./response-type";
-import { extractSpecificErrorTypes } from "./specific-error-type";
-import { extractSuccessStatusCode } from "./success-status-code";
+import { extractGenericErrorType } from "../properties/generic-error-type";
+import { extractHeaders } from "../properties/headers";
+import { extractMethod } from "../properties/method";
+import { extractPath } from "../properties/path";
+import { extractQueryParams } from "../properties/query-parameters";
+import { extractRequestContentType } from "../properties/request-content-type";
+import { extractRequestType } from "../properties/request-type";
+import { extractResponseType } from "../properties/response-type";
+import { extractSpecificErrorTypes } from "../properties/specific-error-type";
+import { extractSuccessStatusCode } from "../properties/success-status-code";
 
 /**
  * Parses a method of an API class definition, such as:
