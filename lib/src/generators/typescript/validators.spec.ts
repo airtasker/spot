@@ -36,7 +36,7 @@ describe("TypeScript validators generator", () => {
       }
       test(testCaseName, async () => {
         const api = await parsePath(
-          path.join(EXAMPLES_DIR, testCaseName, "api.ts")
+          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
         );
         const source = generateValidatorsSource(api);
         expect(source).toMatchSnapshot();
