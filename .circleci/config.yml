@@ -105,17 +105,17 @@ workflows:
       - build-and-test:
           filters:
             tags:
-              only: /^release.*$/
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
       - prettier-check:
           filters:
             tags:
-              only: /^release.*$/
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
       - publish:
           requires:
             - build-and-test
             - prettier-check
           filters:
             tags:
-              only: /^release.*$/
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
             branches:
               ignore: /.*/
