@@ -2,7 +2,6 @@ import * as ts from "typescript";
 import { Type, VOID } from "../../models";
 import { extractSingleDecorator } from "../decorators";
 import { panic } from "../panic";
-import { extractType } from "../type-parser";
 
 /**
  * Returns the generic error type attached to an endpoint, or void otherwise.
@@ -34,7 +33,7 @@ export function extractGenericErrorType(
         }`
       );
     }
-    return extractType(sourceFile, genericErrorDecorator.typeParameters[0]);
+    return genericErrorDecorator.typeParameters[0];
   }
   return VOID;
 }

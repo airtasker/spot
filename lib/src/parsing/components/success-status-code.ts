@@ -23,7 +23,7 @@ import { panic } from "../panic";
  */
 export function extractSuccessStatusCode(
   sourceFile: ts.SourceFile,
-  endpointDescriptionExpression: ts.Expression,
+  methodDeclaration: ts.MethodDeclaration,
   endpointDescription: ObjectLiteral
 ): {
   successStatusCode?: number;
@@ -35,7 +35,7 @@ export function extractSuccessStatusCode(
   }
   if (!isNumericLiteral(successStatusCodeLiteral)) {
     throw panic(
-      `Invalid success status code in endpoint description: ${endpointDescriptionExpression.getText(
+      `Invalid success status code in endpoint description: ${methodDeclaration.getText(
         sourceFile
       )}`
     );

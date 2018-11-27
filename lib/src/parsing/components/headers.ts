@@ -1,11 +1,7 @@
 import * as ts from "typescript";
 import { Headers } from "../../models";
 import { extractSingleDecorator } from "../decorators";
-import {
-  extractLiteral,
-  isObjectLiteral,
-  isStringLiteral
-} from "../literal-parser";
+import { isObjectLiteral, isStringLiteral } from "../literal-parser";
 import { panic } from "../panic";
 import { extractParameterType } from "./parameter-type";
 
@@ -27,17 +23,18 @@ import { extractParameterType } from "./parameter-type";
  */
 export function extractHeaders(
   sourceFile: ts.SourceFile,
-  parameters: ts.NodeArray<ts.ParameterDeclaration>
+  methodDeclaration: ts.MethodDeclaration
 ): Headers {
   const headers: Headers = {};
-  for (const parameter of parameters) {
-    processHeaderParameter(sourceFile, parameter, headers);
+  for (const parameter of methodDeclaration.parameters) {
+    processHeaderParameter(sourceFile, methodDeclaration, parameter, headers);
   }
   return headers;
 }
 
 function processHeaderParameter(
   sourceFile: ts.SourceFile,
+  methodDeclaration: ts.MethodDeclaration,
   parameter: ts.ParameterDeclaration,
   headers: Headers
 ) {
@@ -60,13 +57,10 @@ function processHeaderParameter(
       }`
     );
   }
-  const headerDescription = extractLiteral(
-    sourceFile,
-    headerDecorator.arguments[0]
-  );
+  const headerDescription = headerDecorator.arguments[0];
   if (!isObjectLiteral(headerDescription)) {
     throw panic(
-      `@header() expects an object literal, got this instead: ${headerDecorator.arguments[0].getText(
+      `@header() expects an object literal, got this instead: ${methodDeclaration.getText(
         sourceFile
       )}`
     );
@@ -74,7 +68,7 @@ function processHeaderParameter(
   const nameProperty = headerDescription.properties["name"];
   if (!nameProperty || !isStringLiteral(nameProperty)) {
     throw panic(
-      `@header() expects a string name, got this instead: ${headerDecorator.arguments[0].getText(
+      `@header() expects a string name, got this instead: ${methodDeclaration.getText(
         sourceFile
       )}`
     );
@@ -84,7 +78,7 @@ function processHeaderParameter(
   if (descriptionProperty) {
     if (!isStringLiteral(descriptionProperty)) {
       throw panic(
-        `@header() expects a string description, got this instead: ${headerDecorator.arguments[0].getText(
+        `@header() expects a string description, got this instead: ${methodDeclaration.getText(
           sourceFile
         )}`
       );

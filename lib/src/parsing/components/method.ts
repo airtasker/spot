@@ -21,13 +21,13 @@ import { panic } from "../panic";
  */
 export function extractMethod(
   sourceFile: ts.SourceFile,
-  endpointDescriptionExpression: ts.Expression,
+  methodDeclaration: ts.MethodDeclaration,
   endpointDescription: ObjectLiteral
 ): HttpMethod {
   const methodLiteral = endpointDescription.properties["method"];
   if (!isStringLiteral(methodLiteral)) {
     throw panic(
-      `Invalid method in endpoint description: ${endpointDescriptionExpression.getText(
+      `Invalid method in endpoint description: ${methodDeclaration.getText(
         sourceFile
       )}`
     );

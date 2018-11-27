@@ -1,11 +1,7 @@
 import * as ts from "typescript";
 import { QueryParamComponent } from "../../models";
 import { extractSingleDecorator } from "../decorators";
-import {
-  extractLiteral,
-  isObjectLiteral,
-  isStringLiteral
-} from "../literal-parser";
+import { isObjectLiteral, isStringLiteral } from "../literal-parser";
 import { panic } from "../panic";
 import { extractParameterType } from "./parameter-type";
 
@@ -28,13 +24,14 @@ import { extractParameterType } from "./parameter-type";
  */
 export function extractQueryParams(
   sourceFile: ts.SourceFile,
-  parameters: ts.NodeArray<ts.ParameterDeclaration>
+  methodDeclaration: ts.MethodDeclaration
 ): QueryParamComponent[] {
   const queryParams: QueryParamComponent[] = [];
   const queryParamComponents: { [name: string]: QueryParamComponent } = {};
-  for (const parameter of parameters) {
+  for (const parameter of methodDeclaration.parameters) {
     processQueryParameter(
       sourceFile,
+      methodDeclaration,
       parameter,
       queryParams,
       queryParamComponents
@@ -45,6 +42,7 @@ export function extractQueryParams(
 
 function processQueryParameter(
   sourceFile: ts.SourceFile,
+  methodDeclaration: ts.MethodDeclaration,
   parameter: ts.ParameterDeclaration,
   queryParams: QueryParamComponent[],
   queryParamComponents: { [name: string]: QueryParamComponent }
@@ -79,13 +77,10 @@ function processQueryParameter(
     );
   }
   if (queryParamDecorator.arguments.length === 1) {
-    const queryParamDescription = extractLiteral(
-      sourceFile,
-      queryParamDecorator.arguments[0]
-    );
+    const queryParamDescription = queryParamDecorator.arguments[0];
     if (!isObjectLiteral(queryParamDescription)) {
       throw panic(
-        `@queryParam() expects an object literal, got this instead: ${queryParamDecorator.arguments[0].getText(
+        `@queryParam() expects an object literal, got this instead: ${methodDeclaration.getText(
           sourceFile
         )}`
       );
@@ -93,7 +88,7 @@ function processQueryParameter(
     const descriptionProperty = queryParamDescription.properties["description"];
     if (!descriptionProperty || !isStringLiteral(descriptionProperty)) {
       throw panic(
-        `@queryParam() expects a string description, got this instead: ${queryParamDecorator.arguments[0].getText(
+        `@queryParam() expects a string description, got this instead: ${methodDeclaration.getText(
           sourceFile
         )}`
       );

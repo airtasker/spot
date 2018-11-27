@@ -1,5 +1,8 @@
 import * as ts from "typescript";
+import { Type } from "../models";
+import { extractLiteral, Literal } from "./literal-parser";
 import { panic } from "./panic";
+import { extractType } from "./type-parser";
 
 /**
  * Extracts the arguments from a single decorator associated with a TypeScript node.
@@ -84,8 +87,12 @@ export function extractMultipleDecorators(
           decorator.expression.expression.getText(sourceFile) === decoratorName
         ) {
           decorators.push({
-            typeParameters: [...(decorator.expression.typeArguments || [])],
-            arguments: [...decorator.expression.arguments]
+            typeParameters: [...(decorator.expression.typeArguments || [])].map(
+              t => extractType(sourceFile, t)
+            ),
+            arguments: [...decorator.expression.arguments].map(e =>
+              extractLiteral(sourceFile, e)
+            )
           });
         }
       }
@@ -95,6 +102,6 @@ export function extractMultipleDecorators(
 }
 
 export interface Decorator {
-  typeParameters: ts.TypeNode[];
-  arguments: ts.Expression[];
+  typeParameters: Type[];
+  arguments: Literal[];
 }
