@@ -269,7 +269,7 @@ function generateAxiosCall(
                         Object.entries(endpoint.headers).map(
                           ([headerName, header]) =>
                             ts.createPropertyAssignment(
-                              header.headerFieldName,
+                              ts.createStringLiteral(header.headerFieldName),
                               ts.createIdentifier(headerName)
                             )
                         )
