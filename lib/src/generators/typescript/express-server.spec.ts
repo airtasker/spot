@@ -24,7 +24,7 @@ describe("TypeScript Express server generator", () => {
       }
       test(testCaseName, async () => {
         const api = await parsePath(
-          path.join(EXAMPLES_DIR, testCaseName, "api.ts")
+          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
         );
         const serverSource = generateExpressServerSource(api);
         expect(serverSource).toMatchSnapshot("server");

@@ -53,6 +53,7 @@ Generated the following files:
   async run() {
     const { flags } = this.parse(Generate);
     let { api: apiPath, language, generator, out: outDir } = flags;
+    const apiFileName = path.basename(apiPath, ".ts");
     const api = await parsePath(apiPath);
     if (!generator) {
       generator = (await prompt<{
@@ -110,7 +111,10 @@ Generated the following files:
       this.exit(1);
     }
     const generatedFiles = generators[generator][language](api);
-    for (const [relativePath, content] of Object.entries(generatedFiles)) {
+    for (let [relativePath, content] of Object.entries(generatedFiles)) {
+      if (relativePath.indexOf("*") !== -1) {
+        relativePath = relativePath.replace(/\*/g, apiFileName);
+      }
       outputFile(outDir, relativePath, content);
     }
     this.log(`Generated the following files:`);
@@ -139,26 +143,26 @@ const generators: {
 } = {
   "json-schema": {
     json: api => ({
-      "types.json": generateJsonSchema(api, "json")
+      "*.json": generateJsonSchema(api, "json")
     }),
     yaml: api => ({
-      "types.yml": generateJsonSchema(api, "yaml")
+      "*.yml": generateJsonSchema(api, "yaml")
     })
   },
   openapi2: {
     json: api => ({
-      "api.json": generateOpenApiV2(api, "json")
+      "*.json": generateOpenApiV2(api, "json")
     }),
     yaml: api => ({
-      "api.yml": generateOpenApiV2(api, "yaml")
+      "*.yml": generateOpenApiV2(api, "yaml")
     })
   },
   openapi3: {
     json: api => ({
-      "api.json": generateOpenApiV3(api, "json")
+      "*.json": generateOpenApiV3(api, "json")
     }),
     yaml: api => ({
-      "api.yml": generateOpenApiV3(api, "yaml")
+      "*.yml": generateOpenApiV3(api, "yaml")
     })
   },
   "axios-client": {

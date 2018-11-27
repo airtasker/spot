@@ -12,7 +12,7 @@ describe("Parser", () => {
       }
       test(testCaseName, async () => {
         let parsedApi = await parsePath(
-          path.join(EXAMPLES_DIR, testCaseName, "api.ts")
+          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
         );
         expect(parsedApi).toMatchSnapshot();
       });

@@ -40,7 +40,7 @@ describe("JSON Schema generator", () => {
       }
       test(testCaseName, async () => {
         const api = await parsePath(
-          path.join(EXAMPLES_DIR, testCaseName, "api.ts")
+          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
         );
         expect(generateJsonSchema(api, "json")).toMatchSnapshot("json");
         expect(generateJsonSchema(api, "yaml")).toMatchSnapshot("yaml");

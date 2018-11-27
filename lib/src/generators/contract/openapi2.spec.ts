@@ -21,7 +21,7 @@ describe("OpenAPI 2 generator", () => {
       }
       test(testCaseName, async () => {
         const api = await parsePath(
-          path.join(EXAMPLES_DIR, testCaseName, "api.ts")
+          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
         );
         expect(generateOpenApiV2(api, "json")).toMatchSnapshot("json");
         expect(generateOpenApiV2(api, "yaml")).toMatchSnapshot("yaml");

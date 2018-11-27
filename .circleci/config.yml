@@ -45,19 +45,19 @@ jobs:
 
       - run:
           name: Speccy OpenAPI 3 (single file)
-          command: ./bin/run generate --api examples/src/single-file/api.ts -l yaml --generator openapi3 -o output/ && ./node_modules/.bin/speccy -s parameter-description lint output/api.yml
+          command: ./bin/run generate --api examples/src/single-file/single-file-api.ts -l yaml --generator openapi3 -o output/ && ./node_modules/.bin/speccy -s parameter-description lint output/single-file-api.yml
 
       - run:
           name: Speccy OpenAPI 3 (multiple files)
-          command: ./bin/run generate --api examples/src/multi-file/api.ts -l yaml --generator openapi3 -o output/ && ./node_modules/.bin/speccy -s parameter-description lint output/api.yml
+          command: ./bin/run generate --api examples/src/multi-file/multi-file-api.ts -l yaml --generator openapi3 -o output/ && ./node_modules/.bin/speccy -s parameter-description lint output/multi-file-api.yml
 
       - run:
           name: Speccy OpenAPI 2 (single file)
-          command: ./bin/run generate --api examples/src/single-file/api.ts -l yaml --generator openapi2 -o output/ && ./node_modules/.bin/swagger2openapi output/api.yml > output/api3.json && ./node_modules/.bin/speccy -s parameter-description lint output/api3.json
+          command: ./bin/run generate --api examples/src/single-file/single-file-api.ts -l yaml --generator openapi2 -o output/ && ./node_modules/.bin/swagger2openapi output/single-file-api.yml > output/api3.json && ./node_modules/.bin/speccy -s parameter-description lint output/api3.json
 
       - run:
           name: Speccy OpenAPI 2 (multiple files)
-          command: ./bin/run generate --api examples/src/multi-file/api.ts -l yaml --generator openapi2 -o output/ && ./node_modules/.bin/swagger2openapi output/api.yml > output/api3.json && ./node_modules/.bin/speccy -s parameter-description lint output/api3.json
+          command: ./bin/run generate --api examples/src/multi-file/multi-file-api.ts -l yaml --generator openapi2 -o output/ && ./node_modules/.bin/swagger2openapi output/multi-file-api.yml > output/api3.json && ./node_modules/.bin/speccy -s parameter-description lint output/api3.json
 
   prettier-check:
     <<: *job_configuration
