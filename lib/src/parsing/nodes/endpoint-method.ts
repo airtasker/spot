@@ -69,7 +69,11 @@ export function parseEndpointMethod(
   const endpoint: Endpoint = {
     method: extractMethod(sourceFile, methodDeclaration, endpointDescription),
     path: extractPath(sourceFile, methodDeclaration, endpointDescription),
-    description: extractEndpointDescription(sourceFile, methodDeclaration, endpointDescription),
+    description: extractEndpointDescription(
+      sourceFile,
+      methodDeclaration,
+      endpointDescription
+    ),
     requestContentType: extractRequestContentType(
       sourceFile,
       methodDeclaration,

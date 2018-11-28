@@ -26,7 +26,7 @@ export function extractEndpointDescription(
   endpointDescription: ObjectLiteral
 ): string {
   const descriptionLiteral = endpointDescription.properties["description"];
-  let description = '';
+  let description = "";
   if (descriptionLiteral) {
     if (!isStringLiteral(descriptionLiteral)) {
       throw panic(

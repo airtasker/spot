@@ -33,7 +33,7 @@ describe("Validator", () => {
               description: "My description"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [],
           requestType: VOID,
@@ -63,7 +63,7 @@ describe("Validator", () => {
               description: "My description"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [],
           requestType: VOID,
@@ -106,7 +106,7 @@ describe("Validator", () => {
               description: "My description"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [],
           requestType: VOID,
@@ -216,7 +216,7 @@ describe("Validator", () => {
               description: "My description"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [],
           requestType: VOID,
@@ -246,7 +246,7 @@ describe("Validator", () => {
         example: {
           method: "GET",
           path: [],
-          description: '',
+          description: "",
           headers: {
             header1: {
               headerFieldName: "duplicate",
@@ -278,7 +278,7 @@ describe("Validator", () => {
         example: {
           method: "GET",
           path: [],
-          description: '',
+          description: "",
           headers: {
             headerRequiredString: {
               headerFieldName: "required-string",
@@ -408,7 +408,7 @@ describe("Validator", () => {
               description: "My description"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [
             {
@@ -451,7 +451,7 @@ describe("Validator", () => {
               description: "My description"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [
             {
@@ -483,7 +483,7 @@ describe("Validator", () => {
               content: "/"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [],
           requestType: objectType({}),
@@ -517,7 +517,7 @@ describe("Validator", () => {
               description: "My description"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [],
           requestType: typeReference("missing2"),
@@ -535,7 +535,7 @@ describe("Validator", () => {
               content: "/"
             }
           ],
-          description: '',
+          description: "",
           headers: {},
           queryParams: [],
           requestType: optionalType(typeReference("missing5")),
