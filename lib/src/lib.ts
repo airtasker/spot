@@ -18,6 +18,7 @@ export interface EndpointDescription {
   description?: string;
   requestContentType?: HttpContentType;
   successStatusCode?: number;
+  tags?: string[];
 }
 
 export function genericError<T>() {

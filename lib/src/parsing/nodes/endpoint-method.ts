@@ -14,6 +14,7 @@ import { extractResponseType } from "../properties/response-type";
 import { extractSpecificErrorTypes } from "../properties/specific-error-type";
 import { extractSuccessStatusCode } from "../properties/success-status-code";
 import { extractEndpointDescription } from "../properties/endpoint-description";
+import { extractTags } from "../properties/tags";
 
 /**
  * Parses a method of an API class definition, such as:
@@ -79,6 +80,7 @@ export function parseEndpointMethod(
       methodDeclaration,
       endpointDescription
     ),
+    tags: extractTags(sourceFile, methodDeclaration, endpointDescription),
     headers: extractHeaders(sourceFile, methodDeclaration),
     queryParams: extractQueryParams(sourceFile, methodDeclaration),
     requestType: extractRequestType(sourceFile, methodDeclaration.parameters),

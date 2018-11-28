@@ -19,7 +19,8 @@ export class Api {
   @endpoint({
     method: "POST",
     path: "/users/create",
-    description: "This is an endpoint to create a user"
+    description: "This is an endpoint to create a user",
+    tags: ["users"]
   })
   createUser(
     @request req: CreateUserRequest,
@@ -34,7 +35,8 @@ export class Api {
 
   @endpoint({
     method: "GET",
-    path: "/users"
+    path: "/users",
+    tags: ["users"]
   })
   findUsers(
     @queryParam({ description: "Limit number of returned results" })
@@ -51,7 +53,8 @@ export class Api {
 
   @endpoint({
     method: "GET",
-    path: "/users/:userId"
+    path: "/users/:userId",
+    tags: ["users"]
   })
   getUser(
     @pathParam({ description: "User unique identifier" }) userId: Int64
@@ -64,7 +67,8 @@ export class Api {
 
   @endpoint({
     method: "DELETE",
-    path: "/users/:userId-confirmed"
+    path: "/users/:userId-confirmed",
+    tags: ["users"]
   })
   @genericError<{
     message: string;

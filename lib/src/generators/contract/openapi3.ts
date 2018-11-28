@@ -10,6 +10,7 @@ import {
 } from "./openapi3-schema";
 import identity = require("lodash/identity");
 import compact = require("lodash/compact");
+import uniqBy = require("lodash/uniqBy");
 import pickBy = require("lodash/pickBy");
 import defaultTo = require("lodash/defaultTo");
 
@@ -28,11 +29,22 @@ export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
 export function openApiV3(api: Api): OpenApiV3 {
   return {
     openapi: "3.0.0",
-    tags: [
-      {
-        name: "TODO"
-      }
-    ],
+    tags: uniqBy(
+      Object.entries(api.endpoints).reduce(
+        (acc, [endpointName, endpoint]) => {
+          if (endpoint.tags) {
+            acc = acc.concat(
+              endpoint.tags.map(tag => {
+                return { name: tag };
+              })
+            );
+          }
+          return acc;
+        },
+        [] as OpenAPIV3TagObject[]
+      ),
+      "name"
+    ),
     info: {
       version: "0.0.0",
       title: "TODO",
@@ -54,7 +66,7 @@ export function openApiV3(api: Api): OpenApiV3 {
         acc[openApiPath][endpoint.method.toLowerCase()] = {
           operationId: endpointName,
           description: endpoint.description,
-          tags: ["TODO"],
+          tags: endpoint.tags,
           parameters: getParameters(api, endpoint),
           ...pickBy(
             {

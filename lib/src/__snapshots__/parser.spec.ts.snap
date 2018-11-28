@@ -38,6 +38,9 @@ Object {
         "typeName": "CreateUserResponse",
       },
       "specificErrorTypes": Object {},
+      "tags": Array [
+        "users",
+      ],
     },
     "deleteUser": Object {
       "description": "",
@@ -101,6 +104,9 @@ Object {
           },
         },
       },
+      "tags": Array [
+        "users",
+      ],
     },
     "findUsers": Object {
       "description": "",
@@ -156,6 +162,9 @@ Object {
         "kind": "array",
       },
       "specificErrorTypes": Object {},
+      "tags": Array [
+        "users",
+      ],
     },
     "getUser": Object {
       "description": "",
@@ -198,6 +207,9 @@ Object {
         },
       },
       "specificErrorTypes": Object {},
+      "tags": Array [
+        "users",
+      ],
     },
   },
   "types": Object {
@@ -259,6 +271,9 @@ Object {
         "typeName": "CreateUserResponse",
       },
       "specificErrorTypes": Object {},
+      "tags": Array [
+        "users",
+      ],
     },
     "deleteUser": Object {
       "description": "",
@@ -322,6 +337,9 @@ Object {
           },
         },
       },
+      "tags": Array [
+        "users",
+      ],
     },
     "findUsers": Object {
       "description": "",
@@ -377,6 +395,9 @@ Object {
         "kind": "array",
       },
       "specificErrorTypes": Object {},
+      "tags": Array [
+        "users",
+      ],
     },
     "getUser": Object {
       "description": "",
@@ -419,6 +440,9 @@ Object {
         },
       },
       "specificErrorTypes": Object {},
+      "tags": Array [
+        "users",
+      ],
     },
   },
   "types": Object {

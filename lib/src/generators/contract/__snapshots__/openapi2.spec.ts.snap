@@ -5,7 +5,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
   \\"swagger\\": \\"2.0\\",
   \\"tags\\": [
     {
-      \\"name\\": \\"TODO\\"
+      \\"name\\": \\"users\\"
     }
   ],
   \\"info\\": {
@@ -24,7 +24,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
           \\"application/json\\"
         ],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -63,7 +63,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
         \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -127,7 +127,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
         \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -180,7 +180,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
         \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -248,7 +248,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
 exports[`OpenAPI 2 generator produces valid code multi-file: yaml 1`] = `
 "swagger: '2.0'
 tags:
-  - name: TODO
+  - name: users
 info:
   version: 0.0.0
   title: TODO
@@ -262,7 +262,7 @@ paths:
       consumes:
         - application/json
       tags:
-        - TODO
+        - users
       parameters:
         - in: body
           name: body
@@ -288,7 +288,7 @@ paths:
       description: ''
       consumes: []
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId
@@ -331,7 +331,7 @@ paths:
       description: ''
       consumes: []
       tags:
-        - TODO
+        - users
       parameters:
         - in: query
           name: limit
@@ -367,7 +367,7 @@ paths:
       description: ''
       consumes: []
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId
@@ -413,7 +413,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
   \\"swagger\\": \\"2.0\\",
   \\"tags\\": [
     {
-      \\"name\\": \\"TODO\\"
+      \\"name\\": \\"users\\"
     }
   ],
   \\"info\\": {
@@ -432,7 +432,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
           \\"application/json\\"
         ],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -471,7 +471,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
         \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -524,7 +524,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
         \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -567,7 +567,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
         \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -656,7 +656,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
 exports[`OpenAPI 2 generator produces valid code single-file: yaml 1`] = `
 "swagger: '2.0'
 tags:
-  - name: TODO
+  - name: users
 info:
   version: 0.0.0
   title: TODO
@@ -670,7 +670,7 @@ paths:
       consumes:
         - application/json
       tags:
-        - TODO
+        - users
       parameters:
         - in: body
           name: body
@@ -696,7 +696,7 @@ paths:
       description: ''
       consumes: []
       tags:
-        - TODO
+        - users
       parameters:
         - in: query
           name: limit
@@ -732,7 +732,7 @@ paths:
       description: ''
       consumes: []
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId
@@ -761,7 +761,7 @@ paths:
       description: ''
       consumes: []
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId

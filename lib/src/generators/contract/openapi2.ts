@@ -9,6 +9,7 @@ import {
 } from "./openapi2-schema";
 import { HttpContentType } from "@airtasker/spot";
 import compact = require("lodash/compact");
+import uniqBy = require("lodash/uniqBy");
 import defaultTo = require("lodash/defaultTo");
 
 export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
@@ -26,11 +27,22 @@ export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
 export function openApiV2(api: Api): OpenApiV2 {
   return {
     swagger: "2.0",
-    tags: [
-      {
-        name: "TODO"
-      }
-    ],
+    tags: uniqBy(
+      Object.entries(api.endpoints).reduce(
+        (acc, [endpointName, endpoint]) => {
+          if (endpoint.tags) {
+            acc = acc.concat(
+              endpoint.tags.map(tag => {
+                return { name: tag };
+              })
+            );
+          }
+          return acc;
+        },
+        [] as OpenAPIV2TagObject[]
+      ),
+      "name"
+    ),
     info: {
       version: "0.0.0",
       title: "TODO",
@@ -53,7 +65,7 @@ export function openApiV2(api: Api): OpenApiV2 {
           operationId: endpointName,
           description: endpoint.description,
           consumes: consumes(api, endpoint),
-          tags: ["TODO"],
+          tags: endpoint.tags,
           parameters: getParameters(api, endpoint),
           responses: {
             default: response(api, endpoint.genericErrorType),

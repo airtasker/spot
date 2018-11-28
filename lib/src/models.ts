@@ -17,6 +17,7 @@ export interface Endpoint {
   description: string;
   headers: Headers;
   queryParams: QueryParamComponent[];
+  tags?: string[];
   requestContentType?: HttpContentType;
   requestType: Type;
   responseType: Type;

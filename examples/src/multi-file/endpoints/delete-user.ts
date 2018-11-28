@@ -13,7 +13,8 @@ import {
 export class Api {
   @endpoint({
     method: "DELETE",
-    path: "/users/:userId-confirmed"
+    path: "/users/:userId-confirmed",
+    tags: ["users"]
   })
   @genericError<{
     message: string;
