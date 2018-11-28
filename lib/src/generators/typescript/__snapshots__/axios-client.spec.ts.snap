@@ -24,7 +24,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
         url: \\"/users/create\\",
         method: \\"POST\\",
         responseType: \\"json\\",
-        headers: { Authorization: authToken },
+        headers: { \\"Authorization\\": authToken },
         data: request,
         validateStatus: () => true
     });
@@ -75,7 +75,7 @@ export async function deleteUser(userId: number, authToken: string): Promise<{
         url: \\"/users/\\" + userId + \\"-confirmed\\",
         method: \\"DELETE\\",
         responseType: \\"json\\",
-        headers: { Authorization: authToken },
+        headers: { \\"Authorization\\": authToken },
         validateStatus: () => true
     });
     switch (response.status) {
@@ -214,7 +214,7 @@ export async function createUser(request: CreateUserRequest, authToken: string |
         url: \\"/users/create\\",
         method: \\"POST\\",
         responseType: \\"json\\",
-        headers: { Authorization: authToken },
+        headers: { \\"Authorization\\": authToken },
         data: request,
         validateStatus: () => true
     });
@@ -346,7 +346,7 @@ export async function deleteUser(userId: number, authToken: string): Promise<{
         url: \\"/users/\\" + userId + \\"-confirmed\\",
         method: \\"DELETE\\",
         responseType: \\"json\\",
-        headers: { Authorization: authToken },
+        headers: { \\"Authorization\\": authToken },
         validateStatus: () => true
     });
     switch (response.status) {
