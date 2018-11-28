@@ -51,6 +51,7 @@ describe("TypeScript validators generator", () => {
           example: {
             method: "POST",
             path: [],
+            description: "",
             headers: {},
             queryParams: [],
             requestType: VOID,
