@@ -18,7 +18,8 @@ import {
 export class Api {
   @endpoint({
     method: "POST",
-    path: "/users/create"
+    path: "/users/create",
+    description: "This is an endpoint to create a user"
   })
   createUser(
     @request req: CreateUserRequest,

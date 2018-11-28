@@ -53,7 +53,7 @@ export function openApiV3(api: Api): OpenApiV3 {
         acc[openApiPath] = acc[openApiPath] || {};
         acc[openApiPath][endpoint.method.toLowerCase()] = {
           operationId: endpointName,
-          description: "TODO",
+          description: endpoint.description,
           tags: ["TODO"],
           parameters: getParameters(api, endpoint),
           ...pickBy(

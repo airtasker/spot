@@ -14,6 +14,7 @@ export interface Api {
 export interface Endpoint {
   method: HttpMethod;
   path: PathComponent[];
+  description: string;
   headers: Headers;
   queryParams: QueryParamComponent[];
   requestContentType?: HttpContentType;

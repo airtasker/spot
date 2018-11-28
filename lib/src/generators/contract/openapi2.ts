@@ -51,7 +51,7 @@ export function openApiV2(api: Api): OpenApiV2 {
         acc[openApiPath] = acc[openApiPath] || {};
         acc[openApiPath][endpoint.method.toLowerCase()] = {
           operationId: endpointName,
-          description: "TODO",
+          description: endpoint.description,
           consumes: consumes(api, endpoint),
           tags: ["TODO"],
           parameters: getParameters(api, endpoint),

@@ -19,7 +19,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
     \\"/users/create\\": {
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"This is an endpoint to create a user\\",
         \\"consumes\\": [
           \\"application/json\\"
         ],
@@ -60,7 +60,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
     \\"/users/{userId}-confirmed\\": {
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
@@ -124,7 +124,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
     \\"/users\\": {
       \\"get\\": {
         \\"operationId\\": \\"findUsers\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
@@ -177,7 +177,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
     \\"/users/{userId}\\": {
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
@@ -258,7 +258,7 @@ paths:
   /users/create:
     post:
       operationId: createUser
-      description: TODO
+      description: This is an endpoint to create a user
       consumes:
         - application/json
       tags:
@@ -285,7 +285,7 @@ paths:
   '/users/{userId}-confirmed':
     delete:
       operationId: deleteUser
-      description: TODO
+      description: ''
       consumes: []
       tags:
         - TODO
@@ -328,7 +328,7 @@ paths:
   /users:
     get:
       operationId: findUsers
-      description: TODO
+      description: ''
       consumes: []
       tags:
         - TODO
@@ -364,7 +364,7 @@ paths:
   '/users/{userId}':
     get:
       operationId: getUser
-      description: TODO
+      description: ''
       consumes: []
       tags:
         - TODO
@@ -427,7 +427,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
     \\"/users/create\\": {
       \\"post\\": {
         \\"operationId\\": \\"createUser\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"This is an endpoint to create a user\\",
         \\"consumes\\": [
           \\"application/json\\"
         ],
@@ -468,7 +468,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
     \\"/users\\": {
       \\"get\\": {
         \\"operationId\\": \\"findUsers\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
@@ -521,7 +521,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
     \\"/users/{userId}\\": {
       \\"get\\": {
         \\"operationId\\": \\"getUser\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
@@ -564,7 +564,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
     \\"/users/{userId}-confirmed\\": {
       \\"delete\\": {
         \\"operationId\\": \\"deleteUser\\",
-        \\"description\\": \\"TODO\\",
+        \\"description\\": \\"\\",
         \\"consumes\\": [],
         \\"tags\\": [
           \\"TODO\\"
@@ -666,7 +666,7 @@ paths:
   /users/create:
     post:
       operationId: createUser
-      description: TODO
+      description: This is an endpoint to create a user
       consumes:
         - application/json
       tags:
@@ -693,7 +693,7 @@ paths:
   /users:
     get:
       operationId: findUsers
-      description: TODO
+      description: ''
       consumes: []
       tags:
         - TODO
@@ -729,7 +729,7 @@ paths:
   '/users/{userId}':
     get:
       operationId: getUser
-      description: TODO
+      description: ''
       consumes: []
       tags:
         - TODO
@@ -758,7 +758,7 @@ paths:
   '/users/{userId}-confirmed':
     delete:
       operationId: deleteUser
-      description: TODO
+      description: ''
       consumes: []
       tags:
         - TODO
