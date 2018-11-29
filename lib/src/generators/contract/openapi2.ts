@@ -27,22 +27,7 @@ export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
 export function openApiV2(api: Api): OpenApiV2 {
   return {
     swagger: "2.0",
-    tags: uniqBy(
-      Object.entries(api.endpoints).reduce(
-        (acc, [endpointName, endpoint]) => {
-          if (endpoint.tags) {
-            acc = acc.concat(
-              endpoint.tags.map(tag => {
-                return { name: tag };
-              })
-            );
-          }
-          return acc;
-        },
-        [] as OpenAPIV2TagObject[]
-      ),
-      "name"
-    ),
+    tags: getTags(api),
     info: {
       version: "0.0.0",
       title: "TODO",
@@ -104,6 +89,25 @@ export function openApiV2(api: Api): OpenApiV2 {
       {} as { [typeName: string]: OpenAPI2SchemaType }
     )
   };
+}
+
+function getTags(api: Api): OpenAPIV2TagObject[] {
+  return uniqBy(
+    Object.entries(api.endpoints).reduce(
+      (acc, [endpointName, endpoint]) => {
+        if (endpoint.tags) {
+          acc = acc.concat(
+            endpoint.tags.map(tag => {
+              return { name: tag };
+            })
+          );
+        }
+        return acc;
+      },
+      [] as OpenAPIV2TagObject[]
+    ),
+    "name"
+  );
 }
 
 function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
