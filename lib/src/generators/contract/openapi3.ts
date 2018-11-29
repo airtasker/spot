@@ -35,8 +35,8 @@ export function openApiV3(api: Api): OpenApiV3 {
     ],
     info: {
       version: "0.0.0",
-      title: api.description ? api.description.name : "",
-      description: api.description ? api.description.description : "",
+      title: api.description.name,
+      description: api.description.description,
       contact: {
         name: "TODO"
       }

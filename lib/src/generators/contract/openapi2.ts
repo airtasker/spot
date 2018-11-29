@@ -33,8 +33,8 @@ export function openApiV2(api: Api): OpenApiV2 {
     ],
     info: {
       version: "0.0.0",
-      title: api.description ? api.description.name : "",
-      description: api.description ? api.description.description : "",
+      title: api.description.name,
+      description: api.description.description,
       contact: {
         name: "TODO"
       }

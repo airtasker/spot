@@ -9,7 +9,7 @@ export interface Api {
   types: {
     [name: string]: Type;
   };
-  description?: ApiDescription;
+  description: ApiDescription;
 }
 
 export interface Endpoint {
