@@ -13,7 +13,8 @@ export class Api {
   @endpoint({
     method: "POST",
     path: "/users/create",
-    description: "This is an endpoint to create a user"
+    description: "This is an endpoint to create a user",
+    tags: ["users"]
   })
   createUser(
     @request req: CreateUserRequest,

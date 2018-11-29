@@ -5,7 +5,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
   \\"openapi\\": \\"3.0.0\\",
   \\"tags\\": [
     {
-      \\"name\\": \\"TODO\\"
+      \\"name\\": \\"users\\"
     }
   ],
   \\"info\\": {
@@ -21,7 +21,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"description\\": \\"This is an endpoint to create a user\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -65,7 +65,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"operationId\\": \\"deleteUser\\",
         \\"description\\": \\"\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -147,7 +147,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"operationId\\": \\"findUsers\\",
         \\"description\\": \\"\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -207,7 +207,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"operationId\\": \\"getUser\\",
         \\"description\\": \\"\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -283,7 +283,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
 exports[`OpenAPI 3 generator produces valid code multi-file: yaml 1`] = `
 "openapi: 3.0.0
 tags:
-  - name: TODO
+  - name: users
 info:
   version: 0.0.0
   title: TODO
@@ -295,7 +295,7 @@ paths:
       operationId: createUser
       description: This is an endpoint to create a user
       tags:
-        - TODO
+        - users
       parameters:
         - in: header
           name: Authorization
@@ -322,7 +322,7 @@ paths:
       operationId: deleteUser
       description: ''
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId
@@ -374,7 +374,7 @@ paths:
       operationId: findUsers
       description: ''
       tags:
-        - TODO
+        - users
       parameters:
         - in: query
           name: limit
@@ -413,7 +413,7 @@ paths:
       operationId: getUser
       description: ''
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId
@@ -463,7 +463,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
   \\"openapi\\": \\"3.0.0\\",
   \\"tags\\": [
     {
-      \\"name\\": \\"TODO\\"
+      \\"name\\": \\"users\\"
     }
   ],
   \\"info\\": {
@@ -479,7 +479,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"operationId\\": \\"createUser\\",
         \\"description\\": \\"This is an endpoint to create a user\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -523,7 +523,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"operationId\\": \\"findUsers\\",
         \\"description\\": \\"\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -583,7 +583,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"operationId\\": \\"getUser\\",
         \\"description\\": \\"\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -631,7 +631,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"operationId\\": \\"deleteUser\\",
         \\"description\\": \\"\\",
         \\"tags\\": [
-          \\"TODO\\"
+          \\"users\\"
         ],
         \\"parameters\\": [
           {
@@ -741,7 +741,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
 exports[`OpenAPI 3 generator produces valid code single-file: yaml 1`] = `
 "openapi: 3.0.0
 tags:
-  - name: TODO
+  - name: users
 info:
   version: 0.0.0
   title: TODO
@@ -753,7 +753,7 @@ paths:
       operationId: createUser
       description: This is an endpoint to create a user
       tags:
-        - TODO
+        - users
       parameters:
         - in: header
           name: Authorization
@@ -780,7 +780,7 @@ paths:
       operationId: findUsers
       description: ''
       tags:
-        - TODO
+        - users
       parameters:
         - in: query
           name: limit
@@ -819,7 +819,7 @@ paths:
       operationId: getUser
       description: ''
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId
@@ -850,7 +850,7 @@ paths:
       operationId: deleteUser
       description: ''
       tags:
-        - TODO
+        - users
       parameters:
         - in: path
           name: userId

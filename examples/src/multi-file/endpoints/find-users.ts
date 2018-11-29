@@ -12,7 +12,8 @@ import {
 export class Api {
   @endpoint({
     method: "GET",
-    path: "/users"
+    path: "/users",
+    tags: ["users"]
   })
   findUsers(
     @queryParam({ description: "Limit number of returned results" })

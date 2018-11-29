@@ -11,7 +11,8 @@ import {
 export class Api {
   @endpoint({
     method: "GET",
-    path: "/users/:userId"
+    path: "/users/:userId",
+    tags: ["users"]
   })
   getUser(
     @pathParam({ description: "User unique identifier" }) userId: Int64
