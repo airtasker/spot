@@ -14,7 +14,10 @@ import {
   response
 } from "@airtasker/spot";
 
-@api()
+@api({
+  name: "My API",
+  description: "A really cool API"
+})
 export class Api {
   @endpoint({
     method: "POST",

@@ -30,7 +30,8 @@ export function openApiV2(api: Api): OpenApiV2 {
     tags: getTags(api),
     info: {
       version: "0.0.0",
-      title: "TODO",
+      title: api.description.name,
+      description: api.description.description,
       contact: {
         name: "TODO"
       }

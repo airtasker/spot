@@ -32,7 +32,8 @@ export function openApiV3(api: Api): OpenApiV3 {
     tags: getTags(api),
     info: {
       version: "0.0.0",
-      title: "TODO",
+      title: api.description.name,
+      description: api.description.description,
       contact: {
         name: "TODO"
       }

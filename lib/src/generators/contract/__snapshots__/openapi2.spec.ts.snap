@@ -10,7 +10,8 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
   ],
   \\"info\\": {
     \\"version\\": \\"0.0.0\\",
-    \\"title\\": \\"TODO\\",
+    \\"title\\": \\"My API\\",
+    \\"description\\": \\"A really cool API\\",
     \\"contact\\": {
       \\"name\\": \\"TODO\\"
     }
@@ -251,7 +252,8 @@ tags:
   - name: users
 info:
   version: 0.0.0
-  title: TODO
+  title: My API
+  description: A really cool API
   contact:
     name: TODO
 paths:
@@ -418,7 +420,8 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
   ],
   \\"info\\": {
     \\"version\\": \\"0.0.0\\",
-    \\"title\\": \\"TODO\\",
+    \\"title\\": \\"My API\\",
+    \\"description\\": \\"A really cool API\\",
     \\"contact\\": {
       \\"name\\": \\"TODO\\"
     }
@@ -659,7 +662,8 @@ tags:
   - name: users
 info:
   version: 0.0.0
-  title: TODO
+  title: My API
+  description: A really cool API
   contact:
     name: TODO
 paths:

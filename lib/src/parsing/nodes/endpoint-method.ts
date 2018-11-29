@@ -32,9 +32,8 @@ import { extractTags } from "../properties/tags";
  */
 export function parseEndpointMethod(
   sourceFile: ts.SourceFile,
-  methodDeclaration: ts.MethodDeclaration,
-  api: Api
-): void {
+  methodDeclaration: ts.MethodDeclaration
+): Endpoint {
   // A method must have an @endpoint() decorator to qualify as an endpoint definition.
   const endpointDecorator = extractSingleDecorator(
     sourceFile,
@@ -42,15 +41,9 @@ export function parseEndpointMethod(
     "endpoint"
   );
   if (!endpointDecorator) {
-    return;
+    throw panic("Expected to have @endpoint() for the method");
   }
-  // Each endpoint must be defined only once.
-  const endpointName = methodDeclaration.name.getText(sourceFile);
-  if (api.endpoints[endpointName]) {
-    throw panic(
-      `Found multiple definitions of the same endpoint ${endpointName}`
-    );
-  }
+
   if (endpointDecorator.arguments.length !== 1) {
     throw panic(
       `Expected exactly one argument for @endpoint(), got ${
@@ -67,7 +60,7 @@ export function parseEndpointMethod(
       )}`
     );
   }
-  const endpoint: Endpoint = {
+  return {
     method: extractMethod(sourceFile, methodDeclaration, endpointDescription),
     path: extractPath(sourceFile, methodDeclaration, endpointDescription),
     description: extractEndpointDescription(
@@ -96,5 +89,4 @@ export function parseEndpointMethod(
       endpointDescription
     )
   };
-  api.endpoints[endpointName] = endpoint;
 }

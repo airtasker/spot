@@ -1,14 +1,6 @@
-import {
-  api,
-  endpoint,
-  Float,
-  Int64,
-  pathParam,
-  response
-} from "@airtasker/spot";
+import { endpoint, Float, Int64, pathParam, response } from "@airtasker/spot";
 
-@api()
-export class Api {
+export class GetUser {
   @endpoint({
     method: "GET",
     path: "/users/:userId",

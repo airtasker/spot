@@ -1,12 +1,16 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as ts from "typescript";
-import { Api } from "../models";
+import { Api, Endpoint, Type } from "../models";
 import { validate } from "../validator";
 import { extractSingleDecorator } from "./decorators";
 import { parseApiClass } from "./nodes/api-class";
 import { panic } from "./panic";
 import { extractObjectType, extractType } from "./type-parser";
+import { parseEndpointMethod } from "./nodes/endpoint-method";
+import { ApiDescription } from "@airtasker/spot";
+
+const merge = require("lodash/merge");
 
 /**
  * Parses a TypeScript source file, as well as any other TypeScript files it imports recursively.
@@ -14,11 +18,7 @@ import { extractObjectType, extractType } from "./type-parser";
  * This should be smart enough not to get stuck into an infinite loop for circular dependencies.
  */
 export async function parsePath(sourcePath: string): Promise<Api> {
-  const api: Api = {
-    endpoints: {},
-    types: {}
-  };
-  await parseFileRecursively(api, new Set(), sourcePath);
+  const api: Api = parseRootFile(sourcePath);
   const errors = validate(api);
   if (errors.length > 0) {
     throw panic(errors.join("\n"));
@@ -26,32 +26,28 @@ export async function parsePath(sourcePath: string): Promise<Api> {
   return api;
 }
 
-async function parseFileRecursively(
-  api: Api,
-  visitedPaths: Set<string>,
-  sourcePath: string
-): Promise<void> {
-  if (!(await fs.existsSync(sourcePath))) {
-    if (await fs.existsSync(sourcePath + ".ts")) {
+function extractSourceFile(sourcePath: string) {
+  if (!fs.existsSync(sourcePath)) {
+    if (fs.existsSync(sourcePath + ".ts")) {
       sourcePath += ".ts";
     } else {
       throw panic(`No source file found at ${sourcePath}`);
     }
   }
-  if (
-    visitedPaths.has(sourcePath) ||
-    path.resolve(sourcePath).startsWith(__dirname)
-  ) {
-    return;
-  } else {
-    visitedPaths.add(sourcePath);
-  }
-  const fileContent = await fs.readFile(sourcePath, "utf8");
+
+  const fileContent = fs.readFileSync(sourcePath, "utf8");
   const sourceFile = ts.createSourceFile(
     path.basename(sourcePath),
     fileContent,
     ts.ScriptTarget.Latest
   );
+  return sourceFile;
+}
+
+function getPathsRecursively(sourcePath: string): Set<string> {
+  const importPaths = new Set();
+  const sourceFile = extractSourceFile(sourcePath);
+
   for (const statement of sourceFile.statements) {
     if (ts.isImportDeclaration(statement)) {
       if (!ts.isStringLiteral(statement.moduleSpecifier)) {
@@ -66,16 +62,118 @@ async function parseFileRecursively(
         // This is not a relative import, we'll ignore it.
         continue;
       }
-      await parseFileRecursively(
-        api,
-        visitedPaths,
-        path.join(sourcePath, "..", importPath)
-      );
-    } else if (ts.isClassDeclaration(statement)) {
+      if (
+        !(
+          importPaths.has(importPath) ||
+          path.resolve(importPath).startsWith(__dirname)
+        )
+      ) {
+        importPaths.add(path.join(sourcePath, "..", importPath));
+      }
+    }
+  }
+  return new Set([
+    ...importPaths,
+    ...[...importPaths].reduce((acc, importPath) => {
+      return new Set([...acc, ...getPathsRecursively(importPath)]);
+    }, new Set())
+  ]);
+}
+
+function parseRootFile(sourcePath: string): Api {
+  const importPaths = getPathsRecursively(sourcePath);
+
+  const api: Api = {
+    endpoints: {},
+    types: {},
+    description: {
+      name: "",
+      description: ""
+    }
+  };
+
+  if (containsApiDeclaration(sourcePath)) {
+    const sourceFile = extractSourceFile(sourcePath);
+    for (const statement of sourceFile.statements) {
+      if (ts.isClassDeclaration(statement)) {
+        const apiDescription: ApiDescription = parseApiClass(
+          sourceFile,
+          statement
+        );
+        if (apiDescription) {
+          api.description = apiDescription;
+        }
+        api.endpoints = parseEndpoints(statement, sourceFile);
+      } else if (ts.isTypeAliasDeclaration(statement)) {
+        const name = statement.name.getText(sourceFile);
+        api.types[name] = extractType(sourceFile, statement.type);
+      } else if (ts.isInterfaceDeclaration(statement)) {
+        const name = statement.name.getText(sourceFile);
+        api.types[name] = extractObjectType(sourceFile, statement);
+      }
+    }
+    return [...importPaths].reduce((acc, path) => {
+      return merge(acc, parseFile(path));
+    }, api);
+  } else {
+    throw panic(`No @api declaration found at ${sourcePath}`);
+  }
+}
+
+function parseEndpoints(
+  statement: ts.ClassDeclaration,
+  sourceFile: ts.SourceFile
+): {
+  [name: string]: Endpoint;
+} {
+  const endpoints: {
+    [name: string]: Endpoint;
+  } = {};
+  for (const member of statement.members) {
+    if (ts.isMethodDeclaration(member)) {
+      // Each endpoint must be defined only once.
+      const endpointName: string = member.name.getText(sourceFile);
+      if (endpoints[endpointName]) {
+        throw panic(
+          `Found multiple definitions of the same endpoint ${endpointName}`
+        );
+      }
+      endpoints[endpointName] = parseEndpointMethod(sourceFile, member);
+    }
+  }
+  return endpoints;
+}
+
+function parseFile(
+  sourcePath: string
+): {
+  endpoints: {
+    [name: string]: Endpoint;
+  };
+  types: {
+    [name: string]: Type;
+  };
+} {
+  const api: {
+    endpoints: {
+      [name: string]: Endpoint;
+    };
+    types: {
+      [name: string]: Type;
+    };
+  } = {
+    endpoints: {},
+    types: {}
+  };
+
+  const sourceFile = extractSourceFile(sourcePath);
+  for (const statement of sourceFile.statements) {
+    if (ts.isClassDeclaration(statement)) {
       const apiDecorator = extractSingleDecorator(sourceFile, statement, "api");
       if (apiDecorator) {
-        parseApiClass(sourceFile, statement, api);
+        throw `@api cannot be defined more than once at ${sourcePath}`;
       }
+      api.endpoints = parseEndpoints(statement, sourceFile);
     } else if (ts.isTypeAliasDeclaration(statement)) {
       const name = statement.name.getText(sourceFile);
       api.types[name] = extractType(sourceFile, statement.type);
@@ -84,4 +182,19 @@ async function parseFileRecursively(
       api.types[name] = extractObjectType(sourceFile, statement);
     }
   }
+
+  return api;
+}
+
+function containsApiDeclaration(sourcePath: string): boolean {
+  const sourceFile = extractSourceFile(sourcePath);
+  for (const statement of sourceFile.statements) {
+    if (ts.isClassDeclaration(statement)) {
+      const apiDecorator = extractSingleDecorator(sourceFile, statement, "api");
+      if (apiDecorator) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

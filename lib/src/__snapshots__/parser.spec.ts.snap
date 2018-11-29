@@ -2,6 +2,10 @@
 
 exports[`Parser produces the expected output for example API definitions multi-file 1`] = `
 Object {
+  "description": Object {
+    "description": "A really cool API",
+    "name": "My API",
+  },
   "endpoints": Object {
     "createUser": Object {
       "description": "This is an endpoint to create a user",
@@ -235,6 +239,10 @@ Object {
 
 exports[`Parser produces the expected output for example API definitions single-file 1`] = `
 Object {
+  "description": Object {
+    "description": "A really cool API",
+    "name": "My API",
+  },
   "endpoints": Object {
     "createUser": Object {
       "description": "This is an endpoint to create a user",
