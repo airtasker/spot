@@ -1,5 +1,4 @@
 import {
-  api,
   endpoint,
   Float,
   Int32,
@@ -8,8 +7,7 @@ import {
   response
 } from "@airtasker/spot";
 
-@api()
-export class Api {
+export class FindUsers {
   @endpoint({
     method: "GET",
     path: "/users"

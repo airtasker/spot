@@ -1,8 +1,11 @@
-export function api(description: ApiDescription = {}) {
+export function api(description: ApiDescription) {
   return (constructor: Function) => {};
 }
 
-export interface ApiDescription {}
+export interface ApiDescription {
+  name: string;
+  description: string;
+}
 
 export function endpoint(description: EndpointDescription) {
   return (

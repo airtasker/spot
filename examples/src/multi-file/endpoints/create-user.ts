@@ -1,15 +1,7 @@
-import {
-  api,
-  endpoint,
-  header,
-  Optional,
-  request,
-  response
-} from "@airtasker/spot";
+import { endpoint, header, Optional, request, response } from "@airtasker/spot";
 import { CreateUserRequest, CreateUserResponse } from "../models";
 
-@api()
-export class Api {
+export class CreateUser {
   @endpoint({
     method: "POST",
     path: "/users/create",

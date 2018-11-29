@@ -1,5 +1,4 @@
 import {
-  api,
   endpoint,
   genericError,
   header,
@@ -9,8 +8,7 @@ import {
   Int64
 } from "@airtasker/spot";
 
-@api()
-export class Api {
+export class DeleteUser {
   @endpoint({
     method: "DELETE",
     path: "/users/:userId-confirmed"

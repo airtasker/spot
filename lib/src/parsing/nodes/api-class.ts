@@ -1,11 +1,20 @@
 import * as ts from "typescript";
-import { Api } from "../../models";
-import { parseEndpointMethod } from "./endpoint-method";
+import { ApiDescription, api } from "@airtasker/spot";
+import { extractSingleDecorator } from "../decorators";
+import { panic } from "../panic";
+import {
+  isObjectLiteral,
+  ObjectLiteral,
+  isStringLiteral
+} from "../literal-parser";
 
 /**
  * Parses a top-level API class definition and the endpoints it defines, such as:
  * ```
- * @api()
+ * @api({
+ *   name: "My API",
+ *   description: "A really cool API"
+ * })
  * class Api {
  *   @endpoint({
  *     method: "POST",
@@ -19,12 +28,53 @@ import { parseEndpointMethod } from "./endpoint-method";
  */
 export function parseApiClass(
   sourceFile: ts.SourceFile,
-  classDeclaration: ts.ClassDeclaration,
-  api: Api
-): void {
-  for (const member of classDeclaration.members) {
-    if (ts.isMethodDeclaration(member)) {
-      parseEndpointMethod(sourceFile, member, api);
-    }
+  classDeclaration: ts.ClassDeclaration
+): ApiDescription {
+  const apiDecorator = extractSingleDecorator(
+    sourceFile,
+    classDeclaration,
+    "api"
+  );
+  if (!apiDecorator) {
+    throw panic("@api() decorator not found");
   }
+  if (apiDecorator.arguments.length !== 1) {
+    throw panic(
+      `Expected exactly one argument for @api(), got ${
+        apiDecorator.arguments.length
+      }`
+    );
+  }
+  const apiDescription = apiDecorator.arguments[0];
+  if (!isObjectLiteral(apiDescription)) {
+    throw panic(
+      `@api() expects an object literal, got this instead: ${classDeclaration.getText(
+        sourceFile
+      )}`
+    );
+  }
+  return extractApiInfo(sourceFile, classDeclaration, apiDescription);
+}
+
+function extractApiInfo(
+  sourceFile: ts.SourceFile,
+  classDeclaration: ts.ClassDeclaration,
+  apiDescription: ObjectLiteral
+): ApiDescription {
+  const nameLiteral = apiDescription.properties["name"];
+  if (!isStringLiteral(nameLiteral)) {
+    throw panic(
+      `Invalid name in api description: ${classDeclaration.getText(sourceFile)}`
+    );
+  }
+  const descriptionLiteral = apiDescription.properties["description"];
+  if (!isStringLiteral(descriptionLiteral)) {
+    throw panic(
+      `Invalid name in api description: ${classDeclaration.getText(sourceFile)}`
+    );
+  }
+  return {
+    name: nameLiteral.text,
+    description: descriptionLiteral.text
+  };
 }

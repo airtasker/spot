@@ -52,6 +52,7 @@ async function parseFileRecursively(
     fileContent,
     ts.ScriptTarget.Latest
   );
+
   for (const statement of sourceFile.statements) {
     if (ts.isImportDeclaration(statement)) {
       if (!ts.isStringLiteral(statement.moduleSpecifier)) {
@@ -74,7 +75,7 @@ async function parseFileRecursively(
     } else if (ts.isClassDeclaration(statement)) {
       const apiDecorator = extractSingleDecorator(sourceFile, statement, "api");
       if (apiDecorator) {
-        parseApiClass(sourceFile, statement, api);
+        parseApiClass(sourceFile, statement);
       }
     } else if (ts.isTypeAliasDeclaration(statement)) {
       const name = statement.name.getText(sourceFile);
