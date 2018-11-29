@@ -42,7 +42,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([]);
   });
@@ -72,7 +76,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "Parameter userId must be a string or a number",
@@ -115,7 +123,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "example defines the path parameter :userId multiple times"
@@ -225,7 +237,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "Parameter paramVoid must be a string or a number",
@@ -266,7 +282,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "example defines the same header duplicate multiple times"
@@ -375,6 +395,10 @@ describe("Validator", () => {
       },
       types: {
         StringAlias: STRING
+      },
+      description: {
+        name: "name",
+        description: "description"
       }
     });
     expect(errors).toEqual([
@@ -428,7 +452,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "example defines the query parameter 'limit' multiple times"
@@ -466,7 +494,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "example does not define a type for query parameter 'limit'"
@@ -492,7 +524,11 @@ describe("Validator", () => {
           specificErrorTypes: {}
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "example cannot have a request body because its HTTP method is GET"
@@ -552,7 +588,11 @@ describe("Validator", () => {
           }
         }
       },
-      types: {}
+      types: {},
+      description: {
+        name: "name",
+        description: "description"
+      }
     });
     expect(errors).toEqual([
       "Referenced type missing1 is not defined",
