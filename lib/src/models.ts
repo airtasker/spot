@@ -1,6 +1,6 @@
 import compact = require("lodash/compact");
 import uniq = require("lodash/uniq");
-import { HttpContentType, HttpMethod } from "./lib";
+import { ApiDescription, HttpContentType, HttpMethod } from "./lib";
 
 export interface Api {
   endpoints: {
@@ -9,6 +9,7 @@ export interface Api {
   types: {
     [name: string]: Type;
   };
+  description?: ApiDescription;
 }
 
 export interface Endpoint {
