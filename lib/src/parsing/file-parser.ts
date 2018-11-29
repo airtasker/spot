@@ -1,7 +1,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as ts from "typescript";
-import { Api } from "../models";
+import { Api, Endpoint, Type } from "../models";
 import { validate } from "../validator";
 import { extractSingleDecorator } from "./decorators";
 import { parseApiClass } from "./nodes/api-class";
@@ -9,6 +9,7 @@ import { panic } from "./panic";
 import { extractObjectType, extractType } from "./type-parser";
 import { parseEndpointMethod } from "./nodes/endpoint-method";
 import { ApiDescription } from "@airtasker/spot";
+
 const merge = require("lodash/merge");
 
 /**
@@ -84,7 +85,11 @@ function parseRootFile(sourcePath: string): Api {
 
   const api: Api = {
     endpoints: {},
-    types: {}
+    types: {},
+    description: {
+      name: "",
+      description: ""
+    }
   };
 
   if (containsApiDeclaration(sourcePath)) {
@@ -98,7 +103,7 @@ function parseRootFile(sourcePath: string): Api {
         if (apiDescription) {
           api.description = apiDescription;
         }
-        parseEndpoint(statement, sourceFile, api);
+        api.endpoints = parseEndpoints(statement, sourceFile);
       } else if (ts.isTypeAliasDeclaration(statement)) {
         const name = statement.name.getText(sourceFile);
         api.types[name] = extractType(sourceFile, statement.type);
@@ -111,24 +116,52 @@ function parseRootFile(sourcePath: string): Api {
       return merge(acc, parseFile(path));
     }, api);
   } else {
-    throw `No @api declaration found at ${sourcePath}`;
+    throw panic(`No @api declaration found at ${sourcePath}`);
   }
 }
 
-function parseEndpoint(
+function parseEndpoints(
   statement: ts.ClassDeclaration,
-  sourceFile: ts.SourceFile,
-  api: Api
-) {
+  sourceFile: ts.SourceFile
+): {
+  [name: string]: Endpoint;
+} {
+  const endpoints: {
+    [name: string]: Endpoint;
+  } = {};
   for (const member of statement.members) {
     if (ts.isMethodDeclaration(member)) {
-      parseEndpointMethod(sourceFile, member, api);
+      // Each endpoint must be defined only once.
+      const endpointName: string = member.name.getText(sourceFile);
+      if (endpoints[endpointName]) {
+        throw panic(
+          `Found multiple definitions of the same endpoint ${endpointName}`
+        );
+      }
+      endpoints[endpointName] = parseEndpointMethod(sourceFile, member);
     }
   }
+  return endpoints;
 }
 
-function parseFile(sourcePath: string): Api {
-  const api: Api = {
+function parseFile(
+  sourcePath: string
+): {
+  endpoints: {
+    [name: string]: Endpoint;
+  };
+  types: {
+    [name: string]: Type;
+  };
+} {
+  const api: {
+    endpoints: {
+      [name: string]: Endpoint;
+    };
+    types: {
+      [name: string]: Type;
+    };
+  } = {
     endpoints: {},
     types: {}
   };
@@ -140,7 +173,7 @@ function parseFile(sourcePath: string): Api {
       if (apiDecorator) {
         throw `@api cannot be defined more than once at ${sourcePath}`;
       }
-      parseEndpoint(statement, sourceFile, api);
+      api.endpoints = parseEndpoints(statement, sourceFile);
     } else if (ts.isTypeAliasDeclaration(statement)) {
       const name = statement.name.getText(sourceFile);
       api.types[name] = extractType(sourceFile, statement.type);

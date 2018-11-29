@@ -69,7 +69,11 @@ describe("TypeScript types generator", () => {
             }
           }
         },
-        types: {}
+        types: {},
+        description: {
+          name: "name",
+          description: "description"
+        }
       })
     ).toMatchInlineSnapshot(`""`);
   });
@@ -81,6 +85,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: VOID
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = void;"`);
@@ -92,6 +100,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: NULL
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = null;"`);
@@ -103,6 +115,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: BOOLEAN
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = boolean;"`);
@@ -114,6 +130,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: booleanConstant(true)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = true;"`);
@@ -122,6 +142,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: booleanConstant(false)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = false;"`);
@@ -133,6 +157,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: STRING
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = string;"`);
@@ -144,6 +172,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: stringConstant("some constant")
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = \\"some constant\\";"`);
@@ -155,6 +187,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: NUMBER
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = number;"`);
@@ -166,6 +202,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: integerConstant(0)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = 0;"`);
@@ -174,6 +214,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: integerConstant(123)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = 123;"`);
@@ -182,6 +226,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: integerConstant(-1000)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = -1000;"`);
@@ -193,6 +241,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: objectType({})
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = {};"`);
@@ -203,6 +255,10 @@ describe("TypeScript types generator", () => {
             Example: objectType({
               singleField: NUMBER
             })
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`
@@ -219,6 +275,10 @@ describe("TypeScript types generator", () => {
               field2: STRING,
               field3: optionalType(BOOLEAN)
             })
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`
@@ -236,6 +296,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: arrayType(STRING)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = string[];"`);
@@ -247,6 +311,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: optionalType(STRING)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = string | void;"`);
@@ -258,6 +326,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: unionType(STRING, NUMBER, BOOLEAN)
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(
@@ -271,6 +343,10 @@ describe("TypeScript types generator", () => {
           endpoints: {},
           types: {
             Example: typeReference("OtherType")
+          },
+          description: {
+            name: "name",
+            description: "description"
           }
         })
       ).toMatchInlineSnapshot(`"export type Example = OtherType;"`);
