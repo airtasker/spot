@@ -20,10 +20,14 @@ exports[`JSON Schema generator produces valid code multi-file: json 1`] = `
       \\"properties\\": {
         \\"success\\": {
           \\"type\\": \\"boolean\\"
+        },
+        \\"created_at\\": {
+          \\"type\\": \\"string\\"
         }
       },
       \\"required\\": [
-        \\"success\\"
+        \\"success\\",
+        \\"created_at\\"
       ]
     }
   }
@@ -45,8 +49,11 @@ definitions:
     properties:
       success:
         type: boolean
+      created_at:
+        type: string
     required:
       - success
+      - created_at
 "
 `;
 
@@ -70,10 +77,14 @@ exports[`JSON Schema generator produces valid code single-file: json 1`] = `
       \\"properties\\": {
         \\"success\\": {
           \\"type\\": \\"boolean\\"
+        },
+        \\"created_at\\": {
+          \\"type\\": \\"string\\"
         }
       },
       \\"required\\": [
-        \\"success\\"
+        \\"success\\",
+        \\"created_at\\"
       ]
     }
   }
@@ -95,7 +106,10 @@ definitions:
     properties:
       success:
         type: boolean
+      created_at:
+        type: string
     required:
       - success
+      - created_at
 "
 `;

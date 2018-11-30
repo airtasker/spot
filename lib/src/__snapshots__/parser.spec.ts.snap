@@ -228,6 +228,9 @@ Object {
     "CreateUserResponse": Object {
       "kind": "object",
       "properties": Object {
+        "created_at": Object {
+          "kind": "date-time",
+        },
         "success": Object {
           "kind": "boolean",
         },
@@ -465,6 +468,9 @@ Object {
     "CreateUserResponse": Object {
       "kind": "object",
       "properties": Object {
+        "created_at": Object {
+          "kind": "date-time",
+        },
         "success": Object {
           "kind": "boolean",
         },

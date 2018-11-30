@@ -59,6 +59,16 @@ export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
         type: "boolean",
         enum: [type.value]
       };
+    case "date":
+      return {
+        type: "string",
+        format: "date"
+      };
+    case "date-time":
+      return {
+        type: "string",
+        format: "date-time"
+      };
     case "string":
       return {
         type: "string"
@@ -152,6 +162,7 @@ export type OpenAPI3SchemaType =
   | OpenAPI3SchemaTypeOneOf
   | OpenAPI3SchemaTypeNull
   | OpenAPI3SchemaTypeString
+  | OpenAPI3SchemaTypeDateTime
   | OpenAPI3SchemaTypeNumber
   | OpenAPI3SchemaTypeInt
   | OpenAPI3SchemaTypeFloatDouble
@@ -223,6 +234,11 @@ export interface OpenAPI3SchemaTypeNumber extends OpenAPI3BaseSchemaType {
 export interface OpenAPI3SchemaTypeInteger extends OpenAPI3BaseSchemaType {
   type: "integer";
   enum?: number[];
+}
+
+export interface OpenAPI3SchemaTypeDateTime extends OpenAPI3BaseSchemaType {
+  type: "string";
+  format: "date" | "date-time";
 }
 
 export interface OpenAPI3SchemaTypeInt extends OpenAPI3BaseSchemaType {

@@ -40,6 +40,8 @@ export function typeNode(type: Type): ts.TypeNode {
       return BOOLEAN_TYPE_NODE;
     case "boolean-constant":
       return type.value ? TRUE_TYPE_NODE : FALSE_TYPE_NODE;
+    case "date":
+    case "date-time":
     case "string":
       return STRING_TYPE_NODE;
     case "string-constant":

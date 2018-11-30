@@ -7,6 +7,7 @@ exports[`TypeScript types generator produces valid code multi-file 1`] = `
 
 export type CreateUserResponse = {
     success: boolean;
+    created_at: string;
 };"
 `;
 
@@ -17,5 +18,6 @@ exports[`TypeScript types generator produces valid code single-file 1`] = `
 
 export type CreateUserResponse = {
     success: boolean;
+    created_at: string;
 };"
 `;

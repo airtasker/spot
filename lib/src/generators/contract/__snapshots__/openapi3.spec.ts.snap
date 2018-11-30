@@ -270,10 +270,15 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
         \\"properties\\": {
           \\"success\\": {
             \\"type\\": \\"boolean\\"
+          },
+          \\"created_at\\": {
+            \\"type\\": \\"string\\",
+            \\"format\\": \\"date-time\\"
           }
         },
         \\"required\\": [
-          \\"success\\"
+          \\"success\\",
+          \\"created_at\\"
         ]
       }
     }
@@ -455,8 +460,12 @@ components:
       properties:
         success:
           type: boolean
+        created_at:
+          type: string
+          format: date-time
       required:
         - success
+        - created_at
 "
 `;
 
@@ -730,10 +739,15 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"properties\\": {
           \\"success\\": {
             \\"type\\": \\"boolean\\"
+          },
+          \\"created_at\\": {
+            \\"type\\": \\"string\\",
+            \\"format\\": \\"date-time\\"
           }
         },
         \\"required\\": [
-          \\"success\\"
+          \\"success\\",
+          \\"created_at\\"
         ]
       }
     }
@@ -915,7 +929,11 @@ components:
       properties:
         success:
           type: boolean
+        created_at:
+          type: string
+          format: date-time
       required:
         - success
+        - created_at
 "
 `;

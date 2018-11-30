@@ -47,6 +47,8 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
         type: "boolean",
         const: type.value
       };
+    case "date":
+    case "date-time":
     case "string":
       return {
         type: "string"
