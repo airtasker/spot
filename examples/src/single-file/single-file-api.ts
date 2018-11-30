@@ -11,7 +11,8 @@ import {
   queryParam,
   request,
   specificError,
-  response, DateTime
+  response,
+  DateTime
 } from "@airtasker/spot";
 
 @api({

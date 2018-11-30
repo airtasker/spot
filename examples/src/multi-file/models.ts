@@ -1,4 +1,4 @@
-import {DateTime} from "@airtasker/spot";
+import { DateTime } from "@airtasker/spot";
 
 export interface CreateUserRequest {
   name: string;
@@ -6,5 +6,5 @@ export interface CreateUserRequest {
 
 export interface CreateUserResponse {
   success: boolean;
-  created_at: DateTime
+  created_at: DateTime;
 }
