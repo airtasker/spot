@@ -3,6 +3,7 @@
 exports[`TypeScript types generator produces valid code multi-file 1`] = `
 "export type CreateUserRequest = {
     name: string;
+    roles: \\"admin\\" | \\"member\\";
 };
 
 export type CreateUserResponse = {
@@ -13,6 +14,7 @@ export type CreateUserResponse = {
 exports[`TypeScript types generator produces valid code single-file 1`] = `
 "export type CreateUserRequest = {
     name: string;
+    roles: \\"admin\\" | \\"member\\";
 };
 
 export type CreateUserResponse = {

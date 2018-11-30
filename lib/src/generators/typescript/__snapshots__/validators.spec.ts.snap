@@ -83,7 +83,7 @@ export function validateGetUser_genericError(value: any): value is void {
 }
 
 export function validateCreateUserRequest(value: any): value is CreateUserRequest {
-    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\";
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\" && (value[\\"roles\\"] === \\"admin\\" || value[\\"roles\\"] === \\"member\\");
 }
 
 export function validateCreateUserResponse(value: any): value is CreateUserResponse {
@@ -174,7 +174,7 @@ export function validateDeleteUser_specificErrorForbidden(value: any): value is 
 }
 
 export function validateCreateUserRequest(value: any): value is CreateUserRequest {
-    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\";
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"name\\"] === \\"string\\" && (value[\\"roles\\"] === \\"admin\\" || value[\\"roles\\"] === \\"member\\");
 }
 
 export function validateCreateUserResponse(value: any): value is CreateUserResponse {

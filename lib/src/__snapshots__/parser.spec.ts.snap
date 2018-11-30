@@ -223,6 +223,19 @@ Object {
         "name": Object {
           "kind": "string",
         },
+        "roles": Object {
+          "kind": "union",
+          "types": Array [
+            Object {
+              "kind": "string-constant",
+              "value": "admin",
+            },
+            Object {
+              "kind": "string-constant",
+              "value": "member",
+            },
+          ],
+        },
       },
     },
     "CreateUserResponse": Object {
@@ -459,6 +472,19 @@ Object {
       "properties": Object {
         "name": Object {
           "kind": "string",
+        },
+        "roles": Object {
+          "kind": "union",
+          "types": Array [
+            Object {
+              "kind": "string-constant",
+              "value": "admin",
+            },
+            Object {
+              "kind": "string-constant",
+              "value": "member",
+            },
+          ],
         },
       },
     },

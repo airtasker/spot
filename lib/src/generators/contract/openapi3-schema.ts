@@ -42,6 +42,12 @@ export function openApiV3ContentTypeSchema(
   }
 }
 
+function isStringConstantUnion(types: Type[]): boolean {
+  return types.reduce((acc, type) => {
+    return acc && type.kind === "string-constant";
+  }, true);
+}
+
 export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
   switch (type.kind) {
     case "void":
@@ -133,6 +139,14 @@ export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
       const withoutNullTypes = compact(types);
       if (withoutNullTypes.length !== types.length) {
         throw new Error(`Unsupported void type in union`);
+      }
+      if (isStringConstantUnion(type.types)) {
+        return {
+          type: "string",
+          enum: compact(
+            type.types.map(t => (t.kind === "string-constant" ? t.value : null))
+          )
+        };
       }
       return {
         oneOf: withoutNullTypes

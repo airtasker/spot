@@ -225,10 +225,18 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
       \\"properties\\": {
         \\"name\\": {
           \\"type\\": \\"string\\"
+        },
+        \\"roles\\": {
+          \\"type\\": \\"string\\",
+          \\"enum\\": [
+            \\"admin\\",
+            \\"member\\"
+          ]
         }
       },
       \\"required\\": [
-        \\"name\\"
+        \\"name\\",
+        \\"roles\\"
       ]
     },
     \\"CreateUserResponse\\": {
@@ -398,8 +406,14 @@ definitions:
     properties:
       name:
         type: string
+      roles:
+        type: string
+        enum:
+          - admin
+          - member
     required:
       - name
+      - roles
   CreateUserResponse:
     type: object
     properties:
@@ -635,10 +649,18 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"properties\\": {
         \\"name\\": {
           \\"type\\": \\"string\\"
+        },
+        \\"roles\\": {
+          \\"type\\": \\"string\\",
+          \\"enum\\": [
+            \\"admin\\",
+            \\"member\\"
+          ]
         }
       },
       \\"required\\": [
-        \\"name\\"
+        \\"name\\",
+        \\"roles\\"
       ]
     },
     \\"CreateUserResponse\\": {
@@ -808,8 +830,14 @@ definitions:
     properties:
       name:
         type: string
+      roles:
+        type: string
+        enum:
+          - admin
+          - member
     required:
       - name
+      - roles
   CreateUserResponse:
     type: object
     properties:
