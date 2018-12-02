@@ -1,5 +1,6 @@
 import assertNever from "../../assert-never";
 import { Type } from "../../models";
+import compact = require("lodash/compact");
 import { OpenAPI3BaseSchemaType } from "./openapi3-schema";
 
 export function rejectVoidOpenApi2SchemaType(
@@ -11,6 +12,12 @@ export function rejectVoidOpenApi2SchemaType(
     throw new Error(errorMessage);
   }
   return schemaType;
+}
+
+function isStringConstantUnion(types: Type[]): boolean {
+  return types.reduce((acc, type) => {
+    return acc && type.kind === "string-constant";
+  }, true);
 }
 
 export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
@@ -98,6 +105,19 @@ export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
     case "optional":
       throw new Error(`Unsupported top-level optional type`);
     case "union":
+      const types = type.types.map(t => openApi2TypeSchema(t));
+      const withoutNullTypes = compact(types);
+      if (withoutNullTypes.length !== types.length) {
+        throw new Error(`Unsupported void type in union`);
+      }
+      if (isStringConstantUnion(type.types)) {
+        return {
+          type: "string",
+          enum: compact(
+            type.types.map(t => (t.kind === "string-constant" ? t.value : null))
+          )
+        };
+      }
       // Please have a look at https://github.com/OAI/OpenAPI-Specification/issues/333
       throw new Error(`Unions are not supported in OpenAPI 2`);
     case "type-reference":
