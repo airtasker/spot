@@ -221,8 +221,8 @@ Define a default error for the endpoint. This can only be used once for an `@end
 
 ## Matcher Types
 
-| Type          | Description                                                                                             | Example                                              |
-| ------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Type          | Description                                                                                             | Example                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | `string`      | A string value                                                                                          |
 | `number`      | A number value                                                                                          |
 | `Int32`       | A 32-bit integer                                                                                        |
@@ -232,11 +232,11 @@ Define a default error for the endpoint. This can only be used once for an `@end
 | `boolean`     | A boolean value                                                                                         |
 | `Date`        | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date      |
 | `DateTime`    | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date-time |
-| Constant      | An exact value                                                                                          | `role: "admin"`                                      |
-| `Optional<T>` | An optional value                                                                                       | `role: Optional<string>`                             |
-| Union         | One-of                                                                                                  | `role: "admin" | "member"`, `param: string | number` |
-| Array         | Collection                                                                                              | `nicknames: string[]`                                |
-| Object        | An object matcher                                                                                       | `person: { firstName: string, lastName: string }`    |
+| Constant      | An exact value                                                                                          | `role: "admin"`                                        |
+| `Optional<T>` | An optional value                                                                                       | `role: Optional<string>`                               |
+| Union         | One-of                                                                                                  | `role: "admin" \| "member"`, `param: string \| number` |
+| Array         | Collection                                                                                              | `nicknames: string[]`                                  |
+| Object        | An object matcher                                                                                       | `person: { firstName: string, lastName: string }`      |
 
 ## Suppported HTTP Methods
 
