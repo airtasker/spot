@@ -106,16 +106,18 @@ Define a HTTP endpoint for the API. An endpoint describes a particular HTTP acti
 import { endpoint, genericError, header, pathParam, queryParam, request, response, specificError } from "@airtasker/spot";
 
 class MyUserEndpoints {
+  // GET /users expects a mandatory `search_term` query parameter and returns a list of users.
   @endpoint({
     method: "GET",
     path: "/users",
     description: "Retrieve all users",
     tags: ["Users"]
   })
-  getUsers(@queryParam({ description: "Search term" }) search_term: string): UserResponse[] {
+  getUsers(@queryParam({ description: "Search term" }) search_term: Optional<string>): UserResponse[] {
     return response();
   }
 
+  // GET /users/:id returns a user by their unique identifier.
   @endpoint({
     method: "GET",
     path: "/users/:id",
@@ -126,13 +128,14 @@ class MyUserEndpoints {
     return response();
   }
 
+  // POST /users creates a user, expecting an authorization token to be present.
   @endpoint({
     method: "POST",
     path: "/users",
     description: "Create a user",
     tags: ["Users"]
   })
-  @specificError<ApiError>({
+  @specificError<ApiErrorResponse>({
     name: "unauthorized",
     statusCode: 401
   })
@@ -148,10 +151,13 @@ class MyUserEndpoints {
   }
 }
 
-interface UserResponse {
+interface User {
   firstName: string;
   lastName: string;
 }
+
+type UserResponse = User;
+type UserListResponse = User[];
 
 interface CreateUserRequest {
   firstName: string;
@@ -162,23 +168,23 @@ interface CreateUserResponse {
   success: boolean;
 }
 
-interface ApiError {
+interface ApiErrorResponse {
   message: string;
 }
 ```
 
-| Field                | Default            | Description                                               |
-| -------------------- | ------------------ | --------------------------------------------------------- |
-| `method`             |                    | (**required**) [HTTP method](#suppported-http-methods)    |
-| `path`               |                    | (**required**) URL path                                   |
-| `description`        | `""`               | Description of the endpoint                               |
-| `requestContentType` | `application/json` | Content type of the request body                          |
-| `successStatusCode`  | `200`              | HTTP status code for a successful response                |
-| `tags`               |                    | Array of tags used for endpoint grouping in documentation |
+| Field                | Default            | Description                                              |
+| -------------------- | ------------------ | -------------------------------------------------------- |
+| `method`             |                    | (**required**) [HTTP method](#suppported-http-methods)   |
+| `path`               |                    | (**required**) URL path                                  |
+| `description`        | `""`               | Description of the endpoint                              |
+| `requestContentType` | `application/json` | Content type of the request body                         |
+| `successStatusCode`  | `200`              | HTTP status code for a successful response               |
+| `tags`               |                    | List of tags used for endpoint grouping in documentation |
 
 ### `@request`
 
-Define a request body for requests that require one. This is commonly used for `POST` and `PUT` requests:
+Define a request body for requests that require one. This is commonly used for `POST` and `PUT` requests and is not allowed for `GET` requests:
 
 ```TypeScript
 class MyUserEndpoints {
@@ -218,7 +224,27 @@ interface UpdateUserRequest {
 
 ### `@header`
 
-Define a request header. `@header` can be used multiple times to define multiple headers.
+Define a request header. `@header` can be used multiple times to define multiple headers:
+
+```TypeScript
+  //...
+  @endpoint({
+    method: "POST",
+    path: "/users",
+    description: "Create a user"
+  })
+  createUser(
+    @request req: CreateUserRequest,
+    @header({
+      name: "Authorization",
+      description: "This is the authorization token"
+    })
+    authToken: Optional<string>
+  ): CreateUserResponse {
+    return response();
+  }
+  //...
+```
 
 | Field         | Description                       |
 | ------------- | --------------------------------- |
@@ -227,7 +253,22 @@ Define a request header. `@header` can be used multiple times to define multiple
 
 ### `@pathParam`
 
-Define path parameters that appear in the `@endpoint.path`. The parameter must be defined in the `@endpoint.path`. A `@pathParam` should be defined for each parameter defined in `@endpoint.path`.
+Define path parameters that appear in the `path` provided in `@endpoint()`. For example if the path is `/users/:userId`, the endpoint method must define a matching argument with `@pathParam() userId: string`:
+
+```TypeScript
+  //...
+  @endpoint({
+    method: "GET",
+    path: "/users/:id",
+    description: "Get user by id"
+  })
+  getUser(@pathParam({ description: "Unique user identifier" }) id: string): UserResponse {
+    return response();
+  }
+  //...
+```
+
+**Note**: the name of the argument must match the name of the path parameter.
 
 | Field         | Description                       |
 | ------------- | --------------------------------- |
@@ -235,7 +276,22 @@ Define path parameters that appear in the `@endpoint.path`. The parameter must b
 
 ### `@queryParam`
 
-Define query parameters. `@queryParam` can be used multiple times to define multiple query parameters.
+Define query parameters. `@queryParam` can be used multiple times to define multiple query parameters:
+
+```TypeScript
+  //...
+  @endpoint({
+    method: "GET",
+    path: "/users",
+    description: "Retrieve all users"
+  })
+  getUsers(@queryParam({ description: "Search term" }) search_term: Optional<string>): UserResponse[] {
+    return response();
+  }
+  //...
+```
+
+**Note**: the name of the argument must match the name of the query parameter.
 
 | Field         | Description                        |
 | ------------- | ---------------------------------- |
@@ -243,7 +299,26 @@ Define query parameters. `@queryParam` can be used multiple times to define mult
 
 ### `@specificError<T>`
 
-Define a known error for the endpoint. `@specificError` can be used multiple times to define multiple errors.
+Define a known error for the endpoint. `@specificError` can be used multiple times to define multiple errors. `T` must be replaced with the response type when the error occurs, for example `@specificError<UnauthenticatedErrorResponse>`:
+
+```TypeScript
+  //...
+  @endpoint({
+    method: "POST",
+    path: "/users",
+    description: "Create a user"
+  })
+  @specificError<UnauthenticatedErrorResponse>({
+    name: "unauthorized",
+    statusCode: 401
+  })
+  createUser(
+    //...
+  ): CreateUserResponse {
+    return response();
+  }
+  //...
+```
 
 | Field        | Description                                   |
 | ------------ | --------------------------------------------- |
@@ -252,21 +327,37 @@ Define a known error for the endpoint. `@specificError` can be used multiple tim
 
 ### `@genericError<T>`
 
-Define a default error for the endpoint. This can only be used once for an `@endpoint`.
+Define a default error for the endpoint. This can only be used once for an `@endpoint`. `T` must be replaced with the response type when the error occurs, for example `@genericError<ApiErrorResponse>`:
+
+```TypeScript
+  //...
+  @endpoint({
+    method: "POST",
+    path: "/users",
+    description: "Create a user"
+  })
+  @genericError<ApiErrorResponse>()
+  createUser(
+    //...
+  ): CreateUserResponse {
+    return response();
+  }
+  //...
+```
 
 ## Matcher Types
 
 | Type          | Description                                                                                             | Example                                                |
 | ------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `string`      | A string value                                                                                          |
-| `number`      | A number value                                                                                          |
-| `Int32`       | A 32-bit integer                                                                                        |
-| `Int64`       | A 64-bit integer                                                                                        |
-| `Float`       | A 32-bit floating point number                                                                          |
-| `Double`      | A 64-bit floating point number                                                                          |
-| `boolean`     | A boolean value                                                                                         |
-| `Date`        | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date      |
-| `DateTime`    | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date-time |
+| `string`      | A string value                                                                                          | `name: string`                                         |
+| `number`      | A number value                                                                                          | `numPencils: number`                                   |
+| `Int32`       | A 32-bit integer                                                                                        | `age: Int32`                                           |
+| `Int64`       | A 64-bit integer                                                                                        | `numAtoms: Int64`                                      |
+| `Float`       | A 32-bit floating point number                                                                          | `weight: Float`                                        |
+| `Double`      | A 64-bit floating point number                                                                          | `price: Double`                                        |
+| `boolean`     | A boolean value                                                                                         | `isAdmin: boolean`                                     |
+| `Date`        | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date      | `dateOfBirth: Date`                                    |
+| `DateTime`    | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date-time | `createdAt: DateTime`                                  |
 | Constant      | An exact value                                                                                          | `role: "admin"`                                        |
 | `Optional<T>` | An optional value                                                                                       | `role: Optional<string>`                               |
 | Union         | One-of                                                                                                  | `role: "admin" \| "member"`, `param: string \| number` |
@@ -351,7 +442,3 @@ Generated the following files:
 _See code: [cli/src/commands/init.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/init.ts)_
 
 <!-- commandsstop -->
-
-```
-
-```
