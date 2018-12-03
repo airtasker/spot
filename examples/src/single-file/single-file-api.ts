@@ -11,7 +11,8 @@ import {
   queryParam,
   request,
   specificError,
-  response
+  response,
+  DateTime
 } from "@airtasker/spot";
 
 @api({
@@ -101,4 +102,5 @@ export interface CreateUserRequest {
 
 export interface CreateUserResponse {
   success: boolean;
+  created_at: DateTime;
 }

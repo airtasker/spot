@@ -94,6 +94,14 @@ export function extractType(sourceFile: ts.SourceFile, type: ts.Node): Type {
         return {
           kind: "double"
         };
+      case "Date":
+        return {
+          kind: "date"
+        };
+      case "DateTime":
+        return {
+          kind: "date-time"
+        };
       default:
         return {
           kind: "type-reference",

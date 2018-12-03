@@ -126,5 +126,7 @@ export type Int32 = number;
 export type Int64 = number;
 export type Float = number;
 export type Double = number;
+export type Date = string;
+export type DateTime = string;
 
 export type Optional<T> = T | void;

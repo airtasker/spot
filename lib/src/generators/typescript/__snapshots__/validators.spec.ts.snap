@@ -87,7 +87,7 @@ export function validateCreateUserRequest(value: any): value is CreateUserReques
 }
 
 export function validateCreateUserResponse(value: any): value is CreateUserResponse {
-    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"success\\"] === \\"boolean\\";
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"success\\"] === \\"boolean\\" && typeof value[\\"created_at\\"] === \\"string\\";
 }"
 `;
 
@@ -178,6 +178,6 @@ export function validateCreateUserRequest(value: any): value is CreateUserReques
 }
 
 export function validateCreateUserResponse(value: any): value is CreateUserResponse {
-    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"success\\"] === \\"boolean\\";
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"success\\"] === \\"boolean\\" && typeof value[\\"created_at\\"] === \\"string\\";
 }"
 `;
