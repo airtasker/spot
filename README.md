@@ -170,7 +170,7 @@ interface ApiError {
 
 | Field                | Default            | Description                                               |
 | -------------------- | ------------------ | --------------------------------------------------------- |
-| `method`\*           |                    | [HTTP method](#Suppported%20HTTP%20Methods)               |
+| `method`\*           |                    | [HTTP method](#suppported-http-methods)                   |
 | `path`\*             |                    | URL path                                                  |
 | `description`        | `""`               | Description of the endpoint                               |
 | `requestContentType` | `application/json` | Content type of the request body                          |
