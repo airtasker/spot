@@ -18,6 +18,9 @@ const merge = require("lodash/merge");
  * This should be smart enough not to get stuck into an infinite loop for circular dependencies.
  */
 export async function parsePath(sourcePath: string): Promise<Api> {
+  if (!isValidTypeScript(sourcePath)) {
+    throw panic("TypeScript compilation error");
+  }
   const api: Api = parseRootFile(sourcePath);
   const errors = validate(api);
   if (errors.length > 0) {
@@ -197,4 +200,39 @@ function containsApiDeclaration(sourcePath: string): boolean {
     }
   }
   return false;
+}
+
+/**
+ * Check for TypeScript errors
+ */
+function isValidTypeScript(sourcePath: string): boolean {
+  const program = ts.createProgram([sourcePath], {
+    target: ts.ScriptTarget.ESNext,
+    experimentalDecorators: true,
+    moduleResolution: ts.ModuleResolutionKind.NodeJs,
+    baseUrl: "./",
+    paths: {
+      "@airtasker/spot": ["./lib/src/lib"]
+    }
+  });
+  let diagnostics = ts.getPreEmitDiagnostics(program);
+  diagnostics.forEach(diagnostic => {
+    if (diagnostic.file) {
+      let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
+        diagnostic.start!
+      );
+      let message = ts.flattenDiagnosticMessageText(
+        diagnostic.messageText,
+        "\n"
+      );
+      console.error(
+        `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`
+      );
+    } else {
+      console.error(
+        `${ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n")}`
+      );
+    }
+  });
+  return diagnostics.length === 0;
 }

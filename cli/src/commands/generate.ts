@@ -21,7 +21,7 @@ export default class Generate extends Command {
     "Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats such as OpenAPI.";
 
   static examples = [
-    `$ api generate --language typescript --generator axios-client --out src/
+    `$ spot generate --language typescript --generator axios-client --out src/
 Generated the following files:
 - src/types.ts
 - src/validators.ts

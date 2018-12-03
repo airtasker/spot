@@ -7,7 +7,7 @@ export default class Init extends Command {
   static description = "Generates the boilerplate for an API.";
 
   static examples = [
-    `$ api init
+    `$ spot init
 Generated the following files:
 - api.ts
 - tsconfig.json
