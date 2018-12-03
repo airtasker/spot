@@ -122,7 +122,7 @@ class MyUserEndpoints {
     description: "Get user by id",
     tags: ["Users"]
   })
-  getUser(@pathParam({ description: "User unique identifier" }) id: string): UserResponse {
+  getUser(@pathParam({ description: "Unique user identifier" }) id: string): UserResponse {
     return response();
   }
 
