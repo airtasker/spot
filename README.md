@@ -93,14 +93,14 @@ import { api } from "@airtasker/spot";
 class MyAPI {}
 ```
 
-| Field           | Description            |
-| --------------- | ---------------------- |
-| `name`\*        | Name of the API        |
-| `description`\* | Description of the API |
+| Field         | Description                           |
+| ------------- | ------------------------------------- |
+| `name`        | (**required**) Name of the API        |
+| `description` | (**required**) Description of the API |
 
 ## `@endpoint`
 
-Define a HTTP endpoint for the API. An endpoint describes an action on a particular path:
+Define a HTTP endpoint for the API. An endpoint describes a particular HTTP action on a URL path:
 
 ```TypeScript
 import { endpoint, genericError, header, pathParam, queryParam, request, response, specificError } from "@airtasker/spot";
@@ -136,7 +136,6 @@ class MyUserEndpoints {
     name: "unauthorized",
     statusCode: 401
   })
-
   createUser(
     @request req: CreateUserRequest,
     @header({
@@ -170,8 +169,8 @@ interface ApiError {
 
 | Field                | Default            | Description                                               |
 | -------------------- | ------------------ | --------------------------------------------------------- |
-| `method`\*           |                    | [HTTP method](#suppported-http-methods)                   |
-| `path`\*             |                    | URL path                                                  |
+| `method`             |                    | (**required**) [HTTP method](#suppported-http-methods)    |
+| `path`               |                    | (**required**) URL path                                   |
 | `description`        | `""`               | Description of the endpoint                               |
 | `requestContentType` | `application/json` | Content type of the request body                          |
 | `successStatusCode`  | `200`              | HTTP status code for a successful response                |
@@ -179,16 +178,52 @@ interface ApiError {
 
 ### `@request`
 
-Define a request body.
+Define a request body for requests that require one. This is commonly used for `POST` and `PUT` requests:
+
+```TypeScript
+class MyUserEndpoints {
+  //...
+  @endpoint({
+    method: "POST",
+    path: "/users"
+  })
+  createUser(
+    @request req: CreateUserRequest
+  ): UserResponse {
+    return response();
+  }
+
+  @endpoint({
+    method: "PUT",
+    path: "/users/:id"
+  })
+  updateUser(
+    @pathParam({ description: "User unique identifier" }) id: string,
+    @request req: UpdateUserRequest
+  ): UserResponse {
+    return response();
+  }
+  //...
+}
+
+interface CreateUserRequest {
+  firstName: string;
+  lastName: string;
+}
+
+interface UpdateUserRequest {
+  lastName: string;
+}
+```
 
 ### `@header`
 
 Define a request header. `@header` can be used multiple times to define multiple headers.
 
-| Field         | Description               |
-| ------------- | ------------------------- |
-| `name`\*      | Name of the header        |
-| `description` | Description of the header |
+| Field         | Description                       |
+| ------------- | --------------------------------- |
+| `name`        | (**required**) Name of the header |
+| `description` | Description of the header         |
 
 ### `@pathParam`
 
@@ -210,10 +245,10 @@ Define query parameters. `@queryParam` can be used multiple times to define mult
 
 Define a known error for the endpoint. `@specificError` can be used multiple times to define multiple errors.
 
-| Field          | Description                    |
-| -------------- | ------------------------------ |
-| `name`\*       | Name of the error              |
-| `statusCode`\* | HTTP status code for the error |
+| Field        | Description                                   |
+| ------------ | --------------------------------------------- |
+| `name`       | (**required**) Name of the error              |
+| `statusCode` | (**required**) HTTP status code for the error |
 
 ### `@genericError<T>`
 
