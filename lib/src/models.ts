@@ -87,6 +87,8 @@ export type Type =
   | Int64Type
   | FloatType
   | DoubleType
+  | DateType
+  | DateTimeType
   | IntegerConstantType
   | ObjectType
   | ArrayType
@@ -189,6 +191,14 @@ export const DOUBLE: DoubleType = {
   kind: "double"
 };
 
+export const DATE: DateType = {
+  kind: "date"
+};
+
+export const DATETIME: DateTimeType = {
+  kind: "date-time"
+};
+
 export interface Int32Type {
   kind: "int32";
 }
@@ -203,6 +213,14 @@ export interface FloatType {
 
 export interface DoubleType {
   kind: "double";
+}
+
+export interface DateType {
+  kind: "date";
+}
+
+export interface DateTimeType {
+  kind: "date-time";
 }
 
 export function objectType(properties: { [key: string]: Type }): ObjectType {

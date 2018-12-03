@@ -132,6 +132,8 @@ function validator(type: Type, parameter: ts.Expression): ts.Expression {
       return booleanValidator(parameter);
     case "boolean-constant":
       return booleanConstantValidator(type.value, parameter);
+    case "date":
+    case "date-time":
     case "string":
       return stringValidator(parameter);
     case "string-constant":

@@ -97,6 +97,8 @@ function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
     case "null":
     case "boolean":
     case "boolean-constant":
+    case "date":
+    case "date-time":
     case "string":
     case "string-constant":
     case "number":
