@@ -215,7 +215,7 @@ function isValidTypeScript(sourcePath: string): boolean {
       "@airtasker/spot": ["./lib/src/lib"]
     }
   });
-  let diagnostics = program.getSemanticDiagnostics();
+  let diagnostics = ts.getPreEmitDiagnostics(program);
   diagnostics.forEach(diagnostic => {
     if (diagnostic.file) {
       let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
@@ -234,5 +234,5 @@ function isValidTypeScript(sourcePath: string): boolean {
       );
     }
   });
-  return diagnostics.length > 0 ? false : true;
+  return diagnostics.length === 0;
 }
