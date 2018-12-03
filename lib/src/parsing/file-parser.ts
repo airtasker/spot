@@ -209,6 +209,7 @@ function isValidTypeScript(sourcePath: string): boolean {
   const program = ts.createProgram([sourcePath], {
     target: ts.ScriptTarget.ESNext,
     experimentalDecorators: true,
+    moduleResolution: ts.ModuleResolutionKind.NodeJs,
     baseUrl: "./",
     paths: {
       "@airtasker/spot": ["./lib/src/lib"]
