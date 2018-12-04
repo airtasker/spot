@@ -103,7 +103,7 @@ class MyAPI {}
 Define a HTTP endpoint for the API. An endpoint describes a particular HTTP action on a URL path:
 
 ```TypeScript
-import { endpoint, genericError, header, pathParam, queryParam, request, response, specificError } from "@airtasker/spot";
+import { endpoint, header, pathParam, queryParam, request, response, specificError } from "@airtasker/spot";
 
 class MyUserEndpoints {
   // GET /users expects a mandatory `search_term` query parameter and returns a list of users.
