@@ -2,6 +2,11 @@ import { createUser } from "./sdk/client";
 import * as moxios from "moxios";
 import { CreateUserResponse } from "./sdk/types";
 
+const expectedResponse: CreateUserResponse = {
+  success: true,
+  created_at: "2018-01-01"
+};
+
 describe("TypeScript axios client sdk test", () => {
   beforeEach(() => {
     // import and pass your custom axios instance to this method
@@ -14,12 +19,48 @@ describe("TypeScript axios client sdk test", () => {
   });
 
   describe("POST request", () => {
-    it("returns success", async () => {
-      const expectedResponse: CreateUserResponse = {
-        success: true,
-        created_at: "2018-01-01"
-      };
+    it("pass correct request body", async () => {
+      moxios.stubRequest("/users/create", {
+        status: 200,
+        response: expectedResponse
+      });
 
+      await createUser({ name: "User 1", roles: "admin" }, "test-token");
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.method).toBe("post");
+      expect(JSON.parse(request.config.data)).toStrictEqual({
+        name: "User 1",
+        roles: "admin"
+      });
+    });
+
+    it("pass correct header", async () => {
+      moxios.stubRequest("/users/create", {
+        status: 200,
+        response: expectedResponse
+      });
+
+      await createUser({ name: "User 1", roles: "admin" }, "test-token");
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.method).toBe("post");
+      expect(request.config.headers["Authorization"]).toBe("test-token");
+    });
+
+    it("allows undefined header", async () => {
+      moxios.stubRequest("/users/create", {
+        status: 200,
+        response: expectedResponse
+      });
+
+      await createUser({ name: "User 1", roles: "admin" }, undefined);
+      const request = moxios.requests.mostRecent();
+      expect(request.config.method).toBe("post");
+      expect(request.config.headers["Authorization"]).toBeUndefined();
+    });
+
+    it("can handle successful request", async () => {
       moxios.stubRequest("/users/create", {
         status: 200,
         response: expectedResponse
@@ -48,10 +89,9 @@ describe("TypeScript axios client sdk test", () => {
       }
     });
 
-    it("returns error", async () => {
+    it("can handle unsuccessful request", async () => {
       moxios.stubRequest("/users/create", {
-        status: 400,
-        response: undefined
+        status: 400
       });
 
       const response = await createUser(
