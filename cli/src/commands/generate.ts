@@ -1,5 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
+import * as YAML from "js-yaml";
 import * as path from "path";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
 import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
@@ -141,6 +142,16 @@ const generators: {
     };
   };
 } = {
+  raw: {
+    json: api => ({
+      "*.json": JSON.stringify(api, null, 2)
+    }),
+    yaml: api => ({
+      "*.yml": YAML.safeDump(api, {
+        noRefs: true
+      })
+    })
+  },
   "json-schema": {
     json: api => ({
       "*.json": generateJsonSchema(api, "json")
