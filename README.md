@@ -308,7 +308,7 @@ Define a known error for the endpoint. `@specificError` can be used multiple tim
     path: "/users",
     description: "Create a user"
   })
-  @specificError<UnauthenticatedErrorResponse>({
+  @specificError<UnauthorizedErrorResponse>({
     name: "unauthorized",
     statusCode: 401
   })
