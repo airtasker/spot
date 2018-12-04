@@ -1,6 +1,6 @@
 {
   "name": "@airtasker/spot",
-  "version": "0.1.28",
+  "version": "0.1.29",
   "author": "Francois Wouts",
   "bin": {
     "spot": "./bin/run"
