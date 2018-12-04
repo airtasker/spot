@@ -299,7 +299,7 @@ Define query parameters. `@queryParam` can be used multiple times to define mult
 
 ### `@specificError<T>`
 
-Define a known error for the endpoint. `@specificError` can be used multiple times to define multiple errors. `T` must be replaced with the response type when the error occurs, for example `@specificError<UnauthenticatedErrorResponse>`:
+Define a known error for the endpoint. `@specificError` can be used multiple times to define multiple errors. `T` must be replaced with the response type when the error occurs, for example `@specificError<UnauthorizedErrorResponse>`:
 
 ```TypeScript
   //...
