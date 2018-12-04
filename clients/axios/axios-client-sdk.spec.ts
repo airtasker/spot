@@ -19,7 +19,7 @@ describe("TypeScript axios client sdk test", () => {
   });
 
   describe("POST request", () => {
-    it("pass correct request body", async () => {
+    it("passes the correct method and request body", async () => {
       moxios.stubRequest("/users/create", {
         status: 200,
         response: expectedResponse
@@ -35,7 +35,7 @@ describe("TypeScript axios client sdk test", () => {
       });
     });
 
-    it("pass correct header", async () => {
+    it("passes the correct header", async () => {
       moxios.stubRequest("/users/create", {
         status: 200,
         response: expectedResponse
