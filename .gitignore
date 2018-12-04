@@ -9,3 +9,4 @@
 node_modules
 oclif.manifest.json
 *.tgz
+clients/**/sdk
