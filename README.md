@@ -253,7 +253,7 @@ Define a request header. `@header` can be used multiple times to define multiple
 
 ### `@pathParam`
 
-Define path parameters that appear in the `path` provided in `@endpoint()`. For example if the path is `/users/:userId`, the endpoint method must define a matching argument with `@pathParam() userId: string`:
+Define path parameters that appear in the `path` provided in `@endpoint()`. For example if the path is `/users/:id`, the endpoint method must define a matching argument with `@pathParam() id: string`::
 
 ```TypeScript
   //...
