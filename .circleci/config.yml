@@ -41,7 +41,7 @@ jobs:
 
       - run:
           name: Run axios client sdk test
-          command: ./bin/run generate --api examples/src/single-file/single-file-api.ts --generator axios-client -l typescript -o clients/axios/sdk && ./node_modules/.bin/jest clients
+          command: ./bin/run generate --api examples/src/single-file/single-file-api.ts --generator axios-client -l typescript -o clients/axios/sdk && ./node_modules/.bin/jest clients/axios
       - run:
           name: Install speccy and swagger2openapi
           command: yarn add speccy swagger2openapi
