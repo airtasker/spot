@@ -1,8 +1,8 @@
-import { createUser } from "./sdk/client";
+import { createUser, getUser } from "./sdk/client";
 import * as moxios from "moxios";
 import { CreateUserResponse } from "./sdk/types";
 
-const expectedResponse: CreateUserResponse = {
+const createUserResponse: CreateUserResponse = {
   success: true,
   created_at: "2018-01-01"
 };
@@ -16,11 +16,11 @@ describe("TypeScript axios client sdk test", () => {
     moxios.uninstall();
   });
 
-  describe("POST request", () => {
+  describe("POST createUser", () => {
     it("passes the correct method and request body", async () => {
       moxios.stubRequest("/users/create", {
         status: 200,
-        response: expectedResponse
+        response: createUserResponse
       });
 
       await createUser({ name: "User 1", roles: "admin" }, "test-token");
@@ -36,7 +36,7 @@ describe("TypeScript axios client sdk test", () => {
     it("passes the correct header", async () => {
       moxios.stubRequest("/users/create", {
         status: 200,
-        response: expectedResponse
+        response: createUserResponse
       });
 
       await createUser({ name: "User 1", roles: "admin" }, "test-token");
@@ -49,7 +49,7 @@ describe("TypeScript axios client sdk test", () => {
     it("allows undefined header", async () => {
       moxios.stubRequest("/users/create", {
         status: 200,
-        response: expectedResponse
+        response: createUserResponse
       });
 
       await createUser({ name: "User 1", roles: "admin" }, undefined);
@@ -61,7 +61,7 @@ describe("TypeScript axios client sdk test", () => {
     it("can handle successful request", async () => {
       moxios.stubRequest("/users/create", {
         status: 200,
-        response: expectedResponse
+        response: createUserResponse
       });
 
       const response = await createUser(
@@ -69,7 +69,7 @@ describe("TypeScript axios client sdk test", () => {
         "test-token"
       );
       expect(response.kind).toBe("success");
-      expect(response.data).toEqual(expectedResponse);
+      expect(response.data).toEqual(createUserResponse);
     });
 
     it("throws error when response is not CreateUserResponse", async () => {
@@ -96,6 +96,89 @@ describe("TypeScript axios client sdk test", () => {
         { name: "User 1", roles: "admin" },
         "test-token"
       );
+      expect(response.kind).toBe("unknown-error");
+      expect(response.data).toBeUndefined();
+    });
+  });
+
+  describe("GET getUser", () => {
+    it("passes the correct method and pathParam", async () => {
+      moxios.stubRequest("/users/123", {
+        status: 200,
+        response: {
+          name: "first_user",
+          age: 23
+        }
+      });
+
+      await getUser(123);
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.method).toBe("get");
+      expect(request.config.url).toContain("/123");
+    });
+
+    it("can handle successful request", async () => {
+      const expected = {
+        name: "first_user",
+        age: 23
+      };
+      moxios.stubRequest("/users/123", {
+        status: 200,
+        response: expected
+      });
+
+      const response = await getUser(123);
+      expect(response.kind).toBe("success");
+      expect(response.data).toEqual(expected);
+    });
+
+    it("can handle successful request with optional response", async () => {
+      const expected = {
+        name: "first_user"
+      };
+      moxios.stubRequest("/users/123", {
+        status: 200,
+        response: expected
+      });
+
+      const response = await getUser(123);
+      expect(response.kind).toBe("success");
+      expect(response.data).toEqual(expected);
+    });
+
+    it("throws error when response schema is not correct", async () => {
+      const response = {
+        name: "first_user",
+        age: "23"
+      };
+
+      moxios.stubRequest("/users/123", {
+        status: 200,
+        response: response
+      });
+
+      try {
+        await await getUser(123);
+      } catch (e) {
+        expect(e).toEqual(
+          new Error(
+            `Invalid response for successful status code: ${JSON.stringify(
+              response,
+              null,
+              2
+            )}`
+          )
+        );
+      }
+    });
+
+    it("can handle unsuccessful request", async () => {
+      moxios.stubRequest("/users/123", {
+        status: 400
+      });
+
+      const response = await getUser(123);
       expect(response.kind).toBe("unknown-error");
       expect(response.data).toBeUndefined();
     });
