@@ -1,4 +1,4 @@
-import { createUser, getUser } from "./sdk/client";
+import {createUser, deleteUser, getUser} from "./sdk/client";
 import * as moxios from "moxios";
 import { CreateUserResponse } from "./sdk/types";
 
@@ -159,7 +159,7 @@ describe("TypeScript axios client sdk test", () => {
       });
 
       try {
-        await await getUser(123);
+        await getUser(123);
       } catch (e) {
         expect(e).toEqual(
           new Error(
@@ -181,6 +181,103 @@ describe("TypeScript axios client sdk test", () => {
       const response = await getUser(123);
       expect(response.kind).toBe("unknown-error");
       expect(response.data).toBeUndefined();
+    });
+  });
+
+  describe("DELETE deleteUser", () => {
+    it("passes the correct method and pathParam", async () => {
+      moxios.stubRequest("/users/123-confirmed", {
+        status: 200,
+        response: null
+      });
+
+      await deleteUser(123, "test-token");
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.method).toBe("delete");
+      expect(request.config.url).toContain("/123-confirmed");
+    });
+
+    it("passes the correct header", async () => {
+      moxios.stubRequest("/users/123-confirmed", {
+        status: 200,
+        response: null
+      });
+
+      await deleteUser(123, "test-token");
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.headers["Authorization"]).toBe("test-token")
+    });
+
+    it("can handle successful request", async () => {
+      moxios.stubRequest("/users/123-confirmed", {
+        status: 200,
+        response: null
+      });
+
+      const response = await deleteUser(123, "test-token");
+      expect(response.kind).toBe("success");
+      expect(response.data).toEqual(null);
+    });
+
+
+    it("throws error when response schema is not correct", async () => {
+
+      moxios.stubRequest("/users/123-confirmed", {
+        status: 200,
+        response: {}
+      });
+
+      try {
+        await deleteUser(123, "test-token");
+      } catch (e) {
+        expect(e).toEqual(
+          new Error(
+            "Invalid response for successful status code: {}"
+          )
+        );
+      }
+    });
+
+    it("can handle unsuccessful request with status 403", async () => {
+      const expected = {
+        message: "error happens",
+        signedInAs: "user 1"
+      };
+      moxios.stubRequest("/users/123-confirmed", {
+        status: 403,
+        response: expected
+      });
+
+      const response = await deleteUser(123, "test-token");
+      expect(response.kind).toBe("forbidden");
+      expect(response.data).toStrictEqual(expected);
+    });
+
+    it("throw error when unsuccessful request with status 403 with wrong response schema", async () => {
+      const expected = {
+        message: "error happens"
+      };
+      moxios.stubRequest("/users/123-confirmed", {
+        status: 403,
+        response: expected
+      });
+
+
+      try {
+        await deleteUser(123, "test-token");
+      } catch (e) {
+        expect(e).toEqual(
+          new Error(
+            `Invalid response for status code 403: ${JSON.stringify(
+              expected,
+              null,
+              2
+            )}`
+          )
+        );
+      }
     });
   });
 });
