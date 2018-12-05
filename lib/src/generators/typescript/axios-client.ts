@@ -202,10 +202,15 @@ function generateRequestValidation(
   );
 }
 
-function generateQueryParamValidation(endpointName: string, queryParamName: string) : ts.Statement{
+function generateQueryParamValidation(
+  endpointName: string,
+  queryParamName: string
+): ts.Statement {
   return validateStatement(
     ts.createIdentifier(queryParamName),
-    validatorName(endpointPropertyTypeName(endpointName, "param", queryParamName)),
+    validatorName(
+      endpointPropertyTypeName(endpointName, "param", queryParamName)
+    ),
     `Invalid parameter ${queryParamName}`
   );
 }
@@ -289,12 +294,11 @@ function generateAxiosCall(
                     ts.createPropertyAssignment(
                       "params",
                       ts.createObjectLiteral(
-                        [...endpoint.queryParams].map(
-                          (queryParam) =>
-                            ts.createPropertyAssignment(
-                              ts.createStringLiteral(queryParam.name),
-                              ts.createIdentifier(queryParam.name)
-                            )
+                        [...endpoint.queryParams].map(queryParam =>
+                          ts.createPropertyAssignment(
+                            ts.createStringLiteral(queryParam.name),
+                            ts.createIdentifier(queryParam.name)
+                          )
                         )
                       )
                     ),
