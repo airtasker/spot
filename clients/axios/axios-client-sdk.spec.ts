@@ -1,4 +1,4 @@
-import {createUser, deleteUser, getUser} from "./sdk/client";
+import { createUser, deleteUser, getUser } from "./sdk/client";
 import * as moxios from "moxios";
 import { CreateUserResponse } from "./sdk/types";
 
@@ -207,7 +207,7 @@ describe("TypeScript axios client sdk test", () => {
       await deleteUser(123, "test-token");
 
       const request = moxios.requests.mostRecent();
-      expect(request.config.headers["Authorization"]).toBe("test-token")
+      expect(request.config.headers["Authorization"]).toBe("test-token");
     });
 
     it("can handle successful request", async () => {
@@ -221,9 +221,7 @@ describe("TypeScript axios client sdk test", () => {
       expect(response.data).toEqual(null);
     });
 
-
     it("throws error when response schema is not correct", async () => {
-
       moxios.stubRequest("/users/123-confirmed", {
         status: 200,
         response: {}
@@ -233,9 +231,7 @@ describe("TypeScript axios client sdk test", () => {
         await deleteUser(123, "test-token");
       } catch (e) {
         expect(e).toEqual(
-          new Error(
-            "Invalid response for successful status code: {}"
-          )
+          new Error("Invalid response for successful status code: {}")
         );
       }
     });
@@ -263,7 +259,6 @@ describe("TypeScript axios client sdk test", () => {
         status: 403,
         response: expected
       });
-
 
       try {
         await deleteUser(123, "test-token");
