@@ -33,7 +33,7 @@ export function openApiV3(api: Api): OpenApiV3 {
     info: {
       version: "0.0.0",
       title: api.description.name,
-      description: api.description.description,
+      ...pickBy({ description: api.description.description }, identity),
       contact: {
         name: "TODO"
       }

@@ -4,7 +4,7 @@ export function api(description: ApiDescription) {
 
 export interface ApiDescription {
   name: string;
-  description: string;
+  description?: string;
 }
 
 export function endpoint(description: EndpointDescription) {

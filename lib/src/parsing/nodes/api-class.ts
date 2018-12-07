@@ -67,14 +67,20 @@ function extractApiInfo(
       `Invalid name in api description: ${classDeclaration.getText(sourceFile)}`
     );
   }
+  let description = undefined;
   const descriptionLiteral = apiDescription.properties["description"];
-  if (!isStringLiteral(descriptionLiteral)) {
-    throw panic(
-      `Invalid name in api description: ${classDeclaration.getText(sourceFile)}`
-    );
+  if (descriptionLiteral) {
+    if (!isStringLiteral(descriptionLiteral)) {
+      throw panic(
+        `Invalid name in api description: ${classDeclaration.getText(
+          sourceFile
+        )}`
+      );
+    }
+    description = descriptionLiteral.text;
   }
   return {
     name: nameLiteral.text,
-    description: descriptionLiteral.text
+    description: description
   };
 }
