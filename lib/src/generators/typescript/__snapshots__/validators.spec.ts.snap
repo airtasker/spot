@@ -52,6 +52,14 @@ export function validateFindUsers_request(value: any): value is void {
     return value === undefined;
 }
 
+export function validateFindUsers_paramLimit(value: any): value is number {
+    return typeof value === \\"number\\";
+}
+
+export function validateFindUsers_paramSearch_term(value: any): value is string | void {
+    return value === undefined || typeof value === \\"string\\";
+}
+
 export function validateFindUsers_response(value: any): value is {
     name: string;
     age?: number;
@@ -112,6 +120,14 @@ export function validateCreateUser_genericError(value: any): value is void {
 
 export function validateFindUsers_request(value: any): value is void {
     return value === undefined;
+}
+
+export function validateFindUsers_paramLimit(value: any): value is number {
+    return typeof value === \\"number\\";
+}
+
+export function validateFindUsers_paramSearch_term(value: any): value is string | void {
+    return value === undefined || typeof value === \\"string\\";
 }
 
 export function validateFindUsers_response(value: any): value is {

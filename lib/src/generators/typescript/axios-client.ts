@@ -181,6 +181,9 @@ function generateEndpointBody(
       ...Object.keys(endpoint.headers).map(headerName =>
         generateHeaderValidation(endpointName, headerName)
       ),
+      ...endpoint.queryParams.map(queryParam =>
+        generateQueryParamValidation(endpointName, queryParam.name)
+      ),
       generateAxiosCall(endpoint, includeRequest),
       generateSwitchStatus(endpointName, endpoint)
     ],
@@ -196,6 +199,19 @@ function generateRequestValidation(
     ts.createIdentifier(REQUEST_PARAMETER),
     validatorName(endpointPropertyTypeName(endpointName, REQUEST_PARAMETER)),
     "Invalid request"
+  );
+}
+
+function generateQueryParamValidation(
+  endpointName: string,
+  queryParamName: string
+): ts.Statement {
+  return validateStatement(
+    ts.createIdentifier(queryParamName),
+    validatorName(
+      endpointPropertyTypeName(endpointName, "param", queryParamName)
+    ),
+    `Invalid parameter ${queryParamName}`
   );
 }
 
@@ -272,6 +288,17 @@ function generateAxiosCall(
                               ts.createStringLiteral(header.headerFieldName),
                               ts.createIdentifier(headerName)
                             )
+                        )
+                      )
+                    ),
+                    ts.createPropertyAssignment(
+                      "params",
+                      ts.createObjectLiteral(
+                        [...endpoint.queryParams].map(queryParam =>
+                          ts.createPropertyAssignment(
+                            ts.createStringLiteral(queryParam.name),
+                            ts.createIdentifier(queryParam.name)
+                          )
                         )
                       )
                     ),
