@@ -64,6 +64,12 @@ export function generateValidatorsSource(api: Api): string {
             header.type
           )
         ),
+        ...endpoint.queryParams.map(queryParam =>
+          generateValidator(
+            endpointPropertyTypeName(endpointName, "param", queryParam.name),
+            queryParam.type
+          )
+        ),
         generateValidator(
           endpointPropertyTypeName(endpointName, "response"),
           endpoint.responseType
