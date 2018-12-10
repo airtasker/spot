@@ -17,8 +17,20 @@ describe("TypeScript axios client sdk test", () => {
   });
 
   describe("POST createUser", () => {
+    it("calls the correct url", async () => {
+      moxios.stubRequest(/.*/, {
+        status: 200,
+        response: createUserResponse
+      });
+
+      await createUser({ name: "User 1", roles: "admin" }, "test-token");
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.url).toBe("/users/create");
+    });
+
     it("passes the correct method and request body", async () => {
-      moxios.stubRequest("/users/create", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: createUserResponse
       });
@@ -34,7 +46,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("passes the correct header", async () => {
-      moxios.stubRequest("/users/create", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: createUserResponse
       });
@@ -47,7 +59,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("allows undefined header", async () => {
-      moxios.stubRequest("/users/create", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: createUserResponse
       });
@@ -59,7 +71,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("can handle successful request", async () => {
-      moxios.stubRequest("/users/create", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: createUserResponse
       });
@@ -73,7 +85,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("throws error when response is not CreateUserResponse", async () => {
-      moxios.stubRequest("/users/create", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: {}
       });
@@ -88,7 +100,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("can handle unsuccessful request", async () => {
-      moxios.stubRequest("/users/create", {
+      moxios.stubRequest(/.*/, {
         status: 400
       });
 
@@ -102,8 +114,25 @@ describe("TypeScript axios client sdk test", () => {
   });
 
   describe("GET findUsers", () => {
+    it("calls the correct url", async () => {
+      moxios.stubRequest(/.*/, {
+        status: 200,
+        response: [
+          {
+            name: "first_user",
+            age: 23
+          }
+        ]
+      });
+
+      await findUsers(10, "user");
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.url).toBe("/users");
+    });
+
     it("passes the correct method and queryParams", async () => {
-      moxios.stubRequest("/users?limit=10&search_term=user", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: [
           {
@@ -125,7 +154,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("allows optional queryParams", async () => {
-      moxios.stubRequest("/users?limit=10", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: [
           {
@@ -157,7 +186,7 @@ describe("TypeScript axios client sdk test", () => {
           age: 50
         }
       ];
-      moxios.stubRequest("/users?limit=10&search_term=user", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: expected
       });
@@ -177,7 +206,7 @@ describe("TypeScript axios client sdk test", () => {
           name: "second_user"
         }
       ];
-      moxios.stubRequest("/users?limit=10&search_term=user", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: expected
       });
@@ -188,7 +217,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("can handle unsuccessful request", async () => {
-      moxios.stubRequest("/users?limit=10&search_term=user", {
+      moxios.stubRequest(/.*/, {
         status: 400
       });
 
@@ -200,7 +229,7 @@ describe("TypeScript axios client sdk test", () => {
 
   describe("GET getUser", () => {
     it("passes the correct method and pathParam", async () => {
-      moxios.stubRequest("/users/123", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: {
           name: "first_user",
@@ -212,7 +241,7 @@ describe("TypeScript axios client sdk test", () => {
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("get");
-      expect(request.config.url).toContain("/123");
+      expect(request.config.url).toBe("/users/123");
     });
 
     it("can handle successful request", async () => {
@@ -220,7 +249,7 @@ describe("TypeScript axios client sdk test", () => {
         name: "first_user",
         age: 23
       };
-      moxios.stubRequest("/users/123", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: expected
       });
@@ -234,7 +263,7 @@ describe("TypeScript axios client sdk test", () => {
       const expected = {
         name: "first_user"
       };
-      moxios.stubRequest("/users/123", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: expected
       });
@@ -250,7 +279,7 @@ describe("TypeScript axios client sdk test", () => {
         age: "23"
       };
 
-      moxios.stubRequest("/users/123", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: response
       });
@@ -271,7 +300,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("can handle unsuccessful request", async () => {
-      moxios.stubRequest("/users/123", {
+      moxios.stubRequest(/.*/, {
         status: 400
       });
 
@@ -283,7 +312,7 @@ describe("TypeScript axios client sdk test", () => {
 
   describe("DELETE deleteUser", () => {
     it("passes the correct method and pathParam", async () => {
-      moxios.stubRequest("/users/123-confirmed", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: null
       });
@@ -292,11 +321,11 @@ describe("TypeScript axios client sdk test", () => {
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("delete");
-      expect(request.config.url).toContain("/123-confirmed");
+      expect(request.config.url).toBe("/users/123-confirmed");
     });
 
     it("passes the correct header", async () => {
-      moxios.stubRequest("/users/123-confirmed", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: null
       });
@@ -308,7 +337,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("can handle successful request", async () => {
-      moxios.stubRequest("/users/123-confirmed", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: null
       });
@@ -319,7 +348,7 @@ describe("TypeScript axios client sdk test", () => {
     });
 
     it("throws error when response schema is not correct", async () => {
-      moxios.stubRequest("/users/123-confirmed", {
+      moxios.stubRequest(/.*/, {
         status: 200,
         response: {}
       });
@@ -338,7 +367,7 @@ describe("TypeScript axios client sdk test", () => {
         message: "error happens",
         signedInAs: "user 1"
       };
-      moxios.stubRequest("/users/123-confirmed", {
+      moxios.stubRequest(/.*/, {
         status: 403,
         response: expected
       });
@@ -352,7 +381,7 @@ describe("TypeScript axios client sdk test", () => {
       const expected = {
         message: "error happens"
       };
-      moxios.stubRequest("/users/123-confirmed", {
+      moxios.stubRequest(/.*/, {
         status: 403,
         response: expected
       });
