@@ -16,8 +16,7 @@ import {
 } from "@airtasker/spot";
 
 @api({
-  name: "My API",
-  description: "A really cool API"
+  name: "My API"
 })
 export class Api {
   @endpoint({

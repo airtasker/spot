@@ -7,6 +7,7 @@ import {
   ObjectLiteral,
   isStringLiteral
 } from "../literal-parser";
+import { pickBy } from "lodash";
 
 /**
  * Parses a top-level API class definition and the endpoints it defines, such as:
@@ -67,14 +68,20 @@ function extractApiInfo(
       `Invalid name in api description: ${classDeclaration.getText(sourceFile)}`
     );
   }
+  let description = undefined;
   const descriptionLiteral = apiDescription.properties["description"];
-  if (!isStringLiteral(descriptionLiteral)) {
-    throw panic(
-      `Invalid name in api description: ${classDeclaration.getText(sourceFile)}`
-    );
+  if (descriptionLiteral) {
+    if (!isStringLiteral(descriptionLiteral)) {
+      throw panic(
+        `Invalid name in api description: ${classDeclaration.getText(
+          sourceFile
+        )}`
+      );
+    }
+    description = descriptionLiteral.text;
   }
   return {
     name: nameLiteral.text,
-    description: descriptionLiteral.text
+    ...pickBy({ description })
   };
 }

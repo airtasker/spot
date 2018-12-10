@@ -8,7 +8,6 @@ import {
   openApiV3ContentTypeSchema,
   rejectVoidOpenApi3SchemaType
 } from "./openapi3-schema";
-import identity = require("lodash/identity");
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import pickBy = require("lodash/pickBy");
@@ -33,7 +32,7 @@ export function openApiV3(api: Api): OpenApiV3 {
     info: {
       version: "0.0.0",
       title: api.description.name,
-      description: api.description.description,
+      ...pickBy({ description: api.description.description }),
       contact: {
         name: "TODO"
       }
@@ -54,23 +53,17 @@ export function openApiV3(api: Api): OpenApiV3 {
           description: endpoint.description,
           tags: endpoint.tags,
           parameters: getParameters(api, endpoint),
-          ...pickBy(
-            {
-              requestBody: isVoid(api, endpoint.requestType)
-                ? undefined
-                : defaultTo(
-                    openApiV3ContentTypeSchema(
-                      defaultTo(
-                        endpoint.requestContentType,
-                        "application/json"
-                      ),
-                      endpoint.requestType
-                    ),
-                    undefined
-                  )
-            },
-            identity
-          ),
+          ...pickBy({
+            requestBody: isVoid(api, endpoint.requestType)
+              ? undefined
+              : defaultTo(
+                  openApiV3ContentTypeSchema(
+                    defaultTo(endpoint.requestContentType, "application/json"),
+                    endpoint.requestType
+                  ),
+                  undefined
+                )
+          }),
           responses: {
             default: response(api, endpoint.genericErrorType),
             [(endpoint.successStatusCode || 200).toString(10)]: response(

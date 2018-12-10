@@ -11,6 +11,7 @@ import { HttpContentType } from "@airtasker/spot";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import defaultTo = require("lodash/defaultTo");
+import pickBy = require("lodash/pickBy");
 
 export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
   const contract = openApiV2(api);
@@ -31,7 +32,7 @@ export function openApiV2(api: Api): OpenApiV2 {
     info: {
       version: "0.0.0",
       title: api.description.name,
-      description: api.description.description,
+      ...pickBy({ description: api.description.description }),
       contact: {
         name: "TODO"
       }
