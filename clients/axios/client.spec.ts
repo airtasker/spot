@@ -1,4 +1,4 @@
-import { createUser, deleteUser, getUser } from "./sdk/client";
+import { createUser, deleteUser, findUsers, getUser } from "./sdk/client";
 import * as moxios from "moxios";
 import { CreateUserResponse } from "./sdk/types";
 
@@ -96,6 +96,103 @@ describe("TypeScript axios client sdk test", () => {
         { name: "User 1", roles: "admin" },
         "test-token"
       );
+      expect(response.kind).toBe("unknown-error");
+      expect(response.data).toBeUndefined();
+    });
+  });
+
+  describe("GET findUsers", () => {
+    it("passes the correct method and queryParams", async () => {
+      moxios.stubRequest("/users?limit=10&search_term=user", {
+        status: 200,
+        response: [
+          {
+            name: "first_user",
+            age: 23
+          }
+        ]
+      });
+
+      await findUsers(10, "user");
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.method).toBe("get");
+      expect(request.config.url).toContain("/users");
+      expect(request.config.params).toStrictEqual({
+        limit: 10,
+        search_term: "user"
+      });
+    });
+
+    it("allows optional queryParams", async () => {
+      moxios.stubRequest("/users?limit=10", {
+        status: 200,
+        response: [
+          {
+            name: "first_user",
+            age: 23
+          }
+        ]
+      });
+
+      await findUsers(10, undefined);
+
+      const request = moxios.requests.mostRecent();
+      expect(request.config.method).toBe("get");
+      expect(request.config.url).toContain("/users");
+      expect(request.config.params).toStrictEqual({
+        limit: 10,
+        search_term: undefined
+      });
+    });
+
+    it("can handle successful request", async () => {
+      const expected = [
+        {
+          name: "first_user",
+          age: 23
+        },
+        {
+          name: "second_user",
+          age: 50
+        }
+      ];
+      moxios.stubRequest("/users?limit=10&search_term=user", {
+        status: 200,
+        response: expected
+      });
+
+      const response = await findUsers(10, "user");
+      expect(response.kind).toBe("success");
+      expect(response.data).toEqual(expected);
+    });
+
+    it("can handle successful request with optional response", async () => {
+      const expected = [
+        {
+          name: "first_user",
+          age: 23
+        },
+        {
+          name: "second_user"
+        }
+      ];
+      moxios.stubRequest("/users?limit=10&search_term=user", {
+        status: 200,
+        response: expected
+      });
+
+      const response = await findUsers(10, "user");
+      expect(response.kind).toBe("success");
+      expect(response.data).toEqual(expected);
+    });
+
+    it("can handle unsuccessful request", async () => {
+      moxios.stubRequest("/users?limit=10&search_term=user", {
+        status: 400
+      });
+
+      const response = await findUsers(10, "user");
       expect(response.kind).toBe("unknown-error");
       expect(response.data).toBeUndefined();
     });

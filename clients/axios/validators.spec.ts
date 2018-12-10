@@ -5,6 +5,8 @@ import {
   validateDeleteUser_genericError,
   validateDeleteUser_headerAuthToken,
   validateDeleteUser_specificErrorForbidden,
+  validateFindUsers_paramLimit,
+  validateFindUsers_paramSearch_term,
   validateFindUsers_response,
   validateGetUser_paramUserId
 } from "./sdk/validators";
@@ -36,28 +38,36 @@ describe("validators test", () => {
 
   describe("header", () => {
     describe("optional header", () => {
-      it("returns true for header that present", () => {
+      it("returns true for header that is present", () => {
         expect(validateCreateUser_headerAuthToken("token")).toBeTruthy();
       });
 
       it("returns true for header that is not present", () => {
         expect(validateCreateUser_headerAuthToken(undefined)).toBeTruthy();
       });
+
+      it("returns false for header with wrong type", () => {
+        expect(validateCreateUser_headerAuthToken(1234)).toBeFalsy();
+      });
     });
 
     describe("required header", () => {
-      it("returns true for header that present", () => {
+      it("returns true for header that is present", () => {
         expect(validateDeleteUser_headerAuthToken("token")).toBeTruthy();
       });
 
       it("returns false for header that is not present", () => {
         expect(validateDeleteUser_headerAuthToken(undefined)).toBeFalsy();
       });
+
+      it("returns false for header with wrong type", () => {
+        expect(validateDeleteUser_headerAuthToken(1234)).toBeFalsy();
+      });
     });
   });
 
   describe("path param", () => {
-    it("returns true for path param that present", () => {
+    it("returns true for path param that is present", () => {
       expect(validateGetUser_paramUserId(1)).toBeTruthy();
     });
 
@@ -67,6 +77,36 @@ describe("validators test", () => {
 
     it("returns false for path param with wrong type", () => {
       expect(validateGetUser_paramUserId("1")).toBeFalsy();
+    });
+  });
+
+  describe("query param", () => {
+    describe("optional query param", () => {
+      it("returns true for query param that is present", () => {
+        expect(validateFindUsers_paramSearch_term("user")).toBeTruthy();
+      });
+
+      it("returns false for query param that is not present", () => {
+        expect(validateFindUsers_paramSearch_term(undefined)).toBeTruthy();
+      });
+
+      it("returns false for query param with wrong type", () => {
+        expect(validateFindUsers_paramSearch_term(10)).toBeFalsy();
+      });
+    });
+
+    describe("required query param", () => {
+      it("returns true for query param that is present", () => {
+        expect(validateFindUsers_paramLimit(10)).toBeTruthy();
+      });
+
+      it("returns false for query param that is not present", () => {
+        expect(validateFindUsers_paramLimit(undefined)).toBeFalsy();
+      });
+
+      it("returns false for query param with wrong type", () => {
+        expect(validateFindUsers_paramLimit("10")).toBeFalsy();
+      });
     });
   });
 
