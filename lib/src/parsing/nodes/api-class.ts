@@ -7,7 +7,7 @@ import {
   ObjectLiteral,
   isStringLiteral
 } from "../literal-parser";
-import {pickBy} from "lodash";
+import { pickBy } from "lodash";
 
 /**
  * Parses a top-level API class definition and the endpoints it defines, such as:
