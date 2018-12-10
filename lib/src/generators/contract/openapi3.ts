@@ -53,22 +53,17 @@ export function openApiV3(api: Api): OpenApiV3 {
           description: endpoint.description,
           tags: endpoint.tags,
           parameters: getParameters(api, endpoint),
-          ...pickBy(
-            {
-              requestBody: isVoid(api, endpoint.requestType)
-                ? undefined
-                : defaultTo(
-                    openApiV3ContentTypeSchema(
-                      defaultTo(
-                        endpoint.requestContentType,
-                        "application/json"
-                      ),
-                      endpoint.requestType
-                    ),
-                    undefined
-                  )
-            }
-          ),
+          ...pickBy({
+            requestBody: isVoid(api, endpoint.requestType)
+              ? undefined
+              : defaultTo(
+                  openApiV3ContentTypeSchema(
+                    defaultTo(endpoint.requestContentType, "application/json"),
+                    endpoint.requestType
+                  ),
+                  undefined
+                )
+          }),
           responses: {
             default: response(api, endpoint.genericErrorType),
             [(endpoint.successStatusCode || 200).toString(10)]: response(
