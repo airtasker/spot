@@ -3,7 +3,6 @@
 exports[`Parser produces the expected output for example API definitions multi-file 1`] = `
 Object {
   "description": Object {
-    "description": undefined,
     "name": "My API",
   },
   "endpoints": Object {
@@ -256,7 +255,6 @@ Object {
 exports[`Parser produces the expected output for example API definitions single-file 1`] = `
 Object {
   "description": Object {
-    "description": undefined,
     "name": "My API",
   },
   "endpoints": Object {

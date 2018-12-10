@@ -8,7 +8,6 @@ import {
   openApiV3ContentTypeSchema,
   rejectVoidOpenApi3SchemaType
 } from "./openapi3-schema";
-import identity = require("lodash/identity");
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import pickBy = require("lodash/pickBy");
@@ -33,7 +32,7 @@ export function openApiV3(api: Api): OpenApiV3 {
     info: {
       version: "0.0.0",
       title: api.description.name,
-      ...pickBy({ description: api.description.description }, identity),
+      ...pickBy({ description: api.description.description }),
       contact: {
         name: "TODO"
       }
@@ -68,8 +67,7 @@ export function openApiV3(api: Api): OpenApiV3 {
                     ),
                     undefined
                   )
-            },
-            identity
+            }
           ),
           responses: {
             default: response(api, endpoint.genericErrorType),

@@ -7,6 +7,7 @@ import {
   ObjectLiteral,
   isStringLiteral
 } from "../literal-parser";
+import {pickBy} from "lodash";
 
 /**
  * Parses a top-level API class definition and the endpoints it defines, such as:
@@ -81,6 +82,6 @@ function extractApiInfo(
   }
   return {
     name: nameLiteral.text,
-    description: description
+    ...pickBy({ description })
   };
 }
