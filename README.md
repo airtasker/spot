@@ -61,6 +61,7 @@ This is work in progress as of 14 Nov 2018:
 
 <!-- toc -->
 
+- [Spot](#spot)
 - [Usage](#usage)
 - [Commands](#commands)
   <!-- tocstop -->
@@ -375,6 +376,7 @@ Define a default error for the endpoint. This can only be used once for an `@end
 - [`spot generate`](#spot-generate)
 - [`spot help [COMMAND]`](#spot-help-command)
 - [`spot init`](#spot-init)
+- [`spot validate SPOT_CONTRACT`](#spot-validate-spot-contract)
 
 ## `spot generate`
 
@@ -382,22 +384,21 @@ Runs a generator on an API. Used to produce client libraries, server boilerplate
 
 ```
 USAGE
-$ spot generate
+  $ spot generate
 
 OPTIONS
--a, --api=api (required) Path to a TypeScript API definition
--g, --generator=generator Generator to run
--h, --help show CLI help
--l, --language=language Language to generate
--o, --out=out Directory in which to output generated files
+  -a, --api=api              (required) Path to a TypeScript API definition
+  -g, --generator=generator  Generator to run
+  -h, --help                 show CLI help
+  -l, --language=language    Language to generate
+  -o, --out=out              Directory in which to output generated files
 
 EXAMPLE
-$ spot generate --language typescript --generator axios-client --out src/
-Generated the following files:
-
-- src/types.ts
-- src/validators.ts
-- src/client.ts
+  $ spot generate --language typescript --generator axios-client --out src/
+  Generated the following files:
+  - src/types.ts
+  - src/validators.ts
+  - src/client.ts
 ```
 
 _See code: [cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/generate.ts)_
@@ -408,13 +409,13 @@ display help for spot
 
 ```
 USAGE
-$ spot help [COMMAND]
+  $ spot help [COMMAND]
 
 ARGUMENTS
-COMMAND command to show help for
+  COMMAND  command to show help for
 
 OPTIONS
---all see all commands in CLI
+  --all  see all commands in CLI
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
@@ -425,20 +426,39 @@ Generates the boilerplate for an API.
 
 ```
 USAGE
-$ spot init
+  $ spot init
 
 OPTIONS
--h, --help show CLI help
+  -h, --help  show CLI help
 
 EXAMPLE
-$ spot init
-Generated the following files:
-
-- api.ts
-- tsconfig.json
-- package.json
+  $ spot init
+  Generated the following files:
+  - api.ts
+  - tsconfig.json
+  - package.json
 ```
 
 _See code: [cli/src/commands/init.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/init.ts)_
+
+## `spot validate SPOT_CONTRACT`
+
+Validate a Spot contract
+
+```
+USAGE
+  $ spot validate SPOT_CONTRACT
+
+ARGUMENTS
+  SPOT_CONTRACT  path to Spot contract
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ spot validate api.ts
+```
+
+_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/validate.js)_
 
 <!-- commandsstop -->
