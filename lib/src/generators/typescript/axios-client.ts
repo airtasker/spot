@@ -22,6 +22,12 @@ import compact = require("lodash/compact");
 
 const IMPORTED_AXIOS_NAME = "axios";
 
+const SPOT_API_CONFIG_INTERFACE = "SpotApiConfig";
+const SPOT_API_CONFIG = {
+  name: "config",
+  baseUrlProp: "baseUrl"
+};
+
 export function generateAxiosClientSource(api: Api): string {
   const typeNames = Object.keys(api.types);
   return outputTypeScriptSource([
@@ -63,28 +69,74 @@ export function generateAxiosClientSource(api: Api): string {
       ),
       ts.createStringLiteral("./validators")
     ),
-    ...Object.entries(api.endpoints).map(([endpointName, endpoint]) =>
-      generateEndpointFunction(api, endpointName, endpoint)
+    generateSpotApiOptionsInterface(),
+    ts.createClassDeclaration(
+      /*decorators*/ undefined,
+      [ts.createModifier(ts.SyntaxKind.ExportKeyword)],
+      "SpotApi",
+      /*typeParameters*/ undefined,
+      /*heritageClause*/ undefined,
+      [
+        ts.createConstructor(
+          /*decorators*/ undefined,
+          /*modifiers*/ undefined,
+          [
+            ts.createParameter(
+              /*decorators*/ undefined,
+              [ts.createModifier(ts.SyntaxKind.PrivateKeyword)],
+              /*dotDotDotToken*/ undefined,
+              SPOT_API_CONFIG.name,
+              /*questionToken*/ undefined,
+              ts.createTypeReferenceNode(
+                SPOT_API_CONFIG_INTERFACE,
+                /*typeArguments*/ undefined
+              )
+            )
+          ],
+          ts.createBlock([])
+        ),
+        ...Object.entries(api.endpoints).map(([endpointName, endpoint]) =>
+          generateEndpointMethod(api, endpointName, endpoint)
+        )
+      ]
     )
   ]);
 }
 
+function generateSpotApiOptionsInterface(): ts.InterfaceDeclaration {
+  return ts.createInterfaceDeclaration(
+    /*decorators*/ undefined,
+    /*modifiers*/ undefined,
+    SPOT_API_CONFIG_INTERFACE,
+    /*typeParameters*/ undefined,
+    /*heritageClauses*/ undefined,
+    [
+      ts.createPropertySignature(
+        /*modifiers*/ undefined,
+        SPOT_API_CONFIG.baseUrlProp,
+        /*questionToken*/ undefined,
+        ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+        /*initializer*/ undefined
+      )
+    ]
+  );
+}
+
 const REQUEST_PARAMETER = "request";
 
-function generateEndpointFunction(
+function generateEndpointMethod(
   api: Api,
   endpointName: string,
   endpoint: Endpoint
-): ts.FunctionDeclaration {
+): ts.MethodDeclaration {
   const includeRequest = !isVoid(api, endpoint.requestType);
-  return ts.createFunctionDeclaration(
+
+  return ts.createMethod(
     /*decorators*/ undefined,
-    [
-      ts.createToken(ts.SyntaxKind.ExportKeyword),
-      ts.createToken(ts.SyntaxKind.AsyncKeyword)
-    ],
-    /*asteriskToken*/ undefined,
+    [ts.createToken(ts.SyntaxKind.AsyncKeyword)],
+    /*asterixToken*/ undefined,
     endpointName,
+    /*questionToken*/ undefined,
     /*typeParameters*/ undefined,
     [
       ...(includeRequest
@@ -267,6 +319,14 @@ function generateAxiosCall(
               [
                 ts.createObjectLiteral(
                   [
+                    ts.createPropertyAssignment(
+                      "baseURL",
+                      ts.createIdentifier(
+                        `this.${SPOT_API_CONFIG.name}.${
+                          SPOT_API_CONFIG.baseUrlProp
+                        }`
+                      )
+                    ),
                     ts.createPropertyAssignment(
                       "url",
                       generatePath(endpoint.path)

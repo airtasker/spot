@@ -1,4 +1,4 @@
-import { createUser, deleteUser, findUsers, getUser } from "./sdk/client";
+import { SpotApi } from "./sdk/client";
 import * as moxios from "moxios";
 import { CreateUserResponse } from "./sdk/types";
 
@@ -6,6 +6,8 @@ const createUserResponse: CreateUserResponse = {
   success: true,
   created_at: "2018-01-01"
 };
+
+const configuredApi = new SpotApi({ baseUrl: "http://localhost:9999/api" });
 
 describe("TypeScript axios client sdk test", () => {
   beforeEach(() => {
@@ -23,10 +25,13 @@ describe("TypeScript axios client sdk test", () => {
         response: createUserResponse
       });
 
-      await createUser({ name: "User 1", roles: "admin" }, "test-token");
+      await configuredApi.createUser(
+        { name: "User 1", roles: "admin" },
+        "test-token"
+      );
 
       const request = moxios.requests.mostRecent();
-      expect(request.config.url).toBe("/users/create");
+      expect(request.config.url).toBe("http://localhost:9999/api/users/create");
     });
 
     it("passes the correct method and request body", async () => {
@@ -35,7 +40,10 @@ describe("TypeScript axios client sdk test", () => {
         response: createUserResponse
       });
 
-      await createUser({ name: "User 1", roles: "admin" }, "test-token");
+      await configuredApi.createUser(
+        { name: "User 1", roles: "admin" },
+        "test-token"
+      );
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("post");
@@ -51,7 +59,10 @@ describe("TypeScript axios client sdk test", () => {
         response: createUserResponse
       });
 
-      await createUser({ name: "User 1", roles: "admin" }, "test-token");
+      await configuredApi.createUser(
+        { name: "User 1", roles: "admin" },
+        "test-token"
+      );
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("post");
@@ -64,7 +75,10 @@ describe("TypeScript axios client sdk test", () => {
         response: createUserResponse
       });
 
-      await createUser({ name: "User 1", roles: "admin" }, undefined);
+      await configuredApi.createUser(
+        { name: "User 1", roles: "admin" },
+        undefined
+      );
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("post");
       expect(request.config.headers["Authorization"]).toBeUndefined();
@@ -76,7 +90,7 @@ describe("TypeScript axios client sdk test", () => {
         response: createUserResponse
       });
 
-      const response = await createUser(
+      const response = await configuredApi.createUser(
         { name: "User 1", roles: "admin" },
         "test-token"
       );
@@ -91,7 +105,10 @@ describe("TypeScript axios client sdk test", () => {
       });
 
       try {
-        await createUser({ name: "User 1", roles: "admin" }, "test-token");
+        await configuredApi.createUser(
+          { name: "User 1", roles: "admin" },
+          "test-token"
+        );
       } catch (e) {
         expect(e).toEqual(
           new Error("Invalid response for successful status code: {}")
@@ -104,7 +121,7 @@ describe("TypeScript axios client sdk test", () => {
         status: 400
       });
 
-      const response = await createUser(
+      const response = await configuredApi.createUser(
         { name: "User 1", roles: "admin" },
         "test-token"
       );
@@ -125,10 +142,10 @@ describe("TypeScript axios client sdk test", () => {
         ]
       });
 
-      await findUsers(10, "user");
+      await configuredApi.findUsers(10, "user");
 
       const request = moxios.requests.mostRecent();
-      expect(request.config.url).toBe("/users");
+      expect(request.config.url).toBe("http://localhost:9999/api/users");
     });
 
     it("passes the correct method and queryParams", async () => {
@@ -142,7 +159,7 @@ describe("TypeScript axios client sdk test", () => {
         ]
       });
 
-      await findUsers(10, "user");
+      await configuredApi.findUsers(10, "user");
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("get");
@@ -164,7 +181,7 @@ describe("TypeScript axios client sdk test", () => {
         ]
       });
 
-      await findUsers(10, undefined);
+      await configuredApi.findUsers(10, undefined);
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("get");
@@ -191,7 +208,7 @@ describe("TypeScript axios client sdk test", () => {
         response: expected
       });
 
-      const response = await findUsers(10, "user");
+      const response = await configuredApi.findUsers(10, "user");
       expect(response.kind).toBe("success");
       expect(response.data).toEqual(expected);
     });
@@ -211,7 +228,7 @@ describe("TypeScript axios client sdk test", () => {
         response: expected
       });
 
-      const response = await findUsers(10, "user");
+      const response = await configuredApi.findUsers(10, "user");
       expect(response.kind).toBe("success");
       expect(response.data).toEqual(expected);
     });
@@ -221,7 +238,7 @@ describe("TypeScript axios client sdk test", () => {
         status: 400
       });
 
-      const response = await findUsers(10, "user");
+      const response = await configuredApi.findUsers(10, "user");
       expect(response.kind).toBe("unknown-error");
       expect(response.data).toBeUndefined();
     });
@@ -237,11 +254,11 @@ describe("TypeScript axios client sdk test", () => {
         }
       });
 
-      await getUser(123);
+      await configuredApi.getUser(123);
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("get");
-      expect(request.config.url).toBe("/users/123");
+      expect(request.config.url).toBe("http://localhost:9999/api/users/123");
     });
 
     it("can handle successful request", async () => {
@@ -254,7 +271,7 @@ describe("TypeScript axios client sdk test", () => {
         response: expected
       });
 
-      const response = await getUser(123);
+      const response = await configuredApi.getUser(123);
       expect(response.kind).toBe("success");
       expect(response.data).toEqual(expected);
     });
@@ -268,7 +285,7 @@ describe("TypeScript axios client sdk test", () => {
         response: expected
       });
 
-      const response = await getUser(123);
+      const response = await configuredApi.getUser(123);
       expect(response.kind).toBe("success");
       expect(response.data).toEqual(expected);
     });
@@ -285,7 +302,7 @@ describe("TypeScript axios client sdk test", () => {
       });
 
       try {
-        await getUser(123);
+        await configuredApi.getUser(123);
       } catch (e) {
         expect(e).toEqual(
           new Error(
@@ -304,7 +321,7 @@ describe("TypeScript axios client sdk test", () => {
         status: 400
       });
 
-      const response = await getUser(123);
+      const response = await configuredApi.getUser(123);
       expect(response.kind).toBe("unknown-error");
       expect(response.data).toBeUndefined();
     });
@@ -317,11 +334,13 @@ describe("TypeScript axios client sdk test", () => {
         response: null
       });
 
-      await deleteUser(123, "test-token");
+      await configuredApi.deleteUser(123, "test-token");
 
       const request = moxios.requests.mostRecent();
       expect(request.config.method).toBe("delete");
-      expect(request.config.url).toBe("/users/123-confirmed");
+      expect(request.config.url).toBe(
+        "http://localhost:9999/api/users/123-confirmed"
+      );
     });
 
     it("passes the correct header", async () => {
@@ -330,7 +349,7 @@ describe("TypeScript axios client sdk test", () => {
         response: null
       });
 
-      await deleteUser(123, "test-token");
+      await configuredApi.deleteUser(123, "test-token");
 
       const request = moxios.requests.mostRecent();
       expect(request.config.headers["Authorization"]).toBe("test-token");
@@ -342,7 +361,7 @@ describe("TypeScript axios client sdk test", () => {
         response: null
       });
 
-      const response = await deleteUser(123, "test-token");
+      const response = await configuredApi.deleteUser(123, "test-token");
       expect(response.kind).toBe("success");
       expect(response.data).toEqual(null);
     });
@@ -354,7 +373,7 @@ describe("TypeScript axios client sdk test", () => {
       });
 
       try {
-        await deleteUser(123, "test-token");
+        await configuredApi.deleteUser(123, "test-token");
       } catch (e) {
         expect(e).toEqual(
           new Error("Invalid response for successful status code: {}")
@@ -372,7 +391,7 @@ describe("TypeScript axios client sdk test", () => {
         response: expected
       });
 
-      const response = await deleteUser(123, "test-token");
+      const response = await configuredApi.deleteUser(123, "test-token");
       expect(response.kind).toBe("forbidden");
       expect(response.data).toStrictEqual(expected);
     });
@@ -387,7 +406,7 @@ describe("TypeScript axios client sdk test", () => {
       });
 
       try {
-        await deleteUser(123, "test-token");
+        await configuredApi.deleteUser(123, "test-token");
       } catch (e) {
         expect(e).toEqual(
           new Error(

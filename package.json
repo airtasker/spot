@@ -62,7 +62,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc -b --force && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",
     "test": "jest --testPathIgnorePatterns '<rootDir>/node_modules/' --testPathIgnorePatterns '<rootDir>/clients'",
-    "axios:test": "yarn pack && ./bin/run generate --api examples/src/single-file/single-file-api.ts --generator axios-client -l typescript -o clients/axios/sdk && jest clients/axios",
+    "axios:test": "yarn pack && rm -rf ./clients/axios/sdk && ./bin/run generate --api examples/src/single-file/single-file-api.ts --generator axios-client -l typescript -o clients/axios/sdk && jest clients/axios",
     "prettier:list": "prettier --list-different \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",
     "prettier:write": "prettier --write \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",
     "release": "yarn version && oclif-dev readme && git add README.md && git commit README.md -m \"Update README\" && git push && npm publish --access=public"
