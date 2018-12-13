@@ -60,11 +60,10 @@ This is work in progress as of 14 Nov 2018:
 [![License](https://img.shields.io/npm/l/@airtasker/spot.svg)](https://github.com/airtasker/spot/blob/master/package.json)
 
 <!-- toc -->
-
-- [Spot](#spot)
-- [Usage](#usage)
-- [Commands](#commands)
-  <!-- tocstop -->
+* [Spot](#spot)
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 
 # Usage
 
@@ -372,11 +371,10 @@ Define a default error for the endpoint. This can only be used once for an `@end
 # Commands
 
 <!-- commands -->
-
-- [`spot generate`](#spot-generate)
-- [`spot help [COMMAND]`](#spot-help-command)
-- [`spot init`](#spot-init)
-- [`spot validate SPOT_CONTRACT`](#spot-validate-spot-contract)
+* [`spot generate`](#spot-generate)
+* [`spot help [COMMAND]`](#spot-help-command)
+* [`spot init`](#spot-init)
+* [`spot validate SPOT_CONTRACT`](#spot-validate-spot-contract)
 
 ## `spot generate`
 
