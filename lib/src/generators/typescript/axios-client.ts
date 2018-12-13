@@ -70,36 +70,7 @@ export function generateAxiosClientSource(api: Api): string {
       ts.createStringLiteral("./validators")
     ),
     generateSpotApiOptionsInterface(),
-    ts.createClassDeclaration(
-      /*decorators*/ undefined,
-      [ts.createModifier(ts.SyntaxKind.ExportKeyword)],
-      "SpotApi",
-      /*typeParameters*/ undefined,
-      /*heritageClause*/ undefined,
-      [
-        ts.createConstructor(
-          /*decorators*/ undefined,
-          /*modifiers*/ undefined,
-          [
-            ts.createParameter(
-              /*decorators*/ undefined,
-              [ts.createModifier(ts.SyntaxKind.PrivateKeyword)],
-              /*dotDotDotToken*/ undefined,
-              SPOT_API_CONFIG.name,
-              /*questionToken*/ undefined,
-              ts.createTypeReferenceNode(
-                SPOT_API_CONFIG_INTERFACE,
-                /*typeArguments*/ undefined
-              )
-            )
-          ],
-          ts.createBlock([])
-        ),
-        ...Object.entries(api.endpoints).map(([endpointName, endpoint]) =>
-          generateEndpointMethod(api, endpointName, endpoint)
-        )
-      ]
-    )
+    generateSpotApiClass(api)
   ]);
 }
 
@@ -117,6 +88,39 @@ function generateSpotApiOptionsInterface(): ts.InterfaceDeclaration {
         /*questionToken*/ undefined,
         ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
         /*initializer*/ undefined
+      )
+    ]
+  );
+}
+
+function generateSpotApiClass(api: Api) {
+  return ts.createClassDeclaration(
+    /*decorators*/ undefined,
+    [ts.createModifier(ts.SyntaxKind.ExportKeyword)],
+    "SpotApi",
+    /*typeParameters*/ undefined,
+    /*heritageClause*/ undefined,
+    [
+      ts.createConstructor(
+        /*decorators*/ undefined,
+        /*modifiers*/ undefined,
+        [
+          ts.createParameter(
+            /*decorators*/ undefined,
+            [ts.createModifier(ts.SyntaxKind.PrivateKeyword)],
+            /*dotDotDotToken*/ undefined,
+            SPOT_API_CONFIG.name,
+            /*questionToken*/ undefined,
+            ts.createTypeReferenceNode(
+              SPOT_API_CONFIG_INTERFACE,
+              /*typeArguments*/ undefined
+            )
+          )
+        ],
+        ts.createBlock([])
+      ),
+      ...Object.entries(api.endpoints).map(([endpointName, endpoint]) =>
+        generateEndpointMethod(api, endpointName, endpoint)
       )
     ]
   );
