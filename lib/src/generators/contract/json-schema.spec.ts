@@ -50,7 +50,7 @@ describe("JSON Schema generator", () => {
 
   describe("generates type validator", () => {
     test("void", () => {
-      expect(jsonTypeSchema(VOID)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, VOID)).toMatchInlineSnapshot(`
 Object {
   "type": "null",
 }
@@ -58,7 +58,7 @@ Object {
     });
 
     test("null", () => {
-      expect(jsonTypeSchema(NULL)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, NULL)).toMatchInlineSnapshot(`
 Object {
   "type": "null",
 }
@@ -66,7 +66,7 @@ Object {
     });
 
     test("boolean", () => {
-      expect(jsonTypeSchema(BOOLEAN)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, BOOLEAN)).toMatchInlineSnapshot(`
 Object {
   "type": "boolean",
 }
@@ -74,13 +74,13 @@ Object {
     });
 
     test("boolean constant", () => {
-      expect(jsonTypeSchema(booleanConstant(true))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, booleanConstant(true))).toMatchInlineSnapshot(`
 Object {
   "const": true,
   "type": "boolean",
 }
 `);
-      expect(jsonTypeSchema(booleanConstant(false))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, booleanConstant(false))).toMatchInlineSnapshot(`
 Object {
   "const": false,
   "type": "boolean",
@@ -89,7 +89,7 @@ Object {
     });
 
     test("string", () => {
-      expect(jsonTypeSchema(STRING)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, STRING)).toMatchInlineSnapshot(`
 Object {
   "type": "string",
 }
@@ -97,7 +97,7 @@ Object {
     });
 
     test("string constant", () => {
-      expect(jsonTypeSchema(stringConstant("some constant")))
+      expect(jsonTypeSchema({}, stringConstant("some constant")))
         .toMatchInlineSnapshot(`
 Object {
   "const": "some constant",
@@ -107,7 +107,7 @@ Object {
     });
 
     test("number", () => {
-      expect(jsonTypeSchema(NUMBER)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, NUMBER)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -115,7 +115,7 @@ Object {
     });
 
     test("int32", () => {
-      expect(jsonTypeSchema(INT32)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, INT32)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -123,7 +123,7 @@ Object {
     });
 
     test("int64", () => {
-      expect(jsonTypeSchema(INT64)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, INT64)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -131,7 +131,7 @@ Object {
     });
 
     test("float", () => {
-      expect(jsonTypeSchema(FLOAT)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, FLOAT)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -139,7 +139,7 @@ Object {
     });
 
     test("double", () => {
-      expect(jsonTypeSchema(DOUBLE)).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, DOUBLE)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -147,19 +147,19 @@ Object {
     });
 
     test("integer constant", () => {
-      expect(jsonTypeSchema(integerConstant(0))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, integerConstant(0))).toMatchInlineSnapshot(`
 Object {
   "const": 0,
   "type": "integer",
 }
 `);
-      expect(jsonTypeSchema(integerConstant(123))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, integerConstant(123))).toMatchInlineSnapshot(`
 Object {
   "const": 123,
   "type": "integer",
 }
 `);
-      expect(jsonTypeSchema(integerConstant(-1000))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, integerConstant(-1000))).toMatchInlineSnapshot(`
 Object {
   "const": -1000,
   "type": "integer",
@@ -168,7 +168,7 @@ Object {
     });
 
     test("object", () => {
-      expect(jsonTypeSchema(objectType({}))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, objectType({}))).toMatchInlineSnapshot(`
 Object {
   "properties": Object {},
   "required": Array [],
@@ -177,6 +177,7 @@ Object {
 `);
       expect(
         jsonTypeSchema(
+          {},
           objectType({
             singleField: NUMBER
           })
@@ -196,6 +197,7 @@ Object {
 `);
       expect(
         jsonTypeSchema(
+          {},
           objectType({
             field1: NUMBER,
             field2: STRING,
@@ -225,7 +227,7 @@ Object {
     });
 
     test("array", () => {
-      expect(jsonTypeSchema(arrayType(STRING))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, arrayType(STRING))).toMatchInlineSnapshot(`
 Object {
   "items": Object {
     "type": "string",
@@ -236,13 +238,13 @@ Object {
     });
 
     test("optional", () => {
-      expect(() => jsonTypeSchema(optionalType(STRING))).toThrowError(
+      expect(() => jsonTypeSchema({}, optionalType(STRING))).toThrowError(
         "Unsupported top-level optional type"
       );
     });
 
     test("union", () => {
-      expect(jsonTypeSchema(unionType(STRING, NUMBER, BOOLEAN)))
+      expect(jsonTypeSchema({}, unionType(STRING, NUMBER, BOOLEAN)))
         .toMatchInlineSnapshot(`
 Object {
   "oneOf": Array [
@@ -261,7 +263,8 @@ Object {
     });
 
     test("type reference", () => {
-      expect(jsonTypeSchema(typeReference("OtherType"))).toMatchInlineSnapshot(`
+      expect(jsonTypeSchema({}, typeReference("OtherType")))
+        .toMatchInlineSnapshot(`
 Object {
   "$ref": "#/definitions/OtherType",
 }

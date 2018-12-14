@@ -618,7 +618,7 @@ export function generateEndpointHandlerSource(
                 /*dotDotDotToken*/ undefined,
                 ts.createIdentifier("request"),
                 /*questionToken*/ undefined,
-                typeNode(endpoint.requestType)
+                typeNode(api.types, endpoint.requestType)
               )
             ]),
         ...compact(
@@ -631,7 +631,7 @@ export function generateEndpointHandlerSource(
                     /*dotDotDotToken*/ undefined,
                     ts.createIdentifier(pathComponent.name),
                     /*questionToken*/ undefined,
-                    typeNode(pathComponent.type)
+                    typeNode(api.types, pathComponent.type)
                   )
                 : null
           )
@@ -643,11 +643,12 @@ export function generateEndpointHandlerSource(
             /*dotDotDotToken*/ undefined,
             ts.createIdentifier(headerName),
             /*questionToken*/ undefined,
-            typeNode(header.type)
+            typeNode(api.types, header.type)
           )
         )
       ],
       promiseTypeNode(
+        api.types,
         unionType(
           ...[
             objectType({

@@ -1,3 +1,4 @@
+import { HttpContentType } from "@airtasker/spot";
 import * as YAML from "js-yaml";
 import assertNever from "../../assert-never";
 import { Api, Endpoint, Type } from "../../models";
@@ -7,7 +8,6 @@ import {
   openApi2TypeSchema,
   rejectVoidOpenApi2SchemaType
 } from "./openapi2-schema";
-import { HttpContentType } from "@airtasker/spot";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import defaultTo = require("lodash/defaultTo");
@@ -83,6 +83,7 @@ export function openApiV2(api: Api): OpenApiV2 {
     definitions: Object.entries(api.types).reduce(
       (acc, [typeName, type]) => {
         acc[typeName] = rejectVoidOpenApi2SchemaType(
+          api.types,
           type,
           `Unsupported void type ${typeName}`
         );
@@ -122,6 +123,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
               name: pathComponent.name,
               description: pathComponent.description,
               ...rejectVoidOpenApi2SchemaType(
+                api.types,
                 pathComponent.type,
                 `Unsupported void type for path component ${pathComponent.name}`
               ),
@@ -138,6 +140,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
             name: queryComponent.name,
             description: queryComponent.description,
             ...rejectVoidOpenApi2SchemaType(
+              api.types,
               queryComponent.type.kind === "optional"
                 ? queryComponent.type.optional
                 : queryComponent.type,
@@ -156,6 +159,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
             name: header.headerFieldName,
             description: header.description,
             ...rejectVoidOpenApi2SchemaType(
+              api.types,
               header.type.kind === "optional"
                 ? header.type.optional
                 : header.type,
@@ -184,12 +188,12 @@ function requestBody(api: Api, type: Type): OpenAPIV2Parameter | null {
         name: "body",
         description: "TODO",
         required: true,
-        schema: defaultTo(openApi2TypeSchema(type), undefined)
+        schema: defaultTo(openApi2TypeSchema(api.types, type), undefined)
       };
 }
 
 function response(api: Api, type: Type): OpenAPIV2Response {
-  const schemaType = openApi2TypeSchema(type);
+  const schemaType = openApi2TypeSchema(api.types, type);
   return {
     ...(schemaType
       ? {

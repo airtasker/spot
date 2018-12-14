@@ -2,11 +2,12 @@ import {
   endpoint,
   genericError,
   header,
+  Int64,
   pathParam,
-  specificError,
   response,
-  Int64
+  specificError
 } from "@airtasker/spot";
+import { BaseError, ForbiddenError } from "../errors";
 
 export class DeleteUser {
   @endpoint({
@@ -14,13 +15,8 @@ export class DeleteUser {
     path: "/users/:userId-confirmed",
     tags: ["users"]
   })
-  @genericError<{
-    message: string;
-  }>()
-  @specificError<{
-    message: string;
-    signedInAs: string;
-  }>({
+  @genericError<BaseError>()
+  @specificError<ForbiddenError>({
     name: "forbidden",
     statusCode: 403
   })

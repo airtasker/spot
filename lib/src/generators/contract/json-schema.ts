@@ -1,10 +1,7 @@
 import * as YAML from "js-yaml";
 import assertNever from "../../assert-never";
-import { Api, Type } from "../../models";
+import { Api, normalizedObjectType, Type, Types } from "../../models";
 import compact = require("lodash/compact");
-import identity = require("lodash/identity");
-import pickBy = require("lodash/pickBy");
-import defaultTo = require("lodash/defaultTo");
 
 export function generateJsonSchema(api: Api, format: "json" | "yaml") {
   const contract = jsonSchema(api);
@@ -23,7 +20,7 @@ export function jsonSchema(api: Api): JsonSchema {
     $schema: "http://json-schema.org/draft-07/schema#",
     definitions: Object.entries(api.types).reduce(
       (acc, [typeName, type]) => {
-        acc[typeName] = jsonTypeSchema(type);
+        acc[typeName] = jsonTypeSchema(api.types, type);
         return acc;
       },
       {} as { [typeName: string]: JsonSchemaType }
@@ -31,7 +28,7 @@ export function jsonSchema(api: Api): JsonSchema {
   };
 }
 
-export function jsonTypeSchema(type: Type): JsonSchemaType {
+export function jsonTypeSchema(types: Types, type: Type): JsonSchemaType {
   switch (type.kind) {
     case "void":
     case "null":
@@ -72,14 +69,14 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
         const: type.value
       };
     case "object":
-      return Object.entries(type.properties).reduce(
+      return Object.entries(normalizedObjectType(types, type)).reduce(
         (acc, [name, type]) => {
           if (type.kind === "optional") {
             type = type.optional;
           } else {
             acc.required.push(name);
           }
-          const schemaType = jsonTypeSchema(type);
+          const schemaType = jsonTypeSchema(types, type);
           if (schemaType) {
             acc.properties[name] = schemaType;
           }
@@ -92,7 +89,7 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
         } as JsonSchemaObject & { required: string[] }
       );
     case "array":
-      const itemsType = jsonTypeSchema(type.elements);
+      const itemsType = jsonTypeSchema(types, type.elements);
       if (!itemsType) {
         throw new Error(`Unsupported void array`);
       }
@@ -103,9 +100,9 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
     case "optional":
       throw new Error(`Unsupported top-level optional type`);
     case "union":
-      const types = type.types.map(t => jsonTypeSchema(t));
-      const withoutNullTypes = compact(types);
-      if (withoutNullTypes.length !== types.length) {
+      const unionTypes = type.types.map(t => jsonTypeSchema(types, t));
+      const withoutNullTypes = compact(unionTypes);
+      if (withoutNullTypes.length !== unionTypes.length) {
         throw new Error(`Unsupported void type in union`);
       }
       return {

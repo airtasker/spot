@@ -112,6 +112,9 @@ function validateType(api: Api, type: Type, errors: ErrorMessage[]): void {
       for (const property of Object.values(type.properties)) {
         validateType(api, property, errors);
       }
+      for (const extended of Object.values(type.extends)) {
+        validateType(api, extended, errors);
+      }
       break;
     case "array":
       validateType(api, type.elements, errors);

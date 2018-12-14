@@ -121,6 +121,19 @@ export function extractObjectType(
   sourceFile: ts.SourceFile,
   declaration: ts.TypeLiteralNode | ts.InterfaceDeclaration
 ): ObjectType {
+  const extendsTypeNames = [];
+  if (ts.isInterfaceDeclaration(declaration)) {
+    for (const heritageClause of declaration.heritageClauses || []) {
+      for (const type of heritageClause.types) {
+        if (
+          ts.isExpressionWithTypeArguments(type) &&
+          ts.isIdentifier(type.expression)
+        ) {
+          extendsTypeNames.push(type.expression.getText(sourceFile));
+        }
+      }
+    }
+  }
   const properties: {
     [key: string]: Type;
   } = {};
@@ -143,7 +156,7 @@ export function extractObjectType(
     }
     properties[member.name.getText(sourceFile)] = type;
   }
-  return objectType(properties);
+  return objectType(properties, extendsTypeNames);
 }
 
 export function extractArrayType(

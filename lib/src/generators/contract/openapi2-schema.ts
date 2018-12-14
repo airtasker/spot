@@ -1,13 +1,13 @@
 import assertNever from "../../assert-never";
-import { Type } from "../../models";
+import { normalizedObjectType, Type, Types } from "../../models";
 import compact = require("lodash/compact");
-import { OpenAPI3BaseSchemaType } from "./openapi3-schema";
 
 export function rejectVoidOpenApi2SchemaType(
+  types: Types,
   type: Type,
   errorMessage: string
 ): OpenAPI2SchemaType {
-  const schemaType = openApi2TypeSchema(type);
+  const schemaType = openApi2TypeSchema(types, type);
   if (!schemaType) {
     throw new Error(errorMessage);
   }
@@ -20,7 +20,10 @@ function isStringConstantUnion(types: Type[]): boolean {
   }, true);
 }
 
-export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
+export function openApi2TypeSchema(
+  types: Types,
+  type: Type
+): OpenAPI2SchemaType | null {
   switch (type.kind) {
     case "void":
       return null;
@@ -84,14 +87,14 @@ export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
         format: "double"
       };
     case "object":
-      return Object.entries(type.properties).reduce(
+      return Object.entries(normalizedObjectType(types, type)).reduce(
         (acc, [name, type]) => {
           if (type.kind === "optional") {
             type = type.optional;
           } else {
             acc.required.push(name);
           }
-          const schemaType = openApi2TypeSchema(type);
+          const schemaType = openApi2TypeSchema(types, type);
           if (schemaType) {
             acc.properties[name] = schemaType;
           }
@@ -104,7 +107,7 @@ export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
         } as OpenAPI2SchemaTypeObject & { required: string[] }
       );
     case "array":
-      const itemsType = openApi2TypeSchema(type.elements);
+      const itemsType = openApi2TypeSchema(types, type.elements);
       if (!itemsType) {
         throw new Error(`Unsupported void array`);
       }
@@ -115,9 +118,9 @@ export function openApi2TypeSchema(type: Type): OpenAPI2SchemaType | null {
     case "optional":
       throw new Error(`Unsupported top-level optional type`);
     case "union":
-      const types = type.types.map(t => openApi2TypeSchema(t));
-      const withoutNullTypes = compact(types);
-      if (withoutNullTypes.length !== types.length) {
+      const unionTypes = type.types.map(t => openApi2TypeSchema(types, t));
+      const withoutNullTypes = compact(unionTypes);
+      if (withoutNullTypes.length !== unionTypes.length) {
         throw new Error(`Unsupported void type in union`);
       }
       if (isStringConstantUnion(type.types)) {

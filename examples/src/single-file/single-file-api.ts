@@ -1,5 +1,6 @@
 import {
   api,
+  DateTime,
   endpoint,
   Float,
   genericError,
@@ -10,9 +11,8 @@ import {
   pathParam,
   queryParam,
   request,
-  specificError,
   response,
-  DateTime
+  specificError
 } from "@airtasker/spot";
 
 @api({
@@ -73,13 +73,8 @@ export class Api {
     path: "/users/:userId-confirmed",
     tags: ["users"]
   })
-  @genericError<{
-    message: string;
-  }>()
-  @specificError<{
-    message: string;
-    signedInAs: string;
-  }>({
+  @genericError<BaseError>()
+  @specificError<ForbiddenError>({
     name: "forbidden",
     statusCode: 403
   })
@@ -94,6 +89,8 @@ export class Api {
   }
 }
 
+// Requests and responses.
+
 export interface CreateUserRequest {
   name: string;
   roles: "admin" | "member";
@@ -102,4 +99,14 @@ export interface CreateUserRequest {
 export interface CreateUserResponse {
   success: boolean;
   created_at: DateTime;
+}
+
+// Errors.
+
+export interface BaseError {
+  message: string;
+}
+
+export interface ForbiddenError extends BaseError {
+  signedInAs: string;
 }

@@ -3,7 +3,7 @@
 exports[`TypeScript axios client generator produces valid code multi-file 1`] = `
 "import axios from \\"axios\\";
 
-import { CreateUserRequest, CreateUserResponse } from \\"./types\\";
+import { CreateUserRequest, CreateUserResponse, BaseError, ForbiddenError } from \\"./types\\";
 
 import * as validators from \\"./validators\\";
 
@@ -62,15 +62,10 @@ export class SpotApi {
         data: null;
     } | {
         kind: \\"unknown-error\\";
-        data: {
-            message: string;
-        };
+        data: BaseError;
     } | {
         kind: \\"forbidden\\";
-        data: {
-            message: string;
-            signedInAs: string;
-        };
+        data: ForbiddenError;
     }> {
         if (!validators.validateDeleteUser_paramUserId(userId)) {
             throw new Error(\`Invalid parameter userId: \${JSON.stringify(userId, null, 2)}\`);
@@ -211,7 +206,7 @@ export class SpotApi {
 exports[`TypeScript axios client generator produces valid code single-file 1`] = `
 "import axios from \\"axios\\";
 
-import { CreateUserRequest, CreateUserResponse } from \\"./types\\";
+import { CreateUserRequest, CreateUserResponse, BaseError, ForbiddenError } from \\"./types\\";
 
 import * as validators from \\"./validators\\";
 
@@ -359,15 +354,10 @@ export class SpotApi {
         data: null;
     } | {
         kind: \\"unknown-error\\";
-        data: {
-            message: string;
-        };
+        data: BaseError;
     } | {
         kind: \\"forbidden\\";
-        data: {
-            message: string;
-            signedInAs: string;
-        };
+        data: ForbiddenError;
     }> {
         if (!validators.validateDeleteUser_paramUserId(userId)) {
             throw new Error(\`Invalid parameter userId: \${JSON.stringify(userId, null, 2)}\`);

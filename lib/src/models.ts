@@ -3,13 +3,17 @@ import uniq = require("lodash/uniq");
 import { ApiDescription, HttpContentType, HttpMethod } from "./lib";
 
 export interface Api {
-  endpoints: {
-    [name: string]: Endpoint;
-  };
-  types: {
-    [name: string]: Type;
-  };
+  endpoints: Endpoints;
+  types: Types;
   description: ApiDescription;
+}
+
+export interface Endpoints {
+  [name: string]: Endpoint;
+}
+
+export interface Types {
+  [name: string]: Type;
 }
 
 export interface Endpoint {
@@ -223,18 +227,71 @@ export interface DateTimeType {
   kind: "date-time";
 }
 
-export function objectType(properties: { [key: string]: Type }): ObjectType {
+export function objectType(
+  properties: { [key: string]: Type },
+  extendsTypeNames: string[] = []
+): ObjectType {
   return {
     kind: "object",
-    properties
+    properties,
+    extends: extendsTypeNames.map(typeReference)
   };
+}
+
+/**
+ * Returns the normalised properties of an object type (including all extended properties).
+ */
+export function normalizedObjectType(
+  types: Types,
+  objectType: ObjectType
+): ObjectTypeProperties {
+  const properties: ObjectTypeProperties = {};
+  // Add all properties from extended types.
+  for (const { typeName } of objectType.extends) {
+    for (const [propertyKey, propertyType] of Object.entries(
+      propertiesFromTypeName(types, typeName)
+    )) {
+      properties[propertyKey] = propertyType;
+    }
+  }
+  // Add explicitly defined properties.
+  for (const [propertyKey, propertyType] of Object.entries(
+    objectType.properties
+  )) {
+    properties[propertyKey] = propertyType;
+  }
+  return properties;
+}
+
+/**
+ * Returns all the properties (including extended) of a type from its name.
+ */
+function propertiesFromTypeName(
+  types: Types,
+  typeName: string
+): ObjectTypeProperties {
+  const referencedType = types[typeName];
+  if (!referencedType) {
+    throw new Error(`Missing type: ${typeName}`);
+  }
+  if (referencedType.kind !== "object") {
+    throw new Error(
+      `Type ${typeName} was expected to be an object type, but was ${
+        referencedType.kind
+      }`
+    );
+  }
+  return normalizedObjectType(types, referencedType);
 }
 
 export interface ObjectType {
   kind: "object";
-  properties: {
-    [key: string]: Type;
-  };
+  properties: ObjectTypeProperties;
+  extends: TypeReference[];
+}
+
+export interface ObjectTypeProperties {
+  [key: string]: Type;
 }
 
 export function arrayType(elements: Type): ArrayType {
