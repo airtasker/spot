@@ -19,6 +19,7 @@ import {
   validatorName
 } from "./validators";
 import compact = require("lodash/compact");
+import uniq = require("lodash/uniq");
 
 const IMPORTED_AXIOS_NAME = "axios";
 
@@ -29,7 +30,7 @@ const SPOT_API_CONFIG = {
 };
 
 export function generateAxiosClientSource(api: Api): string {
-  const typeNames = Object.keys(api.types);
+  const typeNames = getImportUsedTypes(api);
   return outputTypeScriptSource([
     ts.createImportDeclaration(
       /*decorators*/ undefined,
@@ -72,6 +73,32 @@ export function generateAxiosClientSource(api: Api): string {
     generateSpotApiOptionsInterface(),
     generateSpotApiClass(api)
   ]);
+}
+
+function getImportUsedTypes(api: Api): string[] {
+  return uniq(
+    Object.values(api.endpoints)
+      .map(endpoint => {
+        const types: string[] = [];
+        types.push(extractTypeName(api, endpoint.requestType));
+        types.push(extractTypeName(api, endpoint.responseType));
+        types.push(extractTypeName(api, endpoint.genericErrorType));
+        Object.values(endpoint.specificErrorTypes).forEach(specificError =>
+          types.push(extractTypeName(api, specificError.type))
+        );
+        return compact(types);
+      })
+      .reduce((acc, types) => acc.concat(types), [] as string[])
+  );
+}
+
+function extractTypeName(api: Api, type: Type): string {
+  if (!isVoid(api, type)) {
+    if (type.kind === "type-reference") {
+      return type.typeName;
+    }
+  }
+  return "";
 }
 
 function generateSpotApiOptionsInterface(): ts.InterfaceDeclaration {
