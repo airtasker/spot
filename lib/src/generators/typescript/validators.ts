@@ -3,6 +3,7 @@ import assertNever from "../../assert-never";
 import {
   Api,
   ArrayType,
+  BOOLEAN,
   ObjectType,
   OptionalType,
   Type,
@@ -274,13 +275,17 @@ function arrayValidator(
               /*decorators*/ undefined,
               /*modifiers*/ undefined,
               /*dotDotDotToken*/ undefined,
-              accArgument
+              accArgument,
+              /*questionToken*/ undefined,
+              typeNode(BOOLEAN)
             ),
             ts.createParameter(
               /*decorators*/ undefined,
               /*modifiers*/ undefined,
               /*dotDotDotToken*/ undefined,
-              currArgument
+              currArgument,
+              /*questionToken*/ undefined,
+              typeNode(BOOLEAN)
             )
           ],
           /*type*/ undefined,
