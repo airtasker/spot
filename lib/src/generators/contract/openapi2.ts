@@ -137,7 +137,9 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
         (queryComponent): OpenAPIV2Parameter => {
           return {
             in: "query",
-            name: queryComponent.name,
+            name: queryComponent.queryName
+              ? queryComponent.queryName
+              : queryComponent.name,
             description: queryComponent.description,
             ...rejectVoidOpenApi2SchemaType(
               api.types,
