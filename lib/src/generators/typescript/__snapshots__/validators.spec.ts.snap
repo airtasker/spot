@@ -59,7 +59,7 @@ export function validateFindUsers_response(value: any): value is {
     name: string;
     age?: number;
 }[] {
-    return value instanceof Array && value.reduce((acc, curr) => acc && (!(curr === null) && typeof curr === \\"object\\" && typeof curr[\\"name\\"] === \\"string\\" && (curr[\\"age\\"] === undefined || typeof curr[\\"age\\"] === \\"number\\")), true);
+    return value instanceof Array && value.reduce((acc: boolean, curr: boolean) => acc && (!(curr === null) && typeof curr === \\"object\\" && typeof curr[\\"name\\"] === \\"string\\" && (curr[\\"age\\"] === undefined || typeof curr[\\"age\\"] === \\"number\\")), true);
 }
 
 export function validateFindUsers_genericError(value: any): value is void {
@@ -137,7 +137,7 @@ export function validateFindUsers_response(value: any): value is {
     name: string;
     age?: number;
 }[] {
-    return value instanceof Array && value.reduce((acc, curr) => acc && (!(curr === null) && typeof curr === \\"object\\" && typeof curr[\\"name\\"] === \\"string\\" && (curr[\\"age\\"] === undefined || typeof curr[\\"age\\"] === \\"number\\")), true);
+    return value instanceof Array && value.reduce((acc: boolean, curr: boolean) => acc && (!(curr === null) && typeof curr === \\"object\\" && typeof curr[\\"name\\"] === \\"string\\" && (curr[\\"age\\"] === undefined || typeof curr[\\"age\\"] === \\"number\\")), true);
 }
 
 export function validateFindUsers_genericError(value: any): value is void {

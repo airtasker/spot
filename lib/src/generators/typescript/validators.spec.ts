@@ -442,7 +442,7 @@ export function validateExtended2(value: any): value is extended2 {
 "import { Example } from \\"./types\\";
 
 export function validateExample(value: any): value is Example {
-    return value instanceof Array && value.reduce((acc, curr) => acc && typeof curr === \\"string\\", true);
+    return value instanceof Array && value.reduce((acc: boolean, curr: boolean) => acc && typeof curr === \\"string\\", true);
 }"
 `);
     });
