@@ -17,23 +17,20 @@ export async function createUser(request: CreateUserRequest, authToken: string |
 `;
 
 exports[`TypeScript Express server generator produces valid code multi-file: endpoint:deleteUser 1`] = `
-"export async function deleteUser(userId: number, authToken: string): Promise<{
+"import { BaseError, ForbiddenError } from \\"../types\\";
+
+export async function deleteUser(userId: number, authToken: string): Promise<{
     error?: void;
     status: number;
     data: null;
 } | {
     error: \\"forbidden\\";
     status?: void;
-    data: {
-        message: string;
-        signedInAs: string;
-    };
+    data: ForbiddenError;
 } | {
     error: string;
     status?: number;
-    data: {
-        message: string;
-    };
+    data: BaseError;
 }> {
     throw new Error(\\"Endpoint deleteUser is not yet implemented!\\");
 }"
@@ -237,23 +234,20 @@ export async function createUser(request: CreateUserRequest, authToken: string |
 `;
 
 exports[`TypeScript Express server generator produces valid code single-file: endpoint:deleteUser 1`] = `
-"export async function deleteUser(userId: number, authToken: string): Promise<{
+"import { BaseError, ForbiddenError } from \\"../types\\";
+
+export async function deleteUser(userId: number, authToken: string): Promise<{
     error?: void;
     status: number;
     data: null;
 } | {
     error: \\"forbidden\\";
     status?: void;
-    data: {
-        message: string;
-        signedInAs: string;
-    };
+    data: ForbiddenError;
 } | {
     error: string;
     status?: number;
-    data: {
-        message: string;
-    };
+    data: BaseError;
 }> {
     throw new Error(\\"Endpoint deleteUser is not yet implemented!\\");
 }"

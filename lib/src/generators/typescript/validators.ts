@@ -4,10 +4,12 @@ import {
   Api,
   ArrayType,
   BOOLEAN,
+  normalizedObjectType,
   ObjectType,
   OptionalType,
   Type,
   TypeReference,
+  Types,
   UnionType
 } from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
@@ -41,6 +43,7 @@ export function generateValidatorsSource(api: Api): string {
     ...flatten(
       Object.entries(api.endpoints).map(([endpointName, endpoint]) => [
         generateValidator(
+          api.types,
           endpointPropertyTypeName(endpointName, "request"),
           endpoint.requestType
         ),
@@ -49,6 +52,7 @@ export function generateValidatorsSource(api: Api): string {
             pathComponent =>
               pathComponent.kind === "dynamic"
                 ? generateValidator(
+                    api.types,
                     endpointPropertyTypeName(
                       endpointName,
                       "param",
@@ -61,27 +65,32 @@ export function generateValidatorsSource(api: Api): string {
         ),
         ...Object.entries(endpoint.headers).map(([headerName, header]) =>
           generateValidator(
+            api.types,
             endpointPropertyTypeName(endpointName, "header", headerName),
             header.type
           )
         ),
         ...endpoint.queryParams.map(queryParam =>
           generateValidator(
+            api.types,
             endpointPropertyTypeName(endpointName, "param", queryParam.name),
             queryParam.type
           )
         ),
         generateValidator(
+          api.types,
           endpointPropertyTypeName(endpointName, "response"),
           endpoint.responseType
         ),
         generateValidator(
+          api.types,
           endpointPropertyTypeName(endpointName, "genericError"),
           endpoint.genericErrorType
         ),
         ...Object.entries(endpoint.specificErrorTypes).map(
           ([name, specificError]) =>
             generateValidator(
+              api.types,
               endpointPropertyTypeName(endpointName, `specificError`, name),
               specificError.type
             )
@@ -89,12 +98,13 @@ export function generateValidatorsSource(api: Api): string {
       ])
     ),
     ...Object.entries(api.types).map(([typeName, type]) =>
-      generateValidator(typeName, type, typeName)
+      generateValidator(api.types, typeName, type, typeName)
     )
   ]);
 }
 
 function generateValidator(
+  types: Types,
   typeNickname: string,
   type: Type,
   typeName?: string
@@ -120,16 +130,20 @@ function generateValidator(
       parameterName,
       typeName
         ? ts.createTypeReferenceNode(typeName, /*typeArguments*/ undefined)
-        : typeNode(type)
+        : typeNode(types, type)
     ),
     ts.createBlock(
-      [ts.createReturn(validator(type, parameterName))],
+      [ts.createReturn(validator(types, type, parameterName))],
       /*multiline*/ true
     )
   );
 }
 
-function validator(type: Type, parameter: ts.Expression): ts.Expression {
+function validator(
+  types: Types,
+  type: Type,
+  parameter: ts.Expression
+): ts.Expression {
   switch (type.kind) {
     case "void":
       return voidValidator(parameter);
@@ -154,13 +168,13 @@ function validator(type: Type, parameter: ts.Expression): ts.Expression {
     case "integer-constant":
       return integerConstantValidator(type.value, parameter);
     case "object":
-      return objectValidator(type, parameter);
+      return objectValidator(types, type, parameter);
     case "array":
-      return arrayValidator(type, parameter);
+      return arrayValidator(types, type, parameter);
     case "optional":
-      return optionalValidator(type, parameter);
+      return optionalValidator(types, type, parameter);
     case "union":
-      return unionValidator(type, parameter);
+      return unionValidator(types, type, parameter);
     case "type-reference":
       return typeReferenceValidator(type, parameter);
     default:
@@ -235,14 +249,18 @@ function integerConstantValidator(
 }
 
 function objectValidator(
+  types: Types,
   type: ObjectType,
   parameter: ts.Expression
 ): ts.Expression {
   let expression = notNullObjectValidator(parameter);
-  for (const [propertyName, propertyType] of Object.entries(type.properties)) {
+  for (const [propertyName, propertyType] of Object.entries(
+    normalizedObjectType(types, type)
+  )) {
     expression = ts.createLogicalAnd(
       expression,
       validator(
+        types,
         propertyType,
         ts.createElementAccess(parameter, ts.createStringLiteral(propertyName))
       )
@@ -252,6 +270,7 @@ function objectValidator(
 }
 
 function arrayValidator(
+  types: Types,
   type: ArrayType,
   parameter: ts.Expression
 ): ts.Expression {
@@ -277,7 +296,7 @@ function arrayValidator(
               /*dotDotDotToken*/ undefined,
               accArgument,
               /*questionToken*/ undefined,
-              typeNode(BOOLEAN)
+              typeNode(types, BOOLEAN)
             ),
             ts.createParameter(
               /*decorators*/ undefined,
@@ -285,14 +304,14 @@ function arrayValidator(
               /*dotDotDotToken*/ undefined,
               currArgument,
               /*questionToken*/ undefined,
-              typeNode(BOOLEAN)
+              typeNode(types, BOOLEAN)
             )
           ],
           /*type*/ undefined,
           /*equalsGreaterThanToken*/ undefined,
           ts.createLogicalAnd(
             accArgument,
-            validator(type.elements, currArgument)
+            validator(types, type.elements, currArgument)
           )
         ),
         ts.createIdentifier("true")
@@ -302,24 +321,26 @@ function arrayValidator(
 }
 
 function optionalValidator(
+  types: Types,
   type: OptionalType,
   parameter: ts.Expression
 ): ts.Expression {
   return ts.createLogicalOr(
     voidValidator(parameter),
-    validator(type.optional, parameter)
+    validator(types, type.optional, parameter)
   );
 }
 
 function unionValidator(
+  types: Types,
   type: UnionType,
   parameter: ts.Expression
 ): ts.Expression {
-  let expression = validator(type.types[0], parameter);
+  let expression = validator(types, type.types[0], parameter);
   for (let i = 1; i < type.types.length; i++) {
     expression = ts.createLogicalOr(
       expression,
-      validator(type.types[i], parameter)
+      validator(types, type.types[i], parameter)
     );
   }
   return expression;

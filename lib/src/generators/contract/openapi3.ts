@@ -58,6 +58,7 @@ export function openApiV3(api: Api): OpenApiV3 {
               ? undefined
               : defaultTo(
                   openApiV3ContentTypeSchema(
+                    api.types,
                     defaultTo(endpoint.requestContentType, "application/json"),
                     endpoint.requestType
                   ),
@@ -94,6 +95,7 @@ export function openApiV3(api: Api): OpenApiV3 {
       schemas: Object.entries(api.types).reduce(
         (acc, [typeName, type]) => {
           acc[typeName] = rejectVoidOpenApi3SchemaType(
+            api.types,
             type,
             `Unsupported void type ${typeName}`
           );
@@ -135,6 +137,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
               description: pathComponent.description,
               required: true,
               schema: rejectVoidOpenApi3SchemaType(
+                api.types,
                 pathComponent.type,
                 `Unsupported void type for path component ${pathComponent.name}`
               )
@@ -150,6 +153,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
             description: queryComponent.description,
             required: queryComponent.type.kind !== "optional",
             schema: rejectVoidOpenApi3SchemaType(
+              api.types,
               queryComponent.type.kind === "optional"
                 ? queryComponent.type.optional
                 : queryComponent.type,
@@ -168,6 +172,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
             description: header.description,
             required: header.type.kind !== "optional",
             schema: rejectVoidOpenApi3SchemaType(
+              api.types,
               header.type.kind === "optional"
                 ? header.type.optional
                 : header.type,
@@ -181,7 +186,7 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
 }
 
 function response(api: Api, type: Type): OpenAPIV3Response {
-  const schemaType = openApi3TypeSchema(type);
+  const schemaType = openApi3TypeSchema(api.types, type);
   return {
     ...(schemaType
       ? {

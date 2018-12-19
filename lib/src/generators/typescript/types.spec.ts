@@ -288,6 +288,52 @@ describe("TypeScript types generator", () => {
     field3?: boolean;
 };"
 `);
+      expect(
+        generateTypesSource({
+          endpoints: {},
+          types: {
+            Example: objectType(
+              {
+                field4: STRING
+              },
+              ["extended1"]
+            ),
+            extended1: objectType(
+              {
+                field2: optionalType(BOOLEAN),
+                field3: NUMBER
+              },
+              ["extended2"]
+            ),
+            extended2: objectType({
+              field1: NUMBER,
+              field2: STRING
+            })
+          },
+          description: {
+            name: "name",
+            description: "description"
+          }
+        })
+      ).toMatchInlineSnapshot(`
+"export type Example = {
+    field1: number;
+    field2?: boolean;
+    field3: number;
+    field4: string;
+};
+
+export type extended1 = {
+    field1: number;
+    field2?: boolean;
+    field3: number;
+};
+
+export type extended2 = {
+    field1: number;
+    field2: string;
+};"
+`);
     });
 
     test("array", () => {

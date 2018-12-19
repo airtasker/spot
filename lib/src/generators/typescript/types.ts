@@ -3,10 +3,12 @@ import assertNever from "../../assert-never";
 import {
   Api,
   ArrayType,
+  normalizedObjectType,
   ObjectType,
   OptionalType,
   Type,
   TypeReference,
+  Types,
   UnionType
 } from "../../models";
 import { outputTypeScriptSource } from "./ts-writer";
@@ -20,17 +22,17 @@ export function generateTypesSource(api: Api): string {
         /*modifiers*/ [ts.createModifier(ts.SyntaxKind.ExportKeyword)],
         typeName,
         /*typeParameters*/ undefined,
-        typeNode(type)
+        typeNode(api.types, type)
       )
     )
   );
 }
 
-export function promiseTypeNode(type: Type): ts.TypeNode {
-  return ts.createTypeReferenceNode("Promise", [typeNode(type)]);
+export function promiseTypeNode(types: Types, type: Type): ts.TypeNode {
+  return ts.createTypeReferenceNode("Promise", [typeNode(types, type)]);
 }
 
-export function typeNode(type: Type): ts.TypeNode {
+export function typeNode(types: Types, type: Type): ts.TypeNode {
   switch (type.kind) {
     case "void":
       return VOID_TYPE_NODE;
@@ -55,13 +57,13 @@ export function typeNode(type: Type): ts.TypeNode {
     case "integer-constant":
       return integerConstantTypeNode(type.value);
     case "object":
-      return objectTypeNode(type);
+      return objectTypeNode(types, type);
     case "array":
-      return arrayTypeNode(type);
+      return arrayTypeNode(types, type);
     case "optional":
-      return optionalTypeNode(type);
+      return optionalTypeNode(types, type);
     case "union":
-      return unionTypeNode(type);
+      return unionTypeNode(types, type);
     case "type-reference":
       return typeReferenceTypeNode(type);
     default:
@@ -92,48 +94,53 @@ function integerConstantTypeNode(value: number): ts.TypeNode {
   return ts.createLiteralTypeNode(ts.createLiteral(value));
 }
 
-function objectTypeNode(type: ObjectType): ts.TypeNode {
+function objectTypeNode(types: Types, type: ObjectType): ts.TypeNode {
   return ts.createTypeLiteralNode(
-    Object.entries(type.properties).map(([propertyName, propertyType]) => {
-      if (propertyType.kind === "void") {
-        return ts.createPropertySignature(
-          /*modifiers*/ undefined,
-          propertyName,
-          ts.createToken(ts.SyntaxKind.QuestionToken),
-          VOID_TYPE_NODE,
-          /*initializer*/ undefined
-        );
-      } else if (propertyType.kind === "optional") {
-        return ts.createPropertySignature(
-          /*modifiers*/ undefined,
-          propertyName,
-          ts.createToken(ts.SyntaxKind.QuestionToken),
-          typeNode(propertyType.optional),
-          /*initializer*/ undefined
-        );
-      } else {
-        return ts.createPropertySignature(
-          /*modifiers*/ undefined,
-          propertyName,
-          /*questionToken*/ undefined,
-          typeNode(propertyType),
-          /*initializer*/ undefined
-        );
+    Object.entries(normalizedObjectType(types, type)).map(
+      ([propertyName, propertyType]) => {
+        if (propertyType.kind === "void") {
+          return ts.createPropertySignature(
+            /*modifiers*/ undefined,
+            propertyName,
+            ts.createToken(ts.SyntaxKind.QuestionToken),
+            VOID_TYPE_NODE,
+            /*initializer*/ undefined
+          );
+        } else if (propertyType.kind === "optional") {
+          return ts.createPropertySignature(
+            /*modifiers*/ undefined,
+            propertyName,
+            ts.createToken(ts.SyntaxKind.QuestionToken),
+            typeNode(types, propertyType.optional),
+            /*initializer*/ undefined
+          );
+        } else {
+          return ts.createPropertySignature(
+            /*modifiers*/ undefined,
+            propertyName,
+            /*questionToken*/ undefined,
+            typeNode(types, propertyType),
+            /*initializer*/ undefined
+          );
+        }
       }
-    })
+    )
   );
 }
 
-function arrayTypeNode(type: ArrayType): ts.TypeNode {
-  return ts.createArrayTypeNode(typeNode(type.elements));
+function arrayTypeNode(types: Types, type: ArrayType): ts.TypeNode {
+  return ts.createArrayTypeNode(typeNode(types, type.elements));
 }
 
-function optionalTypeNode(type: OptionalType): ts.TypeNode {
-  return ts.createUnionTypeNode([typeNode(type.optional), VOID_TYPE_NODE]);
+function optionalTypeNode(types: Types, type: OptionalType): ts.TypeNode {
+  return ts.createUnionTypeNode([
+    typeNode(types, type.optional),
+    VOID_TYPE_NODE
+  ]);
 }
 
-function unionTypeNode(type: UnionType): ts.TypeNode {
-  return ts.createUnionTypeNode(type.types.map(typeNode));
+function unionTypeNode(types: Types, type: UnionType): ts.TypeNode {
+  return ts.createUnionTypeNode(type.types.map(t => typeNode(types, t)));
 }
 
 function typeReferenceTypeNode(type: TypeReference): ts.TypeNode {

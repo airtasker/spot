@@ -48,12 +48,8 @@ Object {
     "deleteUser": Object {
       "description": "",
       "genericErrorType": Object {
-        "kind": "object",
-        "properties": Object {
-          "message": Object {
-            "kind": "string",
-          },
-        },
+        "kind": "type-reference",
+        "typeName": "BaseError",
       },
       "headers": Object {
         "authToken": Object {
@@ -95,15 +91,8 @@ Object {
         "forbidden": Object {
           "statusCode": 403,
           "type": Object {
-            "kind": "object",
-            "properties": Object {
-              "message": Object {
-                "kind": "string",
-              },
-              "signedInAs": Object {
-                "kind": "string",
-              },
-            },
+            "kind": "type-reference",
+            "typeName": "ForbiddenError",
           },
         },
       },
@@ -149,6 +138,7 @@ Object {
       },
       "responseType": Object {
         "elements": Object {
+          "extends": Array [],
           "kind": "object",
           "properties": Object {
             "age": Object {
@@ -196,6 +186,7 @@ Object {
         "kind": "void",
       },
       "responseType": Object {
+        "extends": Array [],
         "kind": "object",
         "properties": Object {
           "age": Object {
@@ -216,7 +207,17 @@ Object {
     },
   },
   "types": Object {
+    "BaseError": Object {
+      "extends": Array [],
+      "kind": "object",
+      "properties": Object {
+        "message": Object {
+          "kind": "string",
+        },
+      },
+    },
     "CreateUserRequest": Object {
+      "extends": Array [],
       "kind": "object",
       "properties": Object {
         "name": Object {
@@ -238,6 +239,7 @@ Object {
       },
     },
     "CreateUserResponse": Object {
+      "extends": Array [],
       "kind": "object",
       "properties": Object {
         "created_at": Object {
@@ -245,6 +247,20 @@ Object {
         },
         "success": Object {
           "kind": "boolean",
+        },
+      },
+    },
+    "ForbiddenError": Object {
+      "extends": Array [
+        Object {
+          "kind": "type-reference",
+          "typeName": "BaseError",
+        },
+      ],
+      "kind": "object",
+      "properties": Object {
+        "signedInAs": Object {
+          "kind": "string",
         },
       },
     },
@@ -300,12 +316,8 @@ Object {
     "deleteUser": Object {
       "description": "",
       "genericErrorType": Object {
-        "kind": "object",
-        "properties": Object {
-          "message": Object {
-            "kind": "string",
-          },
-        },
+        "kind": "type-reference",
+        "typeName": "BaseError",
       },
       "headers": Object {
         "authToken": Object {
@@ -347,15 +359,8 @@ Object {
         "forbidden": Object {
           "statusCode": 403,
           "type": Object {
-            "kind": "object",
-            "properties": Object {
-              "message": Object {
-                "kind": "string",
-              },
-              "signedInAs": Object {
-                "kind": "string",
-              },
-            },
+            "kind": "type-reference",
+            "typeName": "ForbiddenError",
           },
         },
       },
@@ -401,6 +406,7 @@ Object {
       },
       "responseType": Object {
         "elements": Object {
+          "extends": Array [],
           "kind": "object",
           "properties": Object {
             "age": Object {
@@ -448,6 +454,7 @@ Object {
         "kind": "void",
       },
       "responseType": Object {
+        "extends": Array [],
         "kind": "object",
         "properties": Object {
           "age": Object {
@@ -468,7 +475,17 @@ Object {
     },
   },
   "types": Object {
+    "BaseError": Object {
+      "extends": Array [],
+      "kind": "object",
+      "properties": Object {
+        "message": Object {
+          "kind": "string",
+        },
+      },
+    },
     "CreateUserRequest": Object {
+      "extends": Array [],
       "kind": "object",
       "properties": Object {
         "name": Object {
@@ -490,6 +507,7 @@ Object {
       },
     },
     "CreateUserResponse": Object {
+      "extends": Array [],
       "kind": "object",
       "properties": Object {
         "created_at": Object {
@@ -497,6 +515,20 @@ Object {
         },
         "success": Object {
           "kind": "boolean",
+        },
+      },
+    },
+    "ForbiddenError": Object {
+      "extends": Array [
+        Object {
+          "kind": "type-reference",
+          "typeName": "BaseError",
+        },
+      ],
+      "kind": "object",
+      "properties": Object {
+        "signedInAs": Object {
+          "kind": "string",
         },
       },
     },

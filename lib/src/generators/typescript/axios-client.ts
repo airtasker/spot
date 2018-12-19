@@ -178,7 +178,7 @@ function generateEndpointMethod(
               /*dotDotDotToken*/ undefined,
               REQUEST_PARAMETER,
               /*questionToken*/ undefined,
-              typeNode(endpoint.requestType)
+              typeNode(api.types, endpoint.requestType)
             )
           ]
         : []),
@@ -192,7 +192,7 @@ function generateEndpointMethod(
                   /*dotDotDotToken*/ undefined,
                   pathComponent.name,
                   /*questionToken*/ undefined,
-                  typeNode(pathComponent.type)
+                  typeNode(api.types, pathComponent.type)
                 )
               : null
         )
@@ -204,7 +204,7 @@ function generateEndpointMethod(
           /*dotDotDotToken*/ undefined,
           headerName,
           /*questionToken*/ undefined,
-          typeNode(header.type)
+          typeNode(api.types, header.type)
         )
       ),
       ...endpoint.queryParams.map(queryParam =>
@@ -214,11 +214,11 @@ function generateEndpointMethod(
           /*dotDotDotToken*/ undefined,
           queryParam.name,
           /*questionToken*/ undefined,
-          typeNode(queryParam.type)
+          typeNode(api.types, queryParam.type)
         )
       )
     ],
-    promiseTypeNode(unionType(...generateReturnTypes(endpoint))),
+    promiseTypeNode(api.types, unionType(...generateReturnTypes(endpoint))),
     generateEndpointBody(endpointName, endpoint, includeRequest)
   );
 }

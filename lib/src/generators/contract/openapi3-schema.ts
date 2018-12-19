@@ -1,13 +1,14 @@
-import assertNever from "../../assert-never";
-import { Type } from "../../models";
-import compact = require("lodash/compact");
 import { HttpContentType } from "@airtasker/spot";
+import assertNever from "../../assert-never";
+import { normalizedObjectType, Type, Types } from "../../models";
+import compact = require("lodash/compact");
 
 export function rejectVoidOpenApi3SchemaType(
+  types: Types,
   type: Type,
   errorMessage: string
 ): OpenAPI3SchemaType {
-  const schemaType = openApi3TypeSchema(type);
+  const schemaType = openApi3TypeSchema(types, type);
   if (!schemaType) {
     throw new Error(errorMessage);
   }
@@ -15,6 +16,7 @@ export function rejectVoidOpenApi3SchemaType(
 }
 
 export function openApiV3ContentTypeSchema(
+  types: Types,
   contentType: HttpContentType,
   type: Type
 ): OpenAPI3SchemaContentType {
@@ -23,7 +25,7 @@ export function openApiV3ContentTypeSchema(
       return {
         content: {
           "application/json": {
-            schema: openApi3TypeSchema(type)
+            schema: openApi3TypeSchema(types, type)
           }
         }
       };
@@ -48,7 +50,10 @@ function isStringConstantUnion(types: Type[]): boolean {
   }, true);
 }
 
-export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
+export function openApi3TypeSchema(
+  types: Types,
+  type: Type
+): OpenAPI3SchemaType | null {
   switch (type.kind) {
     case "void":
       return null;
@@ -114,14 +119,14 @@ export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
         format: "double"
       };
     case "object":
-      return Object.entries(type.properties).reduce(
+      return Object.entries(normalizedObjectType(types, type)).reduce(
         (acc, [name, type]) => {
           if (type.kind === "optional") {
             type = type.optional;
           } else {
             acc.required.push(name);
           }
-          const schemaType = openApi3TypeSchema(type);
+          const schemaType = openApi3TypeSchema(types, type);
           if (schemaType) {
             acc.properties[name] = schemaType;
           }
@@ -134,7 +139,7 @@ export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
         } as OpenAPI3SchemaTypeObject & { required: string[] }
       );
     case "array":
-      const itemsType = openApi3TypeSchema(type.elements);
+      const itemsType = openApi3TypeSchema(types, type.elements);
       if (!itemsType) {
         throw new Error(`Unsupported void array`);
       }
@@ -145,9 +150,9 @@ export function openApi3TypeSchema(type: Type): OpenAPI3SchemaType | null {
     case "optional":
       throw new Error(`Unsupported top-level optional type`);
     case "union":
-      const types = type.types.map(t => openApi3TypeSchema(t));
-      const withoutNullTypes = compact(types);
-      if (withoutNullTypes.length !== types.length) {
+      const unionTypes = type.types.map(t => openApi3TypeSchema(types, t));
+      const withoutNullTypes = compact(unionTypes);
+      if (withoutNullTypes.length !== unionTypes.length) {
         throw new Error(`Unsupported void type in union`);
       }
       if (isStringConstantUnion(type.types)) {

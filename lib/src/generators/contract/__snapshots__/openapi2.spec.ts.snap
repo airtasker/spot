@@ -88,33 +88,13 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
           },
           \\"403\\": {
             \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"message\\": {
-                  \\"type\\": \\"string\\"
-                },
-                \\"signedInAs\\": {
-                  \\"type\\": \\"string\\"
-                }
-              },
-              \\"required\\": [
-                \\"message\\",
-                \\"signedInAs\\"
-              ]
+              \\"$ref\\": \\"#/definitions/ForbiddenError\\"
             },
             \\"description\\": \\"\\"
           },
           \\"default\\": {
             \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"message\\": {
-                  \\"type\\": \\"string\\"
-                }
-              },
-              \\"required\\": [
-                \\"message\\"
-              ]
+              \\"$ref\\": \\"#/definitions/BaseError\\"
             },
             \\"description\\": \\"\\"
           }
@@ -253,6 +233,32 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
         \\"success\\",
         \\"created_at\\"
       ]
+    },
+    \\"BaseError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\"
+      ]
+    },
+    \\"ForbiddenError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"signedInAs\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\",
+        \\"signedInAs\\"
+      ]
     }
   }
 }"
@@ -319,24 +325,11 @@ paths:
           description: ''
         '403':
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-              signedInAs:
-                type: string
-            required:
-              - message
-              - signedInAs
+            $ref: '#/definitions/ForbiddenError'
           description: ''
         default:
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-            required:
-              - message
+            $ref: '#/definitions/BaseError'
           description: ''
   /users:
     get:
@@ -428,6 +421,23 @@ definitions:
     required:
       - success
       - created_at
+  BaseError:
+    type: object
+    properties:
+      message:
+        type: string
+    required:
+      - message
+  ForbiddenError:
+    type: object
+    properties:
+      message:
+        type: string
+      signedInAs:
+        type: string
+    required:
+      - message
+      - signedInAs
 "
 `;
 
@@ -615,33 +625,13 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
           },
           \\"403\\": {
             \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"message\\": {
-                  \\"type\\": \\"string\\"
-                },
-                \\"signedInAs\\": {
-                  \\"type\\": \\"string\\"
-                }
-              },
-              \\"required\\": [
-                \\"message\\",
-                \\"signedInAs\\"
-              ]
+              \\"$ref\\": \\"#/definitions/ForbiddenError\\"
             },
             \\"description\\": \\"\\"
           },
           \\"default\\": {
             \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"message\\": {
-                  \\"type\\": \\"string\\"
-                }
-              },
-              \\"required\\": [
-                \\"message\\"
-              ]
+              \\"$ref\\": \\"#/definitions/BaseError\\"
             },
             \\"description\\": \\"\\"
           }
@@ -683,6 +673,32 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
       \\"required\\": [
         \\"success\\",
         \\"created_at\\"
+      ]
+    },
+    \\"BaseError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\"
+      ]
+    },
+    \\"ForbiddenError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"signedInAs\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\",
+        \\"signedInAs\\"
       ]
     }
   }
@@ -815,24 +831,11 @@ paths:
           description: ''
         '403':
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-              signedInAs:
-                type: string
-            required:
-              - message
-              - signedInAs
+            $ref: '#/definitions/ForbiddenError'
           description: ''
         default:
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-            required:
-              - message
+            $ref: '#/definitions/BaseError'
           description: ''
 definitions:
   CreateUserRequest:
@@ -859,5 +862,22 @@ definitions:
     required:
       - success
       - created_at
+  BaseError:
+    type: object
+    properties:
+      message:
+        type: string
+    required:
+      - message
+  ForbiddenError:
+    type: object
+    properties:
+      message:
+        type: string
+      signedInAs:
+        type: string
+    required:
+      - message
+      - signedInAs
 "
 `;

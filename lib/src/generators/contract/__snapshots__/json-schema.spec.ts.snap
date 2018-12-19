@@ -42,6 +42,32 @@ exports[`JSON Schema generator produces valid code multi-file: json 1`] = `
         \\"success\\",
         \\"created_at\\"
       ]
+    },
+    \\"BaseError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\"
+      ]
+    },
+    \\"ForbiddenError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"signedInAs\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\",
+        \\"signedInAs\\"
+      ]
     }
   }
 }"
@@ -74,6 +100,23 @@ definitions:
     required:
       - success
       - created_at
+  BaseError:
+    type: object
+    properties:
+      message:
+        type: string
+    required:
+      - message
+  ForbiddenError:
+    type: object
+    properties:
+      message:
+        type: string
+      signedInAs:
+        type: string
+    required:
+      - message
+      - signedInAs
 "
 `;
 
@@ -119,6 +162,32 @@ exports[`JSON Schema generator produces valid code single-file: json 1`] = `
         \\"success\\",
         \\"created_at\\"
       ]
+    },
+    \\"BaseError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\"
+      ]
+    },
+    \\"ForbiddenError\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"message\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"signedInAs\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"message\\",
+        \\"signedInAs\\"
+      ]
     }
   }
 }"
@@ -151,5 +220,22 @@ definitions:
     required:
       - success
       - created_at
+  BaseError:
+    type: object
+    properties:
+      message:
+        type: string
+    required:
+      - message
+  ForbiddenError:
+    type: object
+    properties:
+      message:
+        type: string
+      signedInAs:
+        type: string
+    required:
+      - message
+      - signedInAs
 "
 `;

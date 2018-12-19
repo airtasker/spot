@@ -382,6 +382,48 @@ export function validateExample(value: any): value is Example {
     return !(value === null) && typeof value === \\"object\\" && typeof value[\\"field1\\"] === \\"number\\" && typeof value[\\"field2\\"] === \\"string\\" && typeof value[\\"field3\\"] === \\"boolean\\";
 }"
 `);
+      expect(
+        generateValidatorsSource({
+          endpoints: {},
+          types: {
+            Example: objectType(
+              {
+                field4: STRING
+              },
+              ["extended1"]
+            ),
+            extended1: objectType(
+              {
+                field2: optionalType(BOOLEAN),
+                field3: NUMBER
+              },
+              ["extended2"]
+            ),
+            extended2: objectType({
+              field1: NUMBER,
+              field2: STRING
+            })
+          },
+          description: {
+            name: "name",
+            description: "description"
+          }
+        })
+      ).toMatchInlineSnapshot(`
+"import { Example, extended1, extended2 } from \\"./types\\";
+
+export function validateExample(value: any): value is Example {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"field1\\"] === \\"number\\" && (value[\\"field2\\"] === undefined || typeof value[\\"field2\\"] === \\"boolean\\") && typeof value[\\"field3\\"] === \\"number\\" && typeof value[\\"field4\\"] === \\"string\\";
+}
+
+export function validateExtended1(value: any): value is extended1 {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"field1\\"] === \\"number\\" && (value[\\"field2\\"] === undefined || typeof value[\\"field2\\"] === \\"boolean\\") && typeof value[\\"field3\\"] === \\"number\\";
+}
+
+export function validateExtended2(value: any): value is extended2 {
+    return !(value === null) && typeof value === \\"object\\" && typeof value[\\"field1\\"] === \\"number\\" && typeof value[\\"field2\\"] === \\"string\\";
+}"
+`);
     });
 
     test("array", () => {

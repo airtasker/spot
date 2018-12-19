@@ -103,19 +103,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
             \\"content\\": {
               \\"application/json\\": {
                 \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"message\\": {
-                      \\"type\\": \\"string\\"
-                    },
-                    \\"signedInAs\\": {
-                      \\"type\\": \\"string\\"
-                    }
-                  },
-                  \\"required\\": [
-                    \\"message\\",
-                    \\"signedInAs\\"
-                  ]
+                  \\"$ref\\": \\"#/components/schemas/ForbiddenError\\"
                 }
               }
             },
@@ -125,15 +113,7 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
             \\"content\\": {
               \\"application/json\\": {
                 \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"message\\": {
-                      \\"type\\": \\"string\\"
-                    }
-                  },
-                  \\"required\\": [
-                    \\"message\\"
-                  ]
+                  \\"$ref\\": \\"#/components/schemas/BaseError\\"
                 }
               }
             },
@@ -287,6 +267,32 @@ exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
           \\"success\\",
           \\"created_at\\"
         ]
+      },
+      \\"BaseError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\"
+        ]
+      },
+      \\"ForbiddenError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"signedInAs\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\",
+          \\"signedInAs\\"
+        ]
       }
     }
   }
@@ -361,26 +367,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  signedInAs:
-                    type: string
-                required:
-                  - message
-                  - signedInAs
+                $ref: '#/components/schemas/ForbiddenError'
           description: ''
         default:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
+                $ref: '#/components/schemas/BaseError'
           description: ''
   /users:
     get:
@@ -478,6 +471,23 @@ components:
       required:
         - success
         - created_at
+    BaseError:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    ForbiddenError:
+      type: object
+      properties:
+        message:
+          type: string
+        signedInAs:
+          type: string
+      required:
+        - message
+        - signedInAs
 "
 `;
 
@@ -692,19 +702,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
             \\"content\\": {
               \\"application/json\\": {
                 \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"message\\": {
-                      \\"type\\": \\"string\\"
-                    },
-                    \\"signedInAs\\": {
-                      \\"type\\": \\"string\\"
-                    }
-                  },
-                  \\"required\\": [
-                    \\"message\\",
-                    \\"signedInAs\\"
-                  ]
+                  \\"$ref\\": \\"#/components/schemas/ForbiddenError\\"
                 }
               }
             },
@@ -714,15 +712,7 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
             \\"content\\": {
               \\"application/json\\": {
                 \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"message\\": {
-                      \\"type\\": \\"string\\"
-                    }
-                  },
-                  \\"required\\": [
-                    \\"message\\"
-                  ]
+                  \\"$ref\\": \\"#/components/schemas/BaseError\\"
                 }
               }
             },
@@ -767,6 +757,32 @@ exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
         \\"required\\": [
           \\"success\\",
           \\"created_at\\"
+        ]
+      },
+      \\"BaseError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\"
+        ]
+      },
+      \\"ForbiddenError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"signedInAs\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\",
+          \\"signedInAs\\"
         ]
       }
     }
@@ -912,26 +928,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  signedInAs:
-                    type: string
-                required:
-                  - message
-                  - signedInAs
+                $ref: '#/components/schemas/ForbiddenError'
           description: ''
         default:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
+                $ref: '#/components/schemas/BaseError'
           description: ''
 components:
   schemas:
@@ -959,5 +962,22 @@ components:
       required:
         - success
         - created_at
+    BaseError:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    ForbiddenError:
+      type: object
+      properties:
+        message:
+          type: string
+        signedInAs:
+          type: string
+      required:
+        - message
+        - signedInAs
 "
 `;
