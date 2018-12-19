@@ -140,7 +140,7 @@ exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
           },
           {
             \\"in\\": \\"query\\",
-            \\"name\\": \\"search_term\\",
+            \\"name\\": \\"search-term\\",
             \\"description\\": \\"\\",
             \\"type\\": \\"string\\",
             \\"required\\": false
@@ -353,7 +353,7 @@ paths:
           format: int32
           required: true
         - in: query
-          name: search_term
+          name: search-term
           description: ''
           type: string
           required: false
@@ -507,7 +507,7 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
           },
           {
             \\"in\\": \\"query\\",
-            \\"name\\": \\"search_term\\",
+            \\"name\\": \\"search-term\\",
             \\"description\\": \\"\\",
             \\"type\\": \\"string\\",
             \\"required\\": false
@@ -741,7 +741,7 @@ paths:
           format: int32
           required: true
         - in: query
-          name: search_term
+          name: search-term
           description: ''
           type: string
           required: false

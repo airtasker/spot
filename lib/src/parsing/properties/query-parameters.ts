@@ -85,14 +85,27 @@ function processQueryParameter(
         )}`
       );
     }
-    const descriptionProperty = queryParamDescription.properties["description"];
-    if (!descriptionProperty || !isStringLiteral(descriptionProperty)) {
-      throw panic(
-        `@queryParam() expects a string description, got this instead: ${methodDeclaration.getText(
-          sourceFile
-        )}`
-      );
+    const nameProperty = queryParamDescription.properties["name"];
+    if (nameProperty) {
+      if (!isStringLiteral(nameProperty)) {
+        throw panic(
+          `@queryParam() expects a string name, got this instead: ${methodDeclaration.getText(
+            sourceFile
+          )}`
+        );
+      }
+      queryParamComponents[name].queryName = nameProperty.text;
     }
-    queryParamComponents[name].description = descriptionProperty.text;
+    const descriptionProperty = queryParamDescription.properties["description"];
+    if (descriptionProperty) {
+      if (!isStringLiteral(descriptionProperty)) {
+        throw panic(
+          `@queryParam() expects a string description, got this instead: ${methodDeclaration.getText(
+            sourceFile
+          )}`
+        );
+      }
+      queryParamComponents[name].description = descriptionProperty.text;
+    }
   }
 }

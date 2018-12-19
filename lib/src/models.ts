@@ -66,6 +66,7 @@ export interface Header {
 
 export interface QueryParamComponent {
   name: string;
+  queryName?: string;
   description: string;
   type: Type;
 }

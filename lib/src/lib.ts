@@ -106,7 +106,8 @@ export function queryParam(description?: QueryParamDescription) {
 }
 
 export interface QueryParamDescription {
-  description: string;
+  name?: string;
+  description?: string;
 }
 
 export function header(description: HeaderDescription) {

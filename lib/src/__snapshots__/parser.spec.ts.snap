@@ -135,6 +135,7 @@ Object {
         Object {
           "description": "",
           "name": "search_term",
+          "queryName": "search-term",
           "type": Object {
             "kind": "optional",
             "optional": Object {
@@ -387,6 +388,7 @@ Object {
         Object {
           "description": "",
           "name": "search_term",
+          "queryName": "search-term",
           "type": Object {
             "kind": "optional",
             "optional": Object {
