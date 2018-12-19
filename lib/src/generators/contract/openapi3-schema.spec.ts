@@ -253,6 +253,52 @@ Object {
   "type": "object",
 }
 `);
+      expect(
+        openApi3TypeSchema(
+          {
+            extended1: objectType(
+              {
+                field2: optionalType(BOOLEAN),
+                field3: NUMBER
+              },
+              ["extended2"]
+            ),
+            extended2: objectType({
+              field1: NUMBER,
+              field2: STRING
+            })
+          },
+          objectType(
+            {
+              field4: STRING
+            },
+            ["extended1"]
+          )
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "properties": Object {
+    "field1": Object {
+      "type": "number",
+    },
+    "field2": Object {
+      "type": "boolean",
+    },
+    "field3": Object {
+      "type": "number",
+    },
+    "field4": Object {
+      "type": "string",
+    },
+  },
+  "required": Array [
+    "field1",
+    "field3",
+    "field4",
+  ],
+  "type": "object",
+}
+`);
     });
 
     test("array", () => {
