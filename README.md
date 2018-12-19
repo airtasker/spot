@@ -285,7 +285,7 @@ Define query parameters. `@queryParam` can be used multiple times to define mult
     path: "/users",
     description: "Retrieve all users"
   })
-  getUsers(@queryParam({ description: "Search term" }) search_term: Optional<string>): UserResponse[] {
+  getUsers(@queryParam({ name: "search-term", description: "Search term" }) search_term: Optional<string>): UserResponse[] {
     return response();
   }
   //...
@@ -295,6 +295,7 @@ Define query parameters. `@queryParam` can be used multiple times to define mult
 
 | Field         | Description                        |
 | ------------- | ---------------------------------- |
+| `name`        | Name of the query parameter        |
 | `description` | Description of the query parameter |
 
 ### `@specificError<T>`
