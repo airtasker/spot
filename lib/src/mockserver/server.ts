@@ -4,6 +4,9 @@ import { Api } from "../models";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
 
+/**
+ * Runs a mock server that returns dummy data that conforms to an API definition.
+ */
 export function runMockServer(
   api: Api,
   {
