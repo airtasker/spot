@@ -30,7 +30,6 @@ export default class Mock extends Command {
       required: true
     }),
     pathPrefix: flags.string({
-      char: "p",
       description: "Prefix to prepend to each endpoint path",
       default: "",
       required: true
