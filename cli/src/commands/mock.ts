@@ -30,9 +30,7 @@ export default class Mock extends Command {
       required: true
     }),
     pathPrefix: flags.string({
-      description: "Prefix to prepend to each endpoint path",
-      default: "",
-      required: true
+      description: "Prefix to prepend to each endpoint path"
     })
   };
 
@@ -45,7 +43,7 @@ export default class Mock extends Command {
       const api = await parsePath(args[ARG_API]);
       await runMockServer(api, {
         port,
-        pathPrefix,
+        pathPrefix: pathPrefix || "",
         logger: this
       });
       this.log(`Mock server is running on port ${port}.`);
