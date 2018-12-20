@@ -37,14 +37,18 @@ export default class Mock extends Command {
   };
 
   async run() {
-    const { args, flags } = this.parse(Mock);
+    const {
+      args,
+      flags: { port, pathPrefix }
+    } = this.parse(Mock);
     try {
       const api = await parsePath(args[ARG_API]);
       await runMockServer(api, {
-        ...flags,
+        port,
+        pathPrefix,
         logger: this
       });
-      this.log(`Mock server is running on port ${flags.port}.`);
+      this.log(`Mock server is running on port ${port}.`);
     } catch (e) {
       this.error(e, { exit: 1 });
     }
