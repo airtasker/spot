@@ -28,6 +28,12 @@ export default class Mock extends Command {
       description: "Port on which to run the mock server",
       default: 3010,
       required: true
+    }),
+    pathPrefix: flags.string({
+      char: "p",
+      description: "Prefix to prepend to each endpoint path",
+      default: "",
+      required: true
     })
   };
 
@@ -35,7 +41,10 @@ export default class Mock extends Command {
     const { args, flags } = this.parse(Mock);
     try {
       const api = await parsePath(args[ARG_API]);
-      await runMockServer(api, flags.port, this /* logger */);
+      await runMockServer(api, {
+        ...flags,
+        logger: this
+      });
       this.log(`Mock server is running on port ${flags.port}.`);
     } catch (e) {
       this.error(e, { exit: 1 });

@@ -20,6 +20,26 @@ describe("Matcher", () => {
             method: "get",
             path: "/users"
           },
+          "",
+          {
+            ...BASE_ENDPOINT,
+            method: "GET",
+            path: [
+              {
+                kind: "static",
+                content: "/users"
+              }
+            ]
+          }
+        )
+      ).toBeTruthy();
+      expect(
+        isRequestForEndpoint(
+          {
+            method: "get",
+            path: "/api/v2/users"
+          },
+          "/api/v2",
           {
             ...BASE_ENDPOINT,
             method: "GET",
@@ -38,6 +58,7 @@ describe("Matcher", () => {
             method: "post",
             path: "/users/123"
           },
+          "",
           {
             ...BASE_ENDPOINT,
             method: "POST",
@@ -62,6 +83,7 @@ describe("Matcher", () => {
             method: "post",
             path: "/users/123/details"
           },
+          "",
           {
             ...BASE_ENDPOINT,
             method: "POST",
@@ -92,6 +114,47 @@ describe("Matcher", () => {
             method: "POST",
             path: "/users"
           },
+          "",
+          {
+            ...BASE_ENDPOINT,
+            method: "GET",
+            path: [
+              {
+                kind: "static",
+                content: "/users"
+              }
+            ]
+          }
+        )
+      ).toBeFalsy();
+    });
+    it("rejects wrong prefix", () => {
+      expect(
+        isRequestForEndpoint(
+          {
+            method: "POST",
+            path: "/users"
+          },
+          "/api/v2",
+          {
+            ...BASE_ENDPOINT,
+            method: "GET",
+            path: [
+              {
+                kind: "static",
+                content: "/users"
+              }
+            ]
+          }
+        )
+      ).toBeFalsy();
+      expect(
+        isRequestForEndpoint(
+          {
+            method: "POST",
+            path: "/api/v3/users"
+          },
+          "/api/v2",
           {
             ...BASE_ENDPOINT,
             method: "GET",
@@ -112,6 +175,7 @@ describe("Matcher", () => {
             method: "GET",
             path: "/users/abc"
           },
+          "",
           {
             ...BASE_ENDPOINT,
             method: "GET",
@@ -130,6 +194,7 @@ describe("Matcher", () => {
             method: "GET",
             path: "/users"
           },
+          "",
           {
             ...BASE_ENDPOINT,
             method: "GET",

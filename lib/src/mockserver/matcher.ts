@@ -9,12 +9,16 @@ export function isRequestForEndpoint(
     method: string;
     path: string;
   },
+  pathPrefix: string,
   endpoint: Endpoint
 ): boolean {
+  if (req.path.substr(0, pathPrefix.length) !== pathPrefix) {
+    return false;
+  }
   if (req.method.toUpperCase() !== endpoint.method) {
     return false;
   }
-  let currentPathPosition = 0;
+  let currentPathPosition = pathPrefix.length;
   for (let i = 0; i < endpoint.path.length; i++) {
     const pathComponent = endpoint.path[i];
     switch (pathComponent.kind) {

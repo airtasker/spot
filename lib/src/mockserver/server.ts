@@ -4,12 +4,23 @@ import { Api } from "../models";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
 
-export function runMockServer(api: Api, port: number, logger: Logger) {
+export function runMockServer(
+  api: Api,
+  {
+    port,
+    pathPrefix,
+    logger
+  }: {
+    port: number;
+    pathPrefix: string;
+    logger: Logger;
+  }
+) {
   const app = express();
   app.use(cors());
   app.use((req, resp) => {
     for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
-      if (isRequestForEndpoint(req, endpoint)) {
+      if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
         logger.log(`Request hit for ${endpointName} registered.`);
         resp.status(endpoint.successStatusCode || 200);
         resp.send(
