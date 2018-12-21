@@ -49,7 +49,10 @@ export function generateData(types: Types, type: Type): any {
     case "optional":
       return randomBoolean() ? generateData(types, type.optional) : undefined;
     case "union":
-      return generateData(types, type.types[randomInteger(type.types.length)]);
+      return generateData(
+        types,
+        type.types[randomInteger(type.types.length - 1)]
+      );
     case "type-reference":
       return generateData(types, types[type.typeName]);
     default:
