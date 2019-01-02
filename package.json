@@ -14,6 +14,7 @@
     "inquirer": "^6.2.0",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
+    "ts-simple-ast": "^20.0.0",
     "tslib": "^1",
     "typescript": "^3.1.3"
   },
