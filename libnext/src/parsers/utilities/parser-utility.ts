@@ -3,9 +3,23 @@ import {
   ObjectLiteralExpression,
   JSDocableNode,
   Decorator,
-  TypeGuards
+  TypeGuards,
+  Symbol
 } from "ts-simple-ast";
-import { HttpMethod } from "../../../lib/src/lib";
+import { HttpMethod } from "../../models/http";
+
+/**
+ * Extract the property signature of an AST Symbol.
+ *
+ * @param property the property
+ */
+export function extractPropertySignature(property: Symbol) {
+  const valueDeclaration = property.getValueDeclarationOrThrow();
+  if (!TypeGuards.isPropertySignature(valueDeclaration)) {
+    throw new Error("expected property signature");
+  }
+  return valueDeclaration;
+}
 
 /**
  * Extracts the JS Doc comment from a node.

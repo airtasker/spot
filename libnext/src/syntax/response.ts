@@ -16,7 +16,7 @@ class CreateUserEndpoint {
 }
 ```
  */
-function response(config: ResponseConfig) {
+export function response(config: ResponseConfig) {
   return (
     target: any,
     propertyKey: string | symbol,

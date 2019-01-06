@@ -21,7 +21,7 @@ class GetUserEndpoint {
 }
 ```
  */
-declare function pathParams(
+export declare function pathParams(
   target: any,
   propertyKey: string,
   parameterIndex: number

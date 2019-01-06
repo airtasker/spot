@@ -1,4 +1,5 @@
-import { HttpMethod } from "./types";
+import { HttpMethod } from "./http";
+import { DataType } from "./types";
 
 export interface ApiDefinition {
   name: string;
@@ -9,8 +10,8 @@ export interface EndpointDefinition {
   description?: string;
   method: HttpMethod;
   path: string;
-  // request: RequestDefinition;
-  // responses: ResponseDefinition;
+  // request?: RequestDefinition;
+  // responses: ResponseDefinition[] // at least one;
 }
 
 export interface RequestDefinition {
@@ -29,14 +30,21 @@ export interface ResponseDefinition {
 
 export interface HeaderDefinition {
   description?: string;
+  type: DataType;
+  optional: boolean;
 }
 
 export interface PathParamDefinition {
   description?: string;
+  name: string;
+  type: DataType;
 }
 
 export interface QueryParamDefinition {
   description?: string;
+  name: string;
+  type: DataType;
+  optional: boolean;
 }
 
 export interface BodyDefinition {

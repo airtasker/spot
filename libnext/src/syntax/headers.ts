@@ -33,7 +33,7 @@ class CreateUserEndpoint {
 }
 ```
  */
-declare function headers(
+export declare function headers(
   target: any,
   propertyKey: string,
   parameterIndex: number

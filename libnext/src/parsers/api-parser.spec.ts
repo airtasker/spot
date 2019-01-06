@@ -5,12 +5,12 @@ describe("@api parser", () => {
   const apiClassName = "MyApi";
   const apiName = "My API";
 
-  test("parses all information correctly", () => {
+  test("parses all information", () => {
     const apiDescription = "Some description";
     const content = `
       /** ${apiDescription} */
       @api({ name: "${apiName}" })
-      export class ${apiClassName} {}
+      class ${apiClassName} {}
     `;
     const sourceFile = constructSourceFile(content);
     const klass = sourceFile.getClassOrThrow(apiClassName);
@@ -21,10 +21,10 @@ describe("@api parser", () => {
     });
   });
 
-  test("parses correctly with no description", () => {
+  test("parses with no description", () => {
     const content = `
       @api({ name: "${apiName}" })
-      export class ${apiClassName} {}
+      class ${apiClassName} {}
     `;
     const sourceFile = constructSourceFile(content);
     const klass = sourceFile.getClassOrThrow(apiClassName);
@@ -38,5 +38,5 @@ describe("@api parser", () => {
 
 function constructSourceFile(content: string): SourceFile {
   const project = new Project();
-  return project.createSourceFile("spot_contract.ts", content);
+  return project.createSourceFile("spot_contract_partial.ts", content);
 }

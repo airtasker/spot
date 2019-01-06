@@ -15,7 +15,7 @@ class CreateUserEndpoint {
 }
 ```
  */
-declare function request(
+export declare function request(
   target: any,
   propertyKey: string | symbol,
   descriptor: PropertyDescriptor

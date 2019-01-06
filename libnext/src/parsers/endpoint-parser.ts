@@ -4,12 +4,12 @@ import {
   extractDecoratorFactoryConfiguration,
   extractStringProperty,
   isHttpMethod
-} from "./parser-utility";
+} from "./utilities/parser-utility";
 import { EndpointDefinition } from "../models/definitions";
-import { HttpMethod } from "../models/types";
+import { HttpMethod } from "../models/http";
 
 /**
- * Parse an Endpoint definition object.
+ * Parse an `@endpoint` decorated class.
  *
  * @param klass a class declaration
  */

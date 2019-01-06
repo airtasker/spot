@@ -3,11 +3,11 @@ import {
   extractJsDocComment,
   extractStringProperty,
   extractDecoratorFactoryConfiguration
-} from "./parser-utility";
+} from "./utilities/parser-utility";
 import { ApiDefinition } from "../models/definitions";
 
 /**
- * Parse an API definition object.
+ * Parse an `@api` decorated class.
  *
  * @param klass a class declaration
  */

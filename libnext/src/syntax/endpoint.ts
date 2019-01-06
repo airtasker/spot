@@ -14,7 +14,7 @@ class CreateUserEndpoint {
 }
 ```
  */
-function endpoint(config: EndpointConfig) {
+export function endpoint(config: EndpointConfig) {
   return (target: any) => {};
 }
 interface EndpointConfig {

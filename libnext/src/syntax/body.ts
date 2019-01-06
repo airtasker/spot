@@ -35,7 +35,7 @@ interface UserBody {
 }
 ```
  */
-declare function body(
+export declare function body(
   target: any,
   propertyKey: string,
   parameterIndex: number

@@ -20,7 +20,7 @@ class GetUsersEndpoint {
 }
 ```
  */
-declare function queryParams(
+export declare function queryParams(
   target: any,
   propertyKey: string,
   parameterIndex: number
