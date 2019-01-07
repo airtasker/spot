@@ -4,9 +4,13 @@ import {
   JSDocableNode,
   Decorator,
   TypeGuards,
-  Symbol
+  Symbol,
+  ParameterDeclaration,
+  PropertySignature,
+  QuestionTokenableNode
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
+import { DataType, Kind } from "libnext/src/models/types";
 
 /**
  * Extract the property signature of an AST Symbol.
@@ -89,6 +93,52 @@ export function extractDecoratorFactoryConfiguration(
   } else {
     throw new Error(
       `expected 1 argument, got ${decorator.getArguments().length}`
+    );
+  }
+}
+
+/**
+ * Extract the properties properties from a from a parameter declaration.
+ *
+ * @param parameter a parameter declaration
+ */
+export function extractObjectParameterProperties(
+  parameter: ParameterDeclaration
+): PropertySignature[] {
+  // Request parameters are expected to be object types
+  const type = parameter.getType();
+  if (type.isObject() && !type.isArray() && !type.isInterface()) {
+    return type
+      .getProperties()
+      .map(property => extractPropertySignature(property));
+  } else {
+    throw new Error("expected literal object parameter");
+  }
+}
+
+/**
+ * Ensure an AST optionable node is not optional.
+ *
+ * @param node an AST node
+ */
+export function ensureNodeNotOptional(node: QuestionTokenableNode) {
+  if (node.hasQuestionToken()) {
+    throw new Error("parameter cannot be optional");
+  }
+}
+
+/**
+ * Ensure a data type is of a particular kind.
+ *
+ * @param dataType internal data type
+ * @param allowedTypes allowed kinds of data
+ */
+export function ensureDataTypeIsKind(dataType: DataType, allowedKinds: Kind[]) {
+  if (!allowedKinds.includes(dataType.kind)) {
+    throw new Error(
+      `expected data type to be of kind ${allowedKinds.join(" | ")}, but got ${
+        dataType.kind
+      }`
     );
   }
 }

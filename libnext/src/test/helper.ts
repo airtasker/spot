@@ -26,10 +26,18 @@ export function createSourceFile(
   return mainSource;
 }
 
+interface FileDetail {
+  /** File path */
+  path: string;
+  /** File content */
+  content: string;
+}
+
 /**
  * Create an AST project with the `@airtasker/spot` depedency loaded.
  */
 export function createProject() {
+  // TODO: use this rather than tsConfig
   // const project = new Project({
   //   compilerOptions: {
   //     target: ts.ScriptTarget.ESNext,
@@ -62,11 +70,4 @@ export function validateProject(project: Project) {
       diagnostics.map(diagnostic => diagnostic.getMessageText()).join("\n")
     );
   }
-}
-
-interface FileDetail {
-  /** File path */
-  path: string;
-  /** File content */
-  content: string;
 }

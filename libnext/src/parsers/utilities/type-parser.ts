@@ -108,6 +108,7 @@ function parseAstGenericInterfaceObject(type: Type): ReferenceType {
     }
     const interfaceName = interfaceDeclaration.getName();
 
+    // TODO: defer this to the parsing process
     if (!Object.keys(TypeStore).includes(interfaceName)) {
       TypeStore[interfaceName] = {
         description: extractJsDocComment(interfaceDeclaration),

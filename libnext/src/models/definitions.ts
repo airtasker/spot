@@ -1,5 +1,5 @@
 import { HttpMethod } from "./http";
-import { DataType } from "./types";
+import { DataType, ObjectType, ReferenceType } from "./types";
 
 export interface ApiDefinition {
   name: string;
@@ -30,6 +30,7 @@ export interface ResponseDefinition {
 
 export interface HeaderDefinition {
   description?: string;
+  name: string;
   type: DataType;
   optional: boolean;
 }
@@ -49,4 +50,6 @@ export interface QueryParamDefinition {
 
 export interface BodyDefinition {
   description?: string;
+  type: ObjectType | ReferenceType;
+  optional: boolean;
 }
