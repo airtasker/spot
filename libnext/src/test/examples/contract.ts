@@ -9,7 +9,7 @@ import {
   queryParams,
   body
 } from "@airtasker/spot";
-import { UserBody, ErrorBody } from "./models";
+import { UserBody, ErrorBody, Address } from "./models";
 
 /** This is the company API. It does cool things */
 @api({ name: "company-api" })
@@ -73,5 +73,12 @@ interface CreateUserRequestBody {
     lastName: string;
     /** user age */
     age: number;
+    /** user email */
+    email: Email;
+    /** user address */
+    address: Address;
   };
 }
+
+/** an email */
+type Email = string;

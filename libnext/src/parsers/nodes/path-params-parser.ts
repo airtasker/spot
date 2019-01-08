@@ -3,11 +3,10 @@ import { ParameterDeclaration } from "ts-simple-ast";
 import {
   extractJsDocComment,
   extractObjectParameterProperties,
-  ensureNodeNotOptional,
-  ensureDataTypeIsKind
+  ensureNodeNotOptional
 } from "../utilities/parser-utility";
 import { parseType } from "../utilities/type-parser";
-import { KindOfString, KindOfNumber } from "../../models/types";
+import { isStringLikeType, isNumberLikeType } from "../../models/types";
 
 /**
  * Parse an `@pathParams` decorated parameter.
@@ -22,8 +21,13 @@ export function parsePathParams(
   const properties = extractObjectParameterProperties(parameter);
   return properties.map(property => {
     ensureNodeNotOptional(property);
-    const propertyDataType = parseType(property.getType());
-    ensureDataTypeIsKind(propertyDataType, KindOfString.concat(KindOfNumber));
+    const propertyDataType = parseType(property.getTypeNodeOrThrow());
+    if (
+      !isStringLikeType(propertyDataType) &&
+      !isNumberLikeType(propertyDataType)
+    ) {
+      throw new Error("expected a string or number like type");
+    }
     return {
       name: property.getName(),
       description: extractJsDocComment(property),

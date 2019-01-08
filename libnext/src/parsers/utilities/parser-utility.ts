@@ -9,10 +9,10 @@ import {
   PropertySignature,
   QuestionTokenableNode,
   MethodDeclaration,
-  ClassDeclaration
+  ClassDeclaration,
+  TypeReferenceNode
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
-import { DataType, Kind } from "libnext/src/models/types";
 
 /**
  * Extract the property signature of an AST Symbol.
@@ -195,20 +195,21 @@ export function ensureNodeNotOptional(node: QuestionTokenableNode) {
   }
 }
 
-/**
- * Ensure a data type is of a particular kind.
- *
- * @param dataType internal data type
- * @param allowedTypes allowed kinds of data
- */
-export function ensureDataTypeIsKind(dataType: DataType, allowedKinds: Kind[]) {
-  if (!allowedKinds.includes(dataType.kind)) {
-    throw new Error(
-      `expected data type to be of kind ${allowedKinds.join(" | ")}, but got ${
-        dataType.kind
-      }`
-    );
+export function getTypeAliasDeclarationFromTypeReference(
+  typeReference: TypeReferenceNode
+) {
+  const nameSymbol = typeReference.getTypeName().getSymbolOrThrow(); // for a local reference
+  const aliasSymbol = nameSymbol.getAliasedSymbol(); // for an imported reference
+  const finalSymbol = aliasSymbol === undefined ? nameSymbol : aliasSymbol;
+  const declarations = finalSymbol.getDeclarations();
+  if (declarations.length !== 1) {
+    throw new Error("expected exactly one type alias declaration");
   }
+  const typeAliasDeclaration = declarations[0];
+  if (!TypeGuards.isTypeAliasDeclaration(typeAliasDeclaration)) {
+    throw new Error("expected a type alias declaration");
+  }
+  return typeAliasDeclaration;
 }
 
 /**

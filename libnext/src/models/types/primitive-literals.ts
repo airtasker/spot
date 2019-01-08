@@ -1,6 +1,6 @@
 import { Kind } from "./kinds";
 
-export type PrimitiveLiteral = BooleanLiteral | StringLiteral | IntegerLiteral;
+export type PrimitiveLiteral = BooleanLiteral | StringLiteral | NumberLiteral;
 
 export function booleanLiteral(value: boolean): BooleanLiteral {
   return {
@@ -26,17 +26,14 @@ export interface StringLiteral {
   value: string;
 }
 
-export function integerLiteral(value: number): IntegerLiteral {
-  if (value !== Math.round(value)) {
-    throw new Error(`Invalid integer: ${value}`);
-  }
+export function numberLiteral(value: number): NumberLiteral {
   return {
     kind: Kind.NumberLiteral,
     value
   };
 }
 
-export interface IntegerLiteral {
+export interface NumberLiteral {
   kind: Kind.NumberLiteral;
   value: number;
 }

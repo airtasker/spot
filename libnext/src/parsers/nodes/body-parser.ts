@@ -1,7 +1,7 @@
 import { ParameterDeclaration } from "ts-simple-ast";
 import { BodyDefinition } from "../../models/definitions";
 import { parseType } from "../utilities/type-parser";
-import { isObjectType, isReferenceType } from "../../models/types";
+import { isObjectType, isObjectReferenceType } from "../../models/types";
 
 /**
  * Parse an `@body` decorated parameter.
@@ -10,8 +10,8 @@ import { isObjectType, isReferenceType } from "../../models/types";
  */
 export function parseBody(parameter: ParameterDeclaration): BodyDefinition {
   parameter.getDecoratorOrThrow("body");
-  const dataType = parseType(parameter.getType());
-  if (isObjectType(dataType) || isReferenceType(dataType)) {
+  const dataType = parseType(parameter.getTypeNodeOrThrow());
+  if (isObjectType(dataType) || isObjectReferenceType(dataType)) {
     return {
       // TODO: how to extract description from parameter declaration?
       description: undefined,

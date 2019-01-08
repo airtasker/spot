@@ -1,4 +1,4 @@
-import { Type, TypeGuards } from "ts-simple-ast";
+import { Type, TypeGuards, TypeNode, UnionTypeNode } from "ts-simple-ast";
 import {
   NULL,
   BOOLEAN,
@@ -6,62 +6,90 @@ import {
   NUMBER,
   booleanLiteral,
   stringLiteral,
-  integerLiteral,
-  customString,
-  customNumber,
   unionType,
   arrayType,
   DataType,
   objectType,
   ObjectTypeProperty,
-  referenceType,
-  ReferenceType
+  ObjectType,
+  numberLiteral,
+  objectReferenceType,
+  ObjectReferenceType,
+  booleanReference,
+  stringReference,
+  numberReference
 } from "../../models/types";
 import { last } from "lodash";
 import {
   extractJsDocComment,
-  extractPropertySignature
+  extractPropertySignature,
+  getTypeAliasDeclarationFromTypeReference
 } from "./parser-utility";
-import { TypeStore } from "./types-store";
 
 /**
- * Convert an AST Type node to a local data type.
+ * Convert an AST type node to a local data type.
  *
- * @param type AST Type
+ * @param type AST type node
  */
-export function parseType(type: Type): DataType {
+export function parseType(typeNode: TypeNode): DataType {
+  const type = typeNode.getType();
+
   if (type.isNull()) {
     return NULL;
+  } else if (type.isBoolean() || type.isString() || type.isNumber()) {
+    return parseAliasablePrimitiveType(typeNode);
+  } else if (type.isLiteral()) {
+    return parseAstLiteralType(type);
+  } else if (type.isObject()) {
+    return parseAstObjectTypes(typeNode);
+  } else if (TypeGuards.isUnionTypeNode(typeNode)) {
+    return parseUnionTypes(typeNode);
+  } else {
+    throw new Error("unknown type");
+  }
+}
+
+function parseAliasablePrimitiveType(typeNode: TypeNode) {
+  const type = typeNode.getType();
+  if (TypeGuards.isTypeReferenceNode(typeNode)) {
+    const typeAliasDeclaration = getTypeAliasDeclarationFromTypeReference(
+      typeNode
+    );
+    const name = typeAliasDeclaration.getName();
+    const location = typeAliasDeclaration.getSourceFile().getFilePath();
+
+    if (type.isBoolean()) {
+      return booleanReference(name, location);
+    } else if (type.isString()) {
+      return stringReference(name, location);
+    } else if (type.isNumber()) {
+      return numberReference(name, location);
+    } else {
+      throw new Error("expected boolean, string, or number");
+    }
   } else if (type.isBoolean()) {
     return BOOLEAN;
   } else if (type.isString()) {
     return STRING;
   } else if (type.isNumber()) {
     return NUMBER;
-  } else if (type.isLiteral()) {
-    return parseAstLiteralTypes(type);
-  } else if (type.isObject()) {
-    return parseAstObjectTypes(type);
-  } else if (type.isUnion()) {
-    return parseUnionTypes(type);
   } else {
-    throw new Error("unknown type");
+    throw new Error("expected boolean, string, or number");
   }
 }
 
 /**
  * AST literal types include literal booleans, strings and numbers.
  *
- * @param type AST Type
+ * @param type AST type node
  */
-function parseAstLiteralTypes(type: Type): DataType {
+function parseAstLiteralType(type: Type): DataType {
   if (type.isBooleanLiteral()) {
     return booleanLiteral(type.getText() === "true");
   } else if (type.isStringLiteral()) {
     return stringLiteral(type.getText().substr(1, type.getText().length - 2));
   } else if (type.isNumberLiteral()) {
-    // TODO: currently support for integer only
-    return integerLiteral(parseInt(type.getText()));
+    return numberLiteral(Number(type.getText()));
   } else {
     throw new Error("expected an AST literal type");
   }
@@ -70,33 +98,30 @@ function parseAstLiteralTypes(type: Type): DataType {
 /**
  * AST object types include interfaces and arrays and object literals.
  *
- * @param type AST Type
+ * @param type AST type node
  */
-function parseAstObjectTypes(type: Type): DataType {
+function parseAstObjectTypes(typeNode: TypeNode): DataType {
+  const type = typeNode.getType();
   if (type.isInterface()) {
-    // TODO: convert custom strings and numbers into PrimitiveReferencesType.
-    if (typeIsCustomString(type)) {
-      return parseCustomString(type);
-    } else if (typeIsCustomNumber(type)) {
-      return parseCustomNumber(type);
-    } else {
-      return parseAstGenericInterfaceObject(type);
-    }
-  } else if (type.isArray()) {
-    const arrayElementType = type.getArrayType();
-    if (arrayElementType) {
-      return arrayType(parseType(arrayElementType));
-    } else {
-      throw new Error("expected array to be typed");
-    }
+    return parseAstGenericInterfaceObject(type);
+    // if (typeIsCustomString(type)) {
+    //   return parseCustomString(type);
+    // } else if (typeIsCustomNumber(type)) {
+    //   return parseCustomNumber(type);
+    // } else {
+    //   return parseAstGenericInterfaceObject(type);
+    // }
+  } else if (TypeGuards.isArrayTypeNode(typeNode)) {
+    return arrayType(parseType(typeNode.getElementTypeNode()));
   } else if (type.isObject()) {
     return parseAstObjectAsLiteralObject(type);
   } else {
+    console.log(typeNode);
     throw new Error("expected an AST object type");
   }
 }
 
-function parseAstGenericInterfaceObject(type: Type): ReferenceType {
+function parseAstGenericInterfaceObject(type: Type): ObjectReferenceType {
   if (type.isInterface()) {
     const declarations = type.getSymbolOrThrow().getDeclarations();
     if (declarations.length !== 1) {
@@ -107,59 +132,33 @@ function parseAstGenericInterfaceObject(type: Type): ReferenceType {
       throw new Error("expected an interface declaration");
     }
     const interfaceName = interfaceDeclaration.getName();
+    const location = interfaceDeclaration.getSourceFile().getFilePath();
 
-    // TODO: defer this to the parsing process
-    if (!Object.keys(TypeStore).includes(interfaceName)) {
-      TypeStore[interfaceName] = {
-        description: extractJsDocComment(interfaceDeclaration),
-        type: parseAstObjectAsLiteralObject(
-          type,
-          interfaceDeclaration
-            .getProperties()
-            .map(property => property.getName())
-        )
-      };
-    }
-
-    return referenceType(interfaceName);
+    return objectReferenceType(interfaceName, location);
   } else {
     throw new Error("expected interface type");
   }
 }
 
-function parseAstObjectAsLiteralObject(
-  type: Type,
-  propertiesFilter?: string[]
-): DataType {
+export function parseAstObjectAsLiteralObject(type: Type): ObjectType {
   const objectProperties: ObjectTypeProperty[] = type
     .getProperties()
-    .filter(property => {
-      if (propertiesFilter === undefined) {
-        return true;
-      }
-      return propertiesFilter.includes(property.getName());
-    })
     .map(property => {
       const propertySignature = extractPropertySignature(property);
       return {
         name: propertySignature.getName(),
         description: extractJsDocComment(propertySignature),
-        type: parseType(propertySignature.getType()),
+        type: parseType(propertySignature.getTypeNodeOrThrow()),
         optional: propertySignature.hasQuestionToken()
       };
     });
-
-  const extendedTypes = type.getBaseTypes().map(baseType => {
-    return parseAstGenericInterfaceObject(baseType);
-  });
-  return objectType(objectProperties, extendedTypes);
+  return objectType(objectProperties);
 }
 
-function parseUnionTypes(type: Type): DataType {
-  // remove the undefined type
-  const nonUndefinedUnionTypes = type
-    .getUnionTypes()
-    .filter(utype => !utype.isUndefined());
+function parseUnionTypes(typeNode: UnionTypeNode): DataType {
+  const nonUndefinedUnionTypes = typeNode
+    .getTypeNodes()
+    .filter(utype => !utype.getType().isUndefined());
   if (nonUndefinedUnionTypes.length === 1) {
     // not a union
     return parseType(nonUndefinedUnionTypes[0]);
@@ -170,38 +169,38 @@ function parseUnionTypes(type: Type): DataType {
   }
 }
 
-function parseCustomString(type: Type): DataType {
-  return customString({
-    pattern: extractStringValue(extractTypePropertyType(type, "pattern"))
-  });
-}
+// function parseCustomString(type: Type): DataType {
+//   return customString({
+//     pattern: extractStringValue(extractTypePropertyType(type, "pattern"))
+//   });
+// }
 
-function parseCustomNumber(type: Type): DataType {
-  return customNumber({
-    integer: extractBooleanValue(extractTypePropertyType(type, "integer")),
-    min: extractNumberValue(extractTypePropertyType(type, "min")),
-    max: extractNumberValue(extractTypePropertyType(type, "max"))
-  });
-}
+// function parseCustomNumber(type: Type): DataType {
+//   return customNumber({
+//     integer: extractBooleanValue(extractTypePropertyType(type, "integer")),
+//     min: extractNumberValue(extractTypePropertyType(type, "min")),
+//     max: extractNumberValue(extractTypePropertyType(type, "max"))
+//   });
+// }
 
-function extractTypePropertyType(type: Type, propertyName: string): Type {
-  const property = type.getProperty(propertyName);
-  if (property) {
-    return extractPropertySignature(property).getType();
-  } else {
-    throw new Error(`expected property "${propertyName}" from interface`);
-  }
-}
+// function extractTypePropertyType(type: Type, propertyName: string): Type {
+//   const property = type.getProperty(propertyName);
+//   if (property) {
+//     return extractPropertySignature(property).getType();
+//   } else {
+//     throw new Error(`expected property "${propertyName}" from interface`);
+//   }
+// }
 
-function extractBooleanValue(type: Type): boolean | undefined {
-  if (type.isBoolean()) {
-    return undefined;
-  } else if (type.isBooleanLiteral()) {
-    return type.getText() === "true";
-  } else {
-    throw new Error("expected property to be a boolean");
-  }
-}
+// function extractBooleanValue(type: Type): boolean | undefined {
+//   if (type.isBoolean()) {
+//     return undefined;
+//   } else if (type.isBooleanLiteral()) {
+//     return type.getText() === "true";
+//   } else {
+//     throw new Error("expected property to be a boolean");
+//   }
+// }
 
 function extractStringValue(type: Type): string | undefined {
   if (type.isString()) {
@@ -239,18 +238,6 @@ function typeIsCustomString(type: Type) {
  */
 function typeIsCustomNumber(type: Type) {
   return type.isInterface() && typeIncludesBaseType(type, "CustomNumberType");
-}
-
-/**
- * Check if a type is an internal custom type.
- *
- * @param type type to check
- */
-function typeIsCustomInternalType(type: Type) {
-  return (
-    type.isInterface() &&
-    typeIncludesBaseType(type, "InternalCustomPrimitiveType")
-  );
 }
 
 /**

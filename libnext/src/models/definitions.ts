@@ -1,9 +1,22 @@
 import { HttpMethod } from "./http";
-import { DataType, ObjectType, ReferenceType } from "./types";
+import {
+  ObjectType,
+  ObjectReferenceType,
+  AliasablePrimitiveType,
+  StringLikeType,
+  NumberLikeType
+} from "./types";
 
 export interface Contract {
   api: ApiDefinition;
   endpoints: EndpointDefinition[];
+  types: TypeDefinition[];
+}
+
+export interface TypeDefinition {
+  description?: string;
+  name: string;
+  type: ObjectType | AliasablePrimitiveType;
 }
 
 export interface ApiDefinition {
@@ -36,25 +49,25 @@ export interface ResponseDefinition {
 export interface HeaderDefinition {
   description?: string;
   name: string;
-  type: DataType;
+  type: StringLikeType | NumberLikeType;
   optional: boolean;
 }
 
 export interface PathParamDefinition {
   description?: string;
   name: string;
-  type: DataType;
+  type: StringLikeType | NumberLikeType;
 }
 
 export interface QueryParamDefinition {
   description?: string;
   name: string;
-  type: DataType;
+  type: StringLikeType | NumberLikeType;
   optional: boolean;
 }
 
 export interface BodyDefinition {
   description?: string;
-  type: ObjectType | ReferenceType;
+  type: ObjectType | ObjectReferenceType;
   optional: boolean;
 }

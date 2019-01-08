@@ -1,7 +1,30 @@
 import { Project, SourceFile, ts, CompilerOptions } from "ts-simple-ast";
 import { parseApi } from "./nodes/api-parser";
 import { parseEndpoint } from "./nodes/endpoint-parser";
-import { Contract, EndpointDefinition } from "../models/definitions";
+import {
+  Contract,
+  EndpointDefinition,
+  HeaderDefinition,
+  RequestDefinition,
+  ResponseDefinition
+} from "../models/definitions";
+import {
+  isObjectType,
+  isArrayType,
+  DataType,
+  isUnionType,
+  isObjectReferenceType,
+  ReferenceType,
+  isReferenceType,
+  isPrimitiveReferenceType,
+  isAliasablePrimitiveType
+} from "../models/types";
+import {
+  parseAstObjectAsLiteralObject,
+  parseType
+} from "./utilities/type-parser";
+import { extractJsDocComment } from "./utilities/parser-utility";
+import { uniqBy } from "lodash";
 
 export function parseFilePath(
   sourcePath: string,
@@ -35,7 +58,7 @@ export function parseFilePath(
 
   validateProject(project);
 
-  return parseRootSourceFile(sourceFile);
+  return parseRootSourceFile(sourceFile, project);
 }
 
 /**
@@ -43,7 +66,10 @@ export function parseFilePath(
  *
  * @param file source file
  */
-function parseRootSourceFile(file: SourceFile): Contract {
+function parseRootSourceFile(
+  file: SourceFile,
+  projectContext: Project
+): Contract {
   const apiClasses = file
     .getClasses()
     .filter(klass => klass.getDecorator("api") !== undefined);
@@ -67,8 +93,8 @@ function parseRootSourceFile(file: SourceFile): Contract {
     .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
 
   const endpoints = importedFiles.reduce<EndpointDefinition[]>(
-    (endpointsAcc, fileCurr) =>
-      fileCurr
+    (endpointsAcc, currentFile) =>
+      currentFile
         .getClasses()
         .filter(klass => klass.getDecorator("endpoint") !== undefined)
         .map(endpointClass => parseEndpoint(endpointClass))
@@ -76,7 +102,152 @@ function parseRootSourceFile(file: SourceFile): Contract {
     sourceEndpoints
   );
 
-  return { api, endpoints };
+  const directReferencedTypes = endpoints.reduce<ReferenceType[]>(
+    (referenceTypesAcc, currentEndpoint) => {
+      const fromResponses = retrieveTypeReferencesFromResponses(
+        currentEndpoint.responses
+      );
+      if (currentEndpoint.request) {
+        const fromRequest = fromResponses.concat(
+          retrieveTypeReferencesFromRequest(currentEndpoint.request)
+        );
+        return referenceTypesAcc.concat(fromRequest).concat(fromResponses);
+      }
+      return referenceTypesAcc.concat(fromResponses);
+    },
+    []
+  );
+
+  const uniqueDirectReferenceTypes = uniqueReferences(directReferencedTypes);
+
+  const secondaryReferenceTypes = uniqueDirectReferenceTypes.reduce<
+    ReferenceType[]
+  >(
+    (referenceTypesAcc, currentReferenceType) =>
+      referenceTypesAcc.concat(
+        retrieveTypeReferencesFromType(currentReferenceType, projectContext)
+      ),
+    []
+  );
+
+  const allReferenceTypes = uniqueReferences(
+    uniqueDirectReferenceTypes.concat(secondaryReferenceTypes)
+  );
+
+  const types = allReferenceTypes.map(referenceType => {
+    const file = projectContext.getSourceFileOrThrow(referenceType.location);
+    if (isObjectReferenceType(referenceType)) {
+      const interfaceDeclaration = file.getInterfaceOrThrow(referenceType.name);
+      const name = interfaceDeclaration.getName();
+      const description = extractJsDocComment(interfaceDeclaration);
+      const type = parseAstObjectAsLiteralObject(
+        interfaceDeclaration.getType()
+      );
+      return { description, name, type };
+    } else {
+      const typeAliasDeclaration = file.getTypeAliasOrThrow(referenceType.name);
+      const name = typeAliasDeclaration.getName();
+      const description = extractJsDocComment(typeAliasDeclaration);
+      const type = parseType(typeAliasDeclaration.getTypeNodeOrThrow());
+      if (isAliasablePrimitiveType(type)) {
+        return { description, name, type };
+      } else {
+        throw new Error("unexpected aliased type");
+      }
+    }
+  });
+
+  return { api, endpoints, types };
+}
+
+function uniqueReferences(referenceTypes: ReferenceType[]): ReferenceType[] {
+  return uniqBy(referenceTypes, referenceType =>
+    referenceType.location.concat(referenceType.name)
+  );
+}
+
+function retrieveTypeReferencesFromType(
+  dataType: DataType,
+  projectContext: Project
+): ReferenceType[] {
+  if (isPrimitiveReferenceType(dataType)) {
+    return [dataType];
+  } else if (isObjectReferenceType(dataType)) {
+    const file = projectContext.getSourceFileOrThrow(dataType.location);
+    const interfaceDeclaration = file.getInterfaceOrThrow(dataType.name);
+    const objectType = parseAstObjectAsLiteralObject(
+      interfaceDeclaration.getType()
+    );
+    return retrieveTypeReferencesFromType(objectType, projectContext).concat(
+      dataType
+    );
+  } else if (isObjectType(dataType)) {
+    return dataType.properties.reduce<ReferenceType[]>(
+      (referenceTypesAcc, currentProperty) =>
+        referenceTypesAcc.concat(
+          retrieveTypeReferencesFromType(currentProperty.type, projectContext)
+        ),
+      []
+    );
+  } else if (isArrayType(dataType)) {
+    return retrieveTypeReferencesFromType(dataType.elements, projectContext);
+  } else if (isUnionType(dataType)) {
+    return dataType.types.reduce<ReferenceType[]>(
+      (referenceTypesAcc, type) =>
+        referenceTypesAcc.concat(
+          retrieveTypeReferencesFromType(type, projectContext)
+        ),
+      []
+    );
+  } else {
+    return [];
+  }
+}
+
+function retrieveTypeReferencesFromRequest(
+  request: RequestDefinition
+): ReferenceType[] {
+  const fromHeaders = retrieveTypeReferencesFromHeaders(request.headers);
+  if (request.body) {
+    const type = request.body.type;
+    if (isReferenceType(type)) {
+      return fromHeaders.concat(type);
+    }
+  }
+  return fromHeaders;
+}
+
+function retrieveTypeReferencesFromResponses(
+  responses: ResponseDefinition[]
+): ReferenceType[] {
+  return responses.reduce<ReferenceType[]>(
+    (typeReferencesAcc, currentResponse) => {
+      const fromHeaders = retrieveTypeReferencesFromHeaders(
+        currentResponse.headers
+      );
+      if (currentResponse.body) {
+        const type = currentResponse.body.type;
+        if (isReferenceType(type)) {
+          return typeReferencesAcc.concat(fromHeaders.concat(type));
+        }
+      }
+      return typeReferencesAcc.concat(fromHeaders);
+    },
+    []
+  );
+}
+
+function retrieveTypeReferencesFromHeaders(
+  headers: HeaderDefinition[]
+): ReferenceType[] {
+  return headers.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
+    const type = currentHeader.type;
+    if (isReferenceType(type)) {
+      return typeReferencesAcc.concat(type);
+    } else {
+      return typeReferencesAcc;
+    }
+  }, []);
 }
 
 /**

@@ -6,12 +6,11 @@ export enum Kind {
   BooleanLiteral = "boolean-literal",
   StringLiteral = "string-literal",
   NumberLiteral = "number-literal",
-  CustomString = "custom-string",
-  CustomNumber = "custom-number",
   Object = "object",
   Array = "array",
-  Reference = "reference",
+  ObjectReference = "object-reference",
+  BooleanReference = "boolean-reference",
+  StringReference = "string-reference",
+  NumberReference = "number-reference",
   Union = "union"
 }
-export const KindOfString = [Kind.String, Kind.CustomString];
-export const KindOfNumber = [Kind.Number, Kind.CustomNumber];

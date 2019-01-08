@@ -1,11 +1,9 @@
 import { Kind } from "./kinds";
 import { DataType } from ".";
-import { ReferenceType } from "./special-types";
 
 export interface ObjectType {
   kind: Kind.Object;
   properties: ObjectTypeProperty[];
-  extends: ReferenceType[];
 }
 
 export interface ObjectTypeProperty {
@@ -15,14 +13,10 @@ export interface ObjectTypeProperty {
   optional: boolean;
 }
 
-export function objectType(
-  properties: ObjectTypeProperty[],
-  extendsTypes: ReferenceType[] = []
-): ObjectType {
+export function objectType(properties: ObjectTypeProperty[]): ObjectType {
   return {
     kind: Kind.Object,
-    properties,
-    extends: extendsTypes
+    properties
   };
 }
 
