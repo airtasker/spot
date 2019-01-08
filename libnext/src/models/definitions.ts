@@ -1,6 +1,11 @@
 import { HttpMethod } from "./http";
 import { DataType, ObjectType, ReferenceType } from "./types";
 
+export interface Contract {
+  api: ApiDefinition;
+  endpoints: EndpointDefinition[];
+}
+
 export interface ApiDefinition {
   name: string;
   description?: string;
@@ -10,22 +15,22 @@ export interface EndpointDefinition {
   description?: string;
   method: HttpMethod;
   path: string;
-  // request?: RequestDefinition;
-  // responses: ResponseDefinition[] // at least one;
+  request?: RequestDefinition;
+  responses: ResponseDefinition[];
 }
 
 export interface RequestDefinition {
   headers: HeaderDefinition[];
   pathParams: PathParamDefinition[];
   queryParams: QueryParamDefinition[];
-  body: BodyDefinition;
+  body?: BodyDefinition;
 }
 
 export interface ResponseDefinition {
   description?: string;
   status: number;
   headers: HeaderDefinition[];
-  body: BodyDefinition;
+  body?: BodyDefinition;
 }
 
 export interface HeaderDefinition {

@@ -1,13 +1,13 @@
-import { QueryParamDefinition } from "../models/definitions";
+import { QueryParamDefinition } from "../../models/definitions";
 import { ParameterDeclaration } from "ts-simple-ast";
 import {
   ensureNodeNotOptional,
   extractObjectParameterProperties,
   extractJsDocComment,
   ensureDataTypeIsKind
-} from "./utilities/parser-utility";
-import { parseType } from "./utilities/type-parser";
-import { KindOfString, KindOfNumber } from "../models/types";
+} from "../utilities/parser-utility";
+import { parseType } from "../utilities/type-parser";
+import { KindOfString, KindOfNumber } from "../../models/types";
 
 /**
  * Parse an `@queryParams` decorated parameter.

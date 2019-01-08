@@ -1,6 +1,6 @@
 import { parsePathParams } from "./path-params-parser";
-import { createSourceFile } from "../test/helper";
-import { STRING, NUMBER } from "../models/types";
+import { createSourceFile } from "../../test/helper";
+import { STRING, NUMBER } from "../../models/types";
 import { MethodDeclaration } from "ts-simple-ast";
 
 describe("@pathParams parser", () => {

@@ -7,7 +7,9 @@ import {
   Symbol,
   ParameterDeclaration,
   PropertySignature,
-  QuestionTokenableNode
+  QuestionTokenableNode,
+  MethodDeclaration,
+  ClassDeclaration
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
 import { DataType, Kind } from "libnext/src/models/types";
@@ -41,7 +43,7 @@ export function extractJsDocComment(node: JSDocableNode): string | undefined {
 }
 
 /**
- * Extract a string property from an object literal.
+ * Extract a string property value from an object literal.
  *
  * @param objectLiteral an object literal
  * @param propertyName the property to extract
@@ -57,7 +59,23 @@ export function extractStringProperty(
 }
 
 /**
- * Extract an optional string property from an object literal.
+ * Extract a number property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractNumberProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): number {
+  return objectLiteral
+    .getPropertyOrThrow(propertyName)
+    .getLastChildIfKindOrThrow(ts.SyntaxKind.NumericLiteral)
+    .getLiteralValue();
+}
+
+/**
+ * Extract an optional string property value from an object literal.
  *
  * @param objectLiteral an object literal
  * @param propertyName the property to extract
@@ -114,6 +132,56 @@ export function extractObjectParameterProperties(
   } else {
     throw new Error("expected literal object parameter");
   }
+}
+
+/**
+ * Retrieve a parameter from a method declaration with a particular decorator.
+ *
+ * @param method method declaration
+ * @param decoratorName name of decorator to search for
+ */
+export function methodParamWithDecorator(
+  method: MethodDeclaration,
+  decoratorName: string
+): ParameterDeclaration | undefined {
+  const matchingParams = method
+    .getParameters()
+    .filter(parameter => parameter.getDecorator(decoratorName) !== undefined);
+  if (matchingParams.length === 1) {
+    return matchingParams[0];
+  } else if (matchingParams.length > 1) {
+    throw new Error(
+      `expected a decorator @${decoratorName} to be used only once, found ${
+        matchingParams.length
+      } usages`
+    );
+  }
+  return undefined;
+}
+
+/**
+ * Retrieve a method from a class declaration with a particular decorator.
+ *
+ * @param klass class declaration
+ * @param decoratorName name of decorator to search for
+ */
+export function classMethodWithDecorator(
+  klass: ClassDeclaration,
+  decoratorName: string
+): MethodDeclaration | undefined {
+  const matchingMethods = klass
+    .getMethods()
+    .filter(method => method.getDecorator(decoratorName) !== undefined);
+  if (matchingMethods.length === 1) {
+    return matchingMethods[0];
+  } else if (matchingMethods.length > 1) {
+    throw new Error(
+      `expected a decorator @${decoratorName} to be used only once, found ${
+        matchingMethods.length
+      } usages`
+    );
+  }
+  return undefined;
 }
 
 /**

@@ -3,10 +3,13 @@ import {
   extractJsDocComment,
   extractDecoratorFactoryConfiguration,
   extractStringProperty,
-  isHttpMethod
-} from "./utilities/parser-utility";
-import { EndpointDefinition } from "../models/definitions";
-import { HttpMethod } from "../models/http";
+  isHttpMethod,
+  classMethodWithDecorator
+} from "../utilities/parser-utility";
+import { EndpointDefinition } from "../../models/definitions";
+import { HttpMethod } from "../../models/http";
+import { parseRequest } from "./request-parser";
+import { parseResponse } from "./response-parser";
 
 /**
  * Parse an `@endpoint` decorated class.
@@ -19,7 +22,19 @@ export function parseEndpoint(klass: ClassDeclaration): EndpointDefinition {
   const configuration = extractDecoratorFactoryConfiguration(decorator);
   const method = extractHttpMethodProperty(configuration, "method");
   const path = extractStringProperty(configuration, "path");
-  return { description, method, path };
+  const requestMethod = classMethodWithDecorator(klass, "request");
+  const request =
+    requestMethod === undefined ? undefined : parseRequest(requestMethod);
+  const responses = klass
+    .getMethods()
+    .filter(klassMethod => klassMethod.getDecorator("response") !== undefined)
+    .map(responseMethod => parseResponse(responseMethod));
+
+  if (responses.length === 0) {
+    throw new Error("expected at least one @response decorated method");
+  }
+
+  return { description, method, path, request, responses };
 }
 
 /**

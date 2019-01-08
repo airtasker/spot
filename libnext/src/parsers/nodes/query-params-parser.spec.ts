@@ -1,7 +1,7 @@
-import { createSourceFile } from "../test/helper";
+import { createSourceFile } from "../../test/helper";
 import { MethodDeclaration } from "ts-simple-ast";
 import { parseQueryParams } from "./query-params-parser";
-import { STRING, NUMBER } from "../models/types";
+import { STRING, NUMBER } from "../../models/types";
 
 describe("@queryParams parser", () => {
   const queryParamName = "paramName";
