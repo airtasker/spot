@@ -14,6 +14,7 @@ export interface ApiDefinition {
 export interface EndpointDefinition {
   description?: string;
   method: HttpMethod;
+  name: string;
   path: string;
   request?: RequestDefinition;
   responses: ResponseDefinition[];

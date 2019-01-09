@@ -42,6 +42,7 @@ describe("@endpoint parser", () => {
 
     expect(result.description).toEqual(endpointDescription);
     expect(result.method).toEqual(endpointMethod);
+    expect(result.name).toEqual(klass.getName());
     expect(result.path).toEqual(endpointPath);
     expect(result.request).not.toBeUndefined;
     expect(result.responses).toHaveLength(2);
