@@ -45,7 +45,7 @@ npx @airtasker/spot generate --api api.ts
 
 # Why we built Spot
 
-At first glance, you may wonder why we bothered building Spot. Why not use OpenAPI (aka Swagger) to describe your API?
+At first glance, you may wonder why we bothered building Spot. Why not use OpenAPI (formely known as Swagger) to describe your API?
 At the core, we built Spot because we wanted a better developer experience.
 
 ## Writing contracts
