@@ -43,6 +43,32 @@ You can pass the definition above to a generator by simply running:
 npx @airtasker/spot generate --api api.ts
 ```
 
+# Why we built Spot
+
+At first glance, you may wonder why we bothered building Spot. Why not use OpenAPI (formely known as Swagger) to describe your API?
+At the core, we built Spot because we wanted a better developer experience.
+
+## Writing contracts
+
+OpenAPI documents are stored as YAML files, following a very specific schema. You won’t know that you used the wrong field name or forgot to wrap a type definition into a schema object unless you run a good OpenAPI linter. Most developers who aren’t intimately familiar with the OpenAPI specification end up using a visual editor such as Swagger Editor or Stoplight.
+
+Since Spot leverages the TypeScript syntax, all you need is to write valid TypeScript code. Your editor will immediately tell you when your code is invalid. It will tell you what’s missing, and you even get autocomplete for free. We could have picked any other typed language—TypeScript just happened to be one of the most concise and ubiquitous for us.
+
+## Reviewing contracts
+
+We believe that API contracts should be checked into Git, or whichever code versioning system you use. In addition, API contracts should be systematically peer reviewed. It’s far too easy for a backend engineer to incorrectly assume what client engineers expect from an endpoint.
+
+Because of their complex nested structure and the richness of the OpenAPI specification, OpenAPI documents can be difficult to review in a pull request. They’re great for machines, but not always for humans.
+Spot aims to be as human-readable as possible. We’ve seen developers become a lot more engaged in discussions on pull requests for Spot contracts, compared to our previous OpenAPI documents.
+
+## Interoperability with various formats
+
+Depending on what you're trying to achieve (testing, documentation, client code generation…), you'll find tools that only work with OpenAPI 2 (Swagger), and newer tools that only support OpenAPI 3. You may also find tools for a different API ecosystem such as JSON Schema or API Blueprint.
+
+We built Spot with this in mind. Instead of having to juggle various API format converters, Spot can generate every major API document format. This is why we called it "Single Point Of Truth".
+
+# Status
+
 This is work in progress as of 14 Nov 2018:
 
 - [x] Functional TypeScript DSL
