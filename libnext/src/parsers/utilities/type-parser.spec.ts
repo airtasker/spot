@@ -74,26 +74,24 @@ describe("type parser", () => {
         value: 54
       });
     });
-  });
 
-  describe("internal primitive reference types", () => {
-    test("parses Int32 type", () => {
-      const typeNode = createTypeNode("Int32");
-
+    test("parses type aliased literal", () => {
+      const typeNode = createTypeNode("TrueAlias");
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.NumberReference,
-        name: "Int32",
-        location: expect.stringMatching(/syntax\/types\.ts$/)
+        kind: Kind.TypeReference,
+        referenceKind: Kind.BooleanLiteral,
+        name: "TrueAlias",
+        location: expect.stringMatching(/main\.ts$/)
       });
     });
+  });
 
-    test("parses Int64 type", () => {
-      const typeNode = createTypeNode("Int64");
+  describe("internal custom primitive types", () => {
+    test("parses Integer type", () => {
+      const typeNode = createTypeNode("Integer");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.NumberReference,
-        name: "Int64",
-        location: expect.stringMatching(/syntax\/types\.ts$/)
+        kind: Kind.Integer
       });
     });
 
@@ -101,9 +99,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("Date");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.StringReference,
-        name: "Date",
-        location: expect.stringMatching(/syntax\/types\.ts$/)
+        kind: Kind.Date
       });
     });
 
@@ -111,9 +107,31 @@ describe("type parser", () => {
       const typeNode = createTypeNode("DateTime");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.StringReference,
-        name: "DateTime",
-        location: expect.stringMatching(/syntax\/types\.ts$/)
+        kind: Kind.DateTime
+      });
+    });
+
+    test("parses aliased custom primitive", () => {
+      const typeNode = createTypeNode("AliasedCustomPrimitive");
+
+      expect(parseType(typeNode)).toStrictEqual({
+        kind: Kind.TypeReference,
+        referenceKind: Kind.Integer,
+        name: "AliasedCustomPrimitive",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    });
+  });
+
+  describe("external custom primitive types", () => {
+    test("parses custom string", () => {
+      const typeNode = createTypeNode("TypeAlias");
+
+      expect(parseType(typeNode)).toStrictEqual({
+        kind: Kind.TypeReference,
+        referenceKind: Kind.String,
+        name: "TypeAlias",
+        location: expect.stringMatching(/alias\.ts$/)
       });
     });
   });
@@ -155,7 +173,8 @@ describe("type parser", () => {
       const typeNode = createTypeNode("ObjectInterface");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.ObjectReference,
+        kind: Kind.TypeReference,
+        referenceKind: Kind.Object,
         name: "ObjectInterface",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -165,7 +184,8 @@ describe("type parser", () => {
       const typeNode = createTypeNode("ComplexInterface");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.ObjectReference,
+        kind: Kind.TypeReference,
+        referenceKind: Kind.Object,
         name: "ComplexInterface",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -193,6 +213,17 @@ describe("type parser", () => {
       expect(result.types).toContainEqual(NUMBER);
       expect(result.types).toContainEqual(NULL);
     });
+
+    test.only("parses chained type alias", () => {
+      const typeNode = createTypeNode("ChainedAlias");
+
+      expect(parseType(typeNode)).toStrictEqual({
+        kind: Kind.TypeReference,
+        referenceKind: Kind.TypeReference,
+        name: "ChainedAlias",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    });
   });
 });
 
@@ -203,7 +234,7 @@ function createTypeNode(...types: string[]): TypeNode {
   const interfaceName = "myInterface";
   const propertyName = "myPropertyName";
   const content = `
-    import { Int32, Int64, Date, DateTime } from "@airtasker/spot"
+    import { Integer, Date, DateTime } from "@airtasker/spot"
     import { TypeAlias } from "./alias"
 
     interface ${interfaceName} {
@@ -229,6 +260,10 @@ function createTypeNode(...types: string[]): TypeNode {
       /** Number of siblings */
       siblings: number;
     }
+
+    type TrueAlias = true;
+    type AliasedCustomPrimitive = Integer;
+    type ChainedAlias = AliasedCustomPrimitive;
   `;
   const sourceFile = createSourceFile(
     { path: "main", content: content },

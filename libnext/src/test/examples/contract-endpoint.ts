@@ -6,7 +6,7 @@ import {
   pathParams,
   queryParams,
   body
-} from "@airtasker/spot";
+} from "@airtasker/spotnext";
 import { UserBody, ErrorBody } from "./models";
 
 /** Retrieves a user in a company */

@@ -4,14 +4,14 @@ import {
   extractStringProperty,
   extractDecoratorFactoryConfiguration
 } from "../utilities/parser-utility";
-import { ApiDefinition } from "../../models/definitions";
+import { ParsedApi } from "../../models/definitions";
 
 /**
  * Parse an `@api` decorated class.
  *
  * @param klass a class declaration
  */
-export function parseApi(klass: ClassDeclaration): ApiDefinition {
+export function parseApi(klass: ClassDeclaration): ParsedApi {
   const decorator = klass.getDecoratorOrThrow("api");
   const description = extractJsDocComment(klass);
   const configuration = extractDecoratorFactoryConfiguration(decorator);

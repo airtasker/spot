@@ -1,5 +1,5 @@
 import { MethodDeclaration } from "ts-simple-ast";
-import { ResponseDefinition } from "../../models/definitions";
+import { ParsedResponse } from "../../models/definitions";
 import {
   extractJsDocComment,
   methodParamWithDecorator,
@@ -14,7 +14,7 @@ import { parseHeaders } from "./headers-parser";
  *
  * @param method a method declaration
  */
-export function parseResponse(method: MethodDeclaration): ResponseDefinition {
+export function parseResponse(method: MethodDeclaration): ParsedResponse {
   const decorator = method.getDecoratorOrThrow("response");
   const configuration = extractDecoratorFactoryConfiguration(decorator);
   const headersParameter = methodParamWithDecorator(method, "headers");

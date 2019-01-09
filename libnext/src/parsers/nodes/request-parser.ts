@@ -1,5 +1,5 @@
 import { MethodDeclaration } from "ts-simple-ast";
-import { RequestDefinition } from "../../models/definitions";
+import { ParsedRequest } from "../../models/definitions";
 import { parseHeaders } from "./headers-parser";
 import { parsePathParams } from "./path-params-parser";
 import { parseQueryParams } from "./query-params-parser";
@@ -11,7 +11,7 @@ import { methodParamWithDecorator } from "../utilities/parser-utility";
  *
  * @param method a method declaration
  */
-export function parseRequest(method: MethodDeclaration): RequestDefinition {
+export function parseRequest(method: MethodDeclaration): ParsedRequest {
   method.getDecoratorOrThrow("request");
   const headersParameter = methodParamWithDecorator(method, "headers");
   const pathParamsParameter = methodParamWithDecorator(method, "pathParams");

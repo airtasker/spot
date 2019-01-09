@@ -13,74 +13,22 @@ export function unionType(unionTypes: DataType[]): UnionType {
   };
 }
 
-export interface ObjectReferenceType extends BaseReferenceType {
-  kind: Kind.ObjectReference;
-}
-
-export function objectReferenceType(
-  name: string,
-  location: string
-): ObjectReferenceType {
-  return {
-    kind: Kind.ObjectReference,
-    name,
-    location
-  };
-}
-
-export interface BooleanReferenceType extends BaseReferenceType {
-  kind: Kind.BooleanReference;
-}
-
-export function booleanReference(
-  name: string,
-  location: string
-): BooleanReferenceType {
-  return {
-    kind: Kind.BooleanReference,
-    name,
-    location
-  };
-}
-
-export interface StringReferenceType extends BaseReferenceType {
-  kind: Kind.StringReference;
-}
-
-export function stringReference(
-  name: string,
-  location: string
-): StringReferenceType {
-  return {
-    kind: Kind.StringReference,
-    name,
-    location
-  };
-}
-
-export interface NumberReferenceType extends BaseReferenceType {
-  kind: Kind.NumberReference;
-}
-
-export function numberReference(
-  name: string,
-  location: string
-): NumberReferenceType {
-  return {
-    kind: Kind.NumberReference,
-    name,
-    location
-  };
-}
-
-export type PrimitiveReferenceType =
-  | BooleanReferenceType
-  | StringReferenceType
-  | NumberReferenceType;
-
-export type ReferenceType = PrimitiveReferenceType | ObjectReferenceType;
-
-interface BaseReferenceType {
+export interface ReferenceType {
+  kind: Kind.TypeReference;
+  referenceKind: Kind;
   name: string;
   location: string;
+}
+
+export function referenceType(
+  name: string,
+  location: string,
+  referenceKind: Kind
+): ReferenceType {
+  return {
+    kind: Kind.TypeReference,
+    referenceKind,
+    name,
+    location
+  };
 }

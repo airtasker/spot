@@ -6,7 +6,7 @@ import {
   isHttpMethod,
   classMethodWithDecorator
 } from "../utilities/parser-utility";
-import { EndpointDefinition } from "../../models/definitions";
+import { ParsedEndpoint } from "../../models/definitions";
 import { HttpMethod } from "../../models/http";
 import { parseRequest } from "./request-parser";
 import { parseResponse } from "./response-parser";
@@ -16,7 +16,7 @@ import { parseResponse } from "./response-parser";
  *
  * @param klass a class declaration
  */
-export function parseEndpoint(klass: ClassDeclaration): EndpointDefinition {
+export function parseEndpoint(klass: ClassDeclaration): ParsedEndpoint {
   const decorator = klass.getDecoratorOrThrow("endpoint");
   const description = extractJsDocComment(klass);
   const configuration = extractDecoratorFactoryConfiguration(decorator);

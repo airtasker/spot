@@ -3,14 +3,14 @@ export enum Kind {
   Boolean = "boolean",
   String = "string",
   Number = "number",
+  Integer = "integer",
+  Date = "date",
+  DateTime = "date-time",
   BooleanLiteral = "boolean-literal",
   StringLiteral = "string-literal",
   NumberLiteral = "number-literal",
   Object = "object",
   Array = "array",
-  ObjectReference = "object-reference",
-  BooleanReference = "boolean-reference",
-  StringReference = "string-reference",
-  NumberReference = "number-reference",
-  Union = "union"
+  Union = "union",
+  TypeReference = "type-reference"
 }

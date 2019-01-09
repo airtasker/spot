@@ -1,4 +1,4 @@
-import { QueryParamDefinition } from "../../models/definitions";
+import { ParsedQueryParam } from "../../models/definitions";
 import { ParameterDeclaration } from "ts-simple-ast";
 import {
   ensureNodeNotOptional,
@@ -15,7 +15,7 @@ import { isStringLikeType, isNumberLikeType } from "../../models/types";
  */
 export function parseQueryParams(
   parameter: ParameterDeclaration
-): QueryParamDefinition[] {
+): ParsedQueryParam[] {
   parameter.getDecoratorOrThrow("queryParams");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);

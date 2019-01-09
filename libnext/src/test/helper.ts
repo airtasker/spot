@@ -1,4 +1,4 @@
-import { Project } from "ts-simple-ast";
+import { Project, ts } from "ts-simple-ast";
 
 /**
  * Create an AST source file. Any files imported from the main file must also be provided.
@@ -37,25 +37,28 @@ interface FileDetail {
  * Create an AST project with the `@airtasker/spot` depedency loaded.
  */
 export function createProject() {
-  // TODO: use this rather than tsConfig
-  // const project = new Project({
-  //   compilerOptions: {
-  //     target: ts.ScriptTarget.ESNext,
-  //     module: ts.ModuleKind.CommonJS,
-  //     strict: true,
-  //     noImplicitAny: true,
-  //     strictNullChecks: true,
-  //     strictFunctionTypes: true,
-  //     strictPropertyInitialization: true,
-  //     noImplicitThis: true,
-  //     alwaysStrict: true,
-  //     noImplicitReturns: true,
-  //     noFallthroughCasesInSwitch: true,
-  //     moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  //     experimentalDecorators: true
-  //   }
-  // });
-  return new Project({ tsConfigFilePath: "./libnext/src/test/tsconfig.json" });
+  return new Project({
+    compilerOptions: {
+      target: ts.ScriptTarget.ESNext,
+      module: ts.ModuleKind.CommonJS,
+      strict: true,
+      noImplicitAny: true,
+      strictNullChecks: true,
+      strictFunctionTypes: true,
+      strictPropertyInitialization: true,
+      noImplicitThis: true,
+      alwaysStrict: true,
+      noImplicitReturns: true,
+      noFallthroughCasesInSwitch: true,
+      moduleResolution: ts.ModuleResolutionKind.NodeJs,
+      experimentalDecorators: true,
+      baseUrl: "./",
+      paths: {
+        "@airtasker/spot": ["./libnext/src/lib"]
+      }
+    }
+  });
+  // return new Project({ tsConfigFilePath: "./libnext/src/test/tsconfig.json" });
 }
 
 /**

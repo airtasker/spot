@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { BodyDefinition } from "../../models/definitions";
+import { ParsedBody } from "../../models/definitions";
 import { parseType } from "../utilities/type-parser";
 import { isObjectType, isObjectReferenceType } from "../../models/types";
 
@@ -8,7 +8,7 @@ import { isObjectType, isObjectReferenceType } from "../../models/types";
  *
  * @param parameter a parameter declaration
  */
-export function parseBody(parameter: ParameterDeclaration): BodyDefinition {
+export function parseBody(parameter: ParameterDeclaration): ParsedBody {
   parameter.getDecoratorOrThrow("body");
   const dataType = parseType(parameter.getTypeNodeOrThrow());
   if (isObjectType(dataType) || isObjectReferenceType(dataType)) {

@@ -1,73 +1,73 @@
 import { HttpMethod } from "./http";
 import {
   ObjectType,
-  ObjectReferenceType,
-  AliasablePrimitiveType,
+  DataType,
   StringLikeType,
-  NumberLikeType
+  NumberLikeType,
+  ReferenceType
 } from "./types";
 
-export interface Contract {
-  api: ApiDefinition;
-  endpoints: EndpointDefinition[];
-  types: TypeDefinition[];
+export interface ParsedContract {
+  api: ParsedApi;
+  endpoints: ParsedEndpoint[];
+  types: ParsedType[];
 }
 
-export interface TypeDefinition {
+export interface ParsedType {
   description?: string;
   name: string;
-  type: ObjectType | AliasablePrimitiveType;
+  type: DataType;
 }
 
-export interface ApiDefinition {
+export interface ParsedApi {
   name: string;
   description?: string;
 }
 
-export interface EndpointDefinition {
+export interface ParsedEndpoint {
   description?: string;
   method: HttpMethod;
   path: string;
-  request?: RequestDefinition;
-  responses: ResponseDefinition[];
+  request?: ParsedRequest;
+  responses: ParsedResponse[];
 }
 
-export interface RequestDefinition {
-  headers: HeaderDefinition[];
-  pathParams: PathParamDefinition[];
-  queryParams: QueryParamDefinition[];
-  body?: BodyDefinition;
+export interface ParsedRequest {
+  headers: ParsedHeader[];
+  pathParams: ParsedPathParam[];
+  queryParams: ParsedQueryParam[];
+  body?: ParsedBody;
 }
 
-export interface ResponseDefinition {
+export interface ParsedResponse {
   description?: string;
   status: number;
-  headers: HeaderDefinition[];
-  body?: BodyDefinition;
+  headers: ParsedHeader[];
+  body?: ParsedBody;
 }
 
-export interface HeaderDefinition {
+export interface ParsedHeader {
   description?: string;
   name: string;
   type: StringLikeType | NumberLikeType;
   optional: boolean;
 }
 
-export interface PathParamDefinition {
+export interface ParsedPathParam {
   description?: string;
   name: string;
   type: StringLikeType | NumberLikeType;
 }
 
-export interface QueryParamDefinition {
+export interface ParsedQueryParam {
   description?: string;
   name: string;
   type: StringLikeType | NumberLikeType;
   optional: boolean;
 }
 
-export interface BodyDefinition {
+export interface ParsedBody {
   description?: string;
-  type: ObjectType | ObjectReferenceType;
+  type: ObjectType | ReferenceType;
   optional: boolean;
 }

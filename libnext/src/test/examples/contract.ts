@@ -8,7 +8,7 @@ import {
   pathParams,
   queryParams,
   body
-} from "@airtasker/spot";
+} from "@airtasker/spotnext";
 import { UserBody, ErrorBody, Address } from "./models";
 
 /** This is the company API. It does cool things */

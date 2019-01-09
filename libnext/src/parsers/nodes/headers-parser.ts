@@ -1,4 +1,4 @@
-import { HeaderDefinition } from "../../models/definitions";
+import { ParsedHeader } from "../../models/definitions";
 import { ParameterDeclaration } from "ts-simple-ast";
 import {
   ensureNodeNotOptional,
@@ -6,16 +6,13 @@ import {
   extractJsDocComment
 } from "../utilities/parser-utility";
 import { parseType } from "../utilities/type-parser";
-import { isNumberLikeType, isStringLikeType } from "../../models/types";
 
 /**
  * Parse a `@headers` decorated parameter.
  *
  * @param parameter a parameter declaration
  */
-export function parseHeaders(
-  parameter: ParameterDeclaration
-): HeaderDefinition[] {
+export function parseHeaders(parameter: ParameterDeclaration): ParsedHeader[] {
   parameter.getDecoratorOrThrow("headers");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);
@@ -35,3 +32,5 @@ export function parseHeaders(
     };
   });
 }
+
+function possibleKinds(dataType: DataType): Kind[] {}
