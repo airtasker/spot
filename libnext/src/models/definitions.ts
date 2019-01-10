@@ -25,7 +25,7 @@ export interface ParsedEndpoint {
   path: string;
   request?: ParsedRequest;
   responses: ParsedResponse[];
-  defaultResponse?: ParsedDefaultResponse; // TODO: should a default response be a requirement?
+  defaultResponse?: ParsedDefaultResponse;
 }
 
 export interface ParsedRequest {

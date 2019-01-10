@@ -28,7 +28,6 @@ import {
   BooleanType,
   NullType
 } from "../../models/types";
-import { last } from "lodash";
 import {
   extractJsDocComment,
   extractPropertySignature,
@@ -62,6 +61,11 @@ export function parseType(typeNode: TypeNode): DataType {
   }
 }
 
+/**
+ * Parse a null type node.
+ *
+ * @param typeNode AST type node
+ */
 function parseNull(typeNode: TypeNode): ReferenceType | NullType {
   const type = typeNode.getType();
   if (!type.isNull()) {
@@ -83,10 +87,15 @@ function parseNull(typeNode: TypeNode): ReferenceType | NullType {
   }
 }
 
+/**
+ * Parse a boolean type node.
+ *
+ * @param typeNode AST type node
+ */
 function parseBoolean(typeNode: TypeNode): ReferenceType | BooleanType {
   const type = typeNode.getType();
   if (!type.isBoolean()) {
-    throw new Error("expected null");
+    throw new Error("expected boolean");
   }
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
     const typeAliasDeclaration = getTypeAliasDeclarationFromTypeReference(
@@ -104,19 +113,23 @@ function parseBoolean(typeNode: TypeNode): ReferenceType | BooleanType {
   }
 }
 
+/**
+ * Parse a string type node.
+ *
+ * @param typeNode AST type node
+ */
 function parseString(
   typeNode: TypeNode
 ): ReferenceType | StringType | DateType | DateTimeType {
   const type = typeNode.getType();
   if (!type.isString()) {
-    throw new Error("expected null");
+    throw new Error("expected string");
   }
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
     const typeAliasDeclaration = getTypeAliasDeclarationFromTypeReference(
       typeNode
     );
     const name = typeAliasDeclaration.getName();
-    // TODO: type alias of another type alias?
     switch (name) {
       case "Date": {
         return DATE;
@@ -137,12 +150,17 @@ function parseString(
   }
 }
 
+/**
+ * Parse a number type node.
+ *
+ * @param typeNode AST type node
+ */
 function parseNumber(
   typeNode: TypeNode
 ): ReferenceType | NumberType | IntegerType {
   const type = typeNode.getType();
   if (!type.isNumber()) {
-    throw new Error("expected null");
+    throw new Error("expected number");
   }
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
     const typeAliasDeclaration = getTypeAliasDeclarationFromTypeReference(
@@ -189,6 +207,11 @@ function parseLiteralType(
   return parseTargetLiteralType(typeNode.getType());
 }
 
+/**
+ * Extract the literal value of a type.
+ *
+ * @param type AST type
+ */
 function parseTargetLiteralType(type: Type): PrimitiveLiteral {
   if (type.isBooleanLiteral()) {
     return booleanLiteral(type.getText() === "true");
@@ -219,6 +242,11 @@ function parseObjectTypes(typeNode: TypeNode): DataType {
   }
 }
 
+/**
+ * Parse an interface type.
+ *
+ * @param type AST type
+ */
 function parseInterfaceType(type: Type): ReferenceType {
   if (!type.isInterface()) {
     throw new Error("expected interface type");
@@ -238,6 +266,11 @@ function parseInterfaceType(type: Type): ReferenceType {
   return referenceType(interfaceName, location, Kind.Object);
 }
 
+/**
+ * Parse an object literal type.
+ *
+ * @param type AST type
+ */
 export function parseObjectLiteralType(type: Type): ObjectType {
   const objectProperties: ObjectTypeProperty[] = type
     .getProperties()
@@ -253,8 +286,13 @@ export function parseObjectLiteralType(type: Type): ObjectType {
   return objectType(objectProperties);
 }
 
+/**
+ * Parse a union type node.
+ *
+ * @param typeNode union type node
+ */
 function parseUnionType(typeNode: UnionTypeNode): DataType {
-  // TODO: support for type aliasing?
+  // TODO: support for type aliasing
   const allowedUnionTargetTypes = typeNode
     .getTypeNodes()
     .filter(utype => !utype.getType().isUndefined());
@@ -266,87 +304,4 @@ function parseUnionType(typeNode: UnionTypeNode): DataType {
   } else {
     throw new Error("union type error");
   }
-}
-
-// function parseCustomString(type: Type): DataType {
-//   return customString({
-//     pattern: extractStringValue(extractTypePropertyType(type, "pattern"))
-//   });
-// }
-
-// function parseCustomNumber(type: Type): DataType {
-//   return customNumber({
-//     integer: extractBooleanValue(extractTypePropertyType(type, "integer")),
-//     min: extractNumberValue(extractTypePropertyType(type, "min")),
-//     max: extractNumberValue(extractTypePropertyType(type, "max"))
-//   });
-// }
-
-// function extractTypePropertyType(type: Type, propertyName: string): Type {
-//   const property = type.getProperty(propertyName);
-//   if (property) {
-//     return extractPropertySignature(property).getType();
-//   } else {
-//     throw new Error(`expected property "${propertyName}" from interface`);
-//   }
-// }
-
-// function extractBooleanValue(type: Type): boolean | undefined {
-//   if (type.isBoolean()) {
-//     return undefined;
-//   } else if (type.isBooleanLiteral()) {
-//     return type.getText() === "true";
-//   } else {
-//     throw new Error("expected property to be a boolean");
-//   }
-// }
-
-function extractStringValue(type: Type): string | undefined {
-  if (type.isString()) {
-    return undefined;
-  } else if (type.isStringLiteral()) {
-    return type.getText().substr(1, type.getText().length - 2);
-  } else {
-    throw new Error("expected property to be a string");
-  }
-}
-
-function extractNumberValue(type: Type): number | undefined {
-  if (type.isNumber()) {
-    return undefined;
-  } else if (type.isNumberLiteral()) {
-    return Number(type.getText());
-  } else {
-    throw new Error("expected property to be a number");
-  }
-}
-
-/**
- * Check if a type is a custom string.
- *
- * @param type type to check
- */
-function typeIsCustomString(type: Type) {
-  return type.isInterface() && typeIncludesBaseType(type, "CustomStringType");
-}
-
-/**
- * Check if a type is a custom number.
- *
- * @param type type to check
- */
-function typeIsCustomNumber(type: Type) {
-  return type.isInterface() && typeIncludesBaseType(type, "CustomNumberType");
-}
-
-/**
- * Check if a type has a base type of a certain name.
- *
- * @param type type to check
- * @param typeName name of type to check for
- */
-function typeIncludesBaseType(type: Type, typeName: string) {
-  return type
-    .getBaseTypes()
-    .some(baseType => last(baseType.getText().split(".")) === typeName);
 }

@@ -58,7 +58,6 @@ export function createProject() {
       }
     }
   });
-  // return new Project({ tsConfigFilePath: "./libnext/src/test/tsconfig.json" });
 }
 
 /**
