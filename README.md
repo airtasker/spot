@@ -35,11 +35,39 @@ interface CreateUserResponse {
 }
 ```
 
+For available methods, please check [here](https://github.com/airtasker/spot/wiki/Spot-available-methods)
+
 You can pass the definition above to a generator by simply running:
 
 ```sh
 npx @airtasker/spot generate --api api.ts
 ```
+
+# Why we built Spot
+
+At first glance, you may wonder why we bothered building Spot. Why not use OpenAPI (formely known as Swagger) to describe your API?
+At the core, we built Spot because we wanted a better developer experience.
+
+## Writing contracts
+
+OpenAPI documents are stored as YAML files, following a very specific schema. You won’t know that you used the wrong field name or forgot to wrap a type definition into a schema object unless you run a good OpenAPI linter. Most developers who aren’t intimately familiar with the OpenAPI specification end up using a visual editor such as Swagger Editor or Stoplight.
+
+Since Spot leverages the TypeScript syntax, all you need is to write valid TypeScript code. Your editor will immediately tell you when your code is invalid. It will tell you what’s missing, and you even get autocomplete for free. We could have picked any other typed language—TypeScript just happened to be one of the most concise and ubiquitous for us.
+
+## Reviewing contracts
+
+We believe that API contracts should be checked into Git, or whichever code versioning system you use. In addition, API contracts should be systematically peer reviewed. It’s far too easy for a backend engineer to incorrectly assume what client engineers expect from an endpoint.
+
+Because of their complex nested structure and the richness of the OpenAPI specification, OpenAPI documents can be difficult to review in a pull request. They’re great for machines, but not always for humans.
+Spot aims to be as human-readable as possible. We’ve seen developers become a lot more engaged in discussions on pull requests for Spot contracts, compared to our previous OpenAPI documents.
+
+## Interoperability with various formats
+
+Depending on what you're trying to achieve (testing, documentation, client code generation…), you'll find tools that only work with OpenAPI 2 (Swagger), and newer tools that only support OpenAPI 3. You may also find tools for a different API ecosystem such as JSON Schema or API Blueprint.
+
+We built Spot with this in mind. Instead of having to juggle various API format converters, Spot can generate every major API document format. This is why we called it "Single Point Of Truth".
+
+# Status
 
 This is work in progress as of 14 Nov 2018:
 
@@ -78,296 +106,6 @@ You can then run a generator with:
 ```
 npx @airtasker/spot generate --api api.ts
 ```
-
-## `@api`
-
-Define an API. This is required and must only be defined once:
-
-```TypeScript
-import { api } from "@airtasker/spot";
-
-@api({
-  name: "My API",
-  description: "My really cool API"
-})
-class MyAPI {}
-```
-
-| Field         | Description                           |
-| ------------- | ------------------------------------- |
-| `name`        | (**required**) Name of the API        |
-| `description` | (**required**) Description of the API |
-
-## `@endpoint`
-
-Define a HTTP endpoint for the API. An endpoint describes a particular HTTP action on a URL path:
-
-```TypeScript
-import { endpoint, header, pathParam, queryParam, request, response, specificError } from "@airtasker/spot";
-
-class MyUserEndpoints {
-  // GET /users expects a mandatory `search_term` query parameter and returns a list of users.
-  @endpoint({
-    method: "GET",
-    path: "/users",
-    description: "Retrieve all users",
-    tags: ["Users"]
-  })
-  getUsers(@queryParam({ description: "Search term" }) search_term: Optional<string>): UserResponse[] {
-    return response();
-  }
-
-  // GET /users/:id returns a user by their unique identifier.
-  @endpoint({
-    method: "GET",
-    path: "/users/:id",
-    description: "Get user by id",
-    tags: ["Users"]
-  })
-  getUser(@pathParam({ description: "Unique user identifier" }) id: string): UserResponse {
-    return response();
-  }
-
-  // POST /users creates a user, expecting an authorization token to be present.
-  @endpoint({
-    method: "POST",
-    path: "/users",
-    description: "Create a user",
-    tags: ["Users"]
-  })
-  @specificError<ApiErrorResponse>({
-    name: "unauthorized",
-    statusCode: 401
-  })
-  createUser(
-    @request req: CreateUserRequest,
-    @header({
-      name: "Authorization",
-      description: "This is the authorization token"
-    })
-    authToken: Optional<string>
-  ): CreateUserResponse {
-    return response();
-  }
-}
-
-interface User {
-  firstName: string;
-  lastName: string;
-}
-
-type UserResponse = User;
-type UserListResponse = User[];
-
-interface CreateUserRequest {
-  firstName: string;
-  lastName: string;
-}
-
-interface CreateUserResponse {
-  success: boolean;
-}
-
-interface ApiErrorResponse {
-  message: string;
-}
-```
-
-| Field                | Default            | Description                                              |
-| -------------------- | ------------------ | -------------------------------------------------------- |
-| `method`             |                    | (**required**) [HTTP method](#suppported-http-methods)   |
-| `path`               |                    | (**required**) URL path                                  |
-| `description`        | `""`               | Description of the endpoint                              |
-| `requestContentType` | `application/json` | Content type of the request body                         |
-| `successStatusCode`  | `200`              | HTTP status code for a successful response               |
-| `tags`               |                    | List of tags used for endpoint grouping in documentation |
-
-### `@request`
-
-Define a request body for requests that require one. This is commonly used for `POST` and `PUT` requests and is not allowed for `GET` requests:
-
-```TypeScript
-class MyUserEndpoints {
-  //...
-  @endpoint({
-    method: "POST",
-    path: "/users"
-  })
-  createUser(
-    @request req: CreateUserRequest
-  ): UserResponse {
-    return response();
-  }
-
-  @endpoint({
-    method: "PUT",
-    path: "/users/:id"
-  })
-  updateUser(
-    @pathParam({ description: "User unique identifier" }) id: string,
-    @request req: UpdateUserRequest
-  ): UserResponse {
-    return response();
-  }
-  //...
-}
-
-interface CreateUserRequest {
-  firstName: string;
-  lastName: string;
-}
-
-interface UpdateUserRequest {
-  lastName: string;
-}
-```
-
-### `@header`
-
-Define a request header. `@header` can be used multiple times to define multiple headers:
-
-```TypeScript
-  //...
-  @endpoint({
-    method: "POST",
-    path: "/users",
-    description: "Create a user"
-  })
-  createUser(
-    @request req: CreateUserRequest,
-    @header({
-      name: "Authorization",
-      description: "This is the authorization token"
-    })
-    authToken: Optional<string>
-  ): CreateUserResponse {
-    return response();
-  }
-  //...
-```
-
-| Field         | Description                       |
-| ------------- | --------------------------------- |
-| `name`        | (**required**) Name of the header |
-| `description` | Description of the header         |
-
-### `@pathParam`
-
-Define path parameters that appear in the `path` provided in `@endpoint()`. For example if the path is `/users/:id`, the endpoint method must define a matching argument with `@pathParam() id: string`::
-
-```TypeScript
-  //...
-  @endpoint({
-    method: "GET",
-    path: "/users/:id",
-    description: "Get user by id"
-  })
-  getUser(@pathParam({ description: "Unique user identifier" }) id: string): UserResponse {
-    return response();
-  }
-  //...
-```
-
-**Note**: the name of the argument must match the name of the path parameter.
-
-| Field         | Description                       |
-| ------------- | --------------------------------- |
-| `description` | Description of the path parameter |
-
-### `@queryParam`
-
-Define query parameters. `@queryParam` can be used multiple times to define multiple query parameters:
-
-```TypeScript
-  //...
-  @endpoint({
-    method: "GET",
-    path: "/users",
-    description: "Retrieve all users"
-  })
-  getUsers(@queryParam({ name: "search-term", description: "Search term" }) search_term: Optional<string>): UserResponse[] {
-    return response();
-  }
-  //...
-```
-
-**Note**: the name of the argument must match the name of the query parameter.
-
-| Field         | Description                        |
-| ------------- | ---------------------------------- |
-| `name`        | Name of the query parameter        |
-| `description` | Description of the query parameter |
-
-### `@specificError<T>`
-
-Define a known error for the endpoint. `@specificError` can be used multiple times to define multiple errors. `T` must be replaced with the response type when the error occurs, for example `@specificError<UnauthorizedErrorResponse>`:
-
-```TypeScript
-  //...
-  @endpoint({
-    method: "POST",
-    path: "/users",
-    description: "Create a user"
-  })
-  @specificError<UnauthorizedErrorResponse>({
-    name: "unauthorized",
-    statusCode: 401
-  })
-  createUser(
-    //...
-  ): CreateUserResponse {
-    return response();
-  }
-  //...
-```
-
-| Field        | Description                                   |
-| ------------ | --------------------------------------------- |
-| `name`       | (**required**) Name of the error              |
-| `statusCode` | (**required**) HTTP status code for the error |
-
-### `@genericError<T>`
-
-Define a default error for the endpoint. This can only be used once for an `@endpoint`. `T` must be replaced with the response type when the error occurs, for example `@genericError<ApiErrorResponse>`:
-
-```TypeScript
-  //...
-  @endpoint({
-    method: "POST",
-    path: "/users",
-    description: "Create a user"
-  })
-  @genericError<ApiErrorResponse>()
-  createUser(
-    //...
-  ): CreateUserResponse {
-    return response();
-  }
-  //...
-```
-
-## Matcher Types
-
-| Type          | Description                                                                                             | Example                                                |
-| ------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `string`      | A string value                                                                                          | `name: string`                                         |
-| `number`      | A number value                                                                                          | `numPencils: number`                                   |
-| `Int32`       | A 32-bit integer                                                                                        | `age: Int32`                                           |
-| `Int64`       | A 64-bit integer                                                                                        | `numAtoms: Int64`                                      |
-| `Float`       | A 32-bit floating point number                                                                          | `weight: Float`                                        |
-| `Double`      | A 64-bit floating point number                                                                          | `price: Double`                                        |
-| `boolean`     | A boolean value                                                                                         | `isAdmin: boolean`                                     |
-| `Date`        | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date      | `dateOfBirth: Date`                                    |
-| `DateTime`    | [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html) string representation of a date-time | `createdAt: DateTime`                                  |
-| Constant      | An exact value                                                                                          | `role: "admin"`                                        |
-| `Optional<T>` | An optional value                                                                                       | `role: Optional<string>`                               |
-| Union         | One-of                                                                                                  | `role: "admin" \| "member"`, `param: string \| number` |
-| Array         | Collection                                                                                              | `nicknames: string[]`                                  |
-| Object        | An object matcher                                                                                       | `person: { firstName: string, lastName: string }`      |
-
-## Suppported HTTP Methods
-
-`GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH`
 
 # Commands
 
