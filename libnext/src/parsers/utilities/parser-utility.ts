@@ -10,22 +10,11 @@ import {
   QuestionTokenableNode,
   MethodDeclaration,
   ClassDeclaration,
-  TypeReferenceNode
+  TypeReferenceNode,
+  TypeAliasDeclaration,
+  InterfaceDeclaration
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
-
-/**
- * Extract the property signature of an AST Symbol.
- *
- * @param property the property
- */
-export function extractPropertySignature(property: Symbol) {
-  const valueDeclaration = property.getValueDeclarationOrThrow();
-  if (!TypeGuards.isPropertySignature(valueDeclaration)) {
-    throw new Error("expected property signature");
-  }
-  return valueDeclaration;
-}
 
 /**
  * Extracts the JS Doc comment from a node.
@@ -124,14 +113,11 @@ export function extractObjectParameterProperties(
   parameter: ParameterDeclaration
 ): PropertySignature[] {
   // Request parameters are expected to be object types
-  const type = parameter.getType();
-  if (type.isObject() && !type.isArray() && !type.isInterface()) {
-    return type
-      .getProperties()
-      .map(property => extractPropertySignature(property));
-  } else {
-    throw new Error("expected literal object parameter");
+  const typeNode = parameter.getTypeNodeOrThrow();
+  if (!TypeGuards.isTypeLiteralNode(typeNode)) {
+    throw new Error("expected object literal parameter");
   }
+  return typeNode.getProperties();
 }
 
 /**
@@ -195,21 +181,26 @@ export function ensureNodeNotOptional(node: QuestionTokenableNode) {
   }
 }
 
-export function getTypeAliasDeclarationFromTypeReference(
+export function getTargetDeclarationFromTypeReference(
   typeReference: TypeReferenceNode
-) {
-  const nameSymbol = typeReference.getTypeName().getSymbolOrThrow(); // for a local reference
-  const aliasSymbol = nameSymbol.getAliasedSymbol(); // for an imported reference
-  const finalSymbol = aliasSymbol === undefined ? nameSymbol : aliasSymbol;
-  const declarations = finalSymbol.getDeclarations();
+): TypeAliasDeclaration | InterfaceDeclaration {
+  const symbol = typeReference.getTypeName().getSymbolOrThrow();
+  // if the symbol is an alias, it means it the reference is declared from an import
+  const targetSymbol = symbol.isAlias()
+    ? symbol.getAliasedSymbolOrThrow()
+    : symbol;
+  const declarations = targetSymbol.getDeclarations();
   if (declarations.length !== 1) {
-    throw new Error("expected exactly one type alias declaration");
+    throw new Error("expected exactly one declaration");
   }
-  const typeAliasDeclaration = declarations[0];
-  if (!TypeGuards.isTypeAliasDeclaration(typeAliasDeclaration)) {
-    throw new Error("expected a type alias declaration");
+  const targetDeclaration = declarations[0];
+  if (
+    TypeGuards.isInterfaceDeclaration(targetDeclaration) ||
+    TypeGuards.isTypeAliasDeclaration(targetDeclaration)
+  ) {
+    return targetDeclaration;
   }
-  return typeAliasDeclaration;
+  throw new Error("expected a type alias or interface declaration");
 }
 
 /**

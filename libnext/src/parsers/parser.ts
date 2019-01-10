@@ -1,6 +1,5 @@
-import { Project, SourceFile, ts, CompilerOptions } from "ts-simple-ast";
-import { parseApi } from "./nodes/api-parser";
-import { parseEndpoint } from "./nodes/endpoint-parser";
+import { uniqBy } from "lodash";
+import { CompilerOptions, Project, SourceFile, ts } from "ts-simple-ast";
 import {
   ParsedContract,
   ParsedEndpoint,
@@ -9,17 +8,18 @@ import {
   ParsedResponse
 } from "../models/definitions";
 import {
-  isObjectType,
-  isArrayType,
   DataType,
-  isUnionType,
-  ReferenceType,
+  isArrayType,
+  isObjectType,
   isReferenceType,
-  Kind
+  isUnionType,
+  Kind,
+  ReferenceType
 } from "../models/types";
-import { parseObjectLiteralType, parseType } from "./utilities/type-parser";
+import { parseApi } from "./nodes/api-parser";
+import { parseEndpoint } from "./nodes/endpoint-parser";
 import { extractJsDocComment } from "./utilities/parser-utility";
-import { uniqBy } from "lodash";
+import { parseInterfaceDeclaration, parseType } from "./utilities/type-parser";
 
 export function parseFilePath(
   sourcePath: string,
@@ -144,7 +144,7 @@ function parseRootSourceFile(
     if (interfaceDeclaration) {
       const name = interfaceDeclaration.getName();
       const description = extractJsDocComment(interfaceDeclaration);
-      const type = parseObjectLiteralType(interfaceDeclaration.getType());
+      const type = parseInterfaceDeclaration(interfaceDeclaration);
       return { description, name, type };
     }
 
@@ -184,17 +184,9 @@ function retrieveTypeReferencesFromType(
       case Kind.StringLiteral:
       case Kind.NumberLiteral:
         return [dataType];
-      case Kind.Object: {
-        const interfaceDeclaration = file.getInterfaceOrThrow(dataType.name);
-        return [dataType].concat(
-          retrieveTypeReferencesFromType(
-            parseObjectLiteralType(interfaceDeclaration.getType()),
-            projectContext
-          )
-        );
-      }
       case Kind.Array:
-      case Kind.Union: {
+      case Kind.Union:
+      case Kind.TypeReference: {
         const typeAlias = file.getTypeAliasOrThrow(dataType.name);
         return [dataType].concat(
           retrieveTypeReferencesFromType(
@@ -203,7 +195,7 @@ function retrieveTypeReferencesFromType(
           )
         );
       }
-      case Kind.TypeReference: {
+      case Kind.Object: {
         const typeAlias = file.getTypeAlias(dataType.name);
         if (typeAlias !== undefined) {
           return [dataType].concat(
@@ -217,7 +209,7 @@ function retrieveTypeReferencesFromType(
         if (interfaceDeclaration) {
           return [dataType].concat(
             retrieveTypeReferencesFromType(
-              parseObjectLiteralType(interfaceDeclaration.getType()),
+              parseInterfaceDeclaration(interfaceDeclaration),
               projectContext
             )
           );

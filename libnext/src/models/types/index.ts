@@ -1,25 +1,25 @@
 import {
-  PrimitiveLiteral,
+  CustomPrimitiveType,
+  DateTimeType,
+  DateType,
+  IntegerType
+} from "./custom-primitive-types";
+import { Kind } from "./kinds";
+import { ArrayType, ObjectType } from "./object-types";
+import {
   NumberLiteral,
+  PrimitiveLiteral,
   StringLiteral
 } from "./primitive-literals";
-import { PrimitiveType, NumberType, StringType } from "./primitive-types";
-import { ObjectType, ArrayType } from "./object-types";
-import { UnionType, ReferenceType } from "./special-types";
-import { Kind } from "./kinds";
-import {
-  CustomPrimitiveType,
-  IntegerType,
-  DateType,
-  DateTimeType
-} from "./custom-primitive-types";
+import { NumberType, PrimitiveType, StringType } from "./primitive-types";
+import { ReferenceType, UnionType } from "./special-types";
 
-export * from "./kinds";
-export * from "./primitive-types";
-export * from "./primitive-literals";
 export * from "./custom-primitive-types";
-export * from "./special-types";
+export * from "./kinds";
 export * from "./object-types";
+export * from "./primitive-literals";
+export * from "./primitive-types";
+export * from "./special-types";
 
 export type DataType =
   | PrimitiveType

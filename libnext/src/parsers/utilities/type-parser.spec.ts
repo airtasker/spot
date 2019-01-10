@@ -1,5 +1,5 @@
 import { TypeNode } from "ts-simple-ast";
-import { parseType } from "./type-parser";
+import { parseType, parseInterfaceDeclaration } from "./type-parser";
 import {
   STRING,
   NULL,
@@ -223,6 +223,59 @@ describe("type parser", () => {
         name: "ChainedAlias",
         location: expect.stringMatching(/main\.ts$/)
       });
+    });
+  });
+});
+
+describe("interface parser", () => {
+  test("resolves all properties from base types", () => {
+    const interfaceName = "Target";
+    const sourceFile = createSourceFile({
+      path: "main",
+      content: `
+        interface ${interfaceName} extends A {
+          target: string;
+        }
+        interface A extends B, C {
+          a: string;
+        }
+        interface B {
+          b: string;
+        }
+        interface C {
+          c: string;
+        }
+      `
+    });
+    const interphace = sourceFile.getInterfaceOrThrow(interfaceName);
+    expect(parseInterfaceDeclaration(interphace)).toStrictEqual({
+      kind: Kind.Object,
+      properties: [
+        {
+          description: undefined,
+          name: "target",
+          optional: false,
+          type: STRING
+        },
+        {
+          description: undefined,
+          name: "a",
+          optional: false,
+          type: STRING
+        },
+        {
+          description: undefined,
+          name: "b",
+          optional: false,
+          type: STRING
+        },
+        {
+          description: undefined,
+          name: "c",
+          optional: false,
+          type: STRING
+        }
+      ]
     });
   });
 });
