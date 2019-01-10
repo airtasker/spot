@@ -214,7 +214,7 @@ describe("type parser", () => {
       expect(result.types).toContainEqual(NULL);
     });
 
-    test.only("parses chained type alias", () => {
+    test("parses chained type alias", () => {
       const typeNode = createTypeNode("ChainedAlias");
 
       expect(parseType(typeNode)).toStrictEqual({

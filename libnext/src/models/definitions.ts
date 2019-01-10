@@ -1,11 +1,5 @@
 import { HttpMethod } from "./http";
-import {
-  ObjectType,
-  DataType,
-  StringLikeType,
-  NumberLikeType,
-  ReferenceType
-} from "./types";
+import { DataType } from "./types";
 
 export interface ParsedContract {
   api: ParsedApi;
@@ -30,6 +24,7 @@ export interface ParsedEndpoint {
   path: string;
   request?: ParsedRequest;
   responses: ParsedResponse[];
+  defaultResponse?: ParsedDefaultResponse; // TODO: should a default response be a requirement?
 }
 
 export interface ParsedRequest {
@@ -39,9 +34,12 @@ export interface ParsedRequest {
   body?: ParsedBody;
 }
 
-export interface ParsedResponse {
-  description?: string;
+export interface ParsedResponse extends ParsedDefaultResponse {
   status: number;
+}
+
+export interface ParsedDefaultResponse {
+  description?: string;
   headers: ParsedHeader[];
   body?: ParsedBody;
 }
@@ -49,25 +47,25 @@ export interface ParsedResponse {
 export interface ParsedHeader {
   description?: string;
   name: string;
-  type: StringLikeType | NumberLikeType;
+  type: DataType;
   optional: boolean;
 }
 
 export interface ParsedPathParam {
   description?: string;
   name: string;
-  type: StringLikeType | NumberLikeType;
+  type: DataType;
 }
 
 export interface ParsedQueryParam {
   description?: string;
   name: string;
-  type: StringLikeType | NumberLikeType;
+  type: DataType;
   optional: boolean;
 }
 
 export interface ParsedBody {
   description?: string;
-  type: ObjectType | ReferenceType;
+  type: DataType;
   optional: boolean;
 }

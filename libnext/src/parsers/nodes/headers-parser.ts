@@ -18,12 +18,6 @@ export function parseHeaders(parameter: ParameterDeclaration): ParsedHeader[] {
   const properties = extractObjectParameterProperties(parameter);
   return properties.map(property => {
     const propertyDataType = parseType(property.getTypeNodeOrThrow());
-    if (
-      !isStringLikeType(propertyDataType) &&
-      !isNumberLikeType(propertyDataType)
-    ) {
-      throw new Error("expected a string or number like type");
-    }
     return {
       name: property.getName(),
       description: extractJsDocComment(property),
@@ -32,5 +26,3 @@ export function parseHeaders(parameter: ParameterDeclaration): ParsedHeader[] {
     };
   });
 }
-
-function possibleKinds(dataType: DataType): Kind[] {}

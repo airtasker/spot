@@ -62,21 +62,6 @@ describe("@pathParams parser", () => {
     const parameter = method.getParameterOrThrow(pathParamName);
     expect(() => parsePathParams(parameter)).toThrow();
   });
-
-  test("fails if any object properties are invalid types", () => {
-    const method = createMethodDeclaration(`
-      @pathParams
-      ${pathParamName}: {
-        companyId: string;
-        userId: {
-          part: string;
-        };
-      }
-    `);
-
-    const parameter = method.getParameterOrThrow(pathParamName);
-    expect(() => parsePathParams(parameter)).toThrow();
-  });
 });
 
 function createMethodDeclaration(

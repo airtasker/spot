@@ -10,6 +10,7 @@ import { ParsedEndpoint } from "../../models/definitions";
 import { HttpMethod } from "../../models/http";
 import { parseRequest } from "./request-parser";
 import { parseResponse } from "./response-parser";
+import { parseDefaultResponse } from "./default-response-parser";
 
 /**
  * Parse an `@endpoint` decorated class.
@@ -29,12 +30,20 @@ export function parseEndpoint(klass: ClassDeclaration): ParsedEndpoint {
     .getMethods()
     .filter(klassMethod => klassMethod.getDecorator("response") !== undefined)
     .map(responseMethod => parseResponse(responseMethod));
+  const defaultResponseMethod = classMethodWithDecorator(
+    klass,
+    "defaultResponse"
+  );
+  const defaultResponse =
+    defaultResponseMethod === undefined
+      ? undefined
+      : parseDefaultResponse(defaultResponseMethod);
 
   if (responses.length === 0) {
     throw new Error("expected at least one @response decorated method");
   }
 
-  return { description, method, path, request, responses };
+  return { description, method, path, request, responses, defaultResponse };
 }
 
 /**

@@ -4,6 +4,7 @@ import {
   endpoint,
   request,
   response,
+  defaultResponse,
   headers,
   pathParams,
   queryParams,
@@ -58,6 +59,12 @@ class CreateUser {
   /** Bad request response */
   @response({ status: 400 })
   badRequestResponse(
+    /** Error response body */
+    @body body: ErrorBody
+  ) {}
+
+  @defaultResponse
+  unexpectedResponse(
     /** Error response body */
     @body body: ErrorBody
   ) {}

@@ -7,7 +7,7 @@ describe("@endpoint parser", () => {
   const endpointMethod = "PUT";
   const endpointPath = "/users/:id";
   const content = `
-    import { endpoint, request, response, pathParams, body } from "@airtasker/spot"
+    import { endpoint, request, response, defaultResponse, pathParams, body } from "@airtasker/spot"
 
     /** ${endpointDescription} */
     @endpoint({
@@ -31,6 +31,9 @@ describe("@endpoint parser", () => {
 
       @response({ status: 400 })
       badResponse() {}
+
+      @defaultResponse
+      unexpectedResponse() {}
     }
   `;
 
@@ -45,5 +48,6 @@ describe("@endpoint parser", () => {
     expect(result.path).toEqual(endpointPath);
     expect(result.request).not.toBeUndefined;
     expect(result.responses).toHaveLength(2);
+    expect(result.defaultResponse).not.toBeUndefined;
   });
 });

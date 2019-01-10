@@ -160,6 +160,12 @@ function uniqueReferences(referenceTypes: ReferenceType[]): ReferenceType[] {
   );
 }
 
+/**
+ * Recursively retrieves all type references from a data type including itself.
+ *
+ * @param dataType
+ * @param projectContext
+ */
 function retrieveTypeReferencesFromType(
   dataType: DataType,
   projectContext: Project
@@ -247,6 +253,11 @@ function retrieveTypeReferencesFromType(
   }
 }
 
+/**
+ * Retrieve all type references from a request. This will only retrieve direct references (not recursive).
+ *
+ * @param request a request
+ */
 function retrieveTypeReferencesFromRequest(
   request: ParsedRequest
 ): ReferenceType[] {
@@ -260,6 +271,11 @@ function retrieveTypeReferencesFromRequest(
   return fromHeaders;
 }
 
+/**
+ * Retrieve all type references from a collection of responses. This will only retrieve direct references (not recursive).
+ *
+ * @param requests a collection of responses
+ */
 function retrieveTypeReferencesFromResponses(
   responses: ParsedResponse[]
 ): ReferenceType[] {
@@ -280,16 +296,19 @@ function retrieveTypeReferencesFromResponses(
   );
 }
 
+/**
+ * Retrieve all type references from a collection of headers. This will only retrieve direct references (not recursive).
+ *
+ * @param headers a collection of headers
+ */
 function retrieveTypeReferencesFromHeaders(
   headers: ParsedHeader[]
 ): ReferenceType[] {
   return headers.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
     const type = currentHeader.type;
-    if (isReferenceType(type)) {
-      return typeReferencesAcc.concat(type);
-    } else {
-      return typeReferencesAcc;
-    }
+    return isReferenceType(type)
+      ? typeReferencesAcc.concat(type)
+      : typeReferencesAcc;
   }, []);
 }
 

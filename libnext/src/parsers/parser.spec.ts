@@ -5,7 +5,7 @@ describe("parser", () => {
     const result = parseFilePath("./libnext/src/test/examples/contract.ts", {
       baseUrl: "./",
       paths: {
-        "@airtasker/spot": ["./libnext/src/lib"]
+        "@airtasker/spotnext": ["./libnext/src/lib"]
       }
     });
     expect(result.api).not.toBeUndefined;

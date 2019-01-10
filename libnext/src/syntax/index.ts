@@ -1,5 +1,6 @@
 export * from "./api";
 export * from "./body";
+export * from "./default-response";
 export * from "./endpoint";
 export * from "./headers";
 export * from "./path-params";

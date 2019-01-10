@@ -38,19 +38,10 @@ describe("@body parser", () => {
             optional: true,
             type: NUMBER
           }
-        ],
-        extends: []
+        ]
       },
       optional: true
     });
-  });
-
-  test("fails if the body is an invalid type", () => {
-    const method = createMethodDeclaration(`
-      @body ${bodyParamName}: string
-    `);
-    const parameter = method.getParameterOrThrow(bodyParamName);
-    expect(() => parseBody(parameter)).toThrow();
   });
 });
 
