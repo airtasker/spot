@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedBody } from "../../models/parsed-nodes";
+import { BodyNode } from "../../models/nodes";
 import { parseType } from "../utilities/type-parser";
 
 /**
@@ -7,7 +7,7 @@ import { parseType } from "../utilities/type-parser";
  *
  * @param parameter a parameter declaration
  */
-export function parseBody(parameter: ParameterDeclaration): ParsedBody {
+export function parseBody(parameter: ParameterDeclaration): BodyNode {
   parameter.getDecoratorOrThrow("body");
   const dataType = parseType(parameter.getTypeNodeOrThrow());
   return {

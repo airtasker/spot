@@ -1,5 +1,5 @@
 import { ClassDeclaration } from "ts-simple-ast";
-import { ParsedApi } from "../../models/parsed-nodes";
+import { ApiNode } from "../../models/nodes";
 import {
   extractDecoratorFactoryConfiguration,
   extractJsDocComment,
@@ -11,7 +11,7 @@ import {
  *
  * @param klass a class declaration
  */
-export function parseApi(klass: ClassDeclaration): ParsedApi {
+export function parseApi(klass: ClassDeclaration): ApiNode {
   const decorator = klass.getDecoratorOrThrow("api");
   const description = extractJsDocComment(klass);
   const configuration = extractDecoratorFactoryConfiguration(decorator);

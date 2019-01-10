@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedQueryParam } from "../../models/parsed-nodes";
+import { QueryParamNode } from "../../models/nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,
@@ -14,7 +14,7 @@ import { parseType } from "../utilities/type-parser";
  */
 export function parseQueryParams(
   parameter: ParameterDeclaration
-): ParsedQueryParam[] {
+): QueryParamNode[] {
   parameter.getDecoratorOrThrow("queryParams");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);

@@ -1,6 +1,6 @@
 import { ClassDeclaration, ObjectLiteralExpression } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
-import { ParsedEndpoint } from "../../models/parsed-nodes";
+import { EndpointNode } from "../../models/nodes";
 import {
   classMethodWithDecorator,
   extractDecoratorFactoryConfiguration,
@@ -17,7 +17,7 @@ import { parseResponse } from "./response-parser";
  *
  * @param klass a class declaration
  */
-export function parseEndpoint(klass: ClassDeclaration): ParsedEndpoint {
+export function parseEndpoint(klass: ClassDeclaration): EndpointNode {
   const decorator = klass.getDecoratorOrThrow("endpoint");
   const description = extractJsDocComment(klass);
   const configuration = extractDecoratorFactoryConfiguration(decorator);

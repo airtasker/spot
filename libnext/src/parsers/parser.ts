@@ -1,12 +1,12 @@
 import { uniqBy } from "lodash";
 import { CompilerOptions, Project, SourceFile, ts } from "ts-simple-ast";
 import {
-  ParsedContract,
-  ParsedEndpoint,
-  ParsedHeader,
-  ParsedRequest,
-  ParsedResponse
-} from "../models/parsed-nodes";
+  ContractNode,
+  EndpointNode,
+  HeaderNode,
+  RequestNode,
+  ResponseNode
+} from "../models/nodes";
 import {
   DataType,
   isArrayType,
@@ -24,7 +24,7 @@ import { parseInterfaceDeclaration, parseType } from "./utilities/type-parser";
 export function parseFilePath(
   sourcePath: string,
   customCompilerOptions: CompilerOptions = {}
-): ParsedContract {
+): ContractNode {
   const defaultCompilerOptions: CompilerOptions = {
     target: ts.ScriptTarget.ESNext,
     module: ts.ModuleKind.CommonJS,
@@ -64,7 +64,7 @@ export function parseFilePath(
 function parseRootSourceFile(
   file: SourceFile,
   projectContext: Project
-): ParsedContract {
+): ContractNode {
   const apiClasses = file
     .getClasses()
     .filter(klass => klass.getDecorator("api") !== undefined);
@@ -87,7 +87,7 @@ function parseRootSourceFile(
     .getImportDeclarations()
     .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
 
-  const endpoints = importedFiles.reduce<ParsedEndpoint[]>(
+  const endpoints = importedFiles.reduce<EndpointNode[]>(
     (endpointsAcc, currentFile) =>
       currentFile
         .getClasses()
@@ -251,7 +251,7 @@ function retrieveTypeReferencesFromType(
  * @param request a request
  */
 function retrieveTypeReferencesFromRequest(
-  request: ParsedRequest
+  request: RequestNode
 ): ReferenceType[] {
   const fromHeaders = retrieveTypeReferencesFromHeaders(request.headers);
   if (request.body) {
@@ -269,7 +269,7 @@ function retrieveTypeReferencesFromRequest(
  * @param requests a collection of responses
  */
 function retrieveTypeReferencesFromResponses(
-  responses: ParsedResponse[]
+  responses: ResponseNode[]
 ): ReferenceType[] {
   return responses.reduce<ReferenceType[]>(
     (typeReferencesAcc, currentResponse) => {
@@ -294,7 +294,7 @@ function retrieveTypeReferencesFromResponses(
  * @param headers a collection of headers
  */
 function retrieveTypeReferencesFromHeaders(
-  headers: ParsedHeader[]
+  headers: HeaderNode[]
 ): ReferenceType[] {
   return headers.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
     const type = currentHeader.type;

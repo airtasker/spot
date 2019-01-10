@@ -1,5 +1,5 @@
 import { MethodDeclaration } from "ts-simple-ast";
-import { ParsedDefaultResponse } from "../../models/parsed-nodes";
+import { DefaultResponseNode } from "../../models/nodes";
 import {
   extractJsDocComment,
   methodParamWithDecorator
@@ -14,7 +14,7 @@ import { parseHeaders } from "./headers-parser";
  */
 export function parseDefaultResponse(
   method: MethodDeclaration
-): ParsedDefaultResponse {
+): DefaultResponseNode {
   method.getDecoratorOrThrow("defaultResponse");
   const headersParameter = methodParamWithDecorator(method, "headers");
   const bodyParameter = methodParamWithDecorator(method, "body");

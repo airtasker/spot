@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedPathParam } from "../../models/parsed-nodes";
+import { PathParamNode } from "../../models/nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,
@@ -14,7 +14,7 @@ import { parseType } from "../utilities/type-parser";
  */
 export function parsePathParams(
   parameter: ParameterDeclaration
-): ParsedPathParam[] {
+): PathParamNode[] {
   parameter.getDecoratorOrThrow("pathParams");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);

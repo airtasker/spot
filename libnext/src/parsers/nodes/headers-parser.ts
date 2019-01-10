@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedHeader } from "../../models/parsed-nodes";
+import { HeaderNode } from "../../models/nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,
@@ -12,7 +12,7 @@ import { parseType } from "../utilities/type-parser";
  *
  * @param parameter a parameter declaration
  */
-export function parseHeaders(parameter: ParameterDeclaration): ParsedHeader[] {
+export function parseHeaders(parameter: ParameterDeclaration): HeaderNode[] {
   parameter.getDecoratorOrThrow("headers");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);
