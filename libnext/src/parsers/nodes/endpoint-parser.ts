@@ -1,16 +1,16 @@
 import { ClassDeclaration, ObjectLiteralExpression } from "ts-simple-ast";
-import {
-  extractJsDocComment,
-  extractDecoratorFactoryConfiguration,
-  extractStringProperty,
-  isHttpMethod,
-  classMethodWithDecorator
-} from "../utilities/parser-utility";
 import { ParsedEndpoint } from "../../models/definitions";
 import { HttpMethod } from "../../models/http";
+import {
+  classMethodWithDecorator,
+  extractDecoratorFactoryConfiguration,
+  extractJsDocComment,
+  extractStringProperty,
+  isHttpMethod
+} from "../utilities/parser-utility";
+import { parseDefaultResponse } from "./default-response-parser";
 import { parseRequest } from "./request-parser";
 import { parseResponse } from "./response-parser";
-import { parseDefaultResponse } from "./default-response-parser";
 
 /**
  * Parse an `@endpoint` decorated class.

@@ -1,7 +1,7 @@
-import { parsePathParams } from "./path-params-parser";
-import { createSourceFile } from "../../test/helper";
-import { STRING, NUMBER } from "../../models/types";
 import { MethodDeclaration } from "ts-simple-ast";
+import { NUMBER, STRING } from "../../models/types";
+import { createSourceFile } from "../../test/helper";
+import { parsePathParams } from "./path-params-parser";
 
 describe("@pathParams parser", () => {
   const pathParamName = "paramName";

@@ -1,16 +1,16 @@
-import "./contract-endpoint";
 import {
   api,
-  endpoint,
-  request,
-  response,
+  body,
   defaultResponse,
+  endpoint,
   headers,
   pathParams,
   queryParams,
-  body
+  request,
+  response
 } from "@airtasker/spotnext";
-import { UserBody, ErrorBody, Address } from "./models";
+import "./contract-endpoint";
+import { Address, ErrorBody, UserBody } from "./models";
 
 /** This is the company API. It does cool things */
 @api({ name: "company-api" })

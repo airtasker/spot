@@ -1,15 +1,15 @@
 import { TypeNode } from "ts-simple-ast";
-import { parseType, parseInterfaceDeclaration } from "./type-parser";
 import {
-  STRING,
-  NULL,
-  NUMBER,
   BOOLEAN,
   Kind,
-  UnionType,
-  ObjectType
+  NULL,
+  NUMBER,
+  ObjectType,
+  STRING,
+  UnionType
 } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
+import { parseInterfaceDeclaration, parseType } from "./type-parser";
 
 describe("type parser", () => {
   describe("primitive types", () => {

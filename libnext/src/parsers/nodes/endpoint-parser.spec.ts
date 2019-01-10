@@ -1,5 +1,5 @@
-import { parseEndpoint } from "./endpoint-parser";
 import { createSourceFile } from "../../test/helper";
+import { parseEndpoint } from "./endpoint-parser";
 
 describe("@endpoint parser", () => {
   const endpointClassName = "MyEndpoint";

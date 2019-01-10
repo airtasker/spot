@@ -1,7 +1,7 @@
-import { createSourceFile } from "../../test/helper";
 import { MethodDeclaration } from "ts-simple-ast";
+import { NUMBER, STRING } from "../../models/types";
+import { createSourceFile } from "../../test/helper";
 import { parseHeaders } from "./headers-parser";
-import { STRING, NUMBER } from "../../models/types";
 
 describe("@headers parser", () => {
   const headersParamName = "paramName";

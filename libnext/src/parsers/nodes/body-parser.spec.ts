@@ -1,7 +1,7 @@
 import { MethodDeclaration } from "ts-simple-ast";
+import { Kind, NUMBER, STRING } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
 import { parseBody } from "./body-parser";
-import { Kind, NUMBER, STRING } from "../../models/types";
 
 describe("@body parser", () => {
   const bodyParamName = "paramName";

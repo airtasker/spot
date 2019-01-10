@@ -1,10 +1,10 @@
 import { ClassDeclaration } from "ts-simple-ast";
-import {
-  extractJsDocComment,
-  extractStringProperty,
-  extractDecoratorFactoryConfiguration
-} from "../utilities/parser-utility";
 import { ParsedApi } from "../../models/definitions";
+import {
+  extractDecoratorFactoryConfiguration,
+  extractJsDocComment,
+  extractStringProperty
+} from "../utilities/parser-utility";
 
 /**
  * Parse an `@api` decorated class.

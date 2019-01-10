@@ -1,10 +1,10 @@
 import { MethodDeclaration } from "ts-simple-ast";
 import { ParsedRequest } from "../../models/definitions";
+import { methodParamWithDecorator } from "../utilities/parser-utility";
+import { parseBody } from "./body-parser";
 import { parseHeaders } from "./headers-parser";
 import { parsePathParams } from "./path-params-parser";
 import { parseQueryParams } from "./query-params-parser";
-import { parseBody } from "./body-parser";
-import { methodParamWithDecorator } from "../utilities/parser-utility";
 
 /**
  * Parse a `@request` decorated method.

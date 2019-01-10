@@ -1,18 +1,17 @@
 import {
-  ts,
-  ObjectLiteralExpression,
-  JSDocableNode,
+  ClassDeclaration,
   Decorator,
-  TypeGuards,
-  Symbol,
+  InterfaceDeclaration,
+  JSDocableNode,
+  MethodDeclaration,
+  ObjectLiteralExpression,
   ParameterDeclaration,
   PropertySignature,
   QuestionTokenableNode,
-  MethodDeclaration,
-  ClassDeclaration,
-  TypeReferenceNode,
+  ts,
   TypeAliasDeclaration,
-  InterfaceDeclaration
+  TypeGuards,
+  TypeReferenceNode
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
 
@@ -64,25 +63,6 @@ export function extractNumberProperty(
 }
 
 /**
- * Extract an optional string property value from an object literal.
- *
- * @param objectLiteral an object literal
- * @param propertyName the property to extract
- */
-export function extractOptionalStringProperty(
-  objectLiteral: ObjectLiteralExpression,
-  propertyName: string
-): string | undefined {
-  const property = objectLiteral.getProperty(propertyName);
-  if (property) {
-    return property
-      .getLastChildIfKindOrThrow(ts.SyntaxKind.StringLiteral)
-      .getLiteralText();
-  }
-  return;
-}
-
-/**
  * Extract the Configuration object (first argument) from a Spot decorator factory.
  *
  * @param decorator a decorator factory
@@ -112,7 +92,7 @@ export function extractDecoratorFactoryConfiguration(
 export function extractObjectParameterProperties(
   parameter: ParameterDeclaration
 ): PropertySignature[] {
-  // Request parameters are expected to be object types
+  // Request parameters are expected to be object literals
   const typeNode = parameter.getTypeNodeOrThrow();
   if (!TypeGuards.isTypeLiteralNode(typeNode)) {
     throw new Error("expected object literal parameter");
@@ -162,7 +142,7 @@ export function classMethodWithDecorator(
     return matchingMethods[0];
   } else if (matchingMethods.length > 1) {
     throw new Error(
-      `expected a decorator @${decoratorName} to be used only once, found ${
+      `expected decorator @${decoratorName} to be used only once, found ${
         matchingMethods.length
       } usages`
     );
@@ -181,6 +161,12 @@ export function ensureNodeNotOptional(node: QuestionTokenableNode) {
   }
 }
 
+/**
+ * Extract the target type alias declaration or interface declaration
+ * of a type reference.
+ *
+ * @param typeReference AST type reference node
+ */
 export function getTargetDeclarationFromTypeReference(
   typeReference: TypeReferenceNode
 ): TypeAliasDeclaration | InterfaceDeclaration {

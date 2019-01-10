@@ -1,13 +1,13 @@
 import {
+  body,
   endpoint,
-  request,
-  response,
   headers,
   pathParams,
   queryParams,
-  body
+  request,
+  response
 } from "@airtasker/spotnext";
-import { UserBody, ErrorBody } from "./models";
+import { ErrorBody, UserBody } from "./models";
 
 /** Retrieves a user in a company */
 @endpoint({

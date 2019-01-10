@@ -1,12 +1,12 @@
 import {
   ArrayTypeNode,
+  InterfaceDeclaration,
   LiteralTypeNode,
   TypeGuards,
+  TypeLiteralNode,
   TypeNode,
   TypeReferenceNode,
-  UnionTypeNode,
-  TypeLiteralNode,
-  InterfaceDeclaration
+  UnionTypeNode
 } from "ts-simple-ast";
 import {
   arrayType,

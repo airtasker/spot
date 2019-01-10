@@ -1,9 +1,9 @@
-import { ParsedQueryParam } from "../../models/definitions";
 import { ParameterDeclaration } from "ts-simple-ast";
+import { ParsedQueryParam } from "../../models/definitions";
 import {
   ensureNodeNotOptional,
-  extractObjectParameterProperties,
-  extractJsDocComment
+  extractJsDocComment,
+  extractObjectParameterProperties
 } from "../utilities/parser-utility";
 import { parseType } from "../utilities/type-parser";
 
@@ -19,11 +19,10 @@ export function parseQueryParams(
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);
   return properties.map(property => {
-    const propertyDataType = parseType(property.getTypeNodeOrThrow());
     return {
       name: property.getName(),
       description: extractJsDocComment(property),
-      type: propertyDataType,
+      type: parseType(property.getTypeNodeOrThrow()),
       optional: property.hasQuestionToken()
     };
   });

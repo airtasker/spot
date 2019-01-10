@@ -1,5 +1,5 @@
-import { Kind } from "./kinds";
 import { DataType } from ".";
+import { Kind } from "./kinds";
 
 export interface UnionType {
   kind: Kind.Union;

@@ -1,10 +1,10 @@
 import { MethodDeclaration } from "ts-simple-ast";
 import { ParsedResponse } from "../../models/definitions";
 import {
-  extractJsDocComment,
-  methodParamWithDecorator,
   extractDecoratorFactoryConfiguration,
-  extractNumberProperty
+  extractJsDocComment,
+  extractNumberProperty,
+  methodParamWithDecorator
 } from "../utilities/parser-utility";
 import { parseBody } from "./body-parser";
 import { parseHeaders } from "./headers-parser";

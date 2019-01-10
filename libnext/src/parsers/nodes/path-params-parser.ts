@@ -1,9 +1,9 @@
-import { ParsedPathParam } from "../../models/definitions";
 import { ParameterDeclaration } from "ts-simple-ast";
+import { ParsedPathParam } from "../../models/definitions";
 import {
+  ensureNodeNotOptional,
   extractJsDocComment,
-  extractObjectParameterProperties,
-  ensureNodeNotOptional
+  extractObjectParameterProperties
 } from "../utilities/parser-utility";
 import { parseType } from "../utilities/type-parser";
 
@@ -20,11 +20,10 @@ export function parsePathParams(
   const properties = extractObjectParameterProperties(parameter);
   return properties.map(property => {
     ensureNodeNotOptional(property);
-    const propertyDataType = parseType(property.getTypeNodeOrThrow());
     return {
       name: property.getName(),
       description: extractJsDocComment(property),
-      type: propertyDataType
+      type: parseType(property.getTypeNodeOrThrow())
     };
   });
 }
