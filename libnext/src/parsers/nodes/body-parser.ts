@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedBody } from "../../models/definitions";
+import { ParsedBody } from "../../models/parsed-nodes";
 import { parseType } from "../utilities/type-parser";
 
 /**

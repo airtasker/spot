@@ -6,7 +6,7 @@ import {
   ParsedHeader,
   ParsedRequest,
   ParsedResponse
-} from "../models/definitions";
+} from "../models/parsed-nodes";
 import {
   DataType,
   isArrayType,

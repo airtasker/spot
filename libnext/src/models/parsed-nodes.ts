@@ -8,8 +8,8 @@ export interface ParsedContract {
 }
 
 export interface ParsedType {
-  description?: string;
   name: string;
+  description?: string;
   type: DataType;
 }
 
@@ -19,9 +19,9 @@ export interface ParsedApi {
 }
 
 export interface ParsedEndpoint {
+  name: string;
   description?: string;
   method: HttpMethod;
-  name: string;
   path: string;
   request?: ParsedRequest;
   responses: ParsedResponse[];
@@ -46,21 +46,21 @@ export interface ParsedDefaultResponse {
 }
 
 export interface ParsedHeader {
-  description?: string;
   name: string;
+  description?: string;
   type: DataType;
   optional: boolean;
 }
 
 export interface ParsedPathParam {
-  description?: string;
   name: string;
+  description?: string;
   type: DataType;
 }
 
 export interface ParsedQueryParam {
-  description?: string;
   name: string;
+  description?: string;
   type: DataType;
   optional: boolean;
 }

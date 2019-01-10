@@ -1,5 +1,5 @@
 import { MethodDeclaration } from "ts-simple-ast";
-import { ParsedResponse } from "../../models/definitions";
+import { ParsedResponse } from "../../models/parsed-nodes";
 import {
   extractDecoratorFactoryConfiguration,
   extractJsDocComment,

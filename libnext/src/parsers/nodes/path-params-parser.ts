@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedPathParam } from "../../models/definitions";
+import { ParsedPathParam } from "../../models/parsed-nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,

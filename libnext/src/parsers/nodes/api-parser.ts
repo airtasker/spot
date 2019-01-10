@@ -1,5 +1,5 @@
 import { ClassDeclaration } from "ts-simple-ast";
-import { ParsedApi } from "../../models/definitions";
+import { ParsedApi } from "../../models/parsed-nodes";
 import {
   extractDecoratorFactoryConfiguration,
   extractJsDocComment,

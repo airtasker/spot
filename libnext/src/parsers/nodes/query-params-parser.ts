@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedQueryParam } from "../../models/definitions";
+import { ParsedQueryParam } from "../../models/parsed-nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,

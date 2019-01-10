@@ -1,6 +1,6 @@
 import { ClassDeclaration, ObjectLiteralExpression } from "ts-simple-ast";
-import { ParsedEndpoint } from "../../models/definitions";
 import { HttpMethod } from "../../models/http";
+import { ParsedEndpoint } from "../../models/parsed-nodes";
 import {
   classMethodWithDecorator,
   extractDecoratorFactoryConfiguration,

@@ -1,5 +1,5 @@
 import { MethodDeclaration } from "ts-simple-ast";
-import { ParsedRequest } from "../../models/definitions";
+import { ParsedRequest } from "../../models/parsed-nodes";
 import { methodParamWithDecorator } from "../utilities/parser-utility";
 import { parseBody } from "./body-parser";
 import { parseHeaders } from "./headers-parser";

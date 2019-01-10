@@ -1,5 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
-import { ParsedHeader } from "../../models/definitions";
+import { ParsedHeader } from "../../models/parsed-nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,
