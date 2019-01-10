@@ -22,6 +22,7 @@ export function parseEndpoint(klass: ClassDeclaration): ParsedEndpoint {
   const description = extractJsDocComment(klass);
   const configuration = extractDecoratorFactoryConfiguration(decorator);
   const method = extractHttpMethodProperty(configuration, "method");
+  const name = klass.getNameOrThrow();
   const path = extractStringProperty(configuration, "path");
   const requestMethod = classMethodWithDecorator(klass, "request");
   const request =
@@ -43,7 +44,15 @@ export function parseEndpoint(klass: ClassDeclaration): ParsedEndpoint {
     throw new Error("expected at least one @response decorated method");
   }
 
-  return { description, method, path, request, responses, defaultResponse };
+  return {
+    description,
+    method,
+    name,
+    path,
+    request,
+    responses,
+    defaultResponse
+  };
 }
 
 /**

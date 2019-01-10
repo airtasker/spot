@@ -21,6 +21,7 @@ export interface ParsedApi {
 export interface ParsedEndpoint {
   description?: string;
   method: HttpMethod;
+  name: string;
   path: string;
   request?: ParsedRequest;
   responses: ParsedResponse[];
