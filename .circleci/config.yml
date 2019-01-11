@@ -21,7 +21,9 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v3-dependencies-
 
-      - run: yarn install --frozen-lockfile
+      - run: yarn install
+
+      - run: git diff
 
       - save_cache:
           paths:
