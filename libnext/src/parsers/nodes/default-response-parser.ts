@@ -20,7 +20,7 @@ export function parseDefaultResponse(
   const bodyParameter = methodParamWithDecorator(method, "body");
   const description = extractJsDocComment(method);
   const headers =
-    headersParameter === undefined ? [] : parseHeaders(headersParameter);
+    headersParameter ? parseHeaders(headersParameter) : [];
   const body =
     bodyParameter === undefined ? undefined : parseBody(bodyParameter);
 
