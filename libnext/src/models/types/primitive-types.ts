@@ -1,6 +1,6 @@
 import { Kind } from "./kinds";
 
-/** Primitive types native to the typescript language */
+/** Primitive types native to the TypeScript language. */
 export type PrimitiveType = NullType | BooleanType | StringType | NumberType;
 
 export const NULL: NullType = {
