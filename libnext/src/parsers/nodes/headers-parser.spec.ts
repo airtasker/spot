@@ -4,36 +4,30 @@ import { createSourceFile } from "../../test/helper";
 import { parseHeaders } from "./headers-parser";
 
 describe("@headers parser", () => {
-  const headersParamName = "paramName";
-
   test("parses all information", () => {
-    const xAuthTokenHeaderName = '"x-auth-token"';
-    const xAuthTokenHeaderDescription = "auth token";
-    const expiresInHeaderName = "expiresIn";
-    const expiresInHeaderDescription = "token expires in";
     const method = createMethodDeclaration(`
       @headers
-      ${headersParamName}: {
-        /** ${xAuthTokenHeaderDescription} */
-        ${xAuthTokenHeaderName}: string;
-        /** ${expiresInHeaderDescription} */
-        ${expiresInHeaderName}?: number;
+      headersParams: {
+        /** auth token description */
+        "x-auth-token": string;
+        /** expiry description */
+        expiresIn?: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(headersParamName);
+    const parameter = method.getParameterOrThrow("headersParams");
     const result = parseHeaders(parameter);
 
     expect(result).toHaveLength(2);
     expect(result).toContainEqual({
-      description: xAuthTokenHeaderDescription,
-      name: xAuthTokenHeaderName,
+      description: "auth token description",
+      name: "x-auth-token",
       type: STRING,
       optional: false
     });
     expect(result).toContainEqual({
-      description: expiresInHeaderDescription,
-      name: expiresInHeaderName,
+      description: "expiry description",
+      name: "expiresIn",
       type: NUMBER,
       optional: true
     });
@@ -42,29 +36,13 @@ describe("@headers parser", () => {
   test("fails if the object is optional", () => {
     const method = createMethodDeclaration(`
       @headers
-      ${headersParamName}?: {
+      headersParams?: {
         "x-auth-token": string;
         expiresIn?: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(headersParamName);
-    expect(() => parseHeaders(parameter)).toThrow();
-  });
-
-  test("fails if any object properties are invalid types", () => {
-    const method = createMethodDeclaration(`
-      @headers
-      ${headersParamName}?: {
-        "x-auth-token": {
-          id: string;
-          part: string;
-        };
-        expiresIn?: number;
-      }
-    `);
-
-    const parameter = method.getParameterOrThrow(headersParamName);
+    const parameter = method.getParameterOrThrow("headersParams");
     expect(() => parseHeaders(parameter)).toThrow();
   });
 });
@@ -72,21 +50,19 @@ describe("@headers parser", () => {
 function createMethodDeclaration(
   methodParameterContent: string
 ): MethodDeclaration {
-  const className = "MyClass";
-  const methodName = "myMethod";
   const content = `
     import { headers } from "@airtasker/spot"
 
-    class ${className} {
-      ${methodName}(
+    class TestClass {
+      testMethod(
         ${methodParameterContent}
       ) {}
     }
   `;
 
   const sourceFile = createSourceFile({ path: "main", content: content });
-  const klass = sourceFile.getClassOrThrow(className);
-  const method = klass.getMethodOrThrow(methodName);
+  const klass = sourceFile.getClassOrThrow("TestClass");
+  const method = klass.getMethodOrThrow("testMethod");
 
   return method;
 }

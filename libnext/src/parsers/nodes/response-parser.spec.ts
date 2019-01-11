@@ -3,15 +3,11 @@ import { createSourceFile } from "../../test/helper";
 import { parseResponse } from "./response-parser";
 
 describe("@response parser", () => {
-  const methodName = "myMethod";
-
   test("parses all information", () => {
-    const status = 201;
-    const responseDescription = "This is a valid response";
     const klass = createClassDeclaration(`
-      /** ${responseDescription} */
-      @response({ status: ${status} })
-      ${methodName}(
+      /** response description */
+      @response({ status: 201 })
+      testMethod(
         @headers
         headers: {
           Location: string;
@@ -22,28 +18,27 @@ describe("@response parser", () => {
         }
       ) {}
     `);
-    const method = klass.getMethodOrThrow(methodName);
+    const method = klass.getMethodOrThrow("testMethod");
     const result = parseResponse(method);
 
-    expect(result.description).toEqual(responseDescription);
-    expect(result.status).toEqual(status);
+    expect(result.description).toEqual("response description");
+    expect(result.status).toEqual(201);
     expect(result.headers).toHaveLength(1);
     expect(result.body).not.toBeUndefined;
   });
 });
 
 function createClassDeclaration(classContent: string): ClassDeclaration {
-  const className = "MyClass";
   const content = `
     import { response, headers, body } from "@airtasker/spot"
 
-    class ${className} {
+    class TestClass {
       ${classContent}
     }
   `;
 
   const sourceFile = createSourceFile({ path: "main", content: content });
-  const klass = sourceFile.getClassOrThrow(className);
+  const klass = sourceFile.getClassOrThrow("TestClass");
 
   return klass;
 }

@@ -2,19 +2,15 @@ import { createSourceFile } from "../../test/helper";
 import { parseEndpoint } from "./endpoint-parser";
 
 describe("@endpoint parser", () => {
-  const endpointClassName = "MyEndpoint";
-  const endpointDescription = "Some description";
-  const endpointMethod = "PUT";
-  const endpointPath = "/users/:id";
   const content = `
     import { endpoint, request, response, defaultResponse, pathParams, body } from "@airtasker/spot"
 
-    /** ${endpointDescription} */
+    /** endpoint description */
     @endpoint({
-      method: "${endpointMethod}",
-      path: "${endpointPath}"
+      method: "PUT",
+      path: "/users/:id"
     })
-    class ${endpointClassName} {
+    class TestEndpoint {
       @request
       request(
         @pathParams
@@ -39,14 +35,14 @@ describe("@endpoint parser", () => {
 
   test("parses all information", () => {
     const sourceFile = createSourceFile({ path: "main", content: content });
-    const klass = sourceFile.getClassOrThrow(endpointClassName);
+    const klass = sourceFile.getClassOrThrow("TestEndpoint");
 
     const result = parseEndpoint(klass);
 
-    expect(result.description).toEqual(endpointDescription);
-    expect(result.method).toEqual(endpointMethod);
-    expect(result.name).toEqual(klass.getName());
-    expect(result.path).toEqual(endpointPath);
+    expect(result.description).toEqual("endpoint description");
+    expect(result.method).toEqual("PUT");
+    expect(result.name).toEqual("TestEndpoint");
+    expect(result.path).toEqual("/users/:id");
     expect(result.request).not.toBeUndefined;
     expect(result.responses).toHaveLength(2);
     expect(result.defaultResponse).not.toBeUndefined;

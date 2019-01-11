@@ -1,30 +1,25 @@
 import { MethodDeclaration } from "ts-simple-ast";
-import { Kind, NUMBER, STRING } from "../../models/types";
+import { NUMBER, STRING, TypeKind } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
 import { parseBody } from "./body-parser";
 
 describe("@body parser", () => {
-  const bodyParamName = "paramName";
-
   test("parses all information", () => {
-    const namePropertyName = "name";
-    const agePropertyName = "age";
-    const agePropertyDescription = "some age";
     const method = createMethodDeclaration(`
       /** request body */
-      @body ${bodyParamName}?: {
-        ${namePropertyName}: string;
-        /** ${agePropertyDescription} */
-        ${agePropertyName}?: number;
+      @body bodyParam?: {
+        name: string;
+        /** age description */
+        age?: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(bodyParamName);
+    const parameter = method.getParameterOrThrow("bodyParam");
 
     expect(parseBody(parameter)).toStrictEqual({
       description: undefined,
       type: {
-        kind: Kind.Object,
+        kind: TypeKind.OBJECT,
         properties: [
           {
             description: undefined,
@@ -33,7 +28,7 @@ describe("@body parser", () => {
             type: STRING
           },
           {
-            description: "some age",
+            description: "age description",
             name: "age",
             optional: true,
             type: NUMBER
@@ -48,21 +43,19 @@ describe("@body parser", () => {
 function createMethodDeclaration(
   methodParameterContent: string
 ): MethodDeclaration {
-  const className = "MyClass";
-  const methodName = "myMethod";
   const content = `
     import { body } from "@airtasker/spot"
 
-    class ${className} {
-      ${methodName}(
+    class TestClass {
+      testMethod(
         ${methodParameterContent}
       ) {}
     }
   `;
 
   const sourceFile = createSourceFile({ path: "main", content: content });
-  const klass = sourceFile.getClassOrThrow(className);
-  const method = klass.getMethodOrThrow(methodName);
+  const klass = sourceFile.getClassOrThrow("TestClass");
+  const method = klass.getMethodOrThrow("testMethod");
 
   return method;
 }

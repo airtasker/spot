@@ -18,7 +18,6 @@ import {
   DATE,
   DATETIME,
   INTEGER,
-  Kind,
   NULL,
   NUMBER,
   numberLiteral,
@@ -30,6 +29,7 @@ import {
   ReferenceType,
   STRING,
   stringLiteral,
+  TypeKind,
   unionType
 } from "../../models/types";
 import {
@@ -43,10 +43,6 @@ import {
  * @param type AST type node
  */
 export function parseType(typeNode: TypeNode): DataType {
-  // console.log(
-  //   `${typeNode.print()}: ${TypeGuards.isTypeElementMemberedNode(typeNode)}`
-  // );
-
   // Type references must be parsed first to ensure internal type aliases are handled
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
     return parseTypeReference(typeNode);
@@ -120,7 +116,7 @@ function parseTypeReference(
       return referenceType(
         name,
         declaration.getSourceFile().getFilePath(),
-        Kind.Object
+        TypeKind.OBJECT
       );
     }
   }

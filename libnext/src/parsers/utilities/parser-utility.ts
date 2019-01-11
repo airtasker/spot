@@ -31,6 +31,19 @@ export function extractJsDocComment(node: JSDocableNode): string | undefined {
 }
 
 /**
+ * Property names may be defined with single or double quotes. These
+ * quotes should be removed.
+ *
+ * @param property property signature
+ */
+export function extractPropertyName(property: PropertySignature): string {
+  return property
+    .getNameNode()
+    .getSymbolOrThrow()
+    .getEscapedName();
+}
+
+/**
  * Extract a string property value from an object literal.
  *
  * @param objectLiteral an object literal

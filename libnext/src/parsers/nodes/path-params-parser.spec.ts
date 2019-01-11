@@ -4,35 +4,29 @@ import { createSourceFile } from "../../test/helper";
 import { parsePathParams } from "./path-params-parser";
 
 describe("@pathParams parser", () => {
-  const pathParamName = "paramName";
-
   test("parses all information", () => {
-    const companyIdPropName = "companyId";
-    const companyIdPropDescription = "company identifier";
-    const userIdPropName = "userId";
-    const userIdPropDescription = "user identifier";
     const method = createMethodDeclaration(`
       @pathParams
-      ${pathParamName}: {
-        /** ${companyIdPropDescription} */
-        ${companyIdPropName}: string;
-        /** ${userIdPropDescription} */
-        ${userIdPropName}: number;
+      testParam: {
+        /** company identifier description */
+        companyId: string;
+        /** user identifier description */
+        userId: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(pathParamName);
+    const parameter = method.getParameterOrThrow("testParam");
     const result = parsePathParams(parameter);
 
     expect(result).toHaveLength(2);
     expect(result).toContainEqual({
-      description: companyIdPropDescription,
-      name: companyIdPropName,
+      description: "company identifier description",
+      name: "companyId",
       type: STRING
     });
     expect(result).toContainEqual({
-      description: userIdPropDescription,
-      name: userIdPropName,
+      description: "user identifier description",
+      name: "userId",
       type: NUMBER
     });
   });
@@ -40,26 +34,26 @@ describe("@pathParams parser", () => {
   test("fails if the object is optional", () => {
     const method = createMethodDeclaration(`
       @pathParams
-      ${pathParamName}?: {
+      testParam?: {
         companyId: string;
         userId: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(pathParamName);
+    const parameter = method.getParameterOrThrow("testParam");
     expect(() => parsePathParams(parameter)).toThrow();
   });
 
   test("fails if any object properties are optional", () => {
     const method = createMethodDeclaration(`
       @pathParams
-      ${pathParamName}: {
+      testParam: {
         companyId: string;
         userId?: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(pathParamName);
+    const parameter = method.getParameterOrThrow("testParam");
     expect(() => parsePathParams(parameter)).toThrow();
   });
 });
@@ -67,21 +61,19 @@ describe("@pathParams parser", () => {
 function createMethodDeclaration(
   methodParameterContent: string
 ): MethodDeclaration {
-  const className = "MyClass";
-  const methodName = "myMethod";
   const content = `
     import { pathParams } from "@airtasker/spot"
 
-    class ${className} {
-      ${methodName}(
+    class TestClass {
+      testMethod(
         ${methodParameterContent}
       ) {}
     }
   `;
 
   const sourceFile = createSourceFile({ path: "main", content: content });
-  const klass = sourceFile.getClassOrThrow(className);
-  const method = klass.getMethodOrThrow(methodName);
+  const klass = sourceFile.getClassOrThrow("TestClass");
+  const method = klass.getMethodOrThrow("testMethod");
 
   return method;
 }

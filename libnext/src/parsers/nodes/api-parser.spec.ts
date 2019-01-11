@@ -2,35 +2,31 @@ import { Project, SourceFile } from "ts-simple-ast";
 import { parseApi } from "./api-parser";
 
 describe("@api parser", () => {
-  const apiClassName = "MyApi";
-  const apiName = "My API";
-
   test("parses all information", () => {
-    const apiDescription = "Some description";
     const content = `
-      /** ${apiDescription} */
-      @api({ name: "${apiName}" })
-      class ${apiClassName} {}
+      /** api description */
+      @api({ name: "My API" })
+      class MyApi {}
     `;
     const sourceFile = constructSourceFile(content);
-    const klass = sourceFile.getClassOrThrow(apiClassName);
+    const klass = sourceFile.getClassOrThrow("MyApi");
 
     expect(parseApi(klass)).toStrictEqual({
-      name: apiName,
-      description: apiDescription
+      name: "My API",
+      description: "api description"
     });
   });
 
   test("parses with no description", () => {
     const content = `
-      @api({ name: "${apiName}" })
-      class ${apiClassName} {}
+      @api({ name: "My API" })
+      class MyApi {}
     `;
     const sourceFile = constructSourceFile(content);
-    const klass = sourceFile.getClassOrThrow(apiClassName);
+    const klass = sourceFile.getClassOrThrow("MyApi");
 
     expect(parseApi(klass)).toStrictEqual({
-      name: apiName,
+      name: "My API",
       description: undefined
     });
   });

@@ -3,7 +3,8 @@ import { PathParamNode } from "../../models/nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,
-  extractObjectParameterProperties
+  extractObjectParameterProperties,
+  extractPropertyName
 } from "../utilities/parser-utility";
 import { parseType } from "../utilities/type-parser";
 
@@ -21,7 +22,7 @@ export function parsePathParams(
   return properties.map(property => {
     ensureNodeNotOptional(property);
     return {
-      name: property.getName(),
+      name: extractPropertyName(property),
       description: extractJsDocComment(property),
       type: parseType(property.getTypeNodeOrThrow())
     };

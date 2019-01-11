@@ -1,8 +1,8 @@
 import { DataType } from ".";
-import { Kind } from "./kinds";
+import { TypeKind } from "./kinds";
 
 export interface ObjectType {
-  kind: Kind.Object;
+  kind: TypeKind.OBJECT;
   properties: ObjectTypeProperty[];
 }
 
@@ -15,19 +15,19 @@ export interface ObjectTypeProperty {
 
 export function objectType(properties: ObjectTypeProperty[]): ObjectType {
   return {
-    kind: Kind.Object,
+    kind: TypeKind.OBJECT,
     properties
   };
 }
 
 export interface ArrayType {
-  kind: Kind.Array;
+  kind: TypeKind.ARRAY;
   elements: DataType;
 }
 
 export function arrayType(elementType: DataType): ArrayType {
   return {
-    kind: Kind.Array,
+    kind: TypeKind.ARRAY,
     elements: elementType
   };
 }

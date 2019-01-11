@@ -22,10 +22,8 @@ export function parseResponse(method: MethodDeclaration): ResponseNode {
 
   const description = extractJsDocComment(method);
   const status = extractNumberProperty(configuration, "status");
-  const headers =
-    headersParameter === undefined ? [] : parseHeaders(headersParameter);
-  const body =
-    bodyParameter === undefined ? undefined : parseBody(bodyParameter);
+  const headers = headersParameter ? parseHeaders(headersParameter) : [];
+  const body = bodyParameter ? parseBody(bodyParameter) : undefined;
 
   return { description, status, headers, body };
 }

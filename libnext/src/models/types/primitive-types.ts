@@ -1,36 +1,36 @@
-import { Kind } from "./kinds";
+import { TypeKind } from "./kinds";
 
 /** Primitive types native to the TypeScript language. */
 export type PrimitiveType = NullType | BooleanType | StringType | NumberType;
 
 export const NULL: NullType = {
-  kind: Kind.Null
+  kind: TypeKind.NULL
 };
 
 export interface NullType {
-  kind: Kind.Null;
+  kind: TypeKind.NULL;
 }
 
 export const BOOLEAN: BooleanType = {
-  kind: Kind.Boolean
+  kind: TypeKind.BOOLEAN
 };
 
 export interface BooleanType {
-  kind: Kind.Boolean;
+  kind: TypeKind.BOOLEAN;
 }
 
 export const STRING: StringType = {
-  kind: Kind.String
+  kind: TypeKind.STRING
 };
 
 export interface StringType {
-  kind: Kind.String;
+  kind: TypeKind.STRING;
 }
 
 export const NUMBER: NumberType = {
-  kind: Kind.Number
+  kind: TypeKind.NUMBER
 };
 
 export interface NumberType {
-  kind: Kind.Number;
+  kind: TypeKind.NUMBER;
 }

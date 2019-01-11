@@ -18,18 +18,15 @@ export function parseRequest(method: MethodDeclaration): RequestNode {
   const queryParamsParameter = methodParamWithDecorator(method, "queryParams");
   const bodyParameter = methodParamWithDecorator(method, "body");
 
-  const headers =
-    headersParameter === undefined ? [] : parseHeaders(headersParameter);
-  const pathParams =
-    pathParamsParameter === undefined
-      ? []
-      : parsePathParams(pathParamsParameter);
-  const queryParams =
-    queryParamsParameter === undefined
-      ? []
-      : parseQueryParams(queryParamsParameter);
-  const body =
-    bodyParameter === undefined ? undefined : parseBody(bodyParameter);
+  const headers = headersParameter ? parseHeaders(headersParameter) : [];
+  const pathParams = pathParamsParameter
+    ? parsePathParams(pathParamsParameter)
+    : [];
+
+  const queryParams = queryParamsParameter
+    ? parseQueryParams(queryParamsParameter)
+    : [];
+  const body = bodyParameter ? parseBody(bodyParameter) : undefined;
 
   return { headers, pathParams, queryParams, body };
 }

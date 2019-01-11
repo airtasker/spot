@@ -3,7 +3,8 @@ import { HeaderNode } from "../../models/nodes";
 import {
   ensureNodeNotOptional,
   extractJsDocComment,
-  extractObjectParameterProperties
+  extractObjectParameterProperties,
+  extractPropertyName
 } from "../utilities/parser-utility";
 import { parseType } from "../utilities/type-parser";
 
@@ -18,7 +19,7 @@ export function parseHeaders(parameter: ParameterDeclaration): HeaderNode[] {
   const properties = extractObjectParameterProperties(parameter);
   return properties.map(property => {
     return {
-      name: property.getName(),
+      name: extractPropertyName(property),
       description: extractJsDocComment(property),
       type: parseType(property.getTypeNodeOrThrow()),
       optional: property.hasQuestionToken()

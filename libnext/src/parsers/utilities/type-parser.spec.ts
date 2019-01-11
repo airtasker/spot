@@ -1,11 +1,11 @@
 import { TypeNode } from "ts-simple-ast";
 import {
   BOOLEAN,
-  Kind,
   NULL,
   NUMBER,
   ObjectType,
   STRING,
+  TypeKind,
   UnionType
 } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
@@ -43,7 +43,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("true");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.BooleanLiteral,
+        kind: TypeKind.BOOLEAN_LITERAL,
         value: true
       });
     });
@@ -52,7 +52,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("false");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.BooleanLiteral,
+        kind: TypeKind.BOOLEAN_LITERAL,
         value: false
       });
     });
@@ -61,7 +61,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode('"myStringLiteral"');
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.StringLiteral,
+        kind: TypeKind.STRING_LITERAL,
         value: "myStringLiteral"
       });
     });
@@ -70,7 +70,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("54");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.NumberLiteral,
+        kind: TypeKind.NUMBER_LITERAL,
         value: 54
       });
     });
@@ -78,8 +78,8 @@ describe("type parser", () => {
     test("parses type aliased literal", () => {
       const typeNode = createTypeNode("TrueAlias");
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.TypeReference,
-        referenceKind: Kind.BooleanLiteral,
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.BOOLEAN_LITERAL,
         name: "TrueAlias",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -91,7 +91,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("Integer");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.Integer
+        kind: TypeKind.INTEGER
       });
     });
 
@@ -99,7 +99,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("Date");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.Date
+        kind: TypeKind.DATE
       });
     });
 
@@ -107,7 +107,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("DateTime");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.DateTime
+        kind: TypeKind.DATE_TIME
       });
     });
 
@@ -115,8 +115,8 @@ describe("type parser", () => {
       const typeNode = createTypeNode("AliasedCustomPrimitive");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.TypeReference,
-        referenceKind: Kind.Integer,
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.INTEGER,
         name: "AliasedCustomPrimitive",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -128,8 +128,8 @@ describe("type parser", () => {
       const typeNode = createTypeNode("TypeAlias");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.TypeReference,
-        referenceKind: Kind.String,
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.STRING,
         name: "TypeAlias",
         location: expect.stringMatching(/alias\.ts$/)
       });
@@ -153,7 +153,7 @@ describe("type parser", () => {
 
       const result = parseType(typeNode) as ObjectType;
 
-      expect(result.kind).toEqual(Kind.Object);
+      expect(result.kind).toEqual(TypeKind.OBJECT);
       expect(result.properties).toHaveLength(2);
       expect(result.properties).toContainEqual({
         name: titlePropName,
@@ -173,8 +173,8 @@ describe("type parser", () => {
       const typeNode = createTypeNode("ObjectInterface");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.TypeReference,
-        referenceKind: Kind.Object,
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.OBJECT,
         name: "ObjectInterface",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -184,8 +184,8 @@ describe("type parser", () => {
       const typeNode = createTypeNode("ComplexInterface");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.TypeReference,
-        referenceKind: Kind.Object,
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.OBJECT,
         name: "ComplexInterface",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -195,7 +195,7 @@ describe("type parser", () => {
       const typeNode = createTypeNode("string[]");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.Array,
+        kind: TypeKind.ARRAY,
         elements: STRING
       });
     });
@@ -207,7 +207,7 @@ describe("type parser", () => {
 
       const result = parseType(typeNode) as UnionType;
 
-      expect(result.kind).toEqual(Kind.Union);
+      expect(result.kind).toEqual(TypeKind.UNION);
       expect(result.types).toHaveLength(3);
       expect(result.types).toContainEqual(STRING);
       expect(result.types).toContainEqual(NUMBER);
@@ -218,8 +218,8 @@ describe("type parser", () => {
       const typeNode = createTypeNode("ChainedAlias");
 
       expect(parseType(typeNode)).toStrictEqual({
-        kind: Kind.TypeReference,
-        referenceKind: Kind.TypeReference,
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.TYPE_REFERENCE,
         name: "ChainedAlias",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -229,11 +229,10 @@ describe("type parser", () => {
 
 describe("interface parser", () => {
   test("resolves all properties from base types", () => {
-    const interfaceName = "Target";
     const sourceFile = createSourceFile({
       path: "main",
       content: `
-        interface ${interfaceName} extends A {
+        interface Target extends A {
           target: string;
         }
         interface A extends B, C {
@@ -247,9 +246,9 @@ describe("interface parser", () => {
         }
       `
     });
-    const interphace = sourceFile.getInterfaceOrThrow(interfaceName);
+    const interphace = sourceFile.getInterfaceOrThrow("Target");
     expect(parseInterfaceDeclaration(interphace)).toStrictEqual({
-      kind: Kind.Object,
+      kind: TypeKind.OBJECT,
       properties: [
         {
           description: undefined,
@@ -284,14 +283,12 @@ function createTypeNode(...types: string[]): TypeNode {
   if (types.length < 1) {
     throw new Error("at least one type required");
   }
-  const interfaceName = "myInterface";
-  const propertyName = "myPropertyName";
   const content = `
     import { Integer, Date, DateTime } from "@airtasker/spot"
     import { TypeAlias } from "./alias"
 
-    interface ${interfaceName} {
-      ${propertyName}: ${types.join(" | ")};
+    interface TestInterface {
+      testProperty: ${types.join(" | ")};
     }
 
     /** Object interface description */
@@ -322,8 +319,8 @@ function createTypeNode(...types: string[]): TypeNode {
     { path: "main", content: content },
     { path: "alias", content: `export type TypeAlias = string;` }
   );
-  const interphace = sourceFile.getInterfaceOrThrow(interfaceName);
-  const property = interphace.getPropertyOrThrow(propertyName);
+  const interphace = sourceFile.getInterfaceOrThrow("TestInterface");
+  const property = interphace.getPropertyOrThrow("testProperty");
   const typeNode = property.getTypeNodeOrThrow();
 
   return typeNode;

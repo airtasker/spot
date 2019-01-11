@@ -38,22 +38,20 @@ describe("@request parser", () => {
 function createMethodDeclaration(
   methodParameterContent: string
 ): MethodDeclaration {
-  const className = "MyClass";
-  const methodName = "myMethod";
   const content = `
     import { request, headers, pathParams, queryParams, body } from "@airtasker/spot"
 
-    class ${className} {
+    class TestClass {
       @request
-      ${methodName}(
+      testMethod(
         ${methodParameterContent}
       ) {}
     }
   `;
 
   const sourceFile = createSourceFile({ path: "main", content: content });
-  const klass = sourceFile.getClassOrThrow(className);
-  const method = klass.getMethodOrThrow(methodName);
+  const klass = sourceFile.getClassOrThrow("TestClass");
+  const method = klass.getMethodOrThrow("testMethod");
 
   return method;
 }

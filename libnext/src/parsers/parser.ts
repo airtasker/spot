@@ -1,25 +1,15 @@
-import { uniqBy } from "lodash";
 import { CompilerOptions, Project, SourceFile, ts } from "ts-simple-ast";
-import {
-  ContractNode,
-  EndpointNode,
-  HeaderNode,
-  RequestNode,
-  ResponseNode
-} from "../models/nodes";
-import {
-  DataType,
-  isArrayType,
-  isObjectType,
-  isReferenceType,
-  isUnionType,
-  Kind,
-  ReferenceType
-} from "../models/types";
+import { ContractNode, EndpointNode } from "../models/nodes";
+import { ReferenceType } from "../models/types";
 import { parseApi } from "./nodes/api-parser";
 import { parseEndpoint } from "./nodes/endpoint-parser";
 import { extractJsDocComment } from "./utilities/parser-utility";
 import { parseInterfaceDeclaration, parseType } from "./utilities/type-parser";
+import {
+  retrieveTypeReferencesFromEndpoints,
+  retrieveTypeReferencesFromType,
+  uniqueReferences
+} from "./utilities/type-reference-resolver";
 
 export function parseFilePath(
   sourcePath: string,
@@ -46,11 +36,14 @@ export function parseFilePath(
     ...customCompilerOptions
   };
 
+  // Creates a new typescript program in memory
   const project = new Project({ compilerOptions });
   const sourceFile = project.addExistingSourceFile(sourcePath);
 
+  // Add all dependent files that the project requires
   project.resolveSourceFileDependencies();
 
+  // Validate that the project has no TypeScript syntax errors
   validateProject(project);
 
   return parseRootSourceFile(sourceFile, project);
@@ -58,8 +51,6 @@ export function parseFilePath(
 
 /**
  * Parse a root source file to return a contract.
- *
- * @param file source file
  */
 function parseRootSourceFile(
   file: SourceFile,
@@ -97,24 +88,12 @@ function parseRootSourceFile(
     sourceEndpoints
   );
 
-  const directReferencedTypes = endpoints.reduce<ReferenceType[]>(
-    (referenceTypesAcc, currentEndpoint) => {
-      const fromResponses = retrieveTypeReferencesFromResponses(
-        currentEndpoint.responses
-      );
-      if (currentEndpoint.request) {
-        const fromRequest = fromResponses.concat(
-          retrieveTypeReferencesFromRequest(currentEndpoint.request)
-        );
-        return referenceTypesAcc.concat(fromRequest).concat(fromResponses);
-      }
-      return referenceTypesAcc.concat(fromResponses);
-    },
-    []
+  // Direct reference types, filtered to unique references for efficiency
+  const uniqueDirectReferenceTypes = uniqueReferences(
+    retrieveTypeReferencesFromEndpoints(endpoints)
   );
 
-  const uniqueDirectReferenceTypes = uniqueReferences(directReferencedTypes);
-
+  // Reference types from the direct reference type hierarchy
   const secondaryReferenceTypes = uniqueDirectReferenceTypes.reduce<
     ReferenceType[]
   >(
@@ -125,10 +104,12 @@ function parseRootSourceFile(
     []
   );
 
+  // Combine and filter to unique type references
   const allReferenceTypes = uniqueReferences(
     uniqueDirectReferenceTypes.concat(secondaryReferenceTypes)
   );
 
+  // Construct the equivalent TypeNode for each reference type
   const types = allReferenceTypes.map(referenceType => {
     const file = projectContext.getSourceFileOrThrow(referenceType.location);
 
@@ -152,156 +133,6 @@ function parseRootSourceFile(
   });
 
   return { api, endpoints, types };
-}
-
-function uniqueReferences(referenceTypes: ReferenceType[]): ReferenceType[] {
-  return uniqBy(referenceTypes, referenceType =>
-    referenceType.location.concat(referenceType.name)
-  );
-}
-
-/**
- * Recursively retrieves all type references from a data type including itself.
- *
- * @param dataType
- * @param projectContext
- */
-function retrieveTypeReferencesFromType(
-  dataType: DataType,
-  projectContext: Project
-): ReferenceType[] {
-  if (isReferenceType(dataType)) {
-    const file = projectContext.getSourceFileOrThrow(dataType.location);
-    switch (dataType.referenceKind) {
-      case Kind.Null:
-      case Kind.Boolean:
-      case Kind.String:
-      case Kind.Number:
-      case Kind.Integer:
-      case Kind.Date:
-      case Kind.DateTime:
-      case Kind.BooleanLiteral:
-      case Kind.StringLiteral:
-      case Kind.NumberLiteral:
-        return [dataType];
-      case Kind.Array:
-      case Kind.Union:
-      case Kind.TypeReference: {
-        const typeAlias = file.getTypeAliasOrThrow(dataType.name);
-        return [dataType].concat(
-          retrieveTypeReferencesFromType(
-            parseType(typeAlias.getTypeNodeOrThrow()),
-            projectContext
-          )
-        );
-      }
-      case Kind.Object: {
-        const typeAlias = file.getTypeAlias(dataType.name);
-        if (typeAlias !== undefined) {
-          return [dataType].concat(
-            retrieveTypeReferencesFromType(
-              parseType(typeAlias.getTypeNodeOrThrow()),
-              projectContext
-            )
-          );
-        }
-        const interfaceDeclaration = file.getInterface(dataType.name);
-        if (interfaceDeclaration) {
-          return [dataType].concat(
-            retrieveTypeReferencesFromType(
-              parseInterfaceDeclaration(interfaceDeclaration),
-              projectContext
-            )
-          );
-        }
-        throw new Error(
-          "expected type reference to resolve to a type alias or an interface"
-        );
-      }
-      default: {
-        throw new Error("unexpected type reference");
-      }
-    }
-  } else if (isObjectType(dataType)) {
-    return dataType.properties.reduce<ReferenceType[]>(
-      (referenceTypesAcc, currentProperty) =>
-        referenceTypesAcc.concat(
-          retrieveTypeReferencesFromType(currentProperty.type, projectContext)
-        ),
-      []
-    );
-  } else if (isArrayType(dataType)) {
-    return retrieveTypeReferencesFromType(dataType.elements, projectContext);
-  } else if (isUnionType(dataType)) {
-    return dataType.types.reduce<ReferenceType[]>(
-      (referenceTypesAcc, type) =>
-        referenceTypesAcc.concat(
-          retrieveTypeReferencesFromType(type, projectContext)
-        ),
-      []
-    );
-  } else {
-    return [];
-  }
-}
-
-/**
- * Retrieve all type references from a request. This will only retrieve direct references (not recursive).
- *
- * @param request a request
- */
-function retrieveTypeReferencesFromRequest(
-  request: RequestNode
-): ReferenceType[] {
-  const fromHeaders = retrieveTypeReferencesFromHeaders(request.headers);
-  if (request.body) {
-    const type = request.body.type;
-    if (isReferenceType(type)) {
-      return fromHeaders.concat(type);
-    }
-  }
-  return fromHeaders;
-}
-
-/**
- * Retrieve all type references from a collection of responses. This will only retrieve direct references (not recursive).
- *
- * @param requests a collection of responses
- */
-function retrieveTypeReferencesFromResponses(
-  responses: ResponseNode[]
-): ReferenceType[] {
-  return responses.reduce<ReferenceType[]>(
-    (typeReferencesAcc, currentResponse) => {
-      const fromHeaders = retrieveTypeReferencesFromHeaders(
-        currentResponse.headers
-      );
-      if (currentResponse.body) {
-        const type = currentResponse.body.type;
-        if (isReferenceType(type)) {
-          return typeReferencesAcc.concat(fromHeaders.concat(type));
-        }
-      }
-      return typeReferencesAcc.concat(fromHeaders);
-    },
-    []
-  );
-}
-
-/**
- * Retrieve all type references from a collection of headers. This will only retrieve direct references (not recursive).
- *
- * @param headers a collection of headers
- */
-function retrieveTypeReferencesFromHeaders(
-  headers: HeaderNode[]
-): ReferenceType[] {
-  return headers.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
-    const type = currentHeader.type;
-    return isReferenceType(type)
-      ? typeReferencesAcc.concat(type)
-      : typeReferencesAcc;
-  }, []);
 }
 
 /**

@@ -4,36 +4,30 @@ import { createSourceFile } from "../../test/helper";
 import { parseQueryParams } from "./query-params-parser";
 
 describe("@queryParams parser", () => {
-  const queryParamName = "paramName";
-
   test("parses all information", () => {
-    const namePropName = "name";
-    const namePropDescription = "name of person";
-    const agePropName = "age";
-    const agePropDescription = "age of person";
     const method = createMethodDeclaration(`
       @queryParams
-      ${queryParamName}: {
-        /** ${namePropDescription} */
-        ${namePropName}: string;
-        /** ${agePropDescription} */
-        ${agePropName}?: number;
+      testParam: {
+        /** name description */
+        name: string;
+        /** age description */
+        age?: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(queryParamName);
+    const parameter = method.getParameterOrThrow("testParam");
     const result = parseQueryParams(parameter);
 
     expect(result).toHaveLength(2);
     expect(result).toContainEqual({
-      description: namePropDescription,
-      name: namePropName,
+      description: "name description",
+      name: "name",
       type: STRING,
       optional: false
     });
     expect(result).toContainEqual({
-      description: agePropDescription,
-      name: agePropName,
+      description: "age description",
+      name: "age",
       type: NUMBER,
       optional: true
     });
@@ -42,20 +36,20 @@ describe("@queryParams parser", () => {
   test("fails if the object is optional", () => {
     const method = createMethodDeclaration(`
       @queryParams
-      ${queryParamName}?: {
+      testParam?: {
         name: string;
         age?: number;
       }
     `);
 
-    const parameter = method.getParameterOrThrow(queryParamName);
+    const parameter = method.getParameterOrThrow("testParam");
     expect(() => parseQueryParams(parameter)).toThrow();
   });
 
   test("fails if any object properties are invalid types", () => {
     const method = createMethodDeclaration(`
       @queryParams
-      ${queryParamName}?: {
+      testParam?: {
         name: {
           firstName: string;
           lastName: string;
@@ -64,7 +58,7 @@ describe("@queryParams parser", () => {
       }
     `);
 
-    const parameter = method.getParameterOrThrow(queryParamName);
+    const parameter = method.getParameterOrThrow("testParam");
     expect(() => parseQueryParams(parameter)).toThrow();
   });
 });
@@ -72,21 +66,19 @@ describe("@queryParams parser", () => {
 function createMethodDeclaration(
   methodParameterContent: string
 ): MethodDeclaration {
-  const className = "MyClass";
-  const methodName = "myMethod";
   const content = `
     import { queryParams } from "@airtasker/spot"
 
-    class ${className} {
-      ${methodName}(
+    class TestClass {
+      testMethod(
         ${methodParameterContent}
       ) {}
     }
   `;
 
   const sourceFile = createSourceFile({ path: "main", content: content });
-  const klass = sourceFile.getClassOrThrow(className);
-  const method = klass.getMethodOrThrow(methodName);
+  const klass = sourceFile.getClassOrThrow("TestClass");
+  const method = klass.getMethodOrThrow("testMethod");
 
   return method;
 }

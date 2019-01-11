@@ -1,32 +1,33 @@
 import { DataType } from ".";
-import { Kind } from "./kinds";
+import { TypeKind } from "./kinds";
 
 export interface UnionType {
-  kind: Kind.Union;
+  kind: TypeKind.UNION;
   types: DataType[];
 }
 
 export function unionType(unionTypes: DataType[]): UnionType {
   return {
-    kind: Kind.Union,
+    kind: TypeKind.UNION,
     types: unionTypes
   };
 }
 
 export interface ReferenceType {
-  kind: Kind.TypeReference;
-  referenceKind: Kind;
+  kind: TypeKind.TYPE_REFERENCE;
+  referenceKind: TypeKind;
   name: string;
+  /** The absolute path to the file that contains the declaration of the reference */
   location: string;
 }
 
 export function referenceType(
   name: string,
   location: string,
-  referenceKind: Kind
+  referenceKind: TypeKind
 ): ReferenceType {
   return {
-    kind: Kind.TypeReference,
+    kind: TypeKind.TYPE_REFERENCE,
     referenceKind,
     name,
     location

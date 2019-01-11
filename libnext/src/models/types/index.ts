@@ -4,7 +4,7 @@ import {
   DateType,
   IntegerType
 } from "./custom-primitive-types";
-import { Kind } from "./kinds";
+import { TypeKind } from "./kinds";
 import { ArrayType, ObjectType } from "./object-types";
 import {
   NumberLiteral,
@@ -44,17 +44,17 @@ export type StringLikeType =
   | ReferenceType;
 
 export function isObjectType(type: DataType): type is ObjectType {
-  return type.kind === Kind.Object;
+  return type.kind === TypeKind.OBJECT;
 }
 
 export function isArrayType(type: DataType): type is ArrayType {
-  return type.kind === Kind.Array;
+  return type.kind === TypeKind.ARRAY;
 }
 
 export function isUnionType(type: DataType): type is UnionType {
-  return type.kind === Kind.Union;
+  return type.kind === TypeKind.UNION;
 }
 
 export function isReferenceType(type: DataType): type is ReferenceType {
-  return type.kind === Kind.TypeReference;
+  return type.kind === TypeKind.TYPE_REFERENCE;
 }
