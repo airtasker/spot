@@ -7,7 +7,6 @@ job_configuration: &job_configuration
   docker:
     - image: circleci/node:10-stretch
   working_directory: ~/repo
-  resource_class: medium+
 jobs:
   build-and-test:
     <<: *job_configuration
