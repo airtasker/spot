@@ -19,10 +19,9 @@
     "inquirer": "^6.2.0",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
-    "ts-simple-ast": "^20.0.0",
     "randomstring": "^1.1.5",
     "tslib": "^1",
-    "typescript": "^3.0.1"
+    "typescript": "^3.2.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
@@ -41,9 +40,6 @@
     "prettier": "^1.14.3",
     "ts-jest": "^23.10.4",
     "ts-node": "^7"
-  },
-  "resolutions": {
-    "typescript": "3.2.2"
   },
   "engines": {
     "node": ">=8.0.0"
