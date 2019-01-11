@@ -157,5 +157,5 @@ const generators: {
     yaml: api => ({
       "*.yml": generateOpenApiV3(api, "yaml")
     })
-  },
+  }
 };
