@@ -46,6 +46,7 @@ npx @airtasker/spot generate --api api.ts
 # Why we built Spot
 
 At first glance, you may wonder why we bothered building Spot. Why not use OpenAPI (formely known as Swagger) to describe your API?
+
 At the core, we built Spot because we wanted a better developer experience.
 
 ## Writing contracts
@@ -59,6 +60,7 @@ Since Spot leverages the TypeScript syntax, all you need is to write valid TypeS
 We believe that API contracts should be checked into Git, or whichever code versioning system you use. In addition, API contracts should be systematically peer reviewed. It’s far too easy for a backend engineer to incorrectly assume what client engineers expect from an endpoint.
 
 Because of their complex nested structure and the richness of the OpenAPI specification, OpenAPI documents can be difficult to review in a pull request. They’re great for machines, but not always for humans.
+
 Spot aims to be as human-readable as possible. We’ve seen developers become a lot more engaged in discussions on pull requests for Spot contracts, compared to our previous OpenAPI documents.
 
 ## Interoperability with various formats
