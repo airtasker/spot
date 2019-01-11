@@ -91,8 +91,6 @@ This is work in progress as of 14 Nov 2018:
 
 <!-- toc -->
 * [Spot](#spot)
-* [Why we built Spot](#why-we-built-spot)
-* [Status](#status)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
@@ -117,7 +115,6 @@ npx @airtasker/spot generate --api api.ts
 * [`spot generate`](#spot-generate)
 * [`spot help [COMMAND]`](#spot-help-command)
 * [`spot init`](#spot-init)
-* [`spot mock SPOT_CONTRACT`](#spot-mock-spot-contract)
 * [`spot validate SPOT_CONTRACT`](#spot-validate-spot-contract)
 
 ## `spot generate`
@@ -143,7 +140,7 @@ EXAMPLE
   - src/client.ts
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v0.1.34/build/cli/src/commands/generate.js)_
+_See code: [cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/generate.ts)_
 
 ## `spot help [COMMAND]`
 
@@ -181,29 +178,7 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v0.1.34/build/cli/src/commands/init.js)_
-
-## `spot mock SPOT_CONTRACT`
-
-Run a mock server based on a Spot contract
-
-```
-USAGE
-  $ spot mock SPOT_CONTRACT
-
-ARGUMENTS
-  SPOT_CONTRACT  path to Spot contract
-
-OPTIONS
-  -h, --help               show CLI help
-  -p, --port=port          (required) [default: 3010] Port on which to run the mock server
-  --pathPrefix=pathPrefix  Prefix to prepend to each endpoint path
-
-EXAMPLE
-  $ spot mock api.ts
-```
-
-_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v0.1.34/build/cli/src/commands/mock.js)_
+_See code: [cli/src/commands/init.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/init.ts)_
 
 ## `spot validate SPOT_CONTRACT`
 
@@ -223,5 +198,6 @@ EXAMPLE
   $ spot validate api.ts
 ```
 
-_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v0.1.34/build/cli/src/commands/validate.js)_
+_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/master/cli/src/commands/validate.js)_
+
 <!-- commandsstop -->
