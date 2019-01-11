@@ -7,7 +7,6 @@ job_configuration: &job_configuration
   docker:
     - image: circleci/node:10-stretch
   working_directory: ~/repo
-  resource_class: xlarge
 jobs:
   build-and-test:
     <<: *job_configuration
@@ -21,9 +20,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v3-dependencies-
 
-      - run: yarn install
-
-      - run: git diff
+      - run: yarn install --frozen-lockfile
 
       - save_cache:
           paths:
