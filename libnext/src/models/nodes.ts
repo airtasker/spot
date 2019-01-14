@@ -35,10 +35,12 @@ export interface RequestNode {
   body?: BodyNode;
 }
 
+/** A response inherits all the properties of default response, as well as specifying a specific status code. */
 export interface ResponseNode extends DefaultResponseNode {
   status: number;
 }
 
+/** The default response, is the assumed response when no status code is specified. */
 export interface DefaultResponseNode {
   description?: string;
   headers: HeaderNode[];
