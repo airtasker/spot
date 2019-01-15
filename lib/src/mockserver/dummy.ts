@@ -1,5 +1,5 @@
+import assertNever from "assert-never";
 import { generate as generateRandomString } from "randomstring";
-import assertNever from "../assert-never";
 import { normalizedObjectType, Type, Types } from "../models";
 
 /**
