@@ -24,7 +24,7 @@ export interface EndpointNode {
   tags: string[];
   method: HttpMethod;
   path: string;
-  request?: RequestNode;
+  request: RequestNode;
   responses: ResponseNode[];
   defaultResponse?: DefaultResponseNode;
 }
