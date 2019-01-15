@@ -1,52 +1,10 @@
-import { arrayType, BOOLEAN, booleanConstant, DOUBLE, FLOAT, INT32, INT64, integerConstant, NULL, NUMBER, objectType, optionalType, STRING, stringConstant, typeReference, unionType, VOID } from "../../models";
-import { openApi3TypeSchema, openApiV3ContentTypeSchema } from "./openapi3-schema";
+import { arrayType, BOOLEAN, booleanLiteral, INTEGER, NULL, NUMBER, numberLiteral, objectType, referenceType, STRING, stringLiteral, TypeKind, unionType } from "../../models/types";
+import { openApi3TypeSchema } from "./openapi3-schema";
 
 describe("JSON Schema generator", () => {
-  describe("generates content type validator", () => {
-    test("application/json", () => {
-      expect(
-        openApiV3ContentTypeSchema(
-          {},
-          "application/json",
-          typeReference("OtherType")
-        )
-      ).toMatchInlineSnapshot(`
-Object {
-  "content": Object {
-    "application/json": Object {
-      "schema": Object {
-        "$ref": "#/components/schemas/OtherType",
-      },
-    },
-  },
-}
-`);
-    });
-
-    test("text/html", () => {
-      expect(
-        openApiV3ContentTypeSchema({}, "text/html", typeReference("OtherType"))
-      ).toMatchInlineSnapshot(`
-Object {
-  "content": Object {
-    "text/html": Object {
-      "schema": Object {
-        "type": "string",
-      },
-    },
-  },
-}
-`);
-    });
-  });
-
   describe("generates type validator", () => {
-    test("void", () => {
-      expect(openApi3TypeSchema({}, VOID)).toMatchInlineSnapshot(`null`);
-    });
-
     test("null", () => {
-      expect(openApi3TypeSchema({}, NULL)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema(NULL)).toMatchInlineSnapshot(`
 Object {
   "nullable": true,
 }
@@ -54,7 +12,7 @@ Object {
     });
 
     test("boolean", () => {
-      expect(openApi3TypeSchema({}, BOOLEAN)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema(BOOLEAN)).toMatchInlineSnapshot(`
 Object {
   "type": "boolean",
 }
@@ -62,7 +20,7 @@ Object {
     });
 
     test("boolean literal", () => {
-      expect(openApi3TypeSchema({}, booleanConstant(true)))
+      expect(openApi3TypeSchema(booleanLiteral(true)))
         .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
@@ -71,7 +29,7 @@ Object {
   "type": "boolean",
 }
 `);
-      expect(openApi3TypeSchema({}, booleanConstant(false)))
+      expect(openApi3TypeSchema(booleanLiteral(false)))
         .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
@@ -83,7 +41,7 @@ Object {
     });
 
     test("string", () => {
-      expect(openApi3TypeSchema({}, STRING)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema(STRING)).toMatchInlineSnapshot(`
 Object {
   "type": "string",
 }
@@ -91,7 +49,7 @@ Object {
     });
 
     test("string literal", () => {
-      expect(openApi3TypeSchema({}, stringConstant("some literal")))
+      expect(openApi3TypeSchema(stringLiteral("some literal")))
         .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
@@ -103,15 +61,34 @@ Object {
     });
 
     test("number", () => {
-      expect(openApi3TypeSchema({}, NUMBER)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema(NUMBER)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
 `);
     });
 
-    test("int32", () => {
-      expect(openApi3TypeSchema({}, INT32)).toMatchInlineSnapshot(`
+    test("number literal", () => {
+      expect(openApi3TypeSchema(numberLiteral(1.5))).toMatchInlineSnapshot(`
+Object {
+  "enum": Array [
+    1.5,
+  ],
+  "type": "number",
+}
+`);
+      expect(openApi3TypeSchema(numberLiteral(-23.1))).toMatchInlineSnapshot(`
+Object {
+  "enum": Array [
+    -23.1,
+  ],
+  "type": "number",
+}
+`);
+    });
+
+    test("integer", () => {
+      expect(openApi3TypeSchema(INTEGER)).toMatchInlineSnapshot(`
 Object {
   "format": "int32",
   "type": "integer",
@@ -119,35 +96,8 @@ Object {
 `);
     });
 
-    test("int64", () => {
-      expect(openApi3TypeSchema({}, INT64)).toMatchInlineSnapshot(`
-Object {
-  "format": "int64",
-  "type": "integer",
-}
-`);
-    });
-
-    test("float", () => {
-      expect(openApi3TypeSchema({}, FLOAT)).toMatchInlineSnapshot(`
-Object {
-  "format": "float",
-  "type": "number",
-}
-`);
-    });
-
-    test("double", () => {
-      expect(openApi3TypeSchema({}, DOUBLE)).toMatchInlineSnapshot(`
-Object {
-  "format": "double",
-  "type": "number",
-}
-`);
-    });
-
     test("integer literal", () => {
-      expect(openApi3TypeSchema({}, integerConstant(0))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema(numberLiteral(0))).toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     0,
@@ -155,7 +105,7 @@ Object {
   "type": "integer",
 }
 `);
-      expect(openApi3TypeSchema({}, integerConstant(123)))
+      expect(openApi3TypeSchema(numberLiteral(123)))
         .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
@@ -164,7 +114,7 @@ Object {
   "type": "integer",
 }
 `);
-      expect(openApi3TypeSchema({}, integerConstant(-1000)))
+      expect(openApi3TypeSchema(numberLiteral(-1000)))
         .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
@@ -176,7 +126,7 @@ Object {
     });
 
     test("object", () => {
-      expect(openApi3TypeSchema({}, objectType({}))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema(objectType([]))).toMatchInlineSnapshot(`
 Object {
   "properties": Object {},
   "required": Array [],
@@ -185,10 +135,13 @@ Object {
 `);
       expect(
         openApi3TypeSchema(
-          {},
-          objectType({
-            singleField: NUMBER
-          })
+          objectType([
+            {
+              name: "singleField",
+              type: NUMBER,
+              optional: false
+            }
+          ])
         )
       ).toMatchInlineSnapshot(`
 Object {
@@ -205,12 +158,23 @@ Object {
 `);
       expect(
         openApi3TypeSchema(
-          {},
-          objectType({
-            field1: NUMBER,
-            field2: STRING,
-            field3: optionalType(BOOLEAN)
-          })
+          objectType([
+            {
+              name: "field1",
+              type: NUMBER,
+              optional: false
+            },
+            {
+              name: "field2",
+              type: STRING,
+              optional: false
+            },
+            {
+              name: "field3",
+              type: BOOLEAN,
+              optional: true
+            }
+          ])
         )
       ).toMatchInlineSnapshot(`
 Object {
@@ -232,56 +196,10 @@ Object {
   "type": "object",
 }
 `);
-      expect(
-        openApi3TypeSchema(
-          {
-            extended1: objectType(
-              {
-                field2: optionalType(BOOLEAN),
-                field3: NUMBER
-              },
-              ["extended2"]
-            ),
-            extended2: objectType({
-              field1: NUMBER,
-              field2: STRING
-            })
-          },
-          objectType(
-            {
-              field4: STRING
-            },
-            ["extended1"]
-          )
-        )
-      ).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {
-    "field1": Object {
-      "type": "number",
-    },
-    "field2": Object {
-      "type": "boolean",
-    },
-    "field3": Object {
-      "type": "number",
-    },
-    "field4": Object {
-      "type": "string",
-    },
-  },
-  "required": Array [
-    "field1",
-    "field3",
-    "field4",
-  ],
-  "type": "object",
-}
-`);
     });
 
     test("array", () => {
-      expect(openApi3TypeSchema({}, arrayType(STRING))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema(arrayType(STRING))).toMatchInlineSnapshot(`
 Object {
   "items": Object {
     "type": "string",
@@ -291,14 +209,8 @@ Object {
 `);
     });
 
-    test("optional", () => {
-      expect(() => openApi3TypeSchema({}, optionalType(STRING))).toThrowError(
-        "Unsupported top-level optional type"
-      );
-    });
-
     test("union", () => {
-      expect(openApi3TypeSchema({}, unionType(STRING, NUMBER, BOOLEAN)))
+      expect(openApi3TypeSchema(unionType([STRING, NUMBER, BOOLEAN])))
         .toMatchInlineSnapshot(`
 Object {
   "oneOf": Array [
@@ -317,7 +229,7 @@ Object {
     });
 
     test("type reference", () => {
-      expect(openApi3TypeSchema({}, typeReference("OtherType")))
+      expect(openApi3TypeSchema(referenceType("OtherType", "location", TypeKind.STRING)))
         .toMatchInlineSnapshot(`
 Object {
   "$ref": "#/components/schemas/OtherType",

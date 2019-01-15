@@ -21,7 +21,13 @@ describe("OpenAPI 2 generator", () => {
       }
       test(testCaseName, async () => {
         const api = await parseFilePath(
-          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
+          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`),
+          {
+            baseUrl: '.',
+            paths: {
+              "@airtasker/spot": ["./libnext/src/lib"]
+            }
+          }
         );
         expect(generateOpenApiV2(api, "json")).toMatchSnapshot("json");
         expect(generateOpenApiV2(api, "yaml")).toMatchSnapshot("yaml");

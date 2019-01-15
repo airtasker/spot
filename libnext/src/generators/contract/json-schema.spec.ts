@@ -1,20 +1,6 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import {
-  arrayType,
-  BOOLEAN,
-  booleanLiteral,
-  INTEGER,
-  NULL,
-  NUMBER,
-  numberLiteral,
-  objectType,
-  referenceType,
-  STRING,
-  stringLiteral,
-  TypeKind,
-  unionType
-} from "../../models/types";
+import { arrayType, BOOLEAN, booleanLiteral, INTEGER, NULL, NUMBER, numberLiteral, objectType, referenceType, STRING, stringLiteral, TypeKind, unionType } from "../../models/types";
 import { parseFilePath } from "../../parsers/parser";
 import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
 
@@ -36,7 +22,13 @@ describe("JSON Schema generator", () => {
       }
       test(testCaseName, async () => {
         const api = await parseFilePath(
-          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
+          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`),
+          {
+            baseUrl: '.',
+            paths: {
+              "@airtasker/spot": ["./libnext/src/lib"]
+            }
+          }
         );
         expect(generateJsonSchema(api, "json")).toMatchSnapshot("json");
         expect(generateJsonSchema(api, "yaml")).toMatchSnapshot("yaml");

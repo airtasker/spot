@@ -79,9 +79,9 @@ export function jsonTypeSchema(type: DataType): JsonSchemaType {
       return type.properties.reduce<JsonSchemaObject & { required: string[] }>(
         (acc, property) => {
           if (!property.optional) {
-            acc.required.push(name);
+            acc.required.push(property.name);
           }
-          acc.properties[name] = jsonTypeSchema(property.type);
+          acc.properties[property.name] = jsonTypeSchema(property.type);
           return acc;
         },
         {
