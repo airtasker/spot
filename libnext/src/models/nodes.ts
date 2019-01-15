@@ -21,23 +21,12 @@ export interface ApiNode {
 export interface EndpointNode {
   name: string;
   description?: string;
+  tags: string[];
   method: HttpMethod;
-  path: PathComponent[];
+  path: string;
   request: RequestNode;
   responses: ResponseNode[];
   defaultResponse?: DefaultResponseNode;
-}
-
-export type PathComponent = StaticPathComponent | DynamicPathComponent;
-
-export interface StaticPathComponent {
-  kind: "static";
-  content: string;
-}
-
-export interface DynamicPathComponent {
-  kind: "dynamic";
-  paramName: string;
 }
 
 export interface RequestNode {

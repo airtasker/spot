@@ -8,7 +8,8 @@ describe("@endpoint parser", () => {
     /** endpoint description */
     @endpoint({
       method: "PUT",
-      path: "/users/:id"
+      path: "/users/:id",
+      tags: ["user"]
     })
     class TestEndpoint {
       @request
@@ -42,16 +43,8 @@ describe("@endpoint parser", () => {
     expect(result.description).toEqual("endpoint description");
     expect(result.method).toEqual("PUT");
     expect(result.name).toEqual("TestEndpoint");
-    expect(result.path).toEqual([
-      {
-        content: "/users/",
-        kind: "static"
-      },
-      {
-        kind: "dynamic",
-        paramName: "id"
-      }
-    ]);
+    expect(result.path).toEqual("/users/:id");
+    expect(result.tags).toEqual(["user"]);
     expect(result.request).not.toBeUndefined;
     expect(result.responses).toHaveLength(2);
     expect(result.defaultResponse).not.toBeUndefined;
