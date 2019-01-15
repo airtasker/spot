@@ -1,0 +1,983 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 3 generator produces valid code multi-file: json 1`] = `
+"{
+  \\"openapi\\": \\"3.0.0\\",
+  \\"tags\\": [
+    {
+      \\"name\\": \\"users\\"
+    }
+  ],
+  \\"info\\": {
+    \\"version\\": \\"0.0.0\\",
+    \\"title\\": \\"My API\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
+  },
+  \\"paths\\": {
+    \\"/users/create\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"createUser\\",
+        \\"description\\": \\"This is an endpoint to create a user\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"This is the authorization token\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"requestBody\\": {
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
+              }
+            }
+          }
+        },
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}-confirmed\\": {
+      \\"delete\\": {
+        \\"operationId\\": \\"deleteUser\\",
+        \\"description\\": \\"\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"integer\\",
+              \\"format\\": \\"int64\\"
+            }
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"nullable\\": true
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"403\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/ForbiddenError\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/BaseError\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"findUsers\\",
+        \\"description\\": \\"\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"limit\\",
+            \\"description\\": \\"Limit number of returned results\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"integer\\",
+              \\"format\\": \\"int32\\"
+            }
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search-term\\",
+            \\"description\\": \\"\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"age\\": {
+                        \\"type\\": \\"number\\",
+                        \\"format\\": \\"float\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"getUser\\",
+        \\"description\\": \\"\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"User unique identifier\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"integer\\",
+              \\"format\\": \\"int64\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"age\\": {
+                      \\"type\\": \\"number\\",
+                      \\"format\\": \\"float\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"name\\"
+                  ]
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    }
+  },
+  \\"components\\": {
+    \\"schemas\\": {
+      \\"CreateUserRequest\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"name\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"roles\\": {
+            \\"type\\": \\"string\\",
+            \\"enum\\": [
+              \\"admin\\",
+              \\"member\\"
+            ]
+          }
+        },
+        \\"required\\": [
+          \\"name\\",
+          \\"roles\\"
+        ]
+      },
+      \\"CreateUserResponse\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"success\\": {
+            \\"type\\": \\"boolean\\"
+          },
+          \\"created_at\\": {
+            \\"type\\": \\"string\\",
+            \\"format\\": \\"date-time\\"
+          }
+        },
+        \\"required\\": [
+          \\"success\\",
+          \\"created_at\\"
+        ]
+      },
+      \\"BaseError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\"
+        ]
+      },
+      \\"ForbiddenError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"signedInAs\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\",
+          \\"signedInAs\\"
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator produces valid code multi-file: yaml 1`] = `
+"openapi: 3.0.0
+tags:
+  - name: users
+info:
+  version: 0.0.0
+  title: My API
+  contact:
+    name: TODO
+paths:
+  /users/create:
+    post:
+      operationId: createUser
+      description: This is an endpoint to create a user
+      tags:
+        - users
+      parameters:
+        - in: header
+          name: Authorization
+          description: This is the authorization token
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+          description: ''
+        default:
+          description: ''
+  '/users/{userId}-confirmed':
+    delete:
+      operationId: deleteUser
+      description: ''
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          description: ''
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: header
+          name: Authorization
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                nullable: true
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: ''
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseError'
+          description: ''
+  /users:
+    get:
+      operationId: findUsers
+      description: ''
+      tags:
+        - users
+      parameters:
+        - in: query
+          name: limit
+          description: Limit number of returned results
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: search-term
+          description: ''
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    age:
+                      type: number
+                      format: float
+                  required:
+                    - name
+          description: ''
+        default:
+          description: ''
+  '/users/{userId}':
+    get:
+      operationId: getUser
+      description: ''
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          description: User unique identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  age:
+                    type: number
+                    format: float
+                required:
+                  - name
+          description: ''
+        default:
+          description: ''
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        roles:
+          type: string
+          enum:
+            - admin
+            - member
+      required:
+        - name
+        - roles
+    CreateUserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - success
+        - created_at
+    BaseError:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    ForbiddenError:
+      type: object
+      properties:
+        message:
+          type: string
+        signedInAs:
+          type: string
+      required:
+        - message
+        - signedInAs
+"
+`;
+
+exports[`OpenAPI 3 generator produces valid code single-file: json 1`] = `
+"{
+  \\"openapi\\": \\"3.0.0\\",
+  \\"tags\\": [
+    {
+      \\"name\\": \\"users\\"
+    }
+  ],
+  \\"info\\": {
+    \\"version\\": \\"0.0.0\\",
+    \\"title\\": \\"My API\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
+  },
+  \\"paths\\": {
+    \\"/users/create\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"createUser\\",
+        \\"description\\": \\"This is an endpoint to create a user\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"This is the authorization token\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"requestBody\\": {
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"$ref\\": \\"#/components/schemas/CreateUserRequest\\"
+              }
+            }
+          }
+        },
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/CreateUserResponse\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"findUsers\\",
+        \\"description\\": \\"\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"limit\\",
+            \\"description\\": \\"Limit number of returned results\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"integer\\",
+              \\"format\\": \\"int32\\"
+            }
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"search-term\\",
+            \\"description\\": \\"\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"age\\": {
+                        \\"type\\": \\"number\\",
+                        \\"format\\": \\"float\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"getUser\\",
+        \\"description\\": \\"\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"User unique identifier\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"integer\\",
+              \\"format\\": \\"int64\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"age\\": {
+                      \\"type\\": \\"number\\",
+                      \\"format\\": \\"float\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"name\\"
+                  ]
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/users/{userId}-confirmed\\": {
+      \\"delete\\": {
+        \\"operationId\\": \\"deleteUser\\",
+        \\"description\\": \\"\\",
+        \\"tags\\": [
+          \\"users\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"integer\\",
+              \\"format\\": \\"int64\\"
+            }
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"Authorization\\",
+            \\"description\\": \\"\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"nullable\\": true
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"403\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/ForbiddenError\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/BaseError\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    }
+  },
+  \\"components\\": {
+    \\"schemas\\": {
+      \\"CreateUserRequest\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"name\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"roles\\": {
+            \\"type\\": \\"string\\",
+            \\"enum\\": [
+              \\"admin\\",
+              \\"member\\"
+            ]
+          }
+        },
+        \\"required\\": [
+          \\"name\\",
+          \\"roles\\"
+        ]
+      },
+      \\"CreateUserResponse\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"success\\": {
+            \\"type\\": \\"boolean\\"
+          },
+          \\"created_at\\": {
+            \\"type\\": \\"string\\",
+            \\"format\\": \\"date-time\\"
+          }
+        },
+        \\"required\\": [
+          \\"success\\",
+          \\"created_at\\"
+        ]
+      },
+      \\"BaseError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\"
+        ]
+      },
+      \\"ForbiddenError\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"signedInAs\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"message\\",
+          \\"signedInAs\\"
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator produces valid code single-file: yaml 1`] = `
+"openapi: 3.0.0
+tags:
+  - name: users
+info:
+  version: 0.0.0
+  title: My API
+  contact:
+    name: TODO
+paths:
+  /users/create:
+    post:
+      operationId: createUser
+      description: This is an endpoint to create a user
+      tags:
+        - users
+      parameters:
+        - in: header
+          name: Authorization
+          description: This is the authorization token
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+          description: ''
+        default:
+          description: ''
+  /users:
+    get:
+      operationId: findUsers
+      description: ''
+      tags:
+        - users
+      parameters:
+        - in: query
+          name: limit
+          description: Limit number of returned results
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: search-term
+          description: ''
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    age:
+                      type: number
+                      format: float
+                  required:
+                    - name
+          description: ''
+        default:
+          description: ''
+  '/users/{userId}':
+    get:
+      operationId: getUser
+      description: ''
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          description: User unique identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  age:
+                    type: number
+                    format: float
+                required:
+                  - name
+          description: ''
+        default:
+          description: ''
+  '/users/{userId}-confirmed':
+    delete:
+      operationId: deleteUser
+      description: ''
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          description: ''
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: header
+          name: Authorization
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                nullable: true
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: ''
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseError'
+          description: ''
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        roles:
+          type: string
+          enum:
+            - admin
+            - member
+      required:
+        - name
+        - roles
+    CreateUserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - success
+        - created_at
+    BaseError:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    ForbiddenError:
+      type: object
+      properties:
+        message:
+          type: string
+        signedInAs:
+          type: string
+      required:
+        - message
+        - signedInAs
+"
+`;
