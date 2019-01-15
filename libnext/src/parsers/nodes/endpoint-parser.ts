@@ -1,7 +1,14 @@
 import { ClassDeclaration, ObjectLiteralExpression } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
 import { EndpointNode } from "../../models/nodes";
-import { classMethodWithDecorator, extractDecoratorFactoryConfiguration, extractJsDocComment, extractStringArrayProperty, extractStringProperty, isHttpMethod } from "../utilities/parser-utility";
+import {
+  classMethodWithDecorator,
+  extractDecoratorFactoryConfiguration,
+  extractJsDocComment,
+  extractStringArrayProperty,
+  extractStringProperty,
+  isHttpMethod
+} from "../utilities/parser-utility";
 import { parseDefaultResponse } from "./default-response-parser";
 import { parseRequest } from "./request-parser";
 import { parseResponse } from "./response-parser";
@@ -56,6 +63,19 @@ export function parseEndpoint(klass: ClassDeclaration): EndpointNode {
 }
 
 /**
+ * Extract a list of tags from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+function extractTagsProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): string[] {
+  return extractStringArrayProperty(objectLiteral, propertyName);
+}
+
+/**
  * Extract a HTTP method property from an object literal.
  *
  * @param objectLiteral an object literal
@@ -70,17 +90,4 @@ function extractHttpMethodProperty(
     throw new Error(`expected a HttpMethod, got ${method}`);
   }
   return method;
-}
-
-/**
- * Extract a list of tags from an object literal.
- *
- * @param objectLiteral an object literal
- * @param propertyName the property to extract
- */
-function extractTagsProperty(
-  objectLiteral: ObjectLiteralExpression,
-  propertyName: string
-): string[] {
-  return extractStringArrayProperty(objectLiteral, propertyName);
 }
