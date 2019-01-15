@@ -1,4 +1,18 @@
-import { ClassDeclaration, Decorator, InterfaceDeclaration, JSDocableNode, MethodDeclaration, ObjectLiteralExpression, ParameterDeclaration, PropertySignature, QuestionTokenableNode, ts, TypeAliasDeclaration, TypeGuards, TypeReferenceNode } from "ts-simple-ast";
+import {
+  ClassDeclaration,
+  Decorator,
+  InterfaceDeclaration,
+  JSDocableNode,
+  MethodDeclaration,
+  ObjectLiteralExpression,
+  ParameterDeclaration,
+  PropertySignature,
+  QuestionTokenableNode,
+  ts,
+  TypeAliasDeclaration,
+  TypeGuards,
+  TypeReferenceNode
+} from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
 
 /**
@@ -55,9 +69,9 @@ export function extractStringArrayProperty(
   objectLiteral: ObjectLiteralExpression,
   propertyName: string
 ): string[] {
-  const property = objectLiteral.getProperty(propertyName)
+  const property = objectLiteral.getProperty(propertyName);
   if (!property) {
-    return []
+    return [];
   }
   return property
     .getLastChildIfKindOrThrow(ts.SyntaxKind.ArrayLiteralExpression)
