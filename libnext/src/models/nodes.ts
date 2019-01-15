@@ -22,22 +22,10 @@ export interface EndpointNode {
   name: string;
   description?: string;
   method: HttpMethod;
-  path: PathComponent[];
+  path: string;
   request: RequestNode;
   responses: ResponseNode[];
   defaultResponse?: DefaultResponseNode;
-}
-
-export type PathComponent = StaticPathComponent | DynamicPathComponent;
-
-export interface StaticPathComponent {
-  kind: "static";
-  content: string;
-}
-
-export interface DynamicPathComponent {
-  kind: "dynamic";
-  paramName: string;
 }
 
 export interface RequestNode {
