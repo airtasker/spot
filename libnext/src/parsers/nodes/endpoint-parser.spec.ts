@@ -42,7 +42,16 @@ describe("@endpoint parser", () => {
     expect(result.description).toEqual("endpoint description");
     expect(result.method).toEqual("PUT");
     expect(result.name).toEqual("TestEndpoint");
-    expect(result.path).toEqual("/users/:id");
+    expect(result.path).toEqual([
+      {
+        content: "/users/",
+        kind: "static"
+      },
+      {
+        kind: "dynamic",
+        paramName: "id"
+      }
+    ]);
     expect(result.request).not.toBeUndefined;
     expect(result.responses).toHaveLength(2);
     expect(result.defaultResponse).not.toBeUndefined;
