@@ -1,6 +1,6 @@
 import { HttpContentType } from "@airtasker/spot";
+import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import assertNever from "../../assert-never";
 import { Api, Endpoint, Type } from "../../models";
 import { isVoid } from "../../validator";
 import {
