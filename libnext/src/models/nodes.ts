@@ -1,6 +1,12 @@
 import { HttpMethod } from "./http";
 import { DataType } from "./types";
 
+export interface Locatable<T> {
+  value: T;
+  location: string;
+  line: number;
+}
+
 export interface ContractNode {
   api: ApiNode;
   endpoints: EndpointNode[];
@@ -14,8 +20,8 @@ export interface TypeNode {
 }
 
 export interface ApiNode {
-  name: string;
-  description?: string;
+  name: Locatable<string>;
+  description?: Locatable<string>;
 }
 
 export interface EndpointNode {

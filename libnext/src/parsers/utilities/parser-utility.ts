@@ -14,6 +14,7 @@ import {
   TypeReferenceNode
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
+import { Locatable } from "../../models/nodes";
 
 /**
  * Extracts the JS Doc comment from a node.
@@ -57,6 +58,70 @@ export function extractStringProperty(
     .getPropertyOrThrow(propertyName)
     .getLastChildIfKindOrThrow(ts.SyntaxKind.StringLiteral)
     .getLiteralText();
+}
+
+/**
+ * Extracts the JS Doc comment from a node.
+ *
+ * @param node a JS Docable Node
+ */
+export function extractJsDocCommentLocatable(
+  node: JSDocableNode
+): Locatable<string> | undefined {
+  const jsDocs = node.getJsDocs();
+  if (jsDocs.length === 1) {
+    const jsDoc = jsDocs[0];
+    const value = jsDoc.getComment();
+    // value may be undefined for an empty comment
+    if (value) {
+      const location = jsDoc.getSourceFile().getFilePath();
+      const line = jsDoc.getStartLineNumber();
+      return { value, location, line };
+    }
+  } else if (jsDocs.length > 1) {
+    throw new Error(`expected 1 jsDoc node, got ${jsDocs.length}`);
+  }
+  return;
+}
+
+/**
+ * Property names may be defined with single or double quotes. These
+ * quotes should be removed.
+ *
+ * @param property property signature
+ */
+export function extractPropertyNameLocatable(
+  property: PropertySignature
+): Locatable<string> {
+  const nameNode = property.getNameNode();
+
+  const value = nameNode.getSymbolOrThrow().getEscapedName();
+  const location = nameNode.getSourceFile().getFilePath();
+  const line = nameNode.getStartLineNumber();
+
+  return { value, location, line };
+}
+
+/**
+ * Extract a string property value metadata from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractStringPropertyValueLocatable(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<string> {
+  const property = objectLiteral.getPropertyOrThrow(propertyName);
+  const literal = property.getLastChildIfKindOrThrow(
+    ts.SyntaxKind.StringLiteral
+  );
+
+  const value = literal.getLiteralText();
+  const location = property.getSourceFile().getFilePath();
+  const line = literal.getStartLineNumber();
+
+  return { value, location, line };
 }
 
 /**

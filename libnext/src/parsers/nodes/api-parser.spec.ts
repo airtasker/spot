@@ -1,38 +1,55 @@
-import { Project, SourceFile } from "ts-simple-ast";
+import { createSourceFile } from "../../test/helper";
 import { parseApi } from "./api-parser";
 
 describe("@api parser", () => {
   test("parses all information", () => {
     const content = `
+      import { api } from "@airtasker/spot"
+
       /** api description */
       @api({ name: "My API" })
       class MyApi {}
     `;
-    const sourceFile = constructSourceFile(content);
+    const sourceFile = createSourceFile({
+      path: "main",
+      content: content.trim()
+    });
     const klass = sourceFile.getClassOrThrow("MyApi");
 
     expect(parseApi(klass)).toStrictEqual({
-      name: "My API",
-      description: "api description"
+      name: {
+        value: "My API",
+        location: expect.stringMatching(/main\.ts$/),
+        line: 4
+      },
+      description: {
+        value: "api description",
+        location: expect.stringMatching(/main\.ts$/),
+        line: 3
+      }
     });
   });
 
   test("parses with no description", () => {
     const content = `
+      import { api } from "@airtasker/spot"
+
       @api({ name: "My API" })
       class MyApi {}
     `;
-    const sourceFile = constructSourceFile(content);
+    const sourceFile = createSourceFile({
+      path: "main",
+      content: content.trim()
+    });
     const klass = sourceFile.getClassOrThrow("MyApi");
 
     expect(parseApi(klass)).toStrictEqual({
-      name: "My API",
+      name: {
+        value: "My API",
+        location: expect.stringMatching(/main\.ts$/),
+        line: 3
+      },
       description: undefined
     });
   });
 });
-
-function constructSourceFile(content: string): SourceFile {
-  const project = new Project();
-  return project.createSourceFile("spot_contract_partial.ts", content);
-}

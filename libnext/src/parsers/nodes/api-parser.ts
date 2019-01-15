@@ -2,8 +2,8 @@ import { ClassDeclaration } from "ts-simple-ast";
 import { ApiNode } from "../../models/nodes";
 import {
   extractDecoratorFactoryConfiguration,
-  extractJsDocComment,
-  extractStringProperty
+  extractJsDocCommentLocatable,
+  extractStringPropertyValueLocatable
 } from "../utilities/parser-utility";
 
 /**
@@ -13,8 +13,8 @@ import {
  */
 export function parseApi(klass: ClassDeclaration): ApiNode {
   const decorator = klass.getDecoratorOrThrow("api");
-  const description = extractJsDocComment(klass);
+  const description = extractJsDocCommentLocatable(klass);
   const configuration = extractDecoratorFactoryConfiguration(decorator);
-  const name = extractStringProperty(configuration, "name");
+  const name = extractStringPropertyValueLocatable(configuration, "name");
   return { name, description };
 }
