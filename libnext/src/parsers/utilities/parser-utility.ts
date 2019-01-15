@@ -60,6 +60,32 @@ export function extractStringProperty(
 }
 
 /**
+ * Extract a string array property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractStringArrayProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): string[] {
+  const property = objectLiteral.getProperty(propertyName);
+  if (!property) {
+    return [];
+  }
+  return property
+    .getLastChildIfKindOrThrow(ts.SyntaxKind.ArrayLiteralExpression)
+    .getElements()
+    .map(e => {
+      if (TypeGuards.isStringLiteral(e)) {
+        return e.getLiteralText();
+      } else {
+        throw new Error(`expected string literal`);
+      }
+    });
+}
+
+/**
  * Extract a number property value from an object literal.
  *
  * @param objectLiteral an object literal

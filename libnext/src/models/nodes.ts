@@ -21,9 +21,10 @@ export interface ApiNode {
 export interface EndpointNode {
   name: string;
   description?: string;
+  tags: string[];
   method: HttpMethod;
   path: string;
-  request?: RequestNode;
+  request: RequestNode;
   responses: ResponseNode[];
   defaultResponse?: DefaultResponseNode;
 }
