@@ -1,7 +1,17 @@
 import { ClassDeclaration, ObjectLiteralExpression } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
-import { DynamicPathComponent, EndpointNode, PathComponent } from "../../models/nodes";
-import { classMethodWithDecorator, extractDecoratorFactoryConfiguration, extractJsDocComment, extractStringProperty, isHttpMethod } from "../utilities/parser-utility";
+import {
+  DynamicPathComponent,
+  EndpointNode,
+  PathComponent
+} from "../../models/nodes";
+import {
+  classMethodWithDecorator,
+  extractDecoratorFactoryConfiguration,
+  extractJsDocComment,
+  extractStringProperty,
+  isHttpMethod
+} from "../utilities/parser-utility";
 import { parseDefaultResponse } from "./default-response-parser";
 import { parseRequest } from "./request-parser";
 import { parseResponse } from "./response-parser";
@@ -19,11 +29,13 @@ export function parseEndpoint(klass: ClassDeclaration): EndpointNode {
   const name = klass.getNameOrThrow();
   const path = extractPathProperty(configuration, "path");
   const requestMethod = classMethodWithDecorator(klass, "request");
-  const request = requestMethod ? parseRequest(requestMethod) : {
-    headers: [],
-    pathParams: [],
-    queryParams: []
-  };
+  const request = requestMethod
+    ? parseRequest(requestMethod)
+    : {
+        headers: [],
+        pathParams: [],
+        queryParams: []
+      };
   const responses = klass
     .getMethods()
     .filter(klassMethod => klassMethod.getDecorator("response") !== undefined)
@@ -70,7 +82,7 @@ function extractHttpMethodProperty(
 
 /**
  * Extract a list of path components from a string path.
- * 
+ *
  * An example of valid path is "/users/:id".
  *
  * @param objectLiteral an object literal
@@ -78,9 +90,10 @@ function extractHttpMethodProperty(
  */
 function extractPathProperty(
   objectLiteral: ObjectLiteralExpression,
-  propertyName: string): PathComponent[] {
-    const stringPath = extractStringProperty(objectLiteral, propertyName);
-    const pathComponents: PathComponent[] = [];
+  propertyName: string
+): PathComponent[] {
+  const stringPath = extractStringProperty(objectLiteral, propertyName);
+  const pathComponents: PathComponent[] = [];
   if (stringPath.length > 0) {
     let componentStartPosition = 0;
     do {
@@ -96,7 +109,7 @@ function extractPathProperty(
             nextNonNamePositionRelative === -1
               ? undefined
               : nextNonNamePositionRelative
-          ),
+          )
         };
         pathComponents.push(dynamicPathComponent);
         componentStartPosition =
@@ -105,7 +118,10 @@ function extractPathProperty(
             : componentStartPosition + 1 + nextNonNamePositionRelative;
       } else {
         // The static component extends until the next parameter, which starts with ":".
-        const nextColumnPosition = stringPath.indexOf(":", componentStartPosition);
+        const nextColumnPosition = stringPath.indexOf(
+          ":",
+          componentStartPosition
+        );
         pathComponents.push({
           kind: "static",
           content: stringPath.substring(
