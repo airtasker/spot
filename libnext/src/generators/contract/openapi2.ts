@@ -1,20 +1,16 @@
 import { HttpContentType } from "@airtasker/spot";
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { Api, Endpoint, Type } from "../../models";
-import { isVoid } from "../../validator";
-import {
-  OpenAPI2SchemaType,
-  openApi2TypeSchema,
-  rejectVoidOpenApi2SchemaType
-} from "./openapi2-schema";
+import { ContractNode } from "libnext/src/models/nodes";
+import { DataType } from "libnext/src/models/types";
+import { OpenAPI2SchemaType, openApi2TypeSchema } from "./openapi2-schema";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import defaultTo = require("lodash/defaultTo");
 import pickBy = require("lodash/pickBy");
 
-export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
-  const contract = openApiV2(api);
+export function generateOpenApiV2(contractNode: ContractNode, format: "json" | "yaml") {
+  const contract = openApiV2(contractNode);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -25,33 +21,26 @@ export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
   }
 }
 
-export function openApiV2(api: Api): OpenApiV2 {
+export function openApiV2(contractNode: ContractNode): OpenApiV2 {
   return {
     swagger: "2.0",
-    tags: getTags(api),
+    tags: getTags(contractNode),
     info: {
       version: "0.0.0",
-      title: api.description.name,
-      ...pickBy({ description: api.description.description }),
+      title: contractNode.api.name,
+      ...pickBy({ description: contractNode.api.description }),
       contact: {
         name: "TODO"
       }
     },
-    paths: Object.entries(api.endpoints).reduce(
+    paths: Object.entries(contractNode.endpoints).reduce(
       (acc, [endpointName, endpoint]) => {
-        const openApiPath = endpoint.path
-          .map(
-            pathComponent =>
-              pathComponent.kind === "dynamic"
-                ? `{${pathComponent.name}}`
-                : pathComponent.content
-          )
-          .join("");
+        const openApiPath = endpoint.path.replace(/:(\w+)/g, '{$1}')
         acc[openApiPath] = acc[openApiPath] || {};
         acc[openApiPath][endpoint.method.toLowerCase()] = {
           operationId: endpointName,
           description: endpoint.description,
-          consumes: consumes(api, endpoint),
+          consumes: ["application/json"],
           tags: endpoint.tags,
           parameters: getParameters(api, endpoint),
           responses: {
@@ -80,24 +69,20 @@ export function openApiV2(api: Api): OpenApiV2 {
         };
       }
     ),
-    definitions: Object.entries(api.types).reduce(
-      (acc, [typeName, type]) => {
-        acc[typeName] = rejectVoidOpenApi2SchemaType(
-          api.types,
-          type,
-          `Unsupported void type ${typeName}`
-        );
+    definitions: contractNode.types.reduce<{ [typeName: string]: OpenAPI2SchemaType }>(
+      (acc, typeNode) => {
+        acc[typeNode.name] = openApi2TypeSchema(typeNode.type);
         return acc;
       },
-      {} as { [typeName: string]: OpenAPI2SchemaType }
+      {}
     )
   };
 }
 
-function getTags(api: Api): OpenAPIV2TagObject[] {
+function getTags(contractNode: ContractNode): OpenAPIV2TagObject[] {
   return uniqBy(
-    Object.entries(api.endpoints).reduce(
-      (acc, [endpointName, endpoint]) => {
+    contractNode.endpoints.reduce<OpenAPIV2TagObject[]>(
+      (acc, endpoint) => {
         if (endpoint.tags) {
           acc = acc.concat(
             endpoint.tags.map(tag => {
@@ -107,13 +92,13 @@ function getTags(api: Api): OpenAPIV2TagObject[] {
         }
         return acc;
       },
-      [] as OpenAPIV2TagObject[]
+      []
     ),
     "name"
   );
 }
 
-function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
+function getParameters(contractNode: ContractNode, endpoint: Endpoint): OpenAPIV2Parameter[] {
   const parameters = endpoint.path
     .map(
       (pathComponent): OpenAPIV2Parameter | null =>
@@ -175,33 +160,19 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
   return compact(parameters);
 }
 
-function consumes(api: Api, endpoint: Endpoint): HttpContentType[] {
-  const contentType = isVoid(api, endpoint.requestType)
-    ? null
-    : endpoint.requestContentType;
-  return compact([contentType]);
-}
-
-function requestBody(api: Api, type: Type): OpenAPIV2Parameter | null {
-  return isVoid(api, type)
-    ? null
-    : {
+function requestBody(contractNode: ContractNode, type: DataType): OpenAPIV2Parameter | null {
+  return {
         in: "body",
         name: "body",
         description: "TODO",
         required: true,
-        schema: defaultTo(openApi2TypeSchema(api.types, type), undefined)
+        schema: defaultTo(openApi2TypeSchema(type), undefined)
       };
 }
 
-function response(api: Api, type: Type): OpenAPIV2Response {
-  const schemaType = openApi2TypeSchema(api.types, type);
+function response(type: DataType): OpenAPIV2Response {
   return {
-    ...(schemaType
-      ? {
-          schema: schemaType
-        }
-      : {}),
+          schema: openApi2TypeSchema(type),
     description: ""
   };
 }

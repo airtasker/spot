@@ -8,10 +8,11 @@ function isStringConstantUnion(type: UnionType): boolean {
   }, true);
 }
 
-export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType | null {
+export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
-      return null;
+      // See https://stackoverflow.com/a/48114322.
+      throw new Error(`The null type is not supported in OpenAPI 2`);
     case TypeKind.BOOLEAN:
       return {
         type: "boolean"
@@ -107,7 +108,6 @@ export type OpenAPI2SchemaType =
   | OpenAPI2SchemaTypeObject
   | OpenAPI2SchemaTypeArray
   | OpenAPI2SchemaTypeAllOf
-  | OpenAPI2SchemaTypeNull
   | OpenAPI2SchemaTypeString
   | OpenAPI2SchemaTypeDateTime
   | OpenAPI2SchemaTypeNumber
@@ -142,8 +142,6 @@ export interface OpenAPI2SchemaTypeArray extends OpenAPI2BaseSchemaType {
 export interface OpenAPI2SchemaTypeAllOf extends OpenAPI2BaseSchemaType {
   allOf: OpenAPI2SchemaType[];
 }
-
-export interface OpenAPI2SchemaTypeNull extends OpenAPI2BaseSchemaType {}
 
 export interface OpenAPI2SchemaTypeString extends OpenAPI2BaseSchemaType {
   type: "string";
