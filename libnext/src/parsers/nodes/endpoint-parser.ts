@@ -5,6 +5,7 @@ import {
   classMethodWithDecorator,
   extractDecoratorFactoryConfiguration,
   extractJsDocComment,
+  extractStringArrayProperty,
   extractStringProperty,
   isHttpMethod
 } from "../utilities/parser-utility";
@@ -21,6 +22,7 @@ export function parseEndpoint(klass: ClassDeclaration): EndpointNode {
   const decorator = klass.getDecoratorOrThrow("endpoint");
   const description = extractJsDocComment(klass);
   const configuration = extractDecoratorFactoryConfiguration(decorator);
+  const tags = extractTagsProperty(configuration, "tags");
   const method = extractHttpMethodProperty(configuration, "method");
   const name = klass.getNameOrThrow();
   const path = extractStringProperty(configuration, "path");
@@ -46,11 +48,25 @@ export function parseEndpoint(klass: ClassDeclaration): EndpointNode {
     description,
     method,
     name,
+    tags,
     path,
     request,
     responses,
     defaultResponse
   };
+}
+
+/**
+ * Extract a list of tags from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+function extractTagsProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): string[] {
+  return extractStringArrayProperty(objectLiteral, propertyName);
 }
 
 /**
