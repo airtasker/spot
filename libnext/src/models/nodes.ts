@@ -71,5 +71,4 @@ export interface QueryParamNode {
 export interface BodyNode {
   description?: string;
   type: DataType;
-  optional: boolean;
 }

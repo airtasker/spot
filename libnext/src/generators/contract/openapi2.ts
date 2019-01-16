@@ -138,7 +138,7 @@ function requestBody(body: BodyNode): OpenAPIV2Parameter {
     in: "body",
     name: "body",
     description: "TODO",
-    required: !body.optional,
+    required: true,
     schema: openApi2TypeSchema(body.type)
   };
 }
