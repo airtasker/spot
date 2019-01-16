@@ -2,18 +2,6 @@ import assertNever from "assert-never";
 import { DataType, TypeKind, UnionType } from "../../models/types";
 import compact = require("lodash/compact");
 
-export function openApiV3ContentTypeSchema(
-  type: DataType
-): OpenAPI3SchemaContentType {
-  return {
-    content: {
-      "application/json": {
-        schema: openApi3TypeSchema(type)
-      }
-    }
-  };
-}
-
 function isStringConstantUnion(type: UnionType): boolean {
   return type.types.reduce((acc, type) => {
     return acc && type.kind === TypeKind.STRING_LITERAL;
@@ -138,28 +126,6 @@ export interface OpenAPI3BaseSchemaType {
     propertyName: string;
     mapping: {
       [value: string]: OpenAPI3SchemaType;
-    };
-  };
-}
-
-export type OpenAPI3SchemaContentType =
-  | OpenAPI3SchemaApplicationJsonContentType
-  | OpenAPI3SchemaTextHtmlContentType;
-
-export interface OpenAPI3SchemaApplicationJsonContentType
-  extends OpenAPI3BaseSchemaType {
-  content: {
-    "application/json": {
-      schema: OpenAPI3SchemaType | null;
-    };
-  };
-}
-
-export interface OpenAPI3SchemaTextHtmlContentType
-  extends OpenAPI3BaseSchemaType {
-  content: {
-    "text/html": {
-      schema: OpenAPI3SchemaTypeString;
     };
   };
 }

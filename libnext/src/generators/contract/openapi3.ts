@@ -1,15 +1,7 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import {
-  ContractNode,
-  DefaultResponseNode,
-  EndpointNode
-} from "../../models/nodes";
-import {
-  OpenAPI3SchemaType,
-  openApi3TypeSchema,
-  openApiV3ContentTypeSchema
-} from "./openapi3-schema";
+import { ContractNode, DefaultResponseNode, EndpointNode } from "../../models/nodes";
+import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import pickBy = require("lodash/pickBy");
@@ -51,14 +43,21 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
           tags: endpoint.tags,
           parameters: getParameters(endpoint),
           ...(endpoint.request.body && {
-            requestBody: openApi3TypeSchema(endpoint.request.body.type)
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: openApi3TypeSchema(endpoint.request.body.type)
+                }
+              },
+              description: ''
+            },
           }),
           responses: {
             ...(endpoint.defaultResponse
               ? { default: response(endpoint.defaultResponse) }
               : {}),
             ...endpoint.responses.reduce<{
-              [statusCode: string]: OpenAPIV3Response;
+              [statusCode: string]: OpenAPIV3Body;
             }>((acc, responseNode) => {
               acc[responseNode.status.toString(10)] = response(responseNode);
               return acc;
@@ -77,7 +76,7 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
       schemas: contractNode.types.reduce<{
         [typeName: string]: OpenAPI3SchemaType;
       }>((acc, typeNode) => {
-        acc[typeNode.name] = openApiV3ContentTypeSchema(typeNode.type);
+        acc[typeNode.name] = openApi3TypeSchema(typeNode.type);
         return acc;
       }, {})
     }
@@ -138,7 +137,7 @@ function getParameters(endpoint: EndpointNode): OpenAPIV3Parameter[] {
   return compact(parameters);
 }
 
-function response(response: DefaultResponseNode): OpenAPIV3Response {
+function response(response: DefaultResponseNode): OpenAPIV3Body {
   return {
     ...(response.body && {
       content: {
@@ -195,11 +194,11 @@ export interface OpenAPIV3Operation {
   description?: string;
   tags?: string[];
   parameters: OpenAPIV3Parameter[];
-  requestBody?: OpenAPI3SchemaType;
+  requestBody?: OpenAPIV3Body;
   responses: {
-    default?: OpenAPIV3Response;
+    default?: OpenAPIV3Body;
     // Note: we use | undefined because otherwise "default" would have to be required.
-    [statusCode: string]: OpenAPIV3Response | undefined;
+    [statusCode: string]: OpenAPIV3Body | undefined;
   };
 }
 
@@ -211,7 +210,7 @@ export interface OpenAPIV3Parameter {
   schema: OpenAPI3SchemaType;
 }
 
-export interface OpenAPIV3Response {
+export interface OpenAPIV3Body {
   content?: {
     "application/json": {
       schema: OpenAPI3SchemaType;
