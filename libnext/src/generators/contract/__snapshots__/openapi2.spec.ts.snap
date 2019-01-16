@@ -1,637 +1,127 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OpenAPI 2 generator produces valid code multi-file: json 1`] = `
+exports[`OpenAPI 2 generator produces valid code: json 1`] = `
 "{
   \\"swagger\\": \\"2.0\\",
-  \\"tags\\": [
-    {
-      \\"name\\": \\"users\\"
-    }
-  ],
   \\"info\\": {
     \\"version\\": \\"0.0.0\\",
-    \\"title\\": \\"My API\\",
+    \\"title\\": \\"company-api\\",
+    \\"description\\": \\"This is the company API. It does cool things\\",
     \\"contact\\": {
       \\"name\\": \\"TODO\\"
     }
   },
   \\"paths\\": {
-    \\"/users/create\\": {
+    \\"/company/{companyId}/users/{userId}\\": {
       \\"post\\": {
-        \\"operationId\\": \\"createUser\\",
-        \\"description\\": \\"This is an endpoint to create a user\\",
-        \\"consumes\\": [
-          \\"application/json\\"
-        ],
+        \\"operationId\\": \\"GetUser\\",
+        \\"description\\": \\"Retrieves a user in a company\\",
         \\"tags\\": [
-          \\"users\\"
+          \\"Company\\",
+          \\"User\\"
         ],
         \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"companyId\\",
+            \\"description\\": \\"company identifier\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"user identifier\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"sample-query\\",
+            \\"description\\": \\"a demo query param\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"x-auth-token\\",
+            \\"description\\": \\"Auth Header\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"201\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/UserBody\\"
+            },
+            \\"description\\": \\"Successful creation of user\\"
+          },
+          \\"404\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/ErrorBody\\"
+            },
+            \\"description\\": \\"Bad request response\\"
+          }
+        }
+      }
+    },
+    \\"/company/{companyId}/users\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"CreateUser\\",
+        \\"description\\": \\"Creates a user in a company\\",
+        \\"tags\\": [
+          \\"Company\\",
+          \\"User\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"companyId\\",
+            \\"description\\": \\"company identifier\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
           {
             \\"in\\": \\"body\\",
             \\"name\\": \\"body\\",
             \\"description\\": \\"TODO\\",
             \\"required\\": true,
             \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/CreateUserRequest\\"
+              \\"$ref\\": \\"#/definitions/CreateUserRequestBody\\"
             }
           },
           {
-            \\"in\\": \\"header\\",
-            \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"This is the authorization token\\",
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"sample-query\\",
+            \\"description\\": \\"a demo query param\\",
             \\"type\\": \\"string\\",
             \\"required\\": false
-          }
-        ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/CreateUserResponse\\"
-            },
-            \\"description\\": \\"\\"
-          },
-          \\"default\\": {
-            \\"description\\": \\"\\"
-          }
-        }
-      }
-    },
-    \\"/users/{userId}-confirmed\\": {
-      \\"delete\\": {
-        \\"operationId\\": \\"deleteUser\\",
-        \\"description\\": \\"\\",
-        \\"consumes\\": [],
-        \\"tags\\": [
-          \\"users\\"
-        ],
-        \\"parameters\\": [
-          {
-            \\"in\\": \\"path\\",
-            \\"name\\": \\"userId\\",
-            \\"description\\": \\"\\",
-            \\"type\\": \\"integer\\",
-            \\"format\\": \\"int64\\",
-            \\"required\\": true
           },
           {
             \\"in\\": \\"header\\",
-            \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"\\",
+            \\"name\\": \\"x-auth-token\\",
+            \\"description\\": \\"Auth Header\\",
             \\"type\\": \\"string\\",
             \\"required\\": true
           }
         ],
         \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"\\"
-          },
-          \\"403\\": {
+          \\"201\\": {
             \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/ForbiddenError\\"
+              \\"$ref\\": \\"#/definitions/UserBody\\"
             },
-            \\"description\\": \\"\\"
+            \\"description\\": \\"Successful creation of user\\"
+          },
+          \\"400\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/ErrorBody\\"
+            },
+            \\"description\\": \\"Bad request response\\"
           },
           \\"default\\": {
             \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/BaseError\\"
-            },
-            \\"description\\": \\"\\"
-          }
-        }
-      }
-    },
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"findUsers\\",
-        \\"description\\": \\"\\",
-        \\"consumes\\": [],
-        \\"tags\\": [
-          \\"users\\"
-        ],
-        \\"parameters\\": [
-          {
-            \\"in\\": \\"query\\",
-            \\"name\\": \\"limit\\",
-            \\"description\\": \\"Limit number of returned results\\",
-            \\"type\\": \\"integer\\",
-            \\"format\\": \\"int32\\",
-            \\"required\\": true
-          },
-          {
-            \\"in\\": \\"query\\",
-            \\"name\\": \\"search-term\\",
-            \\"description\\": \\"\\",
-            \\"type\\": \\"string\\",
-            \\"required\\": false
-          }
-        ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
-                  },
-                  \\"age\\": {
-                    \\"type\\": \\"number\\",
-                    \\"format\\": \\"float\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"name\\"
-                ]
-              }
-            },
-            \\"description\\": \\"\\"
-          },
-          \\"default\\": {
-            \\"description\\": \\"\\"
-          }
-        }
-      }
-    },
-    \\"/users/{userId}\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"getUser\\",
-        \\"description\\": \\"\\",
-        \\"consumes\\": [],
-        \\"tags\\": [
-          \\"users\\"
-        ],
-        \\"parameters\\": [
-          {
-            \\"in\\": \\"path\\",
-            \\"name\\": \\"userId\\",
-            \\"description\\": \\"User unique identifier\\",
-            \\"type\\": \\"integer\\",
-            \\"format\\": \\"int64\\",
-            \\"required\\": true
-          }
-        ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
-                },
-                \\"age\\": {
-                  \\"type\\": \\"number\\",
-                  \\"format\\": \\"float\\"
-                }
-              },
-              \\"required\\": [
-                \\"name\\"
-              ]
-            },
-            \\"description\\": \\"\\"
-          },
-          \\"default\\": {
-            \\"description\\": \\"\\"
-          }
-        }
-      }
-    }
-  },
-  \\"definitions\\": {
-    \\"CreateUserRequest\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"name\\": {
-          \\"type\\": \\"string\\"
-        },
-        \\"roles\\": {
-          \\"type\\": \\"string\\",
-          \\"enum\\": [
-            \\"admin\\",
-            \\"member\\"
-          ]
-        }
-      },
-      \\"required\\": [
-        \\"name\\",
-        \\"roles\\"
-      ]
-    },
-    \\"CreateUserResponse\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"success\\": {
-          \\"type\\": \\"boolean\\"
-        },
-        \\"created_at\\": {
-          \\"type\\": \\"string\\",
-          \\"format\\": \\"date-time\\"
-        }
-      },
-      \\"required\\": [
-        \\"success\\",
-        \\"created_at\\"
-      ]
-    },
-    \\"BaseError\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"message\\": {
-          \\"type\\": \\"string\\"
-        }
-      },
-      \\"required\\": [
-        \\"message\\"
-      ]
-    },
-    \\"ForbiddenError\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"message\\": {
-          \\"type\\": \\"string\\"
-        },
-        \\"signedInAs\\": {
-          \\"type\\": \\"string\\"
-        }
-      },
-      \\"required\\": [
-        \\"message\\",
-        \\"signedInAs\\"
-      ]
-    }
-  }
-}"
-`;
-
-exports[`OpenAPI 2 generator produces valid code multi-file: yaml 1`] = `
-"swagger: '2.0'
-tags:
-  - name: users
-info:
-  version: 0.0.0
-  title: My API
-  contact:
-    name: TODO
-paths:
-  /users/create:
-    post:
-      operationId: createUser
-      description: This is an endpoint to create a user
-      consumes:
-        - application/json
-      tags:
-        - users
-      parameters:
-        - in: body
-          name: body
-          description: TODO
-          required: true
-          schema:
-            $ref: '#/definitions/CreateUserRequest'
-        - in: header
-          name: Authorization
-          description: This is the authorization token
-          type: string
-          required: false
-      responses:
-        '200':
-          schema:
-            $ref: '#/definitions/CreateUserResponse'
-          description: ''
-        default:
-          description: ''
-  '/users/{userId}-confirmed':
-    delete:
-      operationId: deleteUser
-      description: ''
-      consumes: []
-      tags:
-        - users
-      parameters:
-        - in: path
-          name: userId
-          description: ''
-          type: integer
-          format: int64
-          required: true
-        - in: header
-          name: Authorization
-          description: ''
-          type: string
-          required: true
-      responses:
-        '200':
-          description: ''
-        '403':
-          schema:
-            $ref: '#/definitions/ForbiddenError'
-          description: ''
-        default:
-          schema:
-            $ref: '#/definitions/BaseError'
-          description: ''
-  /users:
-    get:
-      operationId: findUsers
-      description: ''
-      consumes: []
-      tags:
-        - users
-      parameters:
-        - in: query
-          name: limit
-          description: Limit number of returned results
-          type: integer
-          format: int32
-          required: true
-        - in: query
-          name: search-term
-          description: ''
-          type: string
-          required: false
-      responses:
-        '200':
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                age:
-                  type: number
-                  format: float
-              required:
-                - name
-          description: ''
-        default:
-          description: ''
-  '/users/{userId}':
-    get:
-      operationId: getUser
-      description: ''
-      consumes: []
-      tags:
-        - users
-      parameters:
-        - in: path
-          name: userId
-          description: User unique identifier
-          type: integer
-          format: int64
-          required: true
-      responses:
-        '200':
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              age:
-                type: number
-                format: float
-            required:
-              - name
-          description: ''
-        default:
-          description: ''
-definitions:
-  CreateUserRequest:
-    type: object
-    properties:
-      name:
-        type: string
-      roles:
-        type: string
-        enum:
-          - admin
-          - member
-    required:
-      - name
-      - roles
-  CreateUserResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      created_at:
-        type: string
-        format: date-time
-    required:
-      - success
-      - created_at
-  BaseError:
-    type: object
-    properties:
-      message:
-        type: string
-    required:
-      - message
-  ForbiddenError:
-    type: object
-    properties:
-      message:
-        type: string
-      signedInAs:
-        type: string
-    required:
-      - message
-      - signedInAs
-"
-`;
-
-exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
-"{
-  \\"swagger\\": \\"2.0\\",
-  \\"tags\\": [
-    {
-      \\"name\\": \\"users\\"
-    }
-  ],
-  \\"info\\": {
-    \\"version\\": \\"0.0.0\\",
-    \\"title\\": \\"My API\\",
-    \\"contact\\": {
-      \\"name\\": \\"TODO\\"
-    }
-  },
-  \\"paths\\": {
-    \\"/users/create\\": {
-      \\"post\\": {
-        \\"operationId\\": \\"createUser\\",
-        \\"description\\": \\"This is an endpoint to create a user\\",
-        \\"consumes\\": [
-          \\"application/json\\"
-        ],
-        \\"tags\\": [
-          \\"users\\"
-        ],
-        \\"parameters\\": [
-          {
-            \\"in\\": \\"body\\",
-            \\"name\\": \\"body\\",
-            \\"description\\": \\"TODO\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/CreateUserRequest\\"
-            }
-          },
-          {
-            \\"in\\": \\"header\\",
-            \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"This is the authorization token\\",
-            \\"type\\": \\"string\\",
-            \\"required\\": false
-          }
-        ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/CreateUserResponse\\"
-            },
-            \\"description\\": \\"\\"
-          },
-          \\"default\\": {
-            \\"description\\": \\"\\"
-          }
-        }
-      }
-    },
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"findUsers\\",
-        \\"description\\": \\"\\",
-        \\"consumes\\": [],
-        \\"tags\\": [
-          \\"users\\"
-        ],
-        \\"parameters\\": [
-          {
-            \\"in\\": \\"query\\",
-            \\"name\\": \\"limit\\",
-            \\"description\\": \\"Limit number of returned results\\",
-            \\"type\\": \\"integer\\",
-            \\"format\\": \\"int32\\",
-            \\"required\\": true
-          },
-          {
-            \\"in\\": \\"query\\",
-            \\"name\\": \\"search-term\\",
-            \\"description\\": \\"\\",
-            \\"type\\": \\"string\\",
-            \\"required\\": false
-          }
-        ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
-                  },
-                  \\"age\\": {
-                    \\"type\\": \\"number\\",
-                    \\"format\\": \\"float\\"
-                  }
-                },
-                \\"required\\": [
-                  \\"name\\"
-                ]
-              }
-            },
-            \\"description\\": \\"\\"
-          },
-          \\"default\\": {
-            \\"description\\": \\"\\"
-          }
-        }
-      }
-    },
-    \\"/users/{userId}\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"getUser\\",
-        \\"description\\": \\"\\",
-        \\"consumes\\": [],
-        \\"tags\\": [
-          \\"users\\"
-        ],
-        \\"parameters\\": [
-          {
-            \\"in\\": \\"path\\",
-            \\"name\\": \\"userId\\",
-            \\"description\\": \\"User unique identifier\\",
-            \\"type\\": \\"integer\\",
-            \\"format\\": \\"int64\\",
-            \\"required\\": true
-          }
-        ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
-                },
-                \\"age\\": {
-                  \\"type\\": \\"number\\",
-                  \\"format\\": \\"float\\"
-                }
-              },
-              \\"required\\": [
-                \\"name\\"
-              ]
-            },
-            \\"description\\": \\"\\"
-          },
-          \\"default\\": {
-            \\"description\\": \\"\\"
-          }
-        }
-      }
-    },
-    \\"/users/{userId}-confirmed\\": {
-      \\"delete\\": {
-        \\"operationId\\": \\"deleteUser\\",
-        \\"description\\": \\"\\",
-        \\"consumes\\": [],
-        \\"tags\\": [
-          \\"users\\"
-        ],
-        \\"parameters\\": [
-          {
-            \\"in\\": \\"path\\",
-            \\"name\\": \\"userId\\",
-            \\"description\\": \\"\\",
-            \\"type\\": \\"integer\\",
-            \\"format\\": \\"int64\\",
-            \\"required\\": true
-          },
-          {
-            \\"in\\": \\"header\\",
-            \\"name\\": \\"Authorization\\",
-            \\"description\\": \\"\\",
-            \\"type\\": \\"string\\",
-            \\"required\\": true
-          }
-        ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"\\"
-          },
-          \\"403\\": {
-            \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/ForbiddenError\\"
-            },
-            \\"description\\": \\"\\"
-          },
-          \\"default\\": {
-            \\"schema\\": {
-              \\"$ref\\": \\"#/definitions/BaseError\\"
+              \\"$ref\\": \\"#/definitions/ErrorBody\\"
             },
             \\"description\\": \\"\\"
           }
@@ -640,244 +130,285 @@ exports[`OpenAPI 2 generator produces valid code single-file: json 1`] = `
     }
   },
   \\"definitions\\": {
-    \\"CreateUserRequest\\": {
+    \\"UserBody\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"data\\": {
+          \\"type\\": \\"object\\",
+          \\"properties\\": {
+            \\"firstName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"lastName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"profile\\": {
+              \\"$ref\\": \\"#/definitions/Profile\\"
+            }
+          },
+          \\"required\\": [
+            \\"firstName\\",
+            \\"lastName\\",
+            \\"profile\\"
+          ]
+        }
+      },
+      \\"required\\": [
+        \\"data\\"
+      ]
+    },
+    \\"ErrorBody\\": {
       \\"type\\": \\"object\\",
       \\"properties\\": {
         \\"name\\": {
           \\"type\\": \\"string\\"
         },
-        \\"roles\\": {
-          \\"type\\": \\"string\\",
-          \\"enum\\": [
-            \\"admin\\",
-            \\"member\\"
-          ]
+        \\"message\\": {
+          \\"type\\": \\"array\\",
+          \\"items\\": {
+            \\"type\\": \\"string\\"
+          }
         }
       },
       \\"required\\": [
         \\"name\\",
-        \\"roles\\"
-      ]
-    },
-    \\"CreateUserResponse\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"success\\": {
-          \\"type\\": \\"boolean\\"
-        },
-        \\"created_at\\": {
-          \\"type\\": \\"string\\",
-          \\"format\\": \\"date-time\\"
-        }
-      },
-      \\"required\\": [
-        \\"success\\",
-        \\"created_at\\"
-      ]
-    },
-    \\"BaseError\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"message\\": {
-          \\"type\\": \\"string\\"
-        }
-      },
-      \\"required\\": [
         \\"message\\"
       ]
     },
-    \\"ForbiddenError\\": {
+    \\"CreateUserRequestBody\\": {
       \\"type\\": \\"object\\",
       \\"properties\\": {
-        \\"message\\": {
-          \\"type\\": \\"string\\"
-        },
-        \\"signedInAs\\": {
-          \\"type\\": \\"string\\"
+        \\"data\\": {
+          \\"type\\": \\"object\\",
+          \\"properties\\": {
+            \\"firstName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"lastName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"age\\": {
+              \\"type\\": \\"number\\"
+            },
+            \\"email\\": {
+              \\"$ref\\": \\"#/definitions/Email\\"
+            },
+            \\"address\\": {
+              \\"$ref\\": \\"#/definitions/Address\\"
+            }
+          },
+          \\"required\\": [
+            \\"firstName\\",
+            \\"lastName\\",
+            \\"age\\",
+            \\"email\\",
+            \\"address\\"
+          ]
         }
       },
       \\"required\\": [
-        \\"message\\",
-        \\"signedInAs\\"
+        \\"data\\"
       ]
+    },
+    \\"Profile\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"private\\": {
+          \\"type\\": \\"boolean\\"
+        },
+        \\"messageOptions\\": {
+          \\"$ref\\": \\"#/definitions/MessageOptions\\"
+        }
+      },
+      \\"required\\": [
+        \\"private\\",
+        \\"messageOptions\\"
+      ]
+    },
+    \\"MessageOptions\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"newsletter\\": {
+          \\"type\\": \\"boolean\\"
+        }
+      },
+      \\"required\\": [
+        \\"newsletter\\"
+      ]
+    },
+    \\"Email\\": {
+      \\"type\\": \\"string\\"
+    },
+    \\"Address\\": {
+      \\"type\\": \\"string\\"
     }
   }
 }"
 `;
 
-exports[`OpenAPI 2 generator produces valid code single-file: yaml 1`] = `
+exports[`OpenAPI 2 generator produces valid code: yaml 1`] = `
 "swagger: '2.0'
-tags:
-  - name: users
 info:
   version: 0.0.0
-  title: My API
+  title: company-api
+  description: This is the company API. It does cool things
   contact:
     name: TODO
 paths:
-  /users/create:
+  '/company/{companyId}/users/{userId}':
     post:
-      operationId: createUser
-      description: This is an endpoint to create a user
-      consumes:
-        - application/json
+      operationId: GetUser
+      description: Retrieves a user in a company
       tags:
-        - users
+        - Company
+        - User
       parameters:
+        - in: path
+          name: companyId
+          description: company identifier
+          type: string
+          required: true
+        - in: path
+          name: userId
+          description: user identifier
+          type: string
+          required: true
+        - in: query
+          name: sample-query
+          description: a demo query param
+          type: string
+          required: false
+        - in: header
+          name: x-auth-token
+          description: Auth Header
+          type: string
+          required: true
+      responses:
+        '201':
+          schema:
+            $ref: '#/definitions/UserBody'
+          description: Successful creation of user
+        '404':
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          description: Bad request response
+  '/company/{companyId}/users':
+    post:
+      operationId: CreateUser
+      description: Creates a user in a company
+      tags:
+        - Company
+        - User
+      parameters:
+        - in: path
+          name: companyId
+          description: company identifier
+          type: string
+          required: true
         - in: body
           name: body
           description: TODO
           required: true
           schema:
-            $ref: '#/definitions/CreateUserRequest'
-        - in: header
-          name: Authorization
-          description: This is the authorization token
+            $ref: '#/definitions/CreateUserRequestBody'
+        - in: query
+          name: sample-query
+          description: a demo query param
           type: string
           required: false
-      responses:
-        '200':
-          schema:
-            $ref: '#/definitions/CreateUserResponse'
-          description: ''
-        default:
-          description: ''
-  /users:
-    get:
-      operationId: findUsers
-      description: ''
-      consumes: []
-      tags:
-        - users
-      parameters:
-        - in: query
-          name: limit
-          description: Limit number of returned results
-          type: integer
-          format: int32
-          required: true
-        - in: query
-          name: search-term
-          description: ''
-          type: string
-          required: false
-      responses:
-        '200':
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                age:
-                  type: number
-                  format: float
-              required:
-                - name
-          description: ''
-        default:
-          description: ''
-  '/users/{userId}':
-    get:
-      operationId: getUser
-      description: ''
-      consumes: []
-      tags:
-        - users
-      parameters:
-        - in: path
-          name: userId
-          description: User unique identifier
-          type: integer
-          format: int64
-          required: true
-      responses:
-        '200':
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              age:
-                type: number
-                format: float
-            required:
-              - name
-          description: ''
-        default:
-          description: ''
-  '/users/{userId}-confirmed':
-    delete:
-      operationId: deleteUser
-      description: ''
-      consumes: []
-      tags:
-        - users
-      parameters:
-        - in: path
-          name: userId
-          description: ''
-          type: integer
-          format: int64
-          required: true
         - in: header
-          name: Authorization
-          description: ''
+          name: x-auth-token
+          description: Auth Header
           type: string
           required: true
       responses:
-        '200':
-          description: ''
-        '403':
+        '201':
           schema:
-            $ref: '#/definitions/ForbiddenError'
-          description: ''
+            $ref: '#/definitions/UserBody'
+          description: Successful creation of user
+        '400':
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          description: Bad request response
         default:
           schema:
-            $ref: '#/definitions/BaseError'
+            $ref: '#/definitions/ErrorBody'
           description: ''
 definitions:
-  CreateUserRequest:
+  UserBody:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          firstName:
+            type: string
+          lastName:
+            type: string
+          profile:
+            $ref: '#/definitions/Profile'
+        required:
+          - firstName
+          - lastName
+          - profile
+    required:
+      - data
+  ErrorBody:
     type: object
     properties:
       name:
         type: string
-      roles:
-        type: string
-        enum:
-          - admin
-          - member
+      message:
+        type: array
+        items:
+          type: string
     required:
       - name
-      - roles
-  CreateUserResponse:
+      - message
+  CreateUserRequestBody:
     type: object
     properties:
-      success:
+      data:
+        type: object
+        properties:
+          firstName:
+            type: string
+          lastName:
+            type: string
+          age:
+            type: number
+          email:
+            $ref: '#/definitions/Email'
+          address:
+            $ref: '#/definitions/Address'
+        required:
+          - firstName
+          - lastName
+          - age
+          - email
+          - address
+    required:
+      - data
+  Profile:
+    type: object
+    properties:
+      private:
         type: boolean
-      created_at:
-        type: string
-        format: date-time
+      messageOptions:
+        $ref: '#/definitions/MessageOptions'
     required:
-      - success
-      - created_at
-  BaseError:
+      - private
+      - messageOptions
+  MessageOptions:
     type: object
     properties:
-      message:
-        type: string
+      newsletter:
+        type: boolean
     required:
-      - message
-  ForbiddenError:
-    type: object
-    properties:
-      message:
-        type: string
-      signedInAs:
-        type: string
-    required:
-      - message
-      - signedInAs
+      - newsletter
+  Email:
+    type: string
+  Address:
+    type: string
 "
 `;

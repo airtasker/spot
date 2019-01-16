@@ -18,7 +18,11 @@ import { openApi2TypeSchema } from "./openapi2-schema";
 describe("JSON Schema generator", () => {
   describe("generates type validator", () => {
     test("null", () => {
-      expect(openApi2TypeSchema(NULL)).toMatchInlineSnapshot(`null`);
+      expect(openApi2TypeSchema(NULL)).toMatchInlineSnapshot(`
+Object {
+  "x-nullable": true,
+}
+`);
     });
 
     test("boolean", () => {

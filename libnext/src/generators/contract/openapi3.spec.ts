@@ -1,37 +1,28 @@
-import * as fs from "fs-extra";
 import * as path from "path";
 import { parseFilePath } from '../../parsers/parser';
 import { generateOpenApiV3 } from "./openapi3";
 
-const EXAMPLES_DIR = path.join(
+const EXAMPLE_PATH = path.join(
   __dirname,
   "..",
   "..",
-  "..",
-  "..",
+  "test",
   "examples",
-  "src"
+  "contract.ts"
 );
 
 describe("OpenAPI 3 generator", () => {
-  describe("produces valid code", () => {
-    for (const testCaseName of fs.readdirSync(EXAMPLES_DIR)) {
-      if (!fs.lstatSync(path.join(EXAMPLES_DIR, testCaseName)).isDirectory()) {
-        continue;
-      }
-      test(testCaseName, async () => {
+  test("produces valid code", async () => {
         const api = await parseFilePath(
-          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`),
+          EXAMPLE_PATH,
           {
             baseUrl: '.',
             paths: {
-              "@airtasker/spot": ["./libnext/src/lib"]
+              "@airtasker/spotnext": ["./libnext/src/lib"]
             }
           }
         );
         expect(generateOpenApiV3(api, "json")).toMatchSnapshot("json");
         expect(generateOpenApiV3(api, "yaml")).toMatchSnapshot("yaml");
       });
-    }
-  });
 });

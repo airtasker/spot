@@ -22,7 +22,7 @@ function isStringConstantUnion(type: UnionType): boolean {
 
 export function openApi3TypeSchema(
   type: DataType
-): OpenAPI3SchemaType | null {
+): OpenAPI3SchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
       return {
@@ -77,9 +77,9 @@ export function openApi3TypeSchema(
     return type.properties.reduce<OpenAPI3SchemaTypeObject & { required: string[] }>(
       (acc, property) => {
         if (!property.optional) {
-          acc.required.push(name);
+          acc.required.push(property.name);
         }
-          acc.properties[name] = openApi3TypeSchema(type);
+          acc.properties[property.name] = openApi3TypeSchema(property.type);
         return acc;
       },
       {

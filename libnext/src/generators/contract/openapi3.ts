@@ -39,7 +39,9 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
           description: endpoint.description,
           tags: endpoint.tags,
           parameters: getParameters(endpoint),
-            requestBody: endpoint.request.body && openApi3TypeSchema(endpoint.request.body.type),
+          ...(endpoint.request.body  && {
+            requestBody: openApi3TypeSchema(endpoint.request.body.type),
+          }),
           responses: {
             ...(endpoint.defaultResponse
               ? { default: response(endpoint.defaultResponse) }
@@ -128,11 +130,13 @@ function getParameters(endpoint: EndpointNode): OpenAPIV3Parameter[] {
 
 function response(response: DefaultResponseNode): OpenAPIV3Response {
   return {
+    ...(response.body && {
           content: {
             "application/json": {
-              schema: response.body && openApi3TypeSchema(response.body.type)
+              schema: openApi3TypeSchema(response.body.type)
             }
-          },
+          }
+        }),
     description: ""
   };
 }

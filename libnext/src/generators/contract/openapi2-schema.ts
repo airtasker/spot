@@ -11,8 +11,9 @@ function isStringConstantUnion(type: UnionType): boolean {
 export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
-      // See https://stackoverflow.com/a/48114322.
-      throw new Error(`The null type is not supported in OpenAPI 2`);
+      return {
+        "x-nullable": true
+      }
     case TypeKind.BOOLEAN:
       return {
         type: "boolean"
@@ -66,9 +67,9 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
       >(
         (acc, property) => {
           if (!property.optional) {
-            acc.required.push(name);
+            acc.required.push(property.name);
           }
-          acc.properties[name] = openApi2TypeSchema(type);
+          acc.properties[property.name] = openApi2TypeSchema(property.type);
           return acc;
         },
         {
@@ -108,6 +109,7 @@ export type OpenAPI2SchemaType =
   | OpenAPI2SchemaTypeObject
   | OpenAPI2SchemaTypeArray
   | OpenAPI2SchemaTypeAllOf
+  | OpenAPI2SchemaTypeNull
   | OpenAPI2SchemaTypeString
   | OpenAPI2SchemaTypeDateTime
   | OpenAPI2SchemaTypeNumber
@@ -124,6 +126,8 @@ export interface OpenAPI2BaseSchemaType {
       [value: string]: OpenAPI2SchemaType;
     };
   };
+  // See https://stackoverflow.com/a/48114322.
+  'x-nullable'?: boolean
 }
 
 export interface OpenAPI2SchemaTypeObject extends OpenAPI2BaseSchemaType {
@@ -142,6 +146,8 @@ export interface OpenAPI2SchemaTypeArray extends OpenAPI2BaseSchemaType {
 export interface OpenAPI2SchemaTypeAllOf extends OpenAPI2BaseSchemaType {
   allOf: OpenAPI2SchemaType[];
 }
+
+export interface OpenAPI2SchemaTypeNull extends OpenAPI2BaseSchemaType {}
 
 export interface OpenAPI2SchemaTypeString extends OpenAPI2BaseSchemaType {
   type: "string";

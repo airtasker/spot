@@ -1,40 +1,31 @@
-import * as fs from "fs-extra";
 import * as path from "path";
 import { arrayType, BOOLEAN, booleanLiteral, INTEGER, NULL, NUMBER, numberLiteral, objectType, referenceType, STRING, stringLiteral, TypeKind, unionType } from "../../models/types";
 import { parseFilePath } from "../../parsers/parser";
 import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
 
-const EXAMPLES_DIR = path.join(
+const EXAMPLE_PATH = path.join(
   __dirname,
   "..",
   "..",
-  "..",
-  "..",
+  "test",
   "examples",
-  "src"
+  "contract.ts"
 );
 
 describe("JSON Schema generator", () => {
-  describe("produces valid code", () => {
-    for (const testCaseName of fs.readdirSync(EXAMPLES_DIR)) {
-      if (!fs.lstatSync(path.join(EXAMPLES_DIR, testCaseName)).isDirectory()) {
-        continue;
-      }
-      test(testCaseName, async () => {
+  test("produces valid code", async () => {
         const api = await parseFilePath(
-          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`),
+          EXAMPLE_PATH,
           {
             baseUrl: '.',
             paths: {
-              "@airtasker/spot": ["./libnext/src/lib"]
+              "@airtasker/spotnext": ["./libnext/src/lib"]
             }
           }
         );
         expect(generateJsonSchema(api, "json")).toMatchSnapshot("json");
         expect(generateJsonSchema(api, "yaml")).toMatchSnapshot("yaml");
       });
-    }
-  });
 
   describe("generates type validator", () => {
     test("null", () => {
