@@ -7,7 +7,7 @@ describe("@body parser", () => {
   test("parses all information", () => {
     const method = createMethodDeclaration(`
       /** request body */
-      @body bodyParam?: {
+      @body bodyParam: {
         name: string;
         /** age description */
         age?: number;
@@ -34,8 +34,7 @@ describe("@body parser", () => {
             type: NUMBER
           }
         ]
-      },
-      optional: true
+      }
     });
   });
 });
