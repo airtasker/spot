@@ -15,14 +15,12 @@ import {
 } from "../../models/types";
 import { openApi3TypeSchema } from "./openapi3-schema";
 
-describe("JSON Schema generator", () => {
+describe("OpenAPI 3 generator", () => {
   describe("generates type validator", () => {
     test("null", () => {
-      expect(openApi3TypeSchema(NULL)).toMatchInlineSnapshot(`
-Object {
-  "nullable": true,
-}
-`);
+      expect(() => openApi3TypeSchema(NULL)).toThrowError(
+        "The null type is only supported within a union in OpenAPI 3."
+      );
     });
 
     test("boolean", () => {
@@ -220,6 +218,32 @@ Object {
     });
 
     test("union", () => {
+      expect(openApi3TypeSchema(unionType([STRING]))).toMatchInlineSnapshot(`
+Object {
+  "type": "string",
+}
+`);
+      expect(openApi3TypeSchema(unionType([STRING, NULL])))
+        .toMatchInlineSnapshot(`
+Object {
+  "nullable": true,
+  "type": "string",
+}
+`);
+      expect(openApi3TypeSchema(unionType([STRING, NUMBER, NULL])))
+        .toMatchInlineSnapshot(`
+Object {
+  "nullable": true,
+  "oneOf": Array [
+    Object {
+      "type": "string",
+    },
+    Object {
+      "type": "number",
+    },
+  ],
+}
+`);
       expect(openApi3TypeSchema(unionType([STRING, NUMBER, BOOLEAN])))
         .toMatchInlineSnapshot(`
 Object {

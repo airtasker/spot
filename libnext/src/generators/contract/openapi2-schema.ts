@@ -11,9 +11,9 @@ function isStringConstantUnion(type: UnionType): boolean {
 export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
-      return {
-        "x-nullable": true
-      };
+      throw new Error(
+        `The null type is only supported within a union in OpenAPI 2.`
+      );
     case TypeKind.BOOLEAN:
       return {
         type: "boolean"
@@ -84,6 +84,9 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
         items: openApi2TypeSchema(type.elements)
       };
     case TypeKind.UNION:
+      if (type.types.length === 1) {
+        return openApi2TypeSchema(type.types[0]);
+      }
       if (isStringConstantUnion(type)) {
         return {
           type: "string",
@@ -93,6 +96,16 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
             )
           )
         };
+      }
+      const nullable = !!type.types.find(t => t.kind === TypeKind.NULL);
+      const typesWithoutNull = type.types.filter(t => t.kind !== TypeKind.NULL);
+      if (nullable) {
+        const type = openApi2TypeSchema({
+          kind: TypeKind.UNION,
+          types: typesWithoutNull
+        });
+        type["x-nullable"] = true;
+        return type;
       }
       // Please have a look at https://github.com/OAI/OpenAPI-Specification/issues/333
       throw new Error(`Unions are not supported in OpenAPI 2`);
@@ -109,7 +122,6 @@ export type OpenAPI2SchemaType =
   | OpenAPI2SchemaTypeObject
   | OpenAPI2SchemaTypeArray
   | OpenAPI2SchemaTypeAllOf
-  | OpenAPI2SchemaTypeNull
   | OpenAPI2SchemaTypeString
   | OpenAPI2SchemaTypeDateTime
   | OpenAPI2SchemaTypeNumber
