@@ -13,7 +13,7 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
     case TypeKind.NULL:
       return {
         "x-nullable": true
-      }
+      };
     case TypeKind.BOOLEAN:
       return {
         type: "boolean"
@@ -127,7 +127,7 @@ export interface OpenAPI2BaseSchemaType {
     };
   };
   // See https://stackoverflow.com/a/48114322.
-  'x-nullable'?: boolean
+  "x-nullable"?: boolean;
 }
 
 export interface OpenAPI2SchemaTypeObject extends OpenAPI2BaseSchemaType {

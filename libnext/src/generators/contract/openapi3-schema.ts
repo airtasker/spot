@@ -5,13 +5,13 @@ import compact = require("lodash/compact");
 export function openApiV3ContentTypeSchema(
   type: DataType
 ): OpenAPI3SchemaContentType {
-      return {
-        content: {
-          "application/json": {
-            schema: openApi3TypeSchema(type)
-          }
-        }
-      };
+  return {
+    content: {
+      "application/json": {
+        schema: openApi3TypeSchema(type)
+      }
+    }
+  };
 }
 
 function isStringConstantUnion(type: UnionType): boolean {
@@ -20,9 +20,7 @@ function isStringConstantUnion(type: UnionType): boolean {
   }, true);
 }
 
-export function openApi3TypeSchema(
-  type: DataType
-): OpenAPI3SchemaType {
+export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
       return {
@@ -60,34 +58,38 @@ export function openApi3TypeSchema(
       return {
         type: "number"
       };
-      case TypeKind.NUMBER_LITERAL:
-        return Math.round(type.value) === type.value ? {
-          type: "integer",
-          enum: [type.value]
-        } : {
-          type: "number",
-          enum: [type.value]
-        };
+    case TypeKind.NUMBER_LITERAL:
+      return Math.round(type.value) === type.value
+        ? {
+            type: "integer",
+            enum: [type.value]
+          }
+        : {
+            type: "number",
+            enum: [type.value]
+          };
     case TypeKind.INTEGER:
       return {
         type: "integer",
         format: "int32"
       };
     case TypeKind.OBJECT:
-    return type.properties.reduce<OpenAPI3SchemaTypeObject & { required: string[] }>(
-      (acc, property) => {
-        if (!property.optional) {
-          acc.required.push(property.name);
-        }
+      return type.properties.reduce<
+        OpenAPI3SchemaTypeObject & { required: string[] }
+      >(
+        (acc, property) => {
+          if (!property.optional) {
+            acc.required.push(property.name);
+          }
           acc.properties[property.name] = openApi3TypeSchema(property.type);
-        return acc;
-      },
-      {
-        type: "object",
-        properties: {},
-        required: []
-      }
-    );
+          return acc;
+        },
+        {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      );
     case TypeKind.ARRAY:
       return {
         type: "array",
@@ -98,7 +100,9 @@ export function openApi3TypeSchema(
         return {
           type: "string",
           enum: compact(
-            type.types.map(t => (t.kind === TypeKind.STRING_LITERAL ? t.value : null))
+            type.types.map(
+              t => (t.kind === TypeKind.STRING_LITERAL ? t.value : null)
+            )
           )
         };
       }

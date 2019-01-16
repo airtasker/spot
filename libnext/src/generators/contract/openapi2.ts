@@ -1,7 +1,16 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { BodyNode, ContractNode, DefaultResponseNode, EndpointNode } from "../../models/nodes";
-import { OpenAPI2SchemaType, OpenAPI2SchemaTypeObject, openApi2TypeSchema } from "./openapi2-schema";
+import {
+  BodyNode,
+  ContractNode,
+  DefaultResponseNode,
+  EndpointNode
+} from "../../models/nodes";
+import {
+  OpenAPI2SchemaType,
+  OpenAPI2SchemaTypeObject,
+  openApi2TypeSchema
+} from "./openapi2-schema";
 import compact = require("lodash/compact");
 import pickBy = require("lodash/pickBy");
 

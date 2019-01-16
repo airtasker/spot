@@ -1,13 +1,24 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { ContractNode, DefaultResponseNode, EndpointNode } from "../../models/nodes";
-import { OpenAPI3SchemaType, openApi3TypeSchema, openApiV3ContentTypeSchema } from "./openapi3-schema";
+import {
+  ContractNode,
+  DefaultResponseNode,
+  EndpointNode
+} from "../../models/nodes";
+import {
+  OpenAPI3SchemaType,
+  openApi3TypeSchema,
+  openApiV3ContentTypeSchema
+} from "./openapi3-schema";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import pickBy = require("lodash/pickBy");
 import defaultTo = require("lodash/defaultTo");
 
-export function generateOpenApiV3(contractNode: ContractNode, format: "json" | "yaml") {
+export function generateOpenApiV3(
+  contractNode: ContractNode,
+  format: "json" | "yaml"
+) {
   const contract = openApiV3(contractNode);
   switch (format) {
     case "json":
@@ -39,8 +50,8 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
           description: endpoint.description,
           tags: endpoint.tags,
           parameters: getParameters(endpoint),
-          ...(endpoint.request.body  && {
-            requestBody: openApi3TypeSchema(endpoint.request.body.type),
+          ...(endpoint.request.body && {
+            requestBody: openApi3TypeSchema(endpoint.request.body.type)
           }),
           responses: {
             ...(endpoint.defaultResponse
@@ -63,13 +74,12 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
       }
     ),
     components: {
-      schemas: contractNode.types.reduce<{ [typeName: string]: OpenAPI3SchemaType }>(
-        (acc, typeNode) => {
-          acc[typeNode.name] = openApiV3ContentTypeSchema(typeNode.type)
-          return acc;
-        },
-        {}
-      )
+      schemas: contractNode.types.reduce<{
+        [typeName: string]: OpenAPI3SchemaType;
+      }>((acc, typeNode) => {
+        acc[typeNode.name] = openApiV3ContentTypeSchema(typeNode.type);
+        return acc;
+      }, {})
     }
   };
 }
@@ -78,25 +88,25 @@ function getParameters(endpoint: EndpointNode): OpenAPIV3Parameter[] {
   const parameters = endpoint.request.pathParams
     .map(
       (pathParam): OpenAPIV3Parameter => {
-        const schemaType = openApi3TypeSchema(pathParam.type)
-        if ('type' in schemaType && schemaType.type === 'object') {
-          throw new Error(`Unsupported object type in path parameter`)
+        const schemaType = openApi3TypeSchema(pathParam.type);
+        if ("type" in schemaType && schemaType.type === "object") {
+          throw new Error(`Unsupported object type in path parameter`);
         }
         return {
-              in: "path",
-              name: pathParam.name,
-              description: pathParam.description,
-              schema: schemaType,
-              required: true
-            }
-          }
+          in: "path",
+          name: pathParam.name,
+          description: pathParam.description,
+          schema: schemaType,
+          required: true
+        };
+      }
     )
     .concat(
       endpoint.request.queryParams.map(
         (queryParam): OpenAPIV3Parameter => {
-          const schemaType = openApi3TypeSchema(queryParam.type)
-          if ('type' in schemaType && schemaType.type === 'object') {
-            throw new Error(`Unsupported object type in query parameter`)
+          const schemaType = openApi3TypeSchema(queryParam.type);
+          if ("type" in schemaType && schemaType.type === "object") {
+            throw new Error(`Unsupported object type in query parameter`);
           }
           return {
             in: "query",
@@ -111,9 +121,9 @@ function getParameters(endpoint: EndpointNode): OpenAPIV3Parameter[] {
     .concat(
       endpoint.request.headers.map(
         (header): OpenAPIV3Parameter => {
-          const schemaType = openApi3TypeSchema(header.type)
-          if ('type' in schemaType && schemaType.type === 'object') {
-            throw new Error(`Unsupported object type in header`)
+          const schemaType = openApi3TypeSchema(header.type);
+          if ("type" in schemaType && schemaType.type === "object") {
+            throw new Error(`Unsupported object type in header`);
           }
           return {
             in: "header",
@@ -131,12 +141,12 @@ function getParameters(endpoint: EndpointNode): OpenAPIV3Parameter[] {
 function response(response: DefaultResponseNode): OpenAPIV3Response {
   return {
     ...(response.body && {
-          content: {
-            "application/json": {
-              schema: openApi3TypeSchema(response.body.type)
-            }
-          }
-        }),
+      content: {
+        "application/json": {
+          schema: openApi3TypeSchema(response.body.type)
+        }
+      }
+    }),
     description: ""
   };
 }

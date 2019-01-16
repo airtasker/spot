@@ -1,5 +1,19 @@
 import * as path from "path";
-import { arrayType, BOOLEAN, booleanLiteral, INTEGER, NULL, NUMBER, numberLiteral, objectType, referenceType, STRING, stringLiteral, TypeKind, unionType } from "../../models/types";
+import {
+  arrayType,
+  BOOLEAN,
+  booleanLiteral,
+  INTEGER,
+  NULL,
+  NUMBER,
+  numberLiteral,
+  objectType,
+  referenceType,
+  STRING,
+  stringLiteral,
+  TypeKind,
+  unionType
+} from "../../models/types";
 import { parseFilePath } from "../../parsers/parser";
 import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
 
@@ -14,18 +28,15 @@ const EXAMPLE_PATH = path.join(
 
 describe("JSON Schema generator", () => {
   test("produces valid code", async () => {
-        const api = await parseFilePath(
-          EXAMPLE_PATH,
-          {
-            baseUrl: '.',
-            paths: {
-              "@airtasker/spotnext": ["./libnext/src/lib"]
-            }
-          }
-        );
-        expect(generateJsonSchema(api, "json")).toMatchSnapshot("json");
-        expect(generateJsonSchema(api, "yaml")).toMatchSnapshot("yaml");
-      });
+    const api = await parseFilePath(EXAMPLE_PATH, {
+      baseUrl: ".",
+      paths: {
+        "@airtasker/spotnext": ["./libnext/src/lib"]
+      }
+    });
+    expect(generateJsonSchema(api, "json")).toMatchSnapshot("json");
+    expect(generateJsonSchema(api, "yaml")).toMatchSnapshot("yaml");
+  });
 
   describe("generates type validator", () => {
     test("null", () => {
