@@ -1,6 +1,10 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { ContractNode, DefaultResponseNode, EndpointNode } from "../../models/nodes";
+import {
+  ContractNode,
+  DefaultResponseNode,
+  EndpointNode
+} from "../../models/nodes";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
@@ -45,12 +49,12 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
           ...(endpoint.request.body && {
             requestBody: {
               content: {
-                'application/json': {
+                "application/json": {
                   schema: openApi3TypeSchema(endpoint.request.body.type)
                 }
               },
-              description: ''
-            },
+              description: ""
+            }
           }),
           responses: {
             ...(endpoint.defaultResponse
