@@ -1,0 +1,414 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 2 generator produces valid code: json 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"version\\": \\"0.0.0\\",
+    \\"title\\": \\"company-api\\",
+    \\"description\\": \\"This is the company API. It does cool things\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
+  },
+  \\"paths\\": {
+    \\"/company/{companyId}/users/{userId}\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"GetUser\\",
+        \\"description\\": \\"Retrieves a user in a company\\",
+        \\"tags\\": [
+          \\"Company\\",
+          \\"User\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"companyId\\",
+            \\"description\\": \\"company identifier\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"user identifier\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"sample-query\\",
+            \\"description\\": \\"a demo query param\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"x-auth-token\\",
+            \\"description\\": \\"Auth Header\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"201\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/UserBody\\"
+            },
+            \\"description\\": \\"Successful creation of user\\"
+          },
+          \\"404\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/ErrorBody\\"
+            },
+            \\"description\\": \\"Bad request response\\"
+          }
+        }
+      }
+    },
+    \\"/company/{companyId}/users\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"CreateUser\\",
+        \\"description\\": \\"Creates a user in a company\\",
+        \\"tags\\": [
+          \\"Company\\",
+          \\"User\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"companyId\\",
+            \\"description\\": \\"company identifier\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"body\\",
+            \\"name\\": \\"body\\",
+            \\"description\\": \\"TODO\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/CreateUserRequestBody\\"
+            }
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"sample-query\\",
+            \\"description\\": \\"a demo query param\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"x-auth-token\\",
+            \\"description\\": \\"Auth Header\\",
+            \\"type\\": \\"string\\",
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"201\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/UserBody\\"
+            },
+            \\"description\\": \\"Successful creation of user\\"
+          },
+          \\"400\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/ErrorBody\\"
+            },
+            \\"description\\": \\"Bad request response\\"
+          },
+          \\"default\\": {
+            \\"schema\\": {
+              \\"$ref\\": \\"#/definitions/ErrorBody\\"
+            },
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    }
+  },
+  \\"definitions\\": {
+    \\"UserBody\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"data\\": {
+          \\"type\\": \\"object\\",
+          \\"properties\\": {
+            \\"firstName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"lastName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"profile\\": {
+              \\"$ref\\": \\"#/definitions/Profile\\"
+            }
+          },
+          \\"required\\": [
+            \\"firstName\\",
+            \\"lastName\\",
+            \\"profile\\"
+          ]
+        }
+      },
+      \\"required\\": [
+        \\"data\\"
+      ]
+    },
+    \\"ErrorBody\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"message\\": {
+          \\"type\\": \\"array\\",
+          \\"items\\": {
+            \\"type\\": \\"string\\"
+          }
+        }
+      },
+      \\"required\\": [
+        \\"name\\",
+        \\"message\\"
+      ]
+    },
+    \\"CreateUserRequestBody\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"data\\": {
+          \\"type\\": \\"object\\",
+          \\"properties\\": {
+            \\"firstName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"lastName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"age\\": {
+              \\"type\\": \\"number\\"
+            },
+            \\"email\\": {
+              \\"$ref\\": \\"#/definitions/Email\\"
+            },
+            \\"address\\": {
+              \\"$ref\\": \\"#/definitions/Address\\"
+            }
+          },
+          \\"required\\": [
+            \\"firstName\\",
+            \\"lastName\\",
+            \\"age\\",
+            \\"email\\",
+            \\"address\\"
+          ]
+        }
+      },
+      \\"required\\": [
+        \\"data\\"
+      ]
+    },
+    \\"Profile\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"private\\": {
+          \\"type\\": \\"boolean\\"
+        },
+        \\"messageOptions\\": {
+          \\"$ref\\": \\"#/definitions/MessageOptions\\"
+        }
+      },
+      \\"required\\": [
+        \\"private\\",
+        \\"messageOptions\\"
+      ]
+    },
+    \\"MessageOptions\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"newsletter\\": {
+          \\"type\\": \\"boolean\\"
+        }
+      },
+      \\"required\\": [
+        \\"newsletter\\"
+      ]
+    },
+    \\"Email\\": {
+      \\"type\\": \\"string\\"
+    },
+    \\"Address\\": {
+      \\"type\\": \\"string\\"
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator produces valid code: yaml 1`] = `
+"swagger: '2.0'
+info:
+  version: 0.0.0
+  title: company-api
+  description: This is the company API. It does cool things
+  contact:
+    name: TODO
+paths:
+  '/company/{companyId}/users/{userId}':
+    post:
+      operationId: GetUser
+      description: Retrieves a user in a company
+      tags:
+        - Company
+        - User
+      parameters:
+        - in: path
+          name: companyId
+          description: company identifier
+          type: string
+          required: true
+        - in: path
+          name: userId
+          description: user identifier
+          type: string
+          required: true
+        - in: query
+          name: sample-query
+          description: a demo query param
+          type: string
+          required: false
+        - in: header
+          name: x-auth-token
+          description: Auth Header
+          type: string
+          required: true
+      responses:
+        '201':
+          schema:
+            $ref: '#/definitions/UserBody'
+          description: Successful creation of user
+        '404':
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          description: Bad request response
+  '/company/{companyId}/users':
+    post:
+      operationId: CreateUser
+      description: Creates a user in a company
+      tags:
+        - Company
+        - User
+      parameters:
+        - in: path
+          name: companyId
+          description: company identifier
+          type: string
+          required: true
+        - in: body
+          name: body
+          description: TODO
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUserRequestBody'
+        - in: query
+          name: sample-query
+          description: a demo query param
+          type: string
+          required: false
+        - in: header
+          name: x-auth-token
+          description: Auth Header
+          type: string
+          required: true
+      responses:
+        '201':
+          schema:
+            $ref: '#/definitions/UserBody'
+          description: Successful creation of user
+        '400':
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          description: Bad request response
+        default:
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          description: ''
+definitions:
+  UserBody:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          firstName:
+            type: string
+          lastName:
+            type: string
+          profile:
+            $ref: '#/definitions/Profile'
+        required:
+          - firstName
+          - lastName
+          - profile
+    required:
+      - data
+  ErrorBody:
+    type: object
+    properties:
+      name:
+        type: string
+      message:
+        type: array
+        items:
+          type: string
+    required:
+      - name
+      - message
+  CreateUserRequestBody:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          firstName:
+            type: string
+          lastName:
+            type: string
+          age:
+            type: number
+          email:
+            $ref: '#/definitions/Email'
+          address:
+            $ref: '#/definitions/Address'
+        required:
+          - firstName
+          - lastName
+          - age
+          - email
+          - address
+    required:
+      - data
+  Profile:
+    type: object
+    properties:
+      private:
+        type: boolean
+      messageOptions:
+        $ref: '#/definitions/MessageOptions'
+    required:
+      - private
+      - messageOptions
+  MessageOptions:
+    type: object
+    properties:
+      newsletter:
+        type: boolean
+    required:
+      - newsletter
+  Email:
+    type: string
+  Address:
+    type: string
+"
+`;
