@@ -120,7 +120,14 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
           }
         ],
         \\"requestBody\\": {
-          \\"$ref\\": \\"#/components/schemas/CreateUserRequestBody\\"
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"$ref\\": \\"#/components/schemas/CreateUserRequestBody\\"
+              }
+            }
+          },
+          \\"description\\": \\"\\"
         },
         \\"responses\\": {
           \\"201\\": {
@@ -160,158 +167,116 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
   \\"components\\": {
     \\"schemas\\": {
       \\"UserBody\\": {
-        \\"content\\": {
-          \\"application/json\\": {
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"data\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"firstName\\": {
-                      \\"type\\": \\"string\\"
-                    },
-                    \\"lastName\\": {
-                      \\"type\\": \\"string\\"
-                    },
-                    \\"profile\\": {
-                      \\"$ref\\": \\"#/components/schemas/Profile\\"
-                    }
-                  },
-                  \\"required\\": [
-                    \\"firstName\\",
-                    \\"lastName\\",
-                    \\"profile\\"
-                  ]
-                }
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"data\\": {
+            \\"type\\": \\"object\\",
+            \\"properties\\": {
+              \\"firstName\\": {
+                \\"type\\": \\"string\\"
               },
-              \\"required\\": [
-                \\"data\\"
-              ]
-            }
+              \\"lastName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"profile\\": {
+                \\"$ref\\": \\"#/components/schemas/Profile\\"
+              }
+            },
+            \\"required\\": [
+              \\"firstName\\",
+              \\"lastName\\",
+              \\"profile\\"
+            ]
           }
-        }
+        },
+        \\"required\\": [
+          \\"data\\"
+        ]
       },
       \\"ErrorBody\\": {
-        \\"content\\": {
-          \\"application/json\\": {
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
-                },
-                \\"message\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"string\\"
-                  }
-                }
-              },
-              \\"required\\": [
-                \\"name\\",
-                \\"message\\"
-              ]
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"name\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"message\\": {
+            \\"type\\": \\"array\\",
+            \\"items\\": {
+              \\"type\\": \\"string\\"
             }
           }
-        }
+        },
+        \\"required\\": [
+          \\"name\\",
+          \\"message\\"
+        ]
       },
       \\"CreateUserRequestBody\\": {
-        \\"content\\": {
-          \\"application/json\\": {
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"data\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"firstName\\": {
-                      \\"type\\": \\"string\\"
-                    },
-                    \\"lastName\\": {
-                      \\"type\\": \\"string\\"
-                    },
-                    \\"age\\": {
-                      \\"type\\": \\"number\\"
-                    },
-                    \\"email\\": {
-                      \\"$ref\\": \\"#/components/schemas/Email\\"
-                    },
-                    \\"address\\": {
-                      \\"$ref\\": \\"#/components/schemas/Address\\"
-                    }
-                  },
-                  \\"required\\": [
-                    \\"firstName\\",
-                    \\"lastName\\",
-                    \\"age\\",
-                    \\"email\\",
-                    \\"address\\"
-                  ]
-                }
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"data\\": {
+            \\"type\\": \\"object\\",
+            \\"properties\\": {
+              \\"firstName\\": {
+                \\"type\\": \\"string\\"
               },
-              \\"required\\": [
-                \\"data\\"
-              ]
-            }
+              \\"lastName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"age\\": {
+                \\"type\\": \\"number\\"
+              },
+              \\"email\\": {
+                \\"$ref\\": \\"#/components/schemas/Email\\"
+              },
+              \\"address\\": {
+                \\"$ref\\": \\"#/components/schemas/Address\\"
+              }
+            },
+            \\"required\\": [
+              \\"firstName\\",
+              \\"lastName\\",
+              \\"age\\",
+              \\"email\\",
+              \\"address\\"
+            ]
           }
-        }
+        },
+        \\"required\\": [
+          \\"data\\"
+        ]
       },
       \\"Profile\\": {
-        \\"content\\": {
-          \\"application/json\\": {
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"private\\": {
-                  \\"type\\": \\"boolean\\"
-                },
-                \\"messageOptions\\": {
-                  \\"$ref\\": \\"#/components/schemas/MessageOptions\\"
-                }
-              },
-              \\"required\\": [
-                \\"private\\",
-                \\"messageOptions\\"
-              ]
-            }
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"private\\": {
+            \\"type\\": \\"boolean\\"
+          },
+          \\"messageOptions\\": {
+            \\"$ref\\": \\"#/components/schemas/MessageOptions\\"
           }
-        }
+        },
+        \\"required\\": [
+          \\"private\\",
+          \\"messageOptions\\"
+        ]
       },
       \\"MessageOptions\\": {
-        \\"content\\": {
-          \\"application/json\\": {
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"newsletter\\": {
-                  \\"type\\": \\"boolean\\"
-                }
-              },
-              \\"required\\": [
-                \\"newsletter\\"
-              ]
-            }
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"newsletter\\": {
+            \\"type\\": \\"boolean\\"
           }
-        }
+        },
+        \\"required\\": [
+          \\"newsletter\\"
+        ]
       },
       \\"Email\\": {
-        \\"content\\": {
-          \\"application/json\\": {
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
-            }
-          }
-        }
+        \\"type\\": \\"string\\"
       },
       \\"Address\\": {
-        \\"content\\": {
-          \\"application/json\\": {
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
-            }
-          }
-        }
+        \\"type\\": \\"string\\"
       }
     }
   }
@@ -399,7 +364,11 @@ paths:
             type: string
           required: true
       requestBody:
-        $ref: '#/components/schemas/CreateUserRequestBody'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequestBody'
+        description: ''
       responses:
         '201':
           content:
@@ -422,100 +391,79 @@ paths:
 components:
   schemas:
     UserBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  firstName:
-                    type: string
-                  lastName:
-                    type: string
-                  profile:
-                    $ref: '#/components/schemas/Profile'
-                required:
-                  - firstName
-                  - lastName
-                  - profile
-            required:
-              - data
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            profile:
+              $ref: '#/components/schemas/Profile'
+          required:
+            - firstName
+            - lastName
+            - profile
+      required:
+        - data
     ErrorBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              message:
-                type: array
-                items:
-                  type: string
-            required:
-              - name
-              - message
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - message
     CreateUserRequestBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: object
-                properties:
-                  firstName:
-                    type: string
-                  lastName:
-                    type: string
-                  age:
-                    type: number
-                  email:
-                    $ref: '#/components/schemas/Email'
-                  address:
-                    $ref: '#/components/schemas/Address'
-                required:
-                  - firstName
-                  - lastName
-                  - age
-                  - email
-                  - address
-            required:
-              - data
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            age:
+              type: number
+            email:
+              $ref: '#/components/schemas/Email'
+            address:
+              $ref: '#/components/schemas/Address'
+          required:
+            - firstName
+            - lastName
+            - age
+            - email
+            - address
+      required:
+        - data
     Profile:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              private:
-                type: boolean
-              messageOptions:
-                $ref: '#/components/schemas/MessageOptions'
-            required:
-              - private
-              - messageOptions
+      type: object
+      properties:
+        private:
+          type: boolean
+        messageOptions:
+          $ref: '#/components/schemas/MessageOptions'
+      required:
+        - private
+        - messageOptions
     MessageOptions:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              newsletter:
-                type: boolean
-            required:
-              - newsletter
+      type: object
+      properties:
+        newsletter:
+          type: boolean
+      required:
+        - newsletter
     Email:
-      content:
-        application/json:
-          schema:
-            type: string
+      type: string
     Address:
-      content:
-        application/json:
-          schema:
-            type: string
+      type: string
 "
 `;
