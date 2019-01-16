@@ -15,14 +15,12 @@ import {
 } from "../../models/types";
 import { openApi2TypeSchema } from "./openapi2-schema";
 
-describe("JSON Schema generator", () => {
+describe("OpenAPI 2 generator", () => {
   describe("generates type validator", () => {
     test("null", () => {
-      expect(openApi2TypeSchema(NULL)).toMatchInlineSnapshot(`
-Object {
-  "x-nullable": true,
-}
-`);
+      expect(() => openApi2TypeSchema(NULL)).toThrowError(
+        "The null type is only supported within a union in OpenAPI 2."
+      );
     });
 
     test("boolean", () => {
@@ -220,6 +218,18 @@ Object {
     });
 
     test("union", () => {
+      expect(openApi2TypeSchema(unionType([STRING]))).toMatchInlineSnapshot(`
+Object {
+  "type": "string",
+}
+`);
+      expect(openApi2TypeSchema(unionType([STRING, NULL])))
+        .toMatchInlineSnapshot(`
+Object {
+  "type": "string",
+  "x-nullable": true,
+}
+`);
       expect(() =>
         openApi2TypeSchema(unionType([STRING, NUMBER, BOOLEAN]))
       ).toThrowError("Unions are not supported in OpenAPI 2");

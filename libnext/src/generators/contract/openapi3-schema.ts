@@ -11,9 +11,9 @@ function isStringConstantUnion(type: UnionType): boolean {
 export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
-      return {
-        nullable: true
-      };
+      throw new Error(
+        `The null type is only supported within a union in OpenAPI 3.`
+      );
     case TypeKind.BOOLEAN:
       return {
         type: "boolean"
@@ -84,6 +84,9 @@ export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
         items: openApi3TypeSchema(type.elements)
       };
     case TypeKind.UNION:
+      if (type.types.length === 1) {
+        return openApi3TypeSchema(type.types[0]);
+      }
       if (isStringConstantUnion(type)) {
         return {
           type: "string",
@@ -93,6 +96,16 @@ export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
             )
           )
         };
+      }
+      const nullable = !!type.types.find(t => t.kind === TypeKind.NULL);
+      const typesWithoutNull = type.types.filter(t => t.kind !== TypeKind.NULL);
+      if (nullable) {
+        const type = openApi3TypeSchema({
+          kind: TypeKind.UNION,
+          types: typesWithoutNull
+        });
+        type.nullable = true;
+        return type;
       }
       return {
         oneOf: type.types.map(openApi3TypeSchema)
@@ -110,7 +123,6 @@ export type OpenAPI3SchemaType =
   | OpenAPI3SchemaTypeObject
   | OpenAPI3SchemaTypeArray
   | OpenAPI3SchemaTypeOneOf
-  | OpenAPI3SchemaTypeNull
   | OpenAPI3SchemaTypeString
   | OpenAPI3SchemaTypeDateTime
   | OpenAPI3SchemaTypeNumber
@@ -146,8 +158,6 @@ export interface OpenAPI3SchemaTypeArray extends OpenAPI3BaseSchemaType {
 export interface OpenAPI3SchemaTypeOneOf extends OpenAPI3BaseSchemaType {
   oneOf: OpenAPI3SchemaType[];
 }
-
-export interface OpenAPI3SchemaTypeNull extends OpenAPI3BaseSchemaType {}
 
 export interface OpenAPI3SchemaTypeString extends OpenAPI3BaseSchemaType {
   type: "string";
