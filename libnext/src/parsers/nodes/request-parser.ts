@@ -21,15 +21,12 @@ export function parseRequest(
   const queryParamsParameter = methodParamWithDecorator(method, "queryParams");
   const bodyParameter = methodParamWithDecorator(method, "body");
 
-  const headers = headersParameter ? parseHeaders(headersParameter) : undefined;
-  const pathParams = pathParamsParameter
-    ? parsePathParams(pathParamsParameter)
-    : undefined;
-
-  const queryParams = queryParamsParameter
-    ? parseQueryParams(queryParamsParameter)
-    : undefined;
-  const body = bodyParameter ? parseBody(bodyParameter) : undefined;
+  const headers = headersParameter && parseHeaders(headersParameter);
+  const pathParams =
+    pathParamsParameter && parsePathParams(pathParamsParameter);
+  const queryParams =
+    queryParamsParameter && parseQueryParams(queryParamsParameter);
+  const body = bodyParameter && parseBody(bodyParameter);
 
   const location = decorator.getSourceFile().getFilePath();
   const line = decorator.getStartLineNumber();

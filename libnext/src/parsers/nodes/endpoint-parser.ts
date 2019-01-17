@@ -37,7 +37,7 @@ export function parseEndpoint(
   };
   const path = extractStringPropertyValueLocatable(configuration, "path");
   const requestMethod = classMethodWithDecorator(klass, "request");
-  const request = requestMethod ? parseRequest(requestMethod) : undefined;
+  const request = requestMethod && parseRequest(requestMethod);
   const responses = klass
     .getMethods()
     .filter(klassMethod => klassMethod.getDecorator("response") !== undefined)
@@ -46,9 +46,8 @@ export function parseEndpoint(
     klass,
     "defaultResponse"
   );
-  const defaultResponse = defaultResponseMethod
-    ? parseDefaultResponse(defaultResponseMethod)
-    : undefined;
+  const defaultResponse =
+    defaultResponseMethod && parseDefaultResponse(defaultResponseMethod);
 
   if (responses.length === 0) {
     throw new Error("expected at least one @response decorated method");

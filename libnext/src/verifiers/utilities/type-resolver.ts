@@ -10,8 +10,8 @@ import {
 /**
  * Root kinds include all kinds except for unions and type references.
  *
- * @param dataType
- * @param typeStore
+ * @param dataType a data type
+ * @param typeStore collection of type references for lookup
  */
 export function possibleRootKinds(
   dataType: DataType,

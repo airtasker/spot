@@ -6,7 +6,9 @@ import {
   EndpointNode,
   HeaderNode,
   RequestNode,
-  ResponseNode
+  ResponseNode,
+  PathParamNode,
+  QueryParamNode
 } from "../../models/nodes";
 import {
   DataType,
@@ -136,12 +138,28 @@ function retrieveTypeReferencesFromRequest(
   request: Locatable<RequestNode>
 ): ReferenceType[] {
   const fromHeaders = request.value.headers
-    ? retrieveTypeReferencesFromHeaders(request.value.headers.value)
+    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+        request.value.headers.value
+      )
+    : [];
+  const fromPathParams = request.value.pathParams
+    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+        request.value.pathParams.value
+      )
+    : [];
+  const fromQueryParams = request.value.queryParams
+    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+        request.value.queryParams.value
+      )
     : [];
   const fromBody = request.value.body
     ? retrieveTypeReferencesFromBody(request.value.body)
     : [];
-  return fromHeaders.concat(fromBody);
+
+  return fromHeaders
+    .concat(fromPathParams)
+    .concat(fromQueryParams)
+    .concat(fromBody);
 }
 
 /**
@@ -155,7 +173,9 @@ function retrieveTypeReferencesFromResponses(
   return responses.reduce<ReferenceType[]>(
     (typeReferencesAcc, currentResponse) => {
       const fromHeaders = currentResponse.value.headers
-        ? retrieveTypeReferencesFromHeaders(currentResponse.value.headers.value)
+        ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+            currentResponse.value.headers.value
+          )
         : [];
       const fromBody = currentResponse.value.body
         ? retrieveTypeReferencesFromBody(currentResponse.value.body)
@@ -175,24 +195,43 @@ function retrieveTypeReferencesFromBody(
   body: Locatable<BodyNode>
 ): ReferenceType[] {
   const type = body.value.type;
-  // TODO: handle union types
-  return isReferenceType(type) ? [type] : [];
+  if (isReferenceType(type)) {
+    return [type];
+  } else if (isUnionType(type)) {
+    return type.types.reduce<ReferenceType[]>(
+      (typeAcc, currType) =>
+        isReferenceType(currType) ? typeAcc.concat(currType) : typeAcc,
+      []
+    );
+  } else {
+    return [];
+  }
 }
 
 /**
- * Retrieve all type references from a collection of headers. This will only retrieve direct references (not recursive).
+ * Retrieve all type references from a collection of headers, path params or query params.
+ * This will only retrieve direct references (not recursive).
  *
- * @param headers a collection of headers
+ * @param nodes a collection of headers, path params or query params
  */
-function retrieveTypeReferencesFromHeaders(
-  headers: Locatable<HeaderNode>[]
+function retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+  nodes: Locatable<HeaderNode | PathParamNode | QueryParamNode>[]
 ): ReferenceType[] {
-  return headers.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
-    // TODO: handle unions
+  return nodes.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
     const type = currentHeader.value.type;
-    return isReferenceType(type)
-      ? typeReferencesAcc.concat(type)
-      : typeReferencesAcc;
+    if (isReferenceType(type)) {
+      return typeReferencesAcc.concat(type);
+    } else if (isUnionType(type)) {
+      return typeReferencesAcc.concat(
+        type.types.reduce<ReferenceType[]>(
+          (typeAcc, currType) =>
+            isReferenceType(currType) ? typeAcc.concat(currType) : typeAcc,
+          []
+        )
+      );
+    } else {
+      return typeReferencesAcc;
+    }
   }, []);
 }
 

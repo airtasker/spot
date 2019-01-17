@@ -20,8 +20,8 @@ export function parseDefaultResponse(
   const headersParameter = methodParamWithDecorator(method, "headers");
   const bodyParameter = methodParamWithDecorator(method, "body");
   const description = extractJsDocCommentLocatable(method);
-  const headers = headersParameter ? parseHeaders(headersParameter) : undefined;
-  const body = bodyParameter ? parseBody(bodyParameter) : undefined;
+  const headers = headersParameter && parseHeaders(headersParameter);
+  const body = bodyParameter && parseBody(bodyParameter);
 
   const location = decorator.getSourceFile().getFilePath();
   const line = decorator.getStartLineNumber();
