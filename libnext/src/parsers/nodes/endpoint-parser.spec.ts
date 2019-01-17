@@ -35,18 +35,64 @@ describe("@endpoint parser", () => {
   `;
 
   test("parses all information", () => {
-    const sourceFile = createSourceFile({ path: "main", content: content });
+    const sourceFile = createSourceFile({
+      path: "main",
+      content: content.trim()
+    });
     const klass = sourceFile.getClassOrThrow("TestEndpoint");
 
-    const result = parseEndpoint(klass);
-
-    expect(result.description).toEqual("endpoint description");
-    expect(result.method).toEqual("PUT");
-    expect(result.name).toEqual("TestEndpoint");
-    expect(result.path).toEqual("/users/:id");
-    expect(result.tags).toEqual(["user"]);
-    expect(result.request).not.toBeUndefined;
-    expect(result.responses).toHaveLength(2);
-    expect(result.defaultResponse).not.toBeUndefined;
+    expect(parseEndpoint(klass)).toStrictEqual({
+      value: {
+        description: {
+          value: "endpoint description",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 3
+        },
+        method: {
+          value: "PUT",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 5
+        },
+        name: {
+          value: "TestEndpoint",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 9
+        },
+        path: {
+          value: "/users/:id",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 6
+        },
+        tags: {
+          value: ["user"],
+          location: expect.stringMatching(/main\.ts$/),
+          line: 7
+        },
+        request: {
+          value: expect.anything(),
+          location: expect.stringMatching(/main\.ts$/),
+          line: 10
+        },
+        responses: expect.arrayContaining([
+          {
+            value: expect.anything(),
+            location: expect.stringMatching(/main\.ts$/),
+            line: 21
+          },
+          {
+            value: expect.anything(),
+            location: expect.stringMatching(/main\.ts$/),
+            line: 24
+          }
+        ]),
+        defaultResponse: {
+          value: expect.anything(),
+          location: expect.stringMatching(/main\.ts$/),
+          line: 27
+        }
+      },
+      location: expect.stringMatching(/main\.ts$/),
+      line: 4
+    });
   });
 });

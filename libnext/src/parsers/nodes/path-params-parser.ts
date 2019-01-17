@@ -1,8 +1,9 @@
-import { ParameterDeclaration } from "ts-simple-ast";
+import { ParameterDeclaration, PropertySignature } from "ts-simple-ast";
+import { Locatable } from "../../models/locatable";
 import { PathParamNode } from "../../models/nodes";
 import {
   ensureNodeNotOptional,
-  extractJsDocComment,
+  extractJsDocCommentLocatable,
   extractObjectParameterProperties,
   extractPropertyName
 } from "../utilities/parser-utility";
@@ -15,16 +16,37 @@ import { parseType } from "../utilities/type-parser";
  */
 export function parsePathParams(
   parameter: ParameterDeclaration
-): PathParamNode[] {
-  parameter.getDecoratorOrThrow("pathParams");
+): Locatable<Locatable<PathParamNode>[]> {
+  const decorator = parameter.getDecoratorOrThrow("pathParams");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);
-  return properties.map(property => {
-    ensureNodeNotOptional(property);
-    return {
-      name: extractPropertyName(property),
-      description: extractJsDocComment(property),
-      type: parseType(property.getTypeNodeOrThrow())
-    };
-  });
+
+  const pathParams = properties.map(property => parsePathParam(property));
+  const location = decorator.getSourceFile().getFilePath();
+  const line = decorator.getStartLineNumber();
+
+  return { value: pathParams, location, line };
+}
+
+/**
+ * Parse a path param property.
+ *
+ * @param property a property signature
+ */
+function parsePathParam(property: PropertySignature): Locatable<PathParamNode> {
+  ensureNodeNotOptional(property);
+
+  const name = {
+    value: extractPropertyName(property),
+    location: property.getSourceFile().getFilePath(),
+    line: property.getStartLineNumber()
+  };
+  const description = extractJsDocCommentLocatable(property);
+  const type = parseType(property.getTypeNodeOrThrow());
+  const pathParam = { name, description, type };
+  return {
+    value: pathParam,
+    location: property.getSourceFile().getFilePath(),
+    line: property.getStartLineNumber()
+  };
 }

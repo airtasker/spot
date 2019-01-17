@@ -1,4 +1,5 @@
 import { CompilerOptions, Project, SourceFile, ts } from "ts-simple-ast";
+import { Locatable } from "../models/locatable";
 import { ContractNode, EndpointNode } from "../models/nodes";
 import { ReferenceType } from "../models/types";
 import { parseApi } from "./nodes/api-parser";
@@ -78,7 +79,7 @@ function parseRootSourceFile(
     .getImportDeclarations()
     .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
 
-  const endpoints = importedFiles.reduce<EndpointNode[]>(
+  const endpoints = importedFiles.reduce<Locatable<EndpointNode>[]>(
     (endpointsAcc, currentFile) =>
       currentFile
         .getClasses()

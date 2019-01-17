@@ -1,6 +1,8 @@
 import { uniqBy } from "lodash";
 import Project from "ts-simple-ast";
+import { Locatable } from "../../models/locatable";
 import {
+  BodyNode,
   EndpointNode,
   HeaderNode,
   RequestNode,
@@ -106,16 +108,16 @@ export function retrieveTypeReferencesFromType(
  * @param endpoints collection of endpoints
  */
 export function retrieveTypeReferencesFromEndpoints(
-  endpoints: EndpointNode[]
+  endpoints: Locatable<EndpointNode>[]
 ): ReferenceType[] {
   return endpoints.reduce<ReferenceType[]>(
     (referenceTypesAcc, currentEndpoint) => {
       const fromResponses = retrieveTypeReferencesFromResponses(
-        currentEndpoint.responses
+        currentEndpoint.value.responses
       );
-      if (currentEndpoint.request) {
+      if (currentEndpoint.value.request) {
         const fromRequest = fromResponses.concat(
-          retrieveTypeReferencesFromRequest(currentEndpoint.request)
+          retrieveTypeReferencesFromRequest(currentEndpoint.value.request)
         );
         return referenceTypesAcc.concat(fromRequest).concat(fromResponses);
       }
@@ -131,16 +133,15 @@ export function retrieveTypeReferencesFromEndpoints(
  * @param request a request
  */
 function retrieveTypeReferencesFromRequest(
-  request: RequestNode
+  request: Locatable<RequestNode>
 ): ReferenceType[] {
-  const fromHeaders = retrieveTypeReferencesFromHeaders(request.headers);
-  if (request.body) {
-    const type = request.body.type;
-    if (isReferenceType(type)) {
-      return fromHeaders.concat(type);
-    }
-  }
-  return fromHeaders;
+  const fromHeaders = request.value.headers
+    ? retrieveTypeReferencesFromHeaders(request.value.headers.value)
+    : [];
+  const fromBody = request.value.body
+    ? retrieveTypeReferencesFromBody(request.value.body)
+    : [];
+  return fromHeaders.concat(fromBody);
 }
 
 /**
@@ -149,23 +150,33 @@ function retrieveTypeReferencesFromRequest(
  * @param requests a collection of responses
  */
 function retrieveTypeReferencesFromResponses(
-  responses: ResponseNode[]
+  responses: Locatable<ResponseNode>[]
 ): ReferenceType[] {
   return responses.reduce<ReferenceType[]>(
     (typeReferencesAcc, currentResponse) => {
-      const fromHeaders = retrieveTypeReferencesFromHeaders(
-        currentResponse.headers
-      );
-      if (currentResponse.body) {
-        const type = currentResponse.body.type;
-        if (isReferenceType(type)) {
-          return typeReferencesAcc.concat(fromHeaders.concat(type));
-        }
-      }
-      return typeReferencesAcc.concat(fromHeaders);
+      const fromHeaders = currentResponse.value.headers
+        ? retrieveTypeReferencesFromHeaders(currentResponse.value.headers.value)
+        : [];
+      const fromBody = currentResponse.value.body
+        ? retrieveTypeReferencesFromBody(currentResponse.value.body)
+        : [];
+      return typeReferencesAcc.concat(fromHeaders).concat(fromBody);
     },
     []
   );
+}
+
+/**
+ * Retrieve all type references from a body. This will only retrieve direct references (not recursive).
+ *
+ * @param body a body
+ */
+function retrieveTypeReferencesFromBody(
+  body: Locatable<BodyNode>
+): ReferenceType[] {
+  const type = body.value.type;
+  // TODO: handle union types
+  return isReferenceType(type) ? [type] : [];
 }
 
 /**
@@ -174,10 +185,11 @@ function retrieveTypeReferencesFromResponses(
  * @param headers a collection of headers
  */
 function retrieveTypeReferencesFromHeaders(
-  headers: HeaderNode[]
+  headers: Locatable<HeaderNode>[]
 ): ReferenceType[] {
   return headers.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
-    const type = currentHeader.type;
+    // TODO: handle unions
+    const type = currentHeader.value.type;
     return isReferenceType(type)
       ? typeReferencesAcc.concat(type)
       : typeReferencesAcc;

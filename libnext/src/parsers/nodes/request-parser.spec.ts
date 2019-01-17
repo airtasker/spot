@@ -26,12 +26,17 @@ describe("@request parser", () => {
       }
     `);
 
-    const result = parseRequest(method);
-
-    expect(result.headers).toHaveLength(1);
-    expect(result.pathParams).toHaveLength(2);
-    expect(result.queryParams).toHaveLength(3);
-    expect(result.body).not.toBeUndefined;
+    // TODO: check length of array values
+    expect(parseRequest(method)).toStrictEqual({
+      value: {
+        headers: expect.anything(),
+        pathParams: expect.anything(),
+        queryParams: expect.anything(),
+        body: expect.anything()
+      },
+      location: expect.stringMatching(/main\.ts$/),
+      line: 4
+    });
   });
 });
 
@@ -44,12 +49,15 @@ function createMethodDeclaration(
     class TestClass {
       @request
       testMethod(
-        ${methodParameterContent}
+        ${methodParameterContent.trim()}
       ) {}
     }
   `;
 
-  const sourceFile = createSourceFile({ path: "main", content: content });
+  const sourceFile = createSourceFile({
+    path: "main",
+    content: content.trim()
+  });
   const klass = sourceFile.getClassOrThrow("TestClass");
   const method = klass.getMethodOrThrow("testMethod");
 

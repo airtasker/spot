@@ -17,16 +17,20 @@ describe("@api parser", () => {
     const klass = sourceFile.getClassOrThrow("MyApi");
 
     expect(parseApi(klass)).toStrictEqual({
-      name: {
-        value: "My API",
-        location: expect.stringMatching(/main\.ts$/),
-        line: 4
+      value: {
+        name: {
+          value: "My API",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 4
+        },
+        description: {
+          value: "api description",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 3
+        }
       },
-      description: {
-        value: "api description",
-        location: expect.stringMatching(/main\.ts$/),
-        line: 3
-      }
+      location: expect.stringMatching(/main\.ts$/),
+      line: 4
     });
   });
 
@@ -44,12 +48,16 @@ describe("@api parser", () => {
     const klass = sourceFile.getClassOrThrow("MyApi");
 
     expect(parseApi(klass)).toStrictEqual({
-      name: {
-        value: "My API",
-        location: expect.stringMatching(/main\.ts$/),
-        line: 3
+      value: {
+        name: {
+          value: "My API",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 3
+        },
+        description: undefined
       },
-      description: undefined
+      location: expect.stringMatching(/main\.ts$/),
+      line: 3
     });
   });
 });

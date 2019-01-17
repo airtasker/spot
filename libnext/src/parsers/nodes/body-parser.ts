@@ -1,4 +1,5 @@
 import { ParameterDeclaration } from "ts-simple-ast";
+import { Locatable } from "../../models/locatable";
 import { BodyNode } from "../../models/nodes";
 import { parseType } from "../utilities/type-parser";
 
@@ -7,13 +8,20 @@ import { parseType } from "../utilities/type-parser";
  *
  * @param parameter a parameter declaration
  */
-export function parseBody(parameter: ParameterDeclaration): BodyNode {
-  parameter.getDecoratorOrThrow("body");
+export function parseBody(
+  parameter: ParameterDeclaration
+): Locatable<BodyNode> {
+  const decorator = parameter.getDecoratorOrThrow("body");
   const dataType = parseType(parameter.getTypeNodeOrThrow());
+  const location = decorator.getSourceFile().getFilePath();
+  const line = decorator.getStartLineNumber();
   return {
-    // TODO: how to extract description from parameter declaration?
-    description: undefined,
-    type: dataType,
-    optional: parameter.hasQuestionToken()
+    value: {
+      // TODO: how to extract description from parameter declaration?
+      description: undefined,
+      type: dataType
+    },
+    location,
+    line
   };
 }
