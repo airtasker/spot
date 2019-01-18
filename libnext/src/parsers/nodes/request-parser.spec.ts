@@ -37,12 +37,9 @@ describe("@request parser", () => {
       location: expect.stringMatching(/main\.ts$/),
       line: 4
     });
-    // @ts-ignore undefined check
-    expect(result.value.headers.value).toHaveLength(1);
-    // @ts-ignore undefined check
-    expect(result.value.pathParams.value).toHaveLength(2);
-    // @ts-ignore undefined check
-    expect(result.value.queryParams.value).toHaveLength(3);
+    expect(result.value.headers!.value).toHaveLength(1);
+    expect(result.value.pathParams!.value).toHaveLength(2);
+    expect(result.value.queryParams!.value).toHaveLength(3);
   });
 });
 
