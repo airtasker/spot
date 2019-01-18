@@ -1,9 +1,10 @@
 import { HttpMethod } from "./http";
 import { DataType } from "./types";
+import { Locatable } from "./locatable";
 
 export interface ContractNode {
-  api: ApiNode;
-  endpoints: EndpointNode[];
+  api: Locatable<ApiNode>;
+  endpoints: Locatable<EndpointNode>[];
   types: TypeNode[];
 }
 
@@ -14,61 +15,61 @@ export interface TypeNode {
 }
 
 export interface ApiNode {
-  name: string;
-  description?: string;
+  name: Locatable<string>;
+  description?: Locatable<string>;
 }
 
 export interface EndpointNode {
-  name: string;
-  description?: string;
-  tags: string[];
-  method: HttpMethod;
-  path: string;
-  request: RequestNode;
-  responses: ResponseNode[];
-  defaultResponse?: DefaultResponseNode;
+  name: Locatable<string>;
+  description?: Locatable<string>;
+  tags?: Locatable<string[]>;
+  method: Locatable<HttpMethod>;
+  path: Locatable<string>;
+  request?: Locatable<RequestNode>;
+  responses: Locatable<ResponseNode>[];
+  defaultResponse?: Locatable<DefaultResponseNode>;
 }
 
 export interface RequestNode {
-  headers: HeaderNode[];
-  pathParams: PathParamNode[];
-  queryParams: QueryParamNode[];
-  body?: BodyNode;
+  headers?: Locatable<Locatable<HeaderNode>[]>;
+  pathParams?: Locatable<Locatable<PathParamNode>[]>;
+  queryParams?: Locatable<Locatable<QueryParamNode>[]>;
+  body?: Locatable<BodyNode>;
 }
 
 /** A response inherits all the properties of default response, as well as specifying a specific status code. */
 export interface ResponseNode extends DefaultResponseNode {
-  status: number;
+  status: Locatable<number>;
 }
 
 /** The default response, is the assumed response when no status code is specified. */
 export interface DefaultResponseNode {
-  description?: string;
-  headers: HeaderNode[];
-  body?: BodyNode;
+  description?: Locatable<string>;
+  headers?: Locatable<Locatable<HeaderNode>[]>;
+  body?: Locatable<BodyNode>;
 }
 
 export interface HeaderNode {
-  name: string;
-  description?: string;
+  name: Locatable<string>;
+  description?: Locatable<string>;
   type: DataType;
   optional: boolean;
 }
 
 export interface PathParamNode {
-  name: string;
-  description?: string;
+  name: Locatable<string>;
+  description?: Locatable<string>;
   type: DataType;
 }
 
 export interface QueryParamNode {
-  name: string;
-  description?: string;
+  name: Locatable<string>;
+  description?: Locatable<string>;
   type: DataType;
   optional: boolean;
 }
 
 export interface BodyNode {
-  description?: string;
+  description?: Locatable<string>;
   type: DataType;
 }

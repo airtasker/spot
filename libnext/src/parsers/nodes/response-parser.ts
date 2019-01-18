@@ -1,8 +1,9 @@
 import { MethodDeclaration } from "ts-simple-ast";
+import { Locatable } from "../../models/locatable";
 import { ResponseNode } from "../../models/nodes";
 import {
   extractDecoratorFactoryConfiguration,
-  extractJsDocComment,
+  extractJsDocCommentLocatable,
   extractNumberProperty,
   methodParamWithDecorator
 } from "../utilities/parser-utility";
@@ -14,16 +15,25 @@ import { parseHeaders } from "./headers-parser";
  *
  * @param method a method declaration
  */
-export function parseResponse(method: MethodDeclaration): ResponseNode {
+export function parseResponse(
+  method: MethodDeclaration
+): Locatable<ResponseNode> {
   const decorator = method.getDecoratorOrThrow("response");
   const configuration = extractDecoratorFactoryConfiguration(decorator);
   const headersParameter = methodParamWithDecorator(method, "headers");
   const bodyParameter = methodParamWithDecorator(method, "body");
 
-  const description = extractJsDocComment(method);
+  const description = extractJsDocCommentLocatable(method);
   const status = extractNumberProperty(configuration, "status");
-  const headers = headersParameter ? parseHeaders(headersParameter) : [];
-  const body = bodyParameter ? parseBody(bodyParameter) : undefined;
+  const headers = headersParameter && parseHeaders(headersParameter);
+  const body = bodyParameter && parseBody(bodyParameter);
 
-  return { description, status, headers, body };
+  const location = decorator.getSourceFile().getFilePath();
+  const line = decorator.getStartLineNumber();
+
+  return {
+    value: { description, status, headers, body },
+    location,
+    line
+  };
 }

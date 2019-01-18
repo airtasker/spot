@@ -16,18 +16,46 @@ describe("@pathParams parser", () => {
     `);
 
     const parameter = method.getParameterOrThrow("testParam");
-    const result = parsePathParams(parameter);
 
-    expect(result).toHaveLength(2);
-    expect(result).toContainEqual({
-      description: "company identifier description",
-      name: "companyId",
-      type: STRING
-    });
-    expect(result).toContainEqual({
-      description: "user identifier description",
-      name: "userId",
-      type: NUMBER
+    expect(parsePathParams(parameter)).toStrictEqual({
+      value: [
+        {
+          value: {
+            name: {
+              value: "companyId",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 8
+            },
+            description: {
+              value: "company identifier description",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 7
+            },
+            type: STRING
+          },
+          location: expect.stringMatching(/main\.ts$/),
+          line: 8
+        },
+        {
+          value: {
+            name: {
+              value: "userId",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 10
+            },
+            description: {
+              value: "user identifier description",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 9
+            },
+            type: NUMBER
+          },
+          location: expect.stringMatching(/main\.ts$/),
+          line: 10
+        }
+      ],
+      location: expect.stringMatching(/main\.ts$/),
+      line: 5
     });
   });
 
@@ -66,12 +94,15 @@ function createMethodDeclaration(
 
     class TestClass {
       testMethod(
-        ${methodParameterContent}
+        ${methodParameterContent.trim()}
       ) {}
     }
   `;
 
-  const sourceFile = createSourceFile({ path: "main", content: content });
+  const sourceFile = createSourceFile({
+    path: "main",
+    content: content.trim()
+  });
   const klass = sourceFile.getClassOrThrow("TestClass");
   const method = klass.getMethodOrThrow("testMethod");
 

@@ -16,20 +16,48 @@ describe("@headers parser", () => {
     `);
 
     const parameter = method.getParameterOrThrow("headersParams");
-    const result = parseHeaders(parameter);
 
-    expect(result).toHaveLength(2);
-    expect(result).toContainEqual({
-      description: "auth token description",
-      name: "x-auth-token",
-      type: STRING,
-      optional: false
-    });
-    expect(result).toContainEqual({
-      description: "expiry description",
-      name: "expiresIn",
-      type: NUMBER,
-      optional: true
+    expect(parseHeaders(parameter)).toStrictEqual({
+      value: [
+        {
+          value: {
+            name: {
+              value: "x-auth-token",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 8
+            },
+            description: {
+              value: "auth token description",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 7
+            },
+            type: STRING,
+            optional: false
+          },
+          location: expect.stringMatching(/main\.ts$/),
+          line: 8
+        },
+        {
+          value: {
+            name: {
+              value: "expiresIn",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 10
+            },
+            description: {
+              value: "expiry description",
+              location: expect.stringMatching(/main\.ts$/),
+              line: 9
+            },
+            type: NUMBER,
+            optional: true
+          },
+          location: expect.stringMatching(/main\.ts$/),
+          line: 10
+        }
+      ],
+      location: expect.stringMatching(/main\.ts$/),
+      line: 5
     });
   });
 
@@ -55,12 +83,15 @@ function createMethodDeclaration(
 
     class TestClass {
       testMethod(
-        ${methodParameterContent}
+        ${methodParameterContent.trim()}
       ) {}
     }
   `;
 
-  const sourceFile = createSourceFile({ path: "main", content: content });
+  const sourceFile = createSourceFile({
+    path: "main",
+    content: content.trim()
+  });
   const klass = sourceFile.getClassOrThrow("TestClass");
   const method = klass.getMethodOrThrow("testMethod");
 

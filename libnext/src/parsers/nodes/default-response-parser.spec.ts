@@ -19,11 +19,28 @@ describe("@defaultResponse parser", () => {
       ) {}
     `);
     const method = klass.getMethodOrThrow("methodName");
-    const result = parseDefaultResponse(method);
 
-    expect(result.description).toEqual("Default response description");
-    expect(result.headers).toHaveLength(1);
-    expect(result.body).not.toBeUndefined;
+    expect(parseDefaultResponse(method)).toStrictEqual({
+      value: {
+        description: {
+          value: "Default response description",
+          location: expect.stringMatching(/main\.ts$/),
+          line: 4
+        },
+        headers: {
+          value: expect.anything(),
+          location: expect.stringMatching(/main\.ts$/),
+          line: 7
+        },
+        body: {
+          value: expect.anything(),
+          location: expect.stringMatching(/main\.ts$/),
+          line: 11
+        }
+      },
+      location: expect.stringMatching(/main\.ts$/),
+      line: 5
+    });
   });
 });
 
@@ -32,11 +49,14 @@ function createClassDeclaration(classContent: string): ClassDeclaration {
     import { defaultResponse, headers, body } from "@airtasker/spot"
 
     class TestClass {
-      ${classContent}
+      ${classContent.trim()}
     }
   `;
 
-  const sourceFile = createSourceFile({ path: "main", content: content });
+  const sourceFile = createSourceFile({
+    path: "main",
+    content: content.trim()
+  });
   const klass = sourceFile.getClassOrThrow("TestClass");
 
   return klass;
