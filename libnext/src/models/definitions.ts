@@ -2,7 +2,7 @@ import { HttpMethod } from "./http";
 import { DataType } from "./types";
 
 export interface ContractDefinition {
-  api: ApiDefintiion;
+  api: ApiDefinition;
   endpoints: EndpointDefinition[];
   types: TypeDefinition[];
 }
