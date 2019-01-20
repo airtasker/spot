@@ -13,7 +13,7 @@ export interface TypeDefinition {
   type: DataType;
 }
 
-export interface ApiDefintiion {
+export interface ApiDefinition {
   name: string;
   description?: string;
 }
