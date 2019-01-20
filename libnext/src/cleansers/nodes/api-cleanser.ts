@@ -1,4 +1,4 @@
-import { ApiDefintiion } from "../../models/definitions";
+import { ApiDefinition } from "../../models/definitions";
 import { ApiNode } from "../../models/nodes";
 
 export function cleanseApi(apiNode: ApiNode): ApiDefinition {
