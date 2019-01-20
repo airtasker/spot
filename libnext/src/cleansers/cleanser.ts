@@ -4,7 +4,7 @@ import { cleanseApi } from "./nodes/api-cleanser";
 import { cleanseEndpoint } from "./nodes/endpoint-cleanser";
 
 /**
- * Removes all unnecessary information associated with a parsed contract.
+ * Removes all additional parsing information associated with a parsed contract.
  *
  * @param contractNode a parsed contract
  */
