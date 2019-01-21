@@ -2,7 +2,7 @@
 
 **Spot** (_"Single Point Of Truth"_) is a concise, developer-friendly way to describe your API contract.
 
-Leveraging the TypeScript syntax, it lets you describe your API and generate any other API contract formats you need (OpenAPI, Swagger, JSON Schema, Pact, API Blueprint), client SDKs (TypeScript, Swift, Kotlin) or even server boilerplate (e.g. Express).
+Leveraging the TypeScript syntax, it lets you describe your API and generate any other API contract formats you need (OpenAPI, Swagger, JSON Schema, Pact, API Blueprint).
 
 You don't need to use TypeScript in your codebase to benefit from using Spot.
 
@@ -80,8 +80,6 @@ This is work in progress as of 14 Nov 2018:
 - [x] JSON Schema generator
 - [ ] Pact generator
 - [ ] API Blueprint generator
-- [x] TypeScript axios-based client generator
-- [x] TypeScript express-based server boilerplate generator
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@airtasker/spot.svg)](https://npmjs.org/package/@airtasker/spot)
@@ -133,11 +131,9 @@ OPTIONS
   -o, --out=out              Directory in which to output generated files
 
 EXAMPLE
-  $ spot generate --language typescript --generator axios-client --out src/
+  $ spot generate --api api.ts --language yaml --generator openapi3 --out openapi/
   Generated the following files:
-  - src/types.ts
-  - src/validators.ts
-  - src/client.ts
+  - openapi/api.yml
 ```
 
 _See code: [cli/src/commands/generate.js](https://github.com/zenclabs/spot/blob/master/cli/src/commands/generate.ts)_

@@ -1,17 +1,9 @@
 import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
-import * as YAML from "js-yaml";
 import * as path from "path";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
 import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
-import { generateAxiosClientSource } from "../../../lib/src/generators/typescript/axios-client";
-import {
-  generateEndpointHandlerSource,
-  generateExpressServerSource
-} from "../../../lib/src/generators/typescript/express-server";
-import { generateTypesSource } from "../../../lib/src/generators/typescript/types";
-import { generateValidatorsSource } from "../../../lib/src/generators/typescript/validators";
 import { outputFile } from "../../../lib/src/io/output";
 import { Api } from "../../../lib/src/models";
 import { parsePath } from "../../../lib/src/parsing/file-parser";
@@ -142,16 +134,6 @@ const generators: {
     };
   };
 } = {
-  raw: {
-    json: api => ({
-      "*.json": JSON.stringify(api, null, 2)
-    }),
-    yaml: api => ({
-      "*.yml": YAML.safeDump(api, {
-        noRefs: true
-      })
-    })
-  },
   "json-schema": {
     json: api => ({
       "*.json": generateJsonSchema(api, "json")
@@ -174,31 +156,6 @@ const generators: {
     }),
     yaml: api => ({
       "*.yml": generateOpenApiV3(api, "yaml")
-    })
-  },
-  "axios-client": {
-    typescript: api => ({
-      "types.ts": generateTypesSource(api),
-      "validators.ts": generateValidatorsSource(api),
-      "client.ts": generateAxiosClientSource(api)
-    })
-  },
-  "express-server": {
-    typescript: api => ({
-      "types.ts": generateTypesSource(api),
-      "validators.ts": generateValidatorsSource(api),
-      "server.ts": generateExpressServerSource(api),
-      ...Object.entries(api.endpoints).reduce(
-        (acc, [endpointName, endpoint]) => {
-          acc[`endpoints/${endpointName}.ts`] = generateEndpointHandlerSource(
-            api,
-            endpointName,
-            endpoint
-          );
-          return acc;
-        },
-        {} as { [relativePath: string]: string }
-      )
     })
   }
 };
