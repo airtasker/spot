@@ -1,6 +1,6 @@
 import assertNever from "assert-never";
+import compact from "lodash/compact";
 import { normalizedObjectType, Type, Types } from "../../models";
-import compact = require("lodash/compact");
 
 export function rejectVoidOpenApi2SchemaType(
   types: Types,

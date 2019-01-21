@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 import { SpecificError } from "../../models";
 import { Decorator, extractMultipleDecorators } from "../decorators";
 import {

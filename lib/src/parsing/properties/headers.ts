@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 import { Headers } from "../../models";
 import { extractSingleDecorator } from "../decorators";
 import { isObjectLiteral, isStringLiteral } from "../literal-parser";

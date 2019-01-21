@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 import { DynamicPathComponent, PathComponent, VOID } from "../../models";
 import { extractSingleDecorator } from "../decorators";
 import {

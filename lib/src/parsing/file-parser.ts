@@ -1,16 +1,15 @@
-import * as fs from "fs-extra";
-import * as path from "path";
-import * as ts from "typescript";
+import { ApiDescription } from "@airtasker/spot";
+import fs from "fs-extra";
+import merge from "lodash/merge";
+import path from "path";
+import ts from "typescript";
 import { Api, Endpoint, Type } from "../models";
 import { validate } from "../validator";
 import { extractSingleDecorator } from "./decorators";
 import { parseApiClass } from "./nodes/api-class";
+import { parseEndpointMethod } from "./nodes/endpoint-method";
 import { panic } from "./panic";
 import { extractObjectType, extractType } from "./type-parser";
-import { parseEndpointMethod } from "./nodes/endpoint-method";
-import { ApiDescription } from "@airtasker/spot";
-
-const merge = require("lodash/merge");
 
 /**
  * Parses a TypeScript source file, as well as any other TypeScript files it imports recursively.
