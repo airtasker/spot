@@ -1,60 +1,57 @@
 import assertNever from "assert-never";
 import { generate as generateRandomString } from "randomstring";
-import { normalizedObjectType, Type, Types } from "../models";
+import { TypeDefinition } from "../models/definitions";
+import { DataType, TypeKind } from "../models/types";
 
 /**
  * Generates dummy data based on a type.
  */
-export function generateData(types: Types, type: Type): any {
+export function generateData(types: TypeDefinition[], type: DataType): any {
   switch (type.kind) {
-    case "void":
-      return undefined;
-    case "null":
+    case TypeKind.NULL:
       return null;
-    case "boolean":
+    case TypeKind.BOOLEAN:
       return randomBoolean();
-    case "boolean-constant":
+    case TypeKind.BOOLEAN_LITERAL:
       return type.value;
-    case "string":
+    case TypeKind.STRING:
       return generateRandomString();
-    case "string-constant":
+    case TypeKind.STRING_LITERAL:
       return type.value;
-    case "number":
-    case "int32":
-    case "int64":
-      return randomInteger(100);
-    case "float":
-    case "double":
+    case TypeKind.NUMBER:
       return randomDouble(100);
-    case "date":
-    case "date-time":
+    case TypeKind.INTEGER:
+      return randomInteger(100);
+    case TypeKind.DATE:
+    case TypeKind.DATE_TIME:
       return new Date().toISOString();
-    case "integer-constant":
+    case TypeKind.NUMBER_LITERAL:
       return type.value;
-    case "object":
-      return Object.entries(normalizedObjectType(types, type)).reduce(
-        (acc, [key, propertyType]) => {
-          acc[key] = generateData(types, propertyType);
-          return acc;
-        },
-        {} as { [key: string]: any }
-      );
-    case "array":
+    case TypeKind.OBJECT:
+      return type.properties.reduce<{ [key: string]: any }>((acc, property) => {
+        if (randomBoolean() || !property.optional) {
+          acc[property.name] = generateData(types, property.type);
+        }
+        return acc;
+      }, {});
+    case TypeKind.ARRAY:
       const size = randomInteger(10);
       const array: any[] = [];
       for (let i = 0; i < size; i++) {
         array.push(generateData(types, type.elements));
       }
       return array;
-    case "optional":
-      return randomBoolean() ? generateData(types, type.optional) : undefined;
-    case "union":
+    case TypeKind.UNION:
       return generateData(
         types,
         type.types[randomInteger(type.types.length - 1)]
       );
-    case "type-reference":
-      return generateData(types, types[type.typeName]);
+    case TypeKind.TYPE_REFERENCE:
+      const referencedType = types.find(t => t.name === type.name);
+      if (!referencedType) {
+        throw new Error(`Missing referenced type: ${type.name}`);
+      }
+      return generateData(types, referencedType.type);
     default:
       throw assertNever(type);
   }

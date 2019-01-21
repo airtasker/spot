@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import { Api } from "../models";
+import { ContractDefinition } from "../models/definitions";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
 
@@ -8,7 +8,7 @@ import { isRequestForEndpoint } from "./matcher";
  * Runs a mock server that returns dummy data that conforms to an API definition.
  */
 export function runMockServer(
-  api: Api,
+  api: ContractDefinition,
   {
     port,
     pathPrefix,
@@ -22,13 +22,20 @@ export function runMockServer(
   const app = express();
   app.use(cors());
   app.use((req, resp) => {
-    for (const [endpointName, endpoint] of Object.entries(api.endpoints)) {
+    for (const endpoint of api.endpoints) {
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
-        logger.log(`Request hit for ${endpointName} registered.`);
-        resp.status(endpoint.successStatusCode || 200);
-        resp.send(
-          JSON.stringify(generateData(api.types, endpoint.responseType))
-        );
+        logger.log(`Request hit for ${endpoint.name} registered.`);
+        const response = endpoint.responses[0] || endpoint.defaultResponse;
+        if (!response) {
+          logger.error(`No response defined for endpoint ${endpoint.name}`);
+          return;
+        }
+        resp.status("status" in response ? response.status : 200);
+        if (response.body) {
+          resp.send(
+            JSON.stringify(generateData(api.types, response.body.type))
+          );
+        }
         return;
       }
     }

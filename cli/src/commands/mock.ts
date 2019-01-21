@@ -1,4 +1,5 @@
 import { Command, flags } from "@oclif/command";
+import { cleanse } from "../../../lib/src/cleansers/cleanser";
 import { runMockServer } from "../../../lib/src/mockserver/server";
 import { parse } from "../../../lib/src/parsers/parser";
 
@@ -40,8 +41,8 @@ export default class Mock extends Command {
       flags: { port, pathPrefix }
     } = this.parse(Mock);
     try {
-      const api = parse(args[ARG_API]);
-      await runMockServer(api, {
+      const contract = cleanse(parse(args[ARG_API]));
+      await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix || "",
         logger: this

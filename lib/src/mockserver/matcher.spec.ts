@@ -1,14 +1,16 @@
-import { INT32, VOID } from "../models";
 import { isRequestForEndpoint } from "./matcher";
 
 const BASE_ENDPOINT = {
+  name: "my-endpoint",
   description: "",
-  genericErrorType: VOID,
-  headers: {},
-  queryParams: [],
-  requestType: VOID,
-  responseType: VOID,
-  specificErrorTypes: {}
+  path: "",
+  request: {
+    headers: [],
+    pathParams: [],
+    queryParams: []
+  },
+  responses: [],
+  tags: []
 };
 
 describe("Matcher", () => {
@@ -24,12 +26,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: [
-              {
-                kind: "static",
-                content: "/users"
-              }
-            ]
+            path: "/users"
           }
         )
       ).toBeTruthy();
@@ -43,12 +40,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: [
-              {
-                kind: "static",
-                content: "/users"
-              }
-            ]
+            path: "/users"
           }
         )
       ).toBeTruthy();
@@ -62,18 +54,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "POST",
-            path: [
-              {
-                kind: "static",
-                content: "/users/"
-              },
-              {
-                kind: "dynamic",
-                description: "",
-                name: "userId",
-                type: INT32
-              }
-            ]
+            path: "/users/:userId"
           }
         )
       ).toBeTruthy();
@@ -87,22 +68,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "POST",
-            path: [
-              {
-                kind: "static",
-                content: "/users/"
-              },
-              {
-                kind: "dynamic",
-                description: "",
-                name: "userId",
-                type: INT32
-              },
-              {
-                kind: "static",
-                content: "/details"
-              }
-            ]
+            path: "/users/:userId/details"
           }
         )
       ).toBeTruthy();
@@ -118,12 +84,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: [
-              {
-                kind: "static",
-                content: "/users"
-              }
-            ]
+            path: "/users"
           }
         )
       ).toBeFalsy();
@@ -139,12 +100,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: [
-              {
-                kind: "static",
-                content: "/users"
-              }
-            ]
+            path: "/users"
           }
         )
       ).toBeFalsy();
@@ -158,12 +114,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: [
-              {
-                kind: "static",
-                content: "/users"
-              }
-            ]
+            path: "/users"
           }
         )
       ).toBeFalsy();
@@ -179,12 +130,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: [
-              {
-                kind: "static",
-                content: "/users"
-              }
-            ]
+            path: "/users"
           }
         )
       ).toBeFalsy();
@@ -198,16 +144,7 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: [
-              {
-                kind: "static",
-                content: "/users"
-              },
-              {
-                kind: "static",
-                content: "/abc"
-              }
-            ]
+            path: "/users/abc"
           }
         )
       ).toBeFalsy();
