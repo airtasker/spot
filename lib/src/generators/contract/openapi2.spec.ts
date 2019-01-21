@@ -1,4 +1,4 @@
-import * as path from "path";
+import path from "path";
 import { cleanse } from "../../cleansers/cleanser";
 import { parse } from "../../parsers/parser";
 import { generateOpenApiV2 } from "./openapi2";

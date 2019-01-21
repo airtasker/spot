@@ -1,5 +1,5 @@
-import * as cors from "cors";
-import * as express from "express";
+import cors from "cors";
+import express from "express";
 import { Api } from "../models";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";

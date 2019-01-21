@@ -1,5 +1,5 @@
-import * as path from "path";
 import { cleanse } from "../../cleansers/cleanser";
+import path from "path";
 import {
   arrayType,
   BOOLEAN,
@@ -29,7 +29,7 @@ const EXAMPLE_PATH = path.join(
 
 describe("JSON Schema generator", () => {
   test("produces valid code", async () => {
-    const contractNode = await parse(EXAMPLE_PATH, {
+    const contractNode = parse(EXAMPLE_PATH, {
       baseUrl: ".",
       paths: {
         "@airtasker/spot": ["./lib/src/lib"]

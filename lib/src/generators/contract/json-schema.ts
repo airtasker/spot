@@ -1,8 +1,7 @@
 import assertNever from "assert-never";
-import * as YAML from "js-yaml";
 import { ContractDefinition } from "lib/src/models/definitions";
 import { DataType, TypeKind } from "../../models/types";
-import compact = require("lodash/compact");
+import YAML from "js-yaml";
 
 export function generateJsonSchema(
   contractDefinition: ContractDefinition,
