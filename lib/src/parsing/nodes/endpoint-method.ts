@@ -1,8 +1,9 @@
-import * as ts from "typescript";
-import { Api, Endpoint } from "../../models";
+import ts from "typescript";
+import { Endpoint } from "../../models";
 import { extractSingleDecorator } from "../decorators";
 import { isObjectLiteral } from "../literal-parser";
 import { panic } from "../panic";
+import { extractEndpointDescription } from "../properties/endpoint-description";
 import { extractGenericErrorType } from "../properties/generic-error-type";
 import { extractHeaders } from "../properties/headers";
 import { extractMethod } from "../properties/method";
@@ -13,7 +14,6 @@ import { extractRequestType } from "../properties/request-type";
 import { extractResponseType } from "../properties/response-type";
 import { extractSpecificErrorTypes } from "../properties/specific-error-type";
 import { extractSuccessStatusCode } from "../properties/success-status-code";
-import { extractEndpointDescription } from "../properties/endpoint-description";
 import { extractTags } from "../properties/tags";
 
 /**

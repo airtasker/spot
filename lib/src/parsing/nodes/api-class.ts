@@ -1,13 +1,13 @@
-import * as ts from "typescript";
-import { ApiDescription, api } from "@airtasker/spot";
+import { ApiDescription } from "@airtasker/spot";
+import { pickBy } from "lodash";
+import ts from "typescript";
 import { extractSingleDecorator } from "../decorators";
-import { panic } from "../panic";
 import {
   isObjectLiteral,
-  ObjectLiteral,
-  isStringLiteral
+  isStringLiteral,
+  ObjectLiteral
 } from "../literal-parser";
-import { pickBy } from "lodash";
+import { panic } from "../panic";
 
 /**
  * Parses a top-level API class definition and the endpoints it defines, such as:

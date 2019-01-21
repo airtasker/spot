@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 import { isNumericLiteral, ObjectLiteral } from "../literal-parser";
 import { panic } from "../panic";
 

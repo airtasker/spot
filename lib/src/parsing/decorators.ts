@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 import { Type } from "../models";
 import { extractLiteral, Literal } from "./literal-parser";
 import { panic } from "./panic";

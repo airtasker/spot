@@ -1,5 +1,5 @@
 import assertNever from "assert-never";
-import * as YAML from "js-yaml";
+import YAML from "js-yaml";
 import { ContractDefinition } from "libnext/src/models/definitions";
 import { DataType, TypeKind } from "../../models/types";
 

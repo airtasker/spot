@@ -1,5 +1,4 @@
-import * as ts from "typescript";
-import { HttpMethod, isHttpMethod } from "../../lib";
+import ts from "typescript";
 import { isStringLiteral, ObjectLiteral } from "../literal-parser";
 import { panic } from "../panic";
 

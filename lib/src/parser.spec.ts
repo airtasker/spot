@@ -1,5 +1,5 @@
-import * as fs from "fs-extra";
-import * as path from "path";
+import fs from "fs-extra";
+import path from "path";
 import { parsePath } from "./parsing/file-parser";
 
 const EXAMPLES_DIR = path.join(__dirname, "..", "..", "examples", "src");

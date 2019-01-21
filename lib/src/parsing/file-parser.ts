@@ -1,8 +1,8 @@
 import { ApiDescription } from "@airtasker/spot";
-import * as fs from "fs-extra";
+import fs from "fs-extra";
 import merge from "lodash/merge";
-import * as path from "path";
-import * as ts from "typescript";
+import path from "path";
+import ts from "typescript";
 import { Api, Endpoint, Type } from "../models";
 import { validate } from "../validator";
 import { extractSingleDecorator } from "./decorators";
