@@ -1,0 +1,469 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 3 generator produces valid code: json 1`] = `
+"{
+  \\"openapi\\": \\"3.0.0\\",
+  \\"info\\": {
+    \\"version\\": \\"0.0.0\\",
+    \\"title\\": \\"company-api\\",
+    \\"description\\": \\"This is the company API. It does cool things\\",
+    \\"contact\\": {
+      \\"name\\": \\"TODO\\"
+    }
+  },
+  \\"paths\\": {
+    \\"/company/{companyId}/users/{userId}\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"GetUser\\",
+        \\"description\\": \\"Retrieves a user in a company\\",
+        \\"tags\\": [
+          \\"Company\\",
+          \\"User\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"companyId\\",
+            \\"description\\": \\"company identifier\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"userId\\",
+            \\"description\\": \\"user identifier\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"sample-query\\",
+            \\"description\\": \\"a demo query param\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"x-auth-token\\",
+            \\"description\\": \\"Auth Header\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"required\\": true
+          }
+        ],
+        \\"responses\\": {
+          \\"201\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/UserBody\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"404\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/ErrorBody\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    },
+    \\"/company/{companyId}/users\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"CreateUser\\",
+        \\"description\\": \\"Creates a user in a company\\",
+        \\"tags\\": [
+          \\"Company\\",
+          \\"User\\"
+        ],
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"path\\",
+            \\"name\\": \\"companyId\\",
+            \\"description\\": \\"company identifier\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"required\\": true
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"sample-query\\",
+            \\"description\\": \\"a demo query param\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"header\\",
+            \\"name\\": \\"x-auth-token\\",
+            \\"description\\": \\"Auth Header\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"required\\": true
+          }
+        ],
+        \\"requestBody\\": {
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"$ref\\": \\"#/components/schemas/CreateUserRequestBody\\"
+              }
+            }
+          },
+          \\"description\\": \\"\\"
+        },
+        \\"responses\\": {
+          \\"201\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/UserBody\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"400\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/ErrorBody\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          },
+          \\"default\\": {
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/ErrorBody\\"
+                }
+              }
+            },
+            \\"description\\": \\"\\"
+          }
+        }
+      }
+    }
+  },
+  \\"components\\": {
+    \\"schemas\\": {
+      \\"UserBody\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"data\\": {
+            \\"type\\": \\"object\\",
+            \\"properties\\": {
+              \\"firstName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"lastName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"profile\\": {
+                \\"$ref\\": \\"#/components/schemas/Profile\\"
+              }
+            },
+            \\"required\\": [
+              \\"firstName\\",
+              \\"lastName\\",
+              \\"profile\\"
+            ]
+          }
+        },
+        \\"required\\": [
+          \\"data\\"
+        ]
+      },
+      \\"ErrorBody\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"name\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"message\\": {
+            \\"type\\": \\"array\\",
+            \\"items\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        },
+        \\"required\\": [
+          \\"name\\",
+          \\"message\\"
+        ]
+      },
+      \\"CreateUserRequestBody\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"data\\": {
+            \\"type\\": \\"object\\",
+            \\"properties\\": {
+              \\"firstName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"lastName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"age\\": {
+                \\"type\\": \\"number\\"
+              },
+              \\"email\\": {
+                \\"$ref\\": \\"#/components/schemas/Email\\"
+              },
+              \\"address\\": {
+                \\"$ref\\": \\"#/components/schemas/Address\\"
+              }
+            },
+            \\"required\\": [
+              \\"firstName\\",
+              \\"lastName\\",
+              \\"age\\",
+              \\"email\\",
+              \\"address\\"
+            ]
+          }
+        },
+        \\"required\\": [
+          \\"data\\"
+        ]
+      },
+      \\"Profile\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"private\\": {
+            \\"type\\": \\"boolean\\"
+          },
+          \\"messageOptions\\": {
+            \\"$ref\\": \\"#/components/schemas/MessageOptions\\"
+          }
+        },
+        \\"required\\": [
+          \\"private\\",
+          \\"messageOptions\\"
+        ]
+      },
+      \\"MessageOptions\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"newsletter\\": {
+            \\"type\\": \\"boolean\\"
+          }
+        },
+        \\"required\\": [
+          \\"newsletter\\"
+        ]
+      },
+      \\"Email\\": {
+        \\"type\\": \\"string\\"
+      },
+      \\"Address\\": {
+        \\"type\\": \\"string\\"
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator produces valid code: yaml 1`] = `
+"openapi: 3.0.0
+info:
+  version: 0.0.0
+  title: company-api
+  description: This is the company API. It does cool things
+  contact:
+    name: TODO
+paths:
+  '/company/{companyId}/users/{userId}':
+    post:
+      operationId: GetUser
+      description: Retrieves a user in a company
+      tags:
+        - Company
+        - User
+      parameters:
+        - in: path
+          name: companyId
+          description: company identifier
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: userId
+          description: user identifier
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: sample-query
+          description: a demo query param
+          schema:
+            type: string
+          required: false
+        - in: header
+          name: x-auth-token
+          description: Auth Header
+          schema:
+            type: string
+          required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBody'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: ''
+  '/company/{companyId}/users':
+    post:
+      operationId: CreateUser
+      description: Creates a user in a company
+      tags:
+        - Company
+        - User
+      parameters:
+        - in: path
+          name: companyId
+          description: company identifier
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: sample-query
+          description: a demo query param
+          schema:
+            type: string
+          required: false
+        - in: header
+          name: x-auth-token
+          description: Auth Header
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequestBody'
+        description: ''
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBody'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: ''
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: ''
+components:
+  schemas:
+    UserBody:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            profile:
+              $ref: '#/components/schemas/Profile'
+          required:
+            - firstName
+            - lastName
+            - profile
+      required:
+        - data
+    ErrorBody:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - message
+    CreateUserRequestBody:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            age:
+              type: number
+            email:
+              $ref: '#/components/schemas/Email'
+            address:
+              $ref: '#/components/schemas/Address'
+          required:
+            - firstName
+            - lastName
+            - age
+            - email
+            - address
+      required:
+        - data
+    Profile:
+      type: object
+      properties:
+        private:
+          type: boolean
+        messageOptions:
+          $ref: '#/components/schemas/MessageOptions'
+      required:
+        - private
+        - messageOptions
+    MessageOptions:
+      type: object
+      properties:
+        newsletter:
+          type: boolean
+      required:
+        - newsletter
+    Email:
+      type: string
+    Address:
+      type: string
+"
+`;
