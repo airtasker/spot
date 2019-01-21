@@ -1,13 +1,17 @@
 import { HttpContentType } from "@airtasker/spot";
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import compact from 'lodash/compact';
-import defaultTo from 'lodash/defaultTo';
-import pickBy from 'lodash/pickBy';
-import uniqBy from 'lodash/uniqBy';
+import compact from "lodash/compact";
+import defaultTo from "lodash/defaultTo";
+import pickBy from "lodash/pickBy";
+import uniqBy from "lodash/uniqBy";
 import { Api, Endpoint, Type } from "../../models";
 import { isVoid } from "../../validator";
-import { OpenAPI2SchemaType, openApi2TypeSchema, rejectVoidOpenApi2SchemaType } from "./openapi2-schema";
+import {
+  OpenAPI2SchemaType,
+  openApi2TypeSchema,
+  rejectVoidOpenApi2SchemaType
+} from "./openapi2-schema";
 
 export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
   const contract = openApiV2(api);

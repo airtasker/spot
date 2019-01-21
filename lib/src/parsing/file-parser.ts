@@ -1,6 +1,6 @@
 import { ApiDescription } from "@airtasker/spot";
 import * as fs from "fs-extra";
-import merge from 'lodash/merge';
+import merge from "lodash/merge";
 import * as path from "path";
 import * as ts from "typescript";
 import { Api, Endpoint, Type } from "../models";

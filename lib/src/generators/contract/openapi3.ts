@@ -1,12 +1,17 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import compact from 'lodash/compact';
-import defaultTo from 'lodash/defaultTo';
-import pickBy from 'lodash/pickBy';
-import uniqBy from 'lodash/uniqBy';
+import compact from "lodash/compact";
+import defaultTo from "lodash/defaultTo";
+import pickBy from "lodash/pickBy";
+import uniqBy from "lodash/uniqBy";
 import { Api, Endpoint, Type } from "../../models";
 import { isVoid } from "../../validator";
-import { OpenAPI3SchemaType, openApi3TypeSchema, openApiV3ContentTypeSchema, rejectVoidOpenApi3SchemaType } from "./openapi3-schema";
+import {
+  OpenAPI3SchemaType,
+  openApi3TypeSchema,
+  openApiV3ContentTypeSchema,
+  rejectVoidOpenApi3SchemaType
+} from "./openapi3-schema";
 
 export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
   const contract = openApiV3(api);

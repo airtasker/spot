@@ -1,8 +1,12 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { ContractDefinition, DefaultResponseDefinition, EndpointDefinition } from "libnext/src/models/definitions";
-import compact from 'lodash/compact';
-import pickBy from 'lodash/pickBy';
+import {
+  ContractDefinition,
+  DefaultResponseDefinition,
+  EndpointDefinition
+} from "libnext/src/models/definitions";
+import compact from "lodash/compact";
+import pickBy from "lodash/pickBy";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
 
 export function generateOpenApiV3(

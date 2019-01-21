@@ -1,5 +1,5 @@
-import compact from 'lodash/compact';
-import uniq from 'lodash/uniq';
+import compact from "lodash/compact";
+import uniq from "lodash/uniq";
 import { ApiDescription, HttpContentType, HttpMethod } from "./lib";
 
 export interface Api {

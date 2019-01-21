@@ -1,5 +1,5 @@
 import assertNever from "assert-never";
-import uniq from 'lodash/uniq';
+import uniq from "lodash/uniq";
 import { Api, Type, VOID } from "./models";
 
 export function validate(api: Api): ErrorMessage[] {

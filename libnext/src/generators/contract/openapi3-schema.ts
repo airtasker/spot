@@ -1,5 +1,5 @@
 import assertNever from "assert-never";
-import compact from 'lodash/compact';
+import compact from "lodash/compact";
 import { DataType, TypeKind, UnionType } from "../../models/types";
 
 function isStringConstantUnion(type: UnionType): boolean {
