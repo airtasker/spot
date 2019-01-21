@@ -1,5 +1,6 @@
 import { Command, flags } from "@oclif/command";
-import { parsePath } from "../../../lib/src/parsing/file-parser";
+import { parse } from "../../../lib/src/parsers/parser";
+import { verify } from "../../../lib/src/verifiers/verifier";
 
 const ARG_API = "spot_contract";
 
@@ -27,7 +28,14 @@ export default class Validate extends Command {
   async run() {
     const { args } = this.parse(Validate);
     try {
-      await parsePath(args[ARG_API]);
+      const parsedContract = parse(args[ARG_API]);
+      const contractErrors = verify(parsedContract);
+      if (contractErrors.length > 0) {
+        contractErrors.forEach(error => {
+          console.log(`${error.location}#${error.line}: ${error.message}`);
+        });
+        throw new Error("Contract is not valid");
+      }
       this.log("Spot contract is valid");
     } catch (e) {
       this.error(e, { exit: 1 });

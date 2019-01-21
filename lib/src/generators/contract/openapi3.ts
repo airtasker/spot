@@ -1,20 +1,21 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { Api, Endpoint, Type } from "../../models";
-import { isVoid } from "../../validator";
 import {
-  OpenAPI3SchemaType,
-  openApi3TypeSchema,
-  openApiV3ContentTypeSchema,
-  rejectVoidOpenApi3SchemaType
-} from "./openapi3-schema";
+  ContractDefinition,
+  DefaultResponseDefinition,
+  EndpointDefinition
+} from "lib/src/models/definitions";
+import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
 import pickBy = require("lodash/pickBy");
 import defaultTo = require("lodash/defaultTo");
 
-export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
-  const contract = openApiV3(api);
+export function generateOpenApiV3(
+  contractDefinition: ContractDefinition,
+  format: "json" | "yaml"
+) {
+  const contract = openApiV3(contractDefinition);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -25,62 +26,46 @@ export function generateOpenApiV3(api: Api, format: "json" | "yaml") {
   }
 }
 
-export function openApiV3(api: Api): OpenApiV3 {
+export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
   return {
     openapi: "3.0.0",
-    tags: getTags(api),
     info: {
       version: "0.0.0",
-      title: api.description.name,
-      ...pickBy({ description: api.description.description }),
+      title: contractDefinition.api.name,
+      ...pickBy({ description: contractDefinition.api.description }),
       contact: {
         name: "TODO"
       }
     },
-    paths: Object.entries(api.endpoints).reduce(
-      (acc, [endpointName, endpoint]) => {
-        const openApiPath = endpoint.path
-          .map(
-            pathComponent =>
-              pathComponent.kind === "dynamic"
-                ? `{${pathComponent.name}}`
-                : pathComponent.content
-          )
-          .join("");
+    paths: contractDefinition.endpoints.reduce(
+      (acc, endpoint) => {
+        const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
         acc[openApiPath] = acc[openApiPath] || {};
         acc[openApiPath][endpoint.method.toLowerCase()] = {
-          operationId: endpointName,
+          operationId: endpoint.name,
           description: endpoint.description,
           tags: endpoint.tags,
-          parameters: getParameters(api, endpoint),
-          ...pickBy({
-            requestBody: isVoid(api, endpoint.requestType)
-              ? undefined
-              : defaultTo(
-                  openApiV3ContentTypeSchema(
-                    api.types,
-                    defaultTo(endpoint.requestContentType, "application/json"),
-                    endpoint.requestType
-                  ),
-                  undefined
-                )
+          parameters: getParameters(endpoint),
+          ...(endpoint.request.body && {
+            requestBody: {
+              content: {
+                "application/json": {
+                  schema: openApi3TypeSchema(endpoint.request.body.type)
+                }
+              },
+              description: ""
+            }
           }),
           responses: {
-            default: response(api, endpoint.genericErrorType),
-            [(endpoint.successStatusCode || 200).toString(10)]: response(
-              api,
-              endpoint.responseType
-            ),
-            ...Object.entries(endpoint.specificErrorTypes).reduce(
-              (acc, [errorName, specificError]) => {
-                acc[specificError.statusCode.toString(10)] = response(
-                  api,
-                  specificError.type
-                );
-                return acc;
-              },
-              {} as { [statusCode: string]: OpenAPIV3Response }
-            )
+            ...(endpoint.defaultResponse
+              ? { default: response(endpoint.defaultResponse) }
+              : {}),
+            ...endpoint.responses.reduce<{
+              [statusCode: string]: OpenAPIV3Body;
+            }>((acc, responseNode) => {
+              acc[responseNode.status.toString(10)] = response(responseNode);
+              return acc;
+            }, {})
           }
         };
         return acc;
@@ -92,94 +77,63 @@ export function openApiV3(api: Api): OpenApiV3 {
       }
     ),
     components: {
-      schemas: Object.entries(api.types).reduce(
-        (acc, [typeName, type]) => {
-          acc[typeName] = rejectVoidOpenApi3SchemaType(
-            api.types,
-            type,
-            `Unsupported void type ${typeName}`
-          );
-          return acc;
-        },
-        {} as { [typeName: string]: OpenAPI3SchemaType }
-      )
+      schemas: contractDefinition.types.reduce<{
+        [typeName: string]: OpenAPI3SchemaType;
+      }>((acc, typeNode) => {
+        acc[typeNode.name] = openApi3TypeSchema(typeNode.type);
+        return acc;
+      }, {})
     }
   };
 }
 
-function getTags(api: Api): OpenAPIV3TagObject[] {
-  return uniqBy(
-    Object.entries(api.endpoints).reduce(
-      (acc, [endpointName, endpoint]) => {
-        if (endpoint.tags) {
-          acc = acc.concat(
-            endpoint.tags.map(tag => {
-              return { name: tag };
-            })
-          );
-        }
-        return acc;
-      },
-      [] as OpenAPIV3TagObject[]
-    ),
-    "name"
-  );
-}
-
-function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
-  const parameters = endpoint.path
+function getParameters(endpoint: EndpointDefinition): OpenAPIV3Parameter[] {
+  const parameters = endpoint.request.pathParams
     .map(
-      (pathComponent): OpenAPIV3Parameter | null =>
-        pathComponent.kind === "dynamic"
-          ? {
-              in: "path",
-              name: pathComponent.name,
-              description: pathComponent.description,
-              required: true,
-              schema: rejectVoidOpenApi3SchemaType(
-                api.types,
-                pathComponent.type,
-                `Unsupported void type for path component ${pathComponent.name}`
-              )
-            }
-          : null
+      (pathParam): OpenAPIV3Parameter => {
+        const schemaType = openApi3TypeSchema(pathParam.type);
+        if ("type" in schemaType && schemaType.type === "object") {
+          throw new Error(`Unsupported object type in path parameter`);
+        }
+        return {
+          in: "path",
+          name: pathParam.name,
+          description: pathParam.description,
+          schema: schemaType,
+          required: true
+        };
+      }
     )
     .concat(
-      endpoint.queryParams.map(
-        (queryComponent): OpenAPIV3Parameter => {
+      endpoint.request.queryParams.map(
+        (queryParam): OpenAPIV3Parameter => {
+          const schemaType = openApi3TypeSchema(queryParam.type);
+          if ("type" in schemaType && schemaType.type === "object") {
+            throw new Error(`Unsupported object type in query parameter`);
+          }
           return {
             in: "query",
-            name: queryComponent.queryName
-              ? queryComponent.queryName
-              : queryComponent.name,
-            description: queryComponent.description,
-            required: queryComponent.type.kind !== "optional",
-            schema: rejectVoidOpenApi3SchemaType(
-              api.types,
-              queryComponent.type.kind === "optional"
-                ? queryComponent.type.optional
-                : queryComponent.type,
-              `Unsupported void type for query params${queryComponent.name}`
-            )
+            name: queryParam.name,
+            description: queryParam.description,
+            schema: schemaType,
+            required: !queryParam.optional
           };
         }
       )
     )
     .concat(
-      Object.entries(endpoint.headers).map(
-        ([headerName, header]): OpenAPIV3Parameter => {
+      endpoint.request.headers.map(
+        (header): OpenAPIV3Parameter => {
+          const schemaType = openApi3TypeSchema(header.type);
+          if ("type" in schemaType && schemaType.type === "object") {
+            throw new Error(`Unsupported object type in header`);
+          }
           return {
             in: "header",
-            name: header.headerFieldName,
+            name: header.name,
             description: header.description,
-            required: header.type.kind !== "optional",
-            schema: rejectVoidOpenApi3SchemaType(
-              api.types,
-              header.type.kind === "optional"
-                ? header.type.optional
-                : header.type,
-              `Unsupported void type for header ${header.headerFieldName}`
-            )
+            schema: schemaType,
+            required: !header.optional
           };
         }
       )
@@ -187,18 +141,15 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV3Parameter[] {
   return compact(parameters);
 }
 
-function response(api: Api, type: Type): OpenAPIV3Response {
-  const schemaType = openApi3TypeSchema(api.types, type);
+function response(response: DefaultResponseDefinition): OpenAPIV3Body {
   return {
-    ...(schemaType
-      ? {
-          content: {
-            "application/json": {
-              schema: schemaType
-            }
-          }
+    ...(response.body && {
+      content: {
+        "application/json": {
+          schema: openApi3TypeSchema(response.body.type)
         }
-      : {}),
+      }
+    }),
     description: ""
   };
 }
@@ -247,11 +198,11 @@ export interface OpenAPIV3Operation {
   description?: string;
   tags?: string[];
   parameters: OpenAPIV3Parameter[];
-  requestBody?: OpenAPI3SchemaType;
+  requestBody?: OpenAPIV3Body;
   responses: {
-    default?: OpenAPIV3Response;
+    default?: OpenAPIV3Body;
     // Note: we use | undefined because otherwise "default" would have to be required.
-    [statusCode: string]: OpenAPIV3Response | undefined;
+    [statusCode: string]: OpenAPIV3Body | undefined;
   };
 }
 
@@ -263,7 +214,7 @@ export interface OpenAPIV3Parameter {
   schema: OpenAPI3SchemaType;
 }
 
-export interface OpenAPIV3Response {
+export interface OpenAPIV3Body {
   content?: {
     "application/json": {
       schema: OpenAPI3SchemaType;

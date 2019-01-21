@@ -27,17 +27,25 @@ Generated the following files:
     outputFile(
       ".",
       "api.ts",
-      `import { api, endpoint, request, response } from "@airtasker/spot";
+      `import { api, endpoint, request, body, response } from "@airtasker/spot";
 
-@api()
-class Api {
-  @endpoint({
-    method: "POST",
-    path: "/users"
-  })
-  createUser(@request req: CreateUserRequest): CreateUserResponse {
-    return response();
-  }
+@api({ name: "my-api" })
+class Api {}
+
+@endpoint({
+  method: "POST",
+  path: "/users"
+})
+class CreateUser {
+  @request
+  request(
+    @body body: CreateUserRequest
+  ) {}
+
+  @response({ status: 201 })
+  successfulResponse(
+    @body body: CreateUserResponse
+  ) {}
 }
 
 interface CreateUserRequest {
@@ -46,7 +54,9 @@ interface CreateUserRequest {
 }
 
 interface CreateUserResponse {
-  success: boolean;
+  firstName: string;
+  lastName: string;
+  role: string;
 }
 `,
       false

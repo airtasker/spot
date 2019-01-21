@@ -6,7 +6,7 @@ import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
 import { outputFile } from "../../../lib/src/io/output";
 import { Api } from "../../../lib/src/models";
-import { parsePath } from "../../../lib/src/parsing/file-parser";
+import { parse } from "../../../lib/src/parsers/parser";
 import sortBy = require("lodash/sortBy");
 
 export default class Generate extends Command {
@@ -47,7 +47,7 @@ Generated the following files:
     const { flags } = this.parse(Generate);
     let { api: apiPath, language, generator, out: outDir } = flags;
     const apiFileName = path.basename(apiPath, ".ts");
-    const api = await parsePath(apiPath);
+    const api = parse(apiPath);
     if (!generator) {
       generator = (await prompt<{
         Generator: string;

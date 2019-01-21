@@ -1,11 +1,11 @@
-import { parseFilePath } from "./parser";
+import { parse } from "./parser";
 
 describe("parser", () => {
   test("parses all information", () => {
-    const result = parseFilePath("./libnext/src/test/examples/contract.ts", {
+    const result = parse("./lib/src/test/examples/contract.ts", {
       baseUrl: "./",
       paths: {
-        "@airtasker/spotnext": ["./libnext/src/lib"]
+        "@airtasker/spot": ["./lib/src/lib"]
       }
     });
     expect(result.api).not.toBeUndefined;

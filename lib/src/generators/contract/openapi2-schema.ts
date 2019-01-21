@@ -1,141 +1,117 @@
 import assertNever from "assert-never";
-import { normalizedObjectType, Type, Types } from "../../models";
+import { DataType, TypeKind, UnionType } from "../../models/types";
 import compact = require("lodash/compact");
 
-export function rejectVoidOpenApi2SchemaType(
-  types: Types,
-  type: Type,
-  errorMessage: string
-): OpenAPI2SchemaType {
-  const schemaType = openApi2TypeSchema(types, type);
-  if (!schemaType) {
-    throw new Error(errorMessage);
-  }
-  return schemaType;
-}
-
-function isStringConstantUnion(types: Type[]): boolean {
-  return types.reduce((acc, type) => {
-    return acc && type.kind === "string-constant";
+function isStringConstantUnion(type: UnionType): boolean {
+  return type.types.reduce((acc, type) => {
+    return acc && type.kind === TypeKind.STRING_LITERAL;
   }, true);
 }
 
-export function openApi2TypeSchema(
-  types: Types,
-  type: Type
-): OpenAPI2SchemaType | null {
+export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
   switch (type.kind) {
-    case "void":
-      return null;
-    case "null":
-      return null;
-    case "boolean":
+    case TypeKind.NULL:
+      throw new Error(
+        `The null type is only supported within a union in OpenAPI 2.`
+      );
+    case TypeKind.BOOLEAN:
       return {
         type: "boolean"
       };
-    case "boolean-constant":
+    case TypeKind.BOOLEAN_LITERAL:
       return {
         type: "boolean",
         enum: [type.value]
       };
-    case "date":
+    case TypeKind.DATE:
       return {
         type: "string",
         format: "date"
       };
-    case "date-time":
+    case TypeKind.DATE_TIME:
       return {
         type: "string",
         format: "date-time"
       };
-    case "string":
+    case TypeKind.STRING:
       return {
         type: "string"
       };
-    case "string-constant":
+    case TypeKind.STRING_LITERAL:
       return {
         type: "string",
         enum: [type.value]
       };
-    case "number":
+    case TypeKind.NUMBER:
       return {
         type: "number"
       };
-    case "integer-constant":
-      return {
-        type: "integer",
-        enum: [type.value]
-      };
-    case "int32":
+    case TypeKind.NUMBER_LITERAL:
+      return Math.round(type.value) === type.value
+        ? {
+            type: "integer",
+            enum: [type.value]
+          }
+        : {
+            type: "number",
+            enum: [type.value]
+          };
+    case TypeKind.INTEGER:
       return {
         type: "integer",
         format: "int32"
       };
-    case "int64":
-      return {
-        type: "integer",
-        format: "int64"
-      };
-    case "float":
-      return {
-        type: "number",
-        format: "float"
-      };
-    case "double":
-      return {
-        type: "number",
-        format: "double"
-      };
-    case "object":
-      return Object.entries(normalizedObjectType(types, type)).reduce(
-        (acc, [name, type]) => {
-          if (type.kind === "optional") {
-            type = type.optional;
-          } else {
-            acc.required.push(name);
+    case TypeKind.OBJECT:
+      return type.properties.reduce<
+        OpenAPI2SchemaTypeObject & { required: string[] }
+      >(
+        (acc, property) => {
+          if (!property.optional) {
+            acc.required.push(property.name);
           }
-          const schemaType = openApi2TypeSchema(types, type);
-          if (schemaType) {
-            acc.properties[name] = schemaType;
-          }
+          acc.properties[property.name] = openApi2TypeSchema(property.type);
           return acc;
         },
         {
           type: "object",
           properties: {},
           required: []
-        } as OpenAPI2SchemaTypeObject & { required: string[] }
+        }
       );
-    case "array":
-      const itemsType = openApi2TypeSchema(types, type.elements);
-      if (!itemsType) {
-        throw new Error(`Unsupported void array`);
-      }
+    case TypeKind.ARRAY:
       return {
         type: "array",
-        items: itemsType
+        items: openApi2TypeSchema(type.elements)
       };
-    case "optional":
-      throw new Error(`Unsupported top-level optional type`);
-    case "union":
-      const unionTypes = type.types.map(t => openApi2TypeSchema(types, t));
-      const withoutNullTypes = compact(unionTypes);
-      if (withoutNullTypes.length !== unionTypes.length) {
-        throw new Error(`Unsupported void type in union`);
+    case TypeKind.UNION:
+      if (type.types.length === 1) {
+        return openApi2TypeSchema(type.types[0]);
       }
-      if (isStringConstantUnion(type.types)) {
+      if (isStringConstantUnion(type)) {
         return {
           type: "string",
           enum: compact(
-            type.types.map(t => (t.kind === "string-constant" ? t.value : null))
+            type.types.map(
+              t => (t.kind === TypeKind.STRING_LITERAL ? t.value : null)
+            )
           )
         };
       }
+      const nullable = !!type.types.find(t => t.kind === TypeKind.NULL);
+      const typesWithoutNull = type.types.filter(t => t.kind !== TypeKind.NULL);
+      if (nullable) {
+        const type = openApi2TypeSchema({
+          kind: TypeKind.UNION,
+          types: typesWithoutNull
+        });
+        type["x-nullable"] = true;
+        return type;
+      }
       // Please have a look at https://github.com/OAI/OpenAPI-Specification/issues/333
       throw new Error(`Unions are not supported in OpenAPI 2`);
-    case "type-reference":
+    case TypeKind.TYPE_REFERENCE:
       return {
-        $ref: `#/definitions/${type.typeName}`
+        $ref: `#/definitions/${type.name}`
       };
     default:
       throw assertNever(type);
@@ -146,7 +122,6 @@ export type OpenAPI2SchemaType =
   | OpenAPI2SchemaTypeObject
   | OpenAPI2SchemaTypeArray
   | OpenAPI2SchemaTypeAllOf
-  | OpenAPI2SchemaTypeNull
   | OpenAPI2SchemaTypeString
   | OpenAPI2SchemaTypeDateTime
   | OpenAPI2SchemaTypeNumber
@@ -163,6 +138,8 @@ export interface OpenAPI2BaseSchemaType {
       [value: string]: OpenAPI2SchemaType;
     };
   };
+  // See https://stackoverflow.com/a/48114322.
+  "x-nullable"?: boolean;
 }
 
 export interface OpenAPI2SchemaTypeObject extends OpenAPI2BaseSchemaType {

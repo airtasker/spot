@@ -1,31 +1,31 @@
-import * as fs from "fs-extra";
 import * as path from "path";
-import { parsePath } from "../../parsing/file-parser";
+import { cleanse } from "../../cleansers/cleanser";
+import { parse } from "../../parsers/parser";
 import { generateOpenApiV3 } from "./openapi3";
 
-const EXAMPLES_DIR = path.join(
+const EXAMPLE_PATH = path.join(
   __dirname,
   "..",
   "..",
-  "..",
-  "..",
+  "test",
   "examples",
-  "src"
+  "contract.ts"
 );
 
 describe("OpenAPI 3 generator", () => {
-  describe("produces valid code", () => {
-    for (const testCaseName of fs.readdirSync(EXAMPLES_DIR)) {
-      if (!fs.lstatSync(path.join(EXAMPLES_DIR, testCaseName)).isDirectory()) {
-        continue;
+  test("produces valid code", async () => {
+    const contractNode = await parse(EXAMPLE_PATH, {
+      baseUrl: ".",
+      paths: {
+        "@airtasker/spot": ["./lib/src/lib"]
       }
-      test(testCaseName, async () => {
-        const api = await parsePath(
-          path.join(EXAMPLES_DIR, testCaseName, `${testCaseName}-api.ts`)
-        );
-        expect(generateOpenApiV3(api, "json")).toMatchSnapshot("json");
-        expect(generateOpenApiV3(api, "yaml")).toMatchSnapshot("yaml");
-      });
-    }
+    });
+    const contractDefinition = cleanse(contractNode);
+    expect(generateOpenApiV3(contractDefinition, "json")).toMatchSnapshot(
+      "json"
+    );
+    expect(generateOpenApiV3(contractDefinition, "yaml")).toMatchSnapshot(
+      "yaml"
+    );
   });
 });

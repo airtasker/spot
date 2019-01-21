@@ -4,7 +4,5 @@
     "rootDir": "src",
     "composite": true
   },
-  "exclude": [
-    "**/*.spec.ts"
-  ]
+  "exclude": ["**/*.spec.ts"]
 }

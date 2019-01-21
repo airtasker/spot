@@ -12,7 +12,7 @@ import {
   uniqueReferences
 } from "./utilities/type-reference-resolver";
 
-export function parseFilePath(
+export function parse(
   sourcePath: string,
   customCompilerOptions: CompilerOptions = {}
 ): ContractNode {

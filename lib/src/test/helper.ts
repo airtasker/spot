@@ -54,7 +54,7 @@ export function createProject() {
       experimentalDecorators: true,
       baseUrl: "./",
       paths: {
-        "@airtasker/spot": ["./libnext/src/lib"]
+        "@airtasker/spot": ["./lib/src/lib"]
       }
     }
   });

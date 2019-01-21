@@ -1,20 +1,24 @@
-import { HttpContentType } from "@airtasker/spot";
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { Api, Endpoint, Type } from "../../models";
-import { isVoid } from "../../validator";
+import {
+  BodyDefinition,
+  ContractDefinition,
+  DefaultResponseDefinition,
+  EndpointDefinition
+} from "../../models/definitions";
 import {
   OpenAPI2SchemaType,
-  openApi2TypeSchema,
-  rejectVoidOpenApi2SchemaType
+  OpenAPI2SchemaTypeObject,
+  openApi2TypeSchema
 } from "./openapi2-schema";
 import compact = require("lodash/compact");
-import uniqBy = require("lodash/uniqBy");
-import defaultTo = require("lodash/defaultTo");
 import pickBy = require("lodash/pickBy");
 
-export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
-  const contract = openApiV2(api);
+export function generateOpenApiV2(
+  contractDefinition: ContractDefinition,
+  format: "json" | "yaml"
+) {
+  const contract = openApiV2(contractDefinition);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -25,51 +29,36 @@ export function generateOpenApiV2(api: Api, format: "json" | "yaml") {
   }
 }
 
-export function openApiV2(api: Api): OpenApiV2 {
+export function openApiV2(contractDefinition: ContractDefinition): OpenApiV2 {
   return {
     swagger: "2.0",
-    tags: getTags(api),
     info: {
       version: "0.0.0",
-      title: api.description.name,
-      ...pickBy({ description: api.description.description }),
+      title: contractDefinition.api.name,
+      ...pickBy({ description: contractDefinition.api.description }),
       contact: {
         name: "TODO"
       }
     },
-    paths: Object.entries(api.endpoints).reduce(
-      (acc, [endpointName, endpoint]) => {
-        const openApiPath = endpoint.path
-          .map(
-            pathComponent =>
-              pathComponent.kind === "dynamic"
-                ? `{${pathComponent.name}}`
-                : pathComponent.content
-          )
-          .join("");
+    paths: contractDefinition.endpoints.reduce(
+      (acc, endpoint) => {
+        const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
         acc[openApiPath] = acc[openApiPath] || {};
         acc[openApiPath][endpoint.method.toLowerCase()] = {
-          operationId: endpointName,
+          operationId: endpoint.name,
           description: endpoint.description,
-          consumes: consumes(api, endpoint),
           tags: endpoint.tags,
-          parameters: getParameters(api, endpoint),
+          parameters: getParameters(endpoint),
           responses: {
-            default: response(api, endpoint.genericErrorType),
-            [(endpoint.successStatusCode || 200).toString(10)]: response(
-              api,
-              endpoint.responseType
-            ),
-            ...Object.entries(endpoint.specificErrorTypes).reduce(
-              (acc, [errorName, specificError]) => {
-                acc[specificError.statusCode.toString(10)] = response(
-                  api,
-                  specificError.type
-                );
-                return acc;
-              },
-              {} as { [statusCode: string]: OpenAPIV2Response }
-            )
+            ...(endpoint.defaultResponse
+              ? { default: response(endpoint.defaultResponse) }
+              : {}),
+            ...endpoint.responses.reduce<{
+              [statusCode: string]: OpenAPIV2Response;
+            }>((acc, responseNode) => {
+              acc[responseNode.status.toString(10)] = response(responseNode);
+              return acc;
+            }, {})
           }
         };
         return acc;
@@ -80,94 +69,63 @@ export function openApiV2(api: Api): OpenApiV2 {
         };
       }
     ),
-    definitions: Object.entries(api.types).reduce(
-      (acc, [typeName, type]) => {
-        acc[typeName] = rejectVoidOpenApi2SchemaType(
-          api.types,
-          type,
-          `Unsupported void type ${typeName}`
-        );
-        return acc;
-      },
-      {} as { [typeName: string]: OpenAPI2SchemaType }
-    )
+    definitions: contractDefinition.types.reduce<{
+      [typeName: string]: OpenAPI2SchemaType;
+    }>((acc, typeNode) => {
+      acc[typeNode.name] = openApi2TypeSchema(typeNode.type);
+      return acc;
+    }, {})
   };
 }
 
-function getTags(api: Api): OpenAPIV2TagObject[] {
-  return uniqBy(
-    Object.entries(api.endpoints).reduce(
-      (acc, [endpointName, endpoint]) => {
-        if (endpoint.tags) {
-          acc = acc.concat(
-            endpoint.tags.map(tag => {
-              return { name: tag };
-            })
-          );
-        }
-        return acc;
-      },
-      [] as OpenAPIV2TagObject[]
-    ),
-    "name"
-  );
-}
-
-function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
-  const parameters = endpoint.path
+function getParameters(endpoint: EndpointDefinition): OpenAPIV2Parameter[] {
+  const parameters = endpoint.request.pathParams
     .map(
-      (pathComponent): OpenAPIV2Parameter | null =>
-        pathComponent.kind === "dynamic"
-          ? {
-              in: "path",
-              name: pathComponent.name,
-              description: pathComponent.description,
-              ...rejectVoidOpenApi2SchemaType(
-                api.types,
-                pathComponent.type,
-                `Unsupported void type for path component ${pathComponent.name}`
-              ),
-              required: true
-            }
-          : null
+      (pathParam): OpenAPIV2Parameter => {
+        const schemaType = openApi2TypeSchema(pathParam.type);
+        if ("type" in schemaType && schemaType.type === "object") {
+          throw new Error(`Unsupported object type in path parameter`);
+        }
+        return {
+          in: "path",
+          name: pathParam.name,
+          description: pathParam.description,
+          ...schemaType,
+          required: true
+        };
+      }
     )
-    .concat([requestBody(api, endpoint.requestType)])
+    .concat(endpoint.request.body ? [requestBody(endpoint.request.body)] : [])
     .concat(
-      endpoint.queryParams.map(
-        (queryComponent): OpenAPIV2Parameter => {
+      endpoint.request.queryParams.map(
+        (queryParam): OpenAPIV2Parameter => {
+          const schemaType = openApi2TypeSchema(queryParam.type);
+          if ("type" in schemaType && schemaType.type === "object") {
+            throw new Error(`Unsupported object type in query parameter`);
+          }
           return {
             in: "query",
-            name: queryComponent.queryName
-              ? queryComponent.queryName
-              : queryComponent.name,
-            description: queryComponent.description,
-            ...rejectVoidOpenApi2SchemaType(
-              api.types,
-              queryComponent.type.kind === "optional"
-                ? queryComponent.type.optional
-                : queryComponent.type,
-              `Unsupported void type for query params ${queryComponent.name}`
-            ),
-            required: queryComponent.type.kind !== "optional"
+            name: queryParam.name,
+            description: queryParam.description,
+            ...schemaType,
+            required: !queryParam.optional
           };
         }
       )
     )
     .concat(
-      Object.entries(endpoint.headers).map(
-        ([headerName, header]): OpenAPIV2Parameter => {
+      endpoint.request.headers.map(
+        (header): OpenAPIV2Parameter => {
+          const schemaType = openApi2TypeSchema(header.type);
+          if ("type" in schemaType && schemaType.type === "object") {
+            throw new Error(`Unsupported object type in header`);
+          }
           return {
             in: "header",
-            name: header.headerFieldName,
+            name: header.name,
             description: header.description,
-            ...rejectVoidOpenApi2SchemaType(
-              api.types,
-              header.type.kind === "optional"
-                ? header.type.optional
-                : header.type,
-              `Unsupported void type for header ${header.headerFieldName}`
-            ),
-            required: header.type.kind !== "optional"
+            ...schemaType,
+            required: !header.optional
           };
         }
       )
@@ -175,34 +133,20 @@ function getParameters(api: Api, endpoint: Endpoint): OpenAPIV2Parameter[] {
   return compact(parameters);
 }
 
-function consumes(api: Api, endpoint: Endpoint): HttpContentType[] {
-  const contentType = isVoid(api, endpoint.requestType)
-    ? null
-    : endpoint.requestContentType;
-  return compact([contentType]);
-}
-
-function requestBody(api: Api, type: Type): OpenAPIV2Parameter | null {
-  return isVoid(api, type)
-    ? null
-    : {
-        in: "body",
-        name: "body",
-        description: "TODO",
-        required: true,
-        schema: defaultTo(openApi2TypeSchema(api.types, type), undefined)
-      };
-}
-
-function response(api: Api, type: Type): OpenAPIV2Response {
-  const schemaType = openApi2TypeSchema(api.types, type);
+function requestBody(body: BodyDefinition): OpenAPIV2Parameter {
   return {
-    ...(schemaType
-      ? {
-          schema: schemaType
-        }
-      : {}),
-    description: ""
+    in: "body",
+    name: "body",
+    description: "TODO",
+    required: true,
+    schema: openApi2TypeSchema(body.type)
+  };
+}
+
+function response(response: DefaultResponseDefinition): OpenAPIV2Response {
+  return {
+    schema: response.body && openApi2TypeSchema(response.body.type),
+    description: response.description || ""
   };
 }
 
@@ -243,7 +187,6 @@ export interface OpenAPIV2TagObject {
 export interface OpenAPIV2Operation {
   operationId: string;
   description?: string;
-  consumes?: HttpContentType[];
   tags?: string[];
   parameters: OpenAPIV2Parameter[];
   requestBody?: OpenAPI2SchemaType;
@@ -263,13 +206,13 @@ export type OpenAPIV2NonBodyParameter = {
   name: string;
   description?: string;
   required: boolean;
-} & OpenAPI2SchemaType;
+} & Exclude<OpenAPI2SchemaType, OpenAPI2SchemaTypeObject>;
 
 export type OpenAPIV2BodyParameter = {
   in: "body";
   name: "body";
   description?: string;
-  required: true;
+  required: boolean;
   schema: OpenAPI2SchemaType | undefined;
 };
 

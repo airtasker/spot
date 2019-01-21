@@ -1,174 +1,118 @@
-import { HttpContentType } from "@airtasker/spot";
 import assertNever from "assert-never";
-import { normalizedObjectType, Type, Types } from "../../models";
+import { DataType, TypeKind, UnionType } from "../../models/types";
 import compact = require("lodash/compact");
 
-export function rejectVoidOpenApi3SchemaType(
-  types: Types,
-  type: Type,
-  errorMessage: string
-): OpenAPI3SchemaType {
-  const schemaType = openApi3TypeSchema(types, type);
-  if (!schemaType) {
-    throw new Error(errorMessage);
-  }
-  return schemaType;
-}
-
-export function openApiV3ContentTypeSchema(
-  types: Types,
-  contentType: HttpContentType,
-  type: Type
-): OpenAPI3SchemaContentType {
-  switch (contentType) {
-    case "application/json":
-      return {
-        content: {
-          "application/json": {
-            schema: openApi3TypeSchema(types, type)
-          }
-        }
-      };
-    case "text/html":
-      return {
-        content: {
-          "text/html": {
-            schema: {
-              type: "string"
-            }
-          }
-        }
-      };
-    default:
-      throw assertNever(contentType);
-  }
-}
-
-function isStringConstantUnion(types: Type[]): boolean {
-  return types.reduce((acc, type) => {
-    return acc && type.kind === "string-constant";
+function isStringConstantUnion(type: UnionType): boolean {
+  return type.types.reduce((acc, type) => {
+    return acc && type.kind === TypeKind.STRING_LITERAL;
   }, true);
 }
 
-export function openApi3TypeSchema(
-  types: Types,
-  type: Type
-): OpenAPI3SchemaType | null {
+export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
   switch (type.kind) {
-    case "void":
-      return null;
-    case "null":
-      return {
-        nullable: true
-      };
-    case "boolean":
+    case TypeKind.NULL:
+      throw new Error(
+        `The null type is only supported within a union in OpenAPI 3.`
+      );
+    case TypeKind.BOOLEAN:
       return {
         type: "boolean"
       };
-    case "boolean-constant":
+    case TypeKind.BOOLEAN_LITERAL:
       return {
         type: "boolean",
         enum: [type.value]
       };
-    case "date":
+    case TypeKind.DATE:
       return {
         type: "string",
         format: "date"
       };
-    case "date-time":
+    case TypeKind.DATE_TIME:
       return {
         type: "string",
         format: "date-time"
       };
-    case "string":
+    case TypeKind.STRING:
       return {
         type: "string"
       };
-    case "string-constant":
+    case TypeKind.STRING_LITERAL:
       return {
         type: "string",
         enum: [type.value]
       };
-    case "number":
+    case TypeKind.NUMBER:
       return {
         type: "number"
       };
-    case "integer-constant":
-      return {
-        type: "integer",
-        enum: [type.value]
-      };
-    case "int32":
+    case TypeKind.NUMBER_LITERAL:
+      return Math.round(type.value) === type.value
+        ? {
+            type: "integer",
+            enum: [type.value]
+          }
+        : {
+            type: "number",
+            enum: [type.value]
+          };
+    case TypeKind.INTEGER:
       return {
         type: "integer",
         format: "int32"
       };
-    case "int64":
-      return {
-        type: "integer",
-        format: "int64"
-      };
-    case "float":
-      return {
-        type: "number",
-        format: "float"
-      };
-    case "double":
-      return {
-        type: "number",
-        format: "double"
-      };
-    case "object":
-      return Object.entries(normalizedObjectType(types, type)).reduce(
-        (acc, [name, type]) => {
-          if (type.kind === "optional") {
-            type = type.optional;
-          } else {
-            acc.required.push(name);
+    case TypeKind.OBJECT:
+      return type.properties.reduce<
+        OpenAPI3SchemaTypeObject & { required: string[] }
+      >(
+        (acc, property) => {
+          if (!property.optional) {
+            acc.required.push(property.name);
           }
-          const schemaType = openApi3TypeSchema(types, type);
-          if (schemaType) {
-            acc.properties[name] = schemaType;
-          }
+          acc.properties[property.name] = openApi3TypeSchema(property.type);
           return acc;
         },
         {
           type: "object",
           properties: {},
           required: []
-        } as OpenAPI3SchemaTypeObject & { required: string[] }
+        }
       );
-    case "array":
-      const itemsType = openApi3TypeSchema(types, type.elements);
-      if (!itemsType) {
-        throw new Error(`Unsupported void array`);
-      }
+    case TypeKind.ARRAY:
       return {
         type: "array",
-        items: itemsType
+        items: openApi3TypeSchema(type.elements)
       };
-    case "optional":
-      throw new Error(`Unsupported top-level optional type`);
-    case "union":
-      const unionTypes = type.types.map(t => openApi3TypeSchema(types, t));
-      const withoutNullTypes = compact(unionTypes);
-      if (withoutNullTypes.length !== unionTypes.length) {
-        throw new Error(`Unsupported void type in union`);
+    case TypeKind.UNION:
+      if (type.types.length === 1) {
+        return openApi3TypeSchema(type.types[0]);
       }
-      if (isStringConstantUnion(type.types)) {
+      if (isStringConstantUnion(type)) {
         return {
           type: "string",
           enum: compact(
-            type.types.map(t => (t.kind === "string-constant" ? t.value : null))
+            type.types.map(
+              t => (t.kind === TypeKind.STRING_LITERAL ? t.value : null)
+            )
           )
         };
       }
+      const nullable = !!type.types.find(t => t.kind === TypeKind.NULL);
+      const typesWithoutNull = type.types.filter(t => t.kind !== TypeKind.NULL);
+      if (nullable) {
+        const type = openApi3TypeSchema({
+          kind: TypeKind.UNION,
+          types: typesWithoutNull
+        });
+        type.nullable = true;
+        return type;
+      }
       return {
-        oneOf: withoutNullTypes
+        oneOf: type.types.map(openApi3TypeSchema)
       };
-    case "type-reference":
+    case TypeKind.TYPE_REFERENCE:
       return {
-        $ref: `#/components/schemas/${type.typeName}`
+        $ref: `#/components/schemas/${type.name}`
       };
     default:
       throw assertNever(type);
@@ -179,7 +123,6 @@ export type OpenAPI3SchemaType =
   | OpenAPI3SchemaTypeObject
   | OpenAPI3SchemaTypeArray
   | OpenAPI3SchemaTypeOneOf
-  | OpenAPI3SchemaTypeNull
   | OpenAPI3SchemaTypeString
   | OpenAPI3SchemaTypeDateTime
   | OpenAPI3SchemaTypeNumber
@@ -195,28 +138,6 @@ export interface OpenAPI3BaseSchemaType {
     propertyName: string;
     mapping: {
       [value: string]: OpenAPI3SchemaType;
-    };
-  };
-}
-
-export type OpenAPI3SchemaContentType =
-  | OpenAPI3SchemaApplicationJsonContentType
-  | OpenAPI3SchemaTextHtmlContentType;
-
-export interface OpenAPI3SchemaApplicationJsonContentType
-  extends OpenAPI3BaseSchemaType {
-  content: {
-    "application/json": {
-      schema: OpenAPI3SchemaType | null;
-    };
-  };
-}
-
-export interface OpenAPI3SchemaTextHtmlContentType
-  extends OpenAPI3BaseSchemaType {
-  content: {
-    "text/html": {
-      schema: OpenAPI3SchemaTypeString;
     };
   };
 }
@@ -237,8 +158,6 @@ export interface OpenAPI3SchemaTypeArray extends OpenAPI3BaseSchemaType {
 export interface OpenAPI3SchemaTypeOneOf extends OpenAPI3BaseSchemaType {
   oneOf: OpenAPI3SchemaType[];
 }
-
-export interface OpenAPI3SchemaTypeNull extends OpenAPI3BaseSchemaType {}
 
 export interface OpenAPI3SchemaTypeString extends OpenAPI3BaseSchemaType {
   type: "string";
