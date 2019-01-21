@@ -1,4 +1,5 @@
 import * as path from "path";
+import { cleanse } from "../../cleansers/cleanser";
 import {
   arrayType,
   BOOLEAN,
@@ -28,14 +29,19 @@ const EXAMPLE_PATH = path.join(
 
 describe("JSON Schema generator", () => {
   test("produces valid code", async () => {
-    const api = await parseFilePath(EXAMPLE_PATH, {
+    const contractNode = await parseFilePath(EXAMPLE_PATH, {
       baseUrl: ".",
       paths: {
         "@airtasker/spotnext": ["./libnext/src/lib"]
       }
     });
-    expect(generateJsonSchema(api, "json")).toMatchSnapshot("json");
-    expect(generateJsonSchema(api, "yaml")).toMatchSnapshot("yaml");
+    const contractDefinition = cleanse(contractNode);
+    expect(generateJsonSchema(contractDefinition, "json")).toMatchSnapshot(
+      "json"
+    );
+    expect(generateJsonSchema(contractDefinition, "yaml")).toMatchSnapshot(
+      "yaml"
+    );
   });
 
   describe("generates type validator", () => {

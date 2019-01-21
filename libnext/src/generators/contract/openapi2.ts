@@ -1,11 +1,11 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
 import {
-  BodyNode,
-  ContractNode,
-  DefaultResponseNode,
-  EndpointNode
-} from "../../models/nodes";
+  BodyDefinition,
+  ContractDefinition,
+  DefaultResponseDefinition,
+  EndpointDefinition
+} from "../../models/definitions";
 import {
   OpenAPI2SchemaType,
   OpenAPI2SchemaTypeObject,
@@ -15,10 +15,10 @@ import compact = require("lodash/compact");
 import pickBy = require("lodash/pickBy");
 
 export function generateOpenApiV2(
-  contractNode: ContractNode,
+  contractDefinition: ContractDefinition,
   format: "json" | "yaml"
 ) {
-  const contract = openApiV2(contractNode);
+  const contract = openApiV2(contractDefinition);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -29,18 +29,18 @@ export function generateOpenApiV2(
   }
 }
 
-export function openApiV2(contractNode: ContractNode): OpenApiV2 {
+export function openApiV2(contractDefinition: ContractDefinition): OpenApiV2 {
   return {
     swagger: "2.0",
     info: {
       version: "0.0.0",
-      title: contractNode.api.name,
-      ...pickBy({ description: contractNode.api.description }),
+      title: contractDefinition.api.name,
+      ...pickBy({ description: contractDefinition.api.description }),
       contact: {
         name: "TODO"
       }
     },
-    paths: contractNode.endpoints.reduce(
+    paths: contractDefinition.endpoints.reduce(
       (acc, endpoint) => {
         const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
         acc[openApiPath] = acc[openApiPath] || {};
@@ -69,7 +69,7 @@ export function openApiV2(contractNode: ContractNode): OpenApiV2 {
         };
       }
     ),
-    definitions: contractNode.types.reduce<{
+    definitions: contractDefinition.types.reduce<{
       [typeName: string]: OpenAPI2SchemaType;
     }>((acc, typeNode) => {
       acc[typeNode.name] = openApi2TypeSchema(typeNode.type);
@@ -78,7 +78,7 @@ export function openApiV2(contractNode: ContractNode): OpenApiV2 {
   };
 }
 
-function getParameters(endpoint: EndpointNode): OpenAPIV2Parameter[] {
+function getParameters(endpoint: EndpointDefinition): OpenAPIV2Parameter[] {
   const parameters = endpoint.request.pathParams
     .map(
       (pathParam): OpenAPIV2Parameter => {
@@ -133,7 +133,7 @@ function getParameters(endpoint: EndpointNode): OpenAPIV2Parameter[] {
   return compact(parameters);
 }
 
-function requestBody(body: BodyNode): OpenAPIV2Parameter {
+function requestBody(body: BodyDefinition): OpenAPIV2Parameter {
   return {
     in: "body",
     name: "body",
@@ -143,7 +143,7 @@ function requestBody(body: BodyNode): OpenAPIV2Parameter {
   };
 }
 
-function response(response: DefaultResponseNode): OpenAPIV2Response {
+function response(response: DefaultResponseDefinition): OpenAPIV2Response {
   return {
     schema: response.body && openApi2TypeSchema(response.body.type),
     description: response.description || ""

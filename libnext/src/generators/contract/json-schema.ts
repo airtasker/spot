@@ -1,14 +1,14 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import { ContractNode } from "../../models/nodes";
+import { ContractDefinition } from "libnext/src/models/definitions";
 import { DataType, TypeKind } from "../../models/types";
 import compact = require("lodash/compact");
 
 export function generateJsonSchema(
-  contractNode: ContractNode,
+  contractDefinition: ContractDefinition,
   format: "json" | "yaml"
 ) {
-  const contract = jsonSchema(contractNode);
+  const contract = jsonSchema(contractDefinition);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -19,10 +19,10 @@ export function generateJsonSchema(
   }
 }
 
-export function jsonSchema(contractNode: ContractNode): JsonSchema {
+export function jsonSchema(contractDefinition: ContractDefinition): JsonSchema {
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
-    definitions: contractNode.types.reduce<{
+    definitions: contractDefinition.types.reduce<{
       [typeName: string]: JsonSchemaType;
     }>((acc, typeNode) => {
       acc[typeNode.name] = jsonTypeSchema(typeNode.type);

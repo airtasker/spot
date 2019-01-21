@@ -1,10 +1,10 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
 import {
-  ContractNode,
-  DefaultResponseNode,
-  EndpointNode
-} from "../../models/nodes";
+  ContractDefinition,
+  DefaultResponseDefinition,
+  EndpointDefinition
+} from "libnext/src/models/definitions";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
 import compact = require("lodash/compact");
 import uniqBy = require("lodash/uniqBy");
@@ -12,10 +12,10 @@ import pickBy = require("lodash/pickBy");
 import defaultTo = require("lodash/defaultTo");
 
 export function generateOpenApiV3(
-  contractNode: ContractNode,
+  contractDefinition: ContractDefinition,
   format: "json" | "yaml"
 ) {
-  const contract = openApiV3(contractNode);
+  const contract = openApiV3(contractDefinition);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -26,18 +26,18 @@ export function generateOpenApiV3(
   }
 }
 
-export function openApiV3(contractNode: ContractNode): OpenApiV3 {
+export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
   return {
     openapi: "3.0.0",
     info: {
       version: "0.0.0",
-      title: contractNode.api.name,
-      ...pickBy({ description: contractNode.api.description }),
+      title: contractDefinition.api.name,
+      ...pickBy({ description: contractDefinition.api.description }),
       contact: {
         name: "TODO"
       }
     },
-    paths: contractNode.endpoints.reduce(
+    paths: contractDefinition.endpoints.reduce(
       (acc, endpoint) => {
         const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
         acc[openApiPath] = acc[openApiPath] || {};
@@ -77,7 +77,7 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
       }
     ),
     components: {
-      schemas: contractNode.types.reduce<{
+      schemas: contractDefinition.types.reduce<{
         [typeName: string]: OpenAPI3SchemaType;
       }>((acc, typeNode) => {
         acc[typeNode.name] = openApi3TypeSchema(typeNode.type);
@@ -87,7 +87,7 @@ export function openApiV3(contractNode: ContractNode): OpenApiV3 {
   };
 }
 
-function getParameters(endpoint: EndpointNode): OpenAPIV3Parameter[] {
+function getParameters(endpoint: EndpointDefinition): OpenAPIV3Parameter[] {
   const parameters = endpoint.request.pathParams
     .map(
       (pathParam): OpenAPIV3Parameter => {
@@ -141,7 +141,7 @@ function getParameters(endpoint: EndpointNode): OpenAPIV3Parameter[] {
   return compact(parameters);
 }
 
-function response(response: DefaultResponseNode): OpenAPIV3Body {
+function response(response: DefaultResponseDefinition): OpenAPIV3Body {
   return {
     ...(response.body && {
       content: {

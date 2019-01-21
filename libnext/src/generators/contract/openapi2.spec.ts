@@ -1,4 +1,5 @@
 import * as path from "path";
+import { cleanse } from "../../cleansers/cleanser";
 import { parseFilePath } from "../../parsers/parser";
 import { generateOpenApiV2 } from "./openapi2";
 
@@ -13,13 +14,18 @@ const EXAMPLE_PATH = path.join(
 
 describe("OpenAPI 2 generator", () => {
   test("produces valid code", async () => {
-    const api = await parseFilePath(EXAMPLE_PATH, {
+    const contractNode = await parseFilePath(EXAMPLE_PATH, {
       baseUrl: ".",
       paths: {
         "@airtasker/spotnext": ["./libnext/src/lib"]
       }
     });
-    expect(generateOpenApiV2(api, "json")).toMatchSnapshot("json");
-    expect(generateOpenApiV2(api, "yaml")).toMatchSnapshot("yaml");
+    const contractDefinition = cleanse(contractNode);
+    expect(generateOpenApiV2(contractDefinition, "json")).toMatchSnapshot(
+      "json"
+    );
+    expect(generateOpenApiV2(contractDefinition, "yaml")).toMatchSnapshot(
+      "yaml"
+    );
   });
 });
