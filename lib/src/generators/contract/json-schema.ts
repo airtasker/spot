@@ -1,7 +1,7 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
+import compact from 'lodash/compact';
 import { Api, normalizedObjectType, Type, Types } from "../../models";
-import compact = require("lodash/compact");
 
 export function generateJsonSchema(api: Api, format: "json" | "yaml") {
   const contract = jsonSchema(api);

@@ -1,5 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
+import sortBy from 'lodash/sortBy';
 import * as path from "path";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
 import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
@@ -7,7 +8,6 @@ import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3
 import { outputFile } from "../../../lib/src/io/output";
 import { Api } from "../../../lib/src/models";
 import { parsePath } from "../../../lib/src/parsing/file-parser";
-import sortBy = require("lodash/sortBy");
 
 export default class Generate extends Command {
   static description =

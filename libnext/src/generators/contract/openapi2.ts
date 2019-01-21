@@ -1,18 +1,9 @@
 import assertNever from "assert-never";
 import * as YAML from "js-yaml";
-import {
-  BodyDefinition,
-  ContractDefinition,
-  DefaultResponseDefinition,
-  EndpointDefinition
-} from "../../models/definitions";
-import {
-  OpenAPI2SchemaType,
-  OpenAPI2SchemaTypeObject,
-  openApi2TypeSchema
-} from "./openapi2-schema";
-import compact = require("lodash/compact");
-import pickBy = require("lodash/pickBy");
+import compact from 'lodash/compact';
+import pickBy from 'lodash/pickBy';
+import { BodyDefinition, ContractDefinition, DefaultResponseDefinition, EndpointDefinition } from "../../models/definitions";
+import { OpenAPI2SchemaType, OpenAPI2SchemaTypeObject, openApi2TypeSchema } from "./openapi2-schema";
 
 export function generateOpenApiV2(
   contractDefinition: ContractDefinition,
