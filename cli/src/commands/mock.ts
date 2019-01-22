@@ -1,5 +1,5 @@
 import { Command, flags } from "@oclif/command";
-import { runMockServer } from "../../../lib/src/mockserver/server";
+import { runMockServer } from "../../../libnext/src/mockserver/server";
 import { safeParse } from "../common/safe-parse";
 
 const ARG_API = "spot_contract";

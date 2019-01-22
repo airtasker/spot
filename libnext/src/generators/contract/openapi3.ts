@@ -4,7 +4,7 @@ import {
   ContractDefinition,
   DefaultResponseDefinition,
   EndpointDefinition
-} from "lib/src/models/definitions";
+} from "../../models/definitions";
 import compact from "lodash/compact";
 import pickBy from "lodash/pickBy";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
