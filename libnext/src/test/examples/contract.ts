@@ -8,7 +8,7 @@ import {
   queryParams,
   request,
   response
-} from "@airtasker/spot";
+} from "@airtasker/spotnext";
 import "./contract-endpoint";
 import { Address, ErrorBody, UserBody } from "./models";
 
