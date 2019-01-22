@@ -1,5 +1,5 @@
-import { cleanse } from "../../cleansers/cleanser";
 import path from "path";
+import { cleanse } from "../../cleansers/cleanser";
 import {
   arrayType,
   BOOLEAN,
@@ -29,12 +29,7 @@ const EXAMPLE_PATH = path.join(
 
 describe("JSON Schema generator", () => {
   test("produces valid code", async () => {
-    const contractNode = parse(EXAMPLE_PATH, {
-      baseUrl: ".",
-      paths: {
-        "@airtasker/spot": ["./lib/src/lib"]
-      }
-    });
+    const contractNode = parse(EXAMPLE_PATH);
     const contractDefinition = cleanse(contractNode);
     expect(generateJsonSchema(contractDefinition, "json")).toMatchSnapshot(
       "json"

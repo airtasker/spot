@@ -14,12 +14,7 @@ const EXAMPLE_PATH = path.join(
 
 describe("OpenAPI 2 generator", () => {
   test("produces valid code", async () => {
-    const contractNode = await parse(EXAMPLE_PATH, {
-      baseUrl: ".",
-      paths: {
-        "@airtasker/spot": ["./lib/src/lib"]
-      }
-    });
+    const contractNode = await parse(EXAMPLE_PATH);
     const contractDefinition = cleanse(contractNode);
     expect(generateOpenApiV2(contractDefinition, "json")).toMatchSnapshot(
       "json"
