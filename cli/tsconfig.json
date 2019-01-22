@@ -9,7 +9,5 @@
       "path": "../lib"
     }
   ],
-  "exclude": [
-    "**/*.spec.ts"
-  ]
+  "exclude": ["**/*.spec.ts"]
 }

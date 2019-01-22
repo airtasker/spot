@@ -2,11 +2,11 @@ import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
 import sortBy from "lodash/sortBy";
 import path from "path";
-import { generateJsonSchema } from "../../../libnext/src/generators/contract/json-schema";
-import { generateOpenApiV2 } from "../../../libnext/src/generators/contract/openapi2";
-import { generateOpenApiV3 } from "../../../libnext/src/generators/contract/openapi3";
-import { outputFile } from "../../../libnext/src/io/output";
-import { ContractDefinition } from "../../../libnext/src/models/definitions";
+import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
+import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
+import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
+import { outputFile } from "../../../lib/src/io/output";
+import { ContractDefinition } from "../../../lib/src/models/definitions";
 import { safeParse } from "../common/safe-parse";
 
 export default class Generate extends Command {

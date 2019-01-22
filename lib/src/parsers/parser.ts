@@ -30,7 +30,7 @@ export function parse(sourcePath: string): ContractNode {
     experimentalDecorators: true,
     baseUrl: "./",
     paths: {
-      "@airtasker/spotnext": [path.join(__dirname, "../lib")]
+      "@airtasker/spot": [path.join(__dirname, "../lib")]
     }
   };
 
