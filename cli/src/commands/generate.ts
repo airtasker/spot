@@ -2,13 +2,12 @@ import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
 import sortBy from "lodash/sortBy";
 import path from "path";
-import { cleanse } from "../../../lib/src/cleansers/cleanser";
 import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
 import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
 import { outputFile } from "../../../lib/src/io/output";
 import { ContractDefinition } from "../../../lib/src/models/definitions";
-import { parse } from "../../../lib/src/parsers/parser";
+import { safeParse } from "../common/safe-parse";
 
 export default class Generate extends Command {
   static description =
@@ -43,7 +42,7 @@ export default class Generate extends Command {
     const { flags } = this.parse(Generate);
     let { contract: contractPath, language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
-    const contract = cleanse(parse(contractPath));
+    const contract = safeParse.bind(this)(contractPath);
     if (!generator) {
       generator = (await prompt<{
         Generator: string;

@@ -1,7 +1,6 @@
 import { Command, flags } from "@oclif/command";
-import { cleanse } from "../../../lib/src/cleansers/cleanser";
 import { runMockServer } from "../../../lib/src/mockserver/server";
-import { parse } from "../../../lib/src/parsers/parser";
+import { safeParse } from "../common/safe-parse";
 
 const ARG_API = "spot_contract";
 
@@ -41,7 +40,7 @@ export default class Mock extends Command {
       flags: { port, pathPrefix }
     } = this.parse(Mock);
     try {
-      const contract = cleanse(parse(args[ARG_API]));
+      const contract = safeParse.bind(this)(args[ARG_API]);
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix || "",

@@ -23,7 +23,9 @@ export function generateOpenApiV2(
     case "json":
       return JSON.stringify(contract, null, 2);
     case "yaml":
-      return YAML.safeDump(contract);
+      return YAML.safeDump(contract, {
+        skipInvalid: true // for undefined
+      });
     default:
       throw assertNever(format);
   }
