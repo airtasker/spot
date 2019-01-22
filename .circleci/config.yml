@@ -44,20 +44,12 @@ jobs:
           command: yarn add speccy swagger2openapi
 
       - run:
-          name: Speccy OpenAPI 3 (single file)
-          command: ./bin/run generate --api examples/src/single-file/single-file-api.ts -l yaml --generator openapi3 -o output/ && ./node_modules/.bin/speccy -s parameter-description lint output/single-file-api.yml
+          name: Speccy OpenAPI 3
+          command: ./bin/run generate --contract libnext/src/test/examples/contract.ts -l yaml --generator openapi3 -o output/ && ./node_modules/.bin/speccy lint -s openapi-tags -s parameter-description output/contract.yml
 
       - run:
-          name: Speccy OpenAPI 3 (multiple files)
-          command: ./bin/run generate --api examples/src/multi-file/multi-file-api.ts -l yaml --generator openapi3 -o output/ && ./node_modules/.bin/speccy -s parameter-description lint output/multi-file-api.yml
-
-      - run:
-          name: Speccy OpenAPI 2 (single file)
-          command: ./bin/run generate --api examples/src/single-file/single-file-api.ts -l yaml --generator openapi2 -o output/ && ./node_modules/.bin/swagger2openapi output/single-file-api.yml > output/api3.json && ./node_modules/.bin/speccy -s parameter-description lint output/api3.json
-
-      - run:
-          name: Speccy OpenAPI 2 (multiple files)
-          command: ./bin/run generate --api examples/src/multi-file/multi-file-api.ts -l yaml --generator openapi2 -o output/ && ./node_modules/.bin/swagger2openapi output/multi-file-api.yml > output/api3.json && ./node_modules/.bin/speccy -s parameter-description lint output/api3.json
+          name: Speccy OpenAPI 2
+          command: ./bin/run generate --contract libnext/src/test/examples/contract.ts -l yaml --generator openapi2 -o output/ && ./node_modules/.bin/swagger2openapi output/contract.yml > output/contract.json && ./node_modules/.bin/speccy lint -s openapi-tags -s parameter-description output/contract.json
 
   prettier-check:
     <<: *job_configuration

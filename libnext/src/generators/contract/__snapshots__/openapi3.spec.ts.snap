@@ -67,7 +67,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
-            \\"description\\": \\"\\"
+            \\"description\\": \\"Successful creation of user\\"
           },
           \\"404\\": {
             \\"content\\": {
@@ -77,7 +77,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
-            \\"description\\": \\"\\"
+            \\"description\\": \\"Bad request response\\"
           }
         }
       }
@@ -127,7 +127,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
               }
             }
           },
-          \\"description\\": \\"\\"
+          \\"description\\": \\"Creates a user in a company\\"
         },
         \\"responses\\": {
           \\"201\\": {
@@ -138,7 +138,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
-            \\"description\\": \\"\\"
+            \\"description\\": \\"Successful creation of user\\"
           },
           \\"400\\": {
             \\"content\\": {
@@ -148,7 +148,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
-            \\"description\\": \\"\\"
+            \\"description\\": \\"Bad request response\\"
           },
           \\"default\\": {
             \\"content\\": {
@@ -330,13 +330,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBody'
-          description: ''
+          description: Successful creation of user
         '404':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
-          description: ''
+          description: Bad request response
   '/company/{companyId}/users':
     post:
       operationId: CreateUser
@@ -368,20 +368,20 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateUserRequestBody'
-        description: ''
+        description: Creates a user in a company
       responses:
         '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBody'
-          description: ''
+          description: Successful creation of user
         '400':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
-          description: ''
+          description: Bad request response
         default:
           content:
             application/json:

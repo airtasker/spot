@@ -11,12 +11,10 @@ import {
   retrieveTypeReferencesFromType,
   uniqueReferences
 } from "./utilities/type-reference-resolver";
+import path from "path";
 
-export function parseFilePath(
-  sourcePath: string,
-  customCompilerOptions: CompilerOptions = {}
-): ContractNode {
-  const defaultCompilerOptions: CompilerOptions = {
+export function parse(sourcePath: string): ContractNode {
+  const compilerOptions: CompilerOptions = {
     target: ts.ScriptTarget.ESNext,
     module: ts.ModuleKind.CommonJS,
     strict: true,
@@ -29,12 +27,11 @@ export function parseFilePath(
     noImplicitReturns: true,
     noFallthroughCasesInSwitch: true,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    experimentalDecorators: true
-  };
-
-  const compilerOptions = {
-    ...defaultCompilerOptions,
-    ...customCompilerOptions
+    experimentalDecorators: true,
+    baseUrl: "./",
+    paths: {
+      "@airtasker/spotnext": [path.join(__dirname, "../lib")]
+    }
   };
 
   // Creates a new typescript program in memory

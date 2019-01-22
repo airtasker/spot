@@ -15,7 +15,7 @@ import {
   TypeKind,
   unionType
 } from "../../models/types";
-import { parseFilePath } from "../../parsers/parser";
+import { parse } from "../../parsers/parser";
 import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
 
 const EXAMPLE_PATH = path.join(
@@ -29,12 +29,7 @@ const EXAMPLE_PATH = path.join(
 
 describe("JSON Schema generator", () => {
   test("produces valid code", async () => {
-    const contractNode = await parseFilePath(EXAMPLE_PATH, {
-      baseUrl: ".",
-      paths: {
-        "@airtasker/spotnext": ["./libnext/src/lib"]
-      }
-    });
+    const contractNode = parse(EXAMPLE_PATH);
     const contractDefinition = cleanse(contractNode);
     expect(generateJsonSchema(contractDefinition, "json")).toMatchSnapshot(
       "json"

@@ -2,32 +2,27 @@ import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
 import sortBy from "lodash/sortBy";
 import path from "path";
-import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
-import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
-import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
-import { outputFile } from "../../../lib/src/io/output";
-import { Api } from "../../../lib/src/models";
-import { parsePath } from "../../../lib/src/parsing/file-parser";
+import { generateJsonSchema } from "../../../libnext/src/generators/contract/json-schema";
+import { generateOpenApiV2 } from "../../../libnext/src/generators/contract/openapi2";
+import { generateOpenApiV3 } from "../../../libnext/src/generators/contract/openapi3";
+import { outputFile } from "../../../libnext/src/io/output";
+import { ContractDefinition } from "../../../libnext/src/models/definitions";
+import { safeParse } from "../common/safe-parse";
 
 export default class Generate extends Command {
   static description =
     "Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats such as OpenAPI.";
 
   static examples = [
-    `$ spot generate --language typescript --generator axios-client --out src/
-Generated the following files:
-- src/types.ts
-- src/validators.ts
-- src/client.ts
-`
+    `$ spot generate --contract api.ts --language yaml --generator openapi3 --out output/`
   ];
 
   static flags = {
     help: flags.help({ char: "h" }),
-    api: flags.string({
+    contract: flags.string({
       required: true,
-      char: "a",
-      description: "Path to a TypeScript API definition"
+      char: "c",
+      description: "Path to a TypeScript Contract definition"
     }),
     language: flags.string({
       char: "l",
@@ -45,9 +40,9 @@ Generated the following files:
 
   async run() {
     const { flags } = this.parse(Generate);
-    let { api: apiPath, language, generator, out: outDir } = flags;
-    const apiFileName = path.basename(apiPath, ".ts");
-    const api = await parsePath(apiPath);
+    let { contract: contractPath, language, generator, out: outDir } = flags;
+    const contractFilename = path.basename(contractPath, ".ts");
+    const contract = safeParse.bind(this)(contractPath);
     if (!generator) {
       generator = (await prompt<{
         Generator: string;
@@ -103,10 +98,10 @@ Generated the following files:
       }
       this.exit(1);
     }
-    const generatedFiles = generators[generator][language](api);
+    const generatedFiles = generators[generator][language](contract);
     for (let [relativePath, content] of Object.entries(generatedFiles)) {
       if (relativePath.indexOf("*") !== -1) {
-        relativePath = relativePath.replace(/\*/g, apiFileName);
+        relativePath = relativePath.replace(/\*/g, contractFilename);
       }
       outputFile(outDir, relativePath, content);
     }
@@ -128,34 +123,34 @@ function availableGeneratorsList() {
 const generators: {
   [generatorName: string]: {
     [languageName: string]: (
-      api: Api
+      contract: ContractDefinition
     ) => {
       [relativePath: string]: string;
     };
   };
 } = {
   "json-schema": {
-    json: api => ({
-      "*.json": generateJsonSchema(api, "json")
+    json: contract => ({
+      "*.json": generateJsonSchema(contract, "json")
     }),
-    yaml: api => ({
-      "*.yml": generateJsonSchema(api, "yaml")
+    yaml: contract => ({
+      "*.yml": generateJsonSchema(contract, "yaml")
     })
   },
   openapi2: {
-    json: api => ({
-      "*.json": generateOpenApiV2(api, "json")
+    json: contract => ({
+      "*.json": generateOpenApiV2(contract, "json")
     }),
-    yaml: api => ({
-      "*.yml": generateOpenApiV2(api, "yaml")
+    yaml: contract => ({
+      "*.yml": generateOpenApiV2(contract, "yaml")
     })
   },
   openapi3: {
-    json: api => ({
-      "*.json": generateOpenApiV3(api, "json")
+    json: contract => ({
+      "*.json": generateOpenApiV3(contract, "json")
     }),
-    yaml: api => ({
-      "*.yml": generateOpenApiV3(api, "yaml")
+    yaml: contract => ({
+      "*.yml": generateOpenApiV3(contract, "yaml")
     })
   }
 };

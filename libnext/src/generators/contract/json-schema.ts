@@ -1,7 +1,7 @@
 import assertNever from "assert-never";
-import YAML from "js-yaml";
-import { ContractDefinition } from "libnext/src/models/definitions";
+import { ContractDefinition } from "../../models/definitions";
 import { DataType, TypeKind } from "../../models/types";
+import YAML from "js-yaml";
 
 export function generateJsonSchema(
   contractDefinition: ContractDefinition,

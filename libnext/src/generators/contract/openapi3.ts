@@ -4,7 +4,7 @@ import {
   ContractDefinition,
   DefaultResponseDefinition,
   EndpointDefinition
-} from "libnext/src/models/definitions";
+} from "../../models/definitions";
 import compact from "lodash/compact";
 import pickBy from "lodash/pickBy";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
@@ -18,7 +18,9 @@ export function generateOpenApiV3(
     case "json":
       return JSON.stringify(contract, null, 2);
     case "yaml":
-      return YAML.safeDump(contract);
+      return YAML.safeDump(contract, {
+        skipInvalid: true // for undefined
+      });
     default:
       throw assertNever(format);
   }
@@ -51,7 +53,7 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
                   schema: openApi3TypeSchema(endpoint.request.body.type)
                 }
               },
-              description: ""
+              description: endpoint.description || ""
             }
           }),
           responses: {
@@ -148,7 +150,7 @@ function response(response: DefaultResponseDefinition): OpenAPIV3Body {
         }
       }
     }),
-    description: ""
+    description: response.description || ""
   };
 }
 
