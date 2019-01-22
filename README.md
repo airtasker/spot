@@ -2,27 +2,31 @@
 
 **Spot** (_"Single Point Of Truth"_) is a concise, developer-friendly way to describe your API contract.
 
-Leveraging the TypeScript syntax, it lets you describe your API and generate any other API contract formats you need (OpenAPI, Swagger, JSON Schema, Pact, API Blueprint).
+Leveraging the TypeScript syntax, it lets you describe your API and generate other API contract formats you need (OpenAPI, Swagger, JSON Schema).
 
 You don't need to use TypeScript in your codebase to benefit from using Spot.
 
 Example of an API definition file `api.ts` which defines a single `POST` endpoint to create a user:
 
 ```typescript
-import { api, endpoint, request, response } from "@airtasker/spot";
+import { api, endpoint, request, response, body } from "@airtasker/spot";
 
 @api({
   name: "My API",
   description: "My really cool API"
 })
-class Api {
-  @endpoint({
-    method: "POST",
-    path: "/users"
-  })
-  createUser(@request req: CreateUserRequest): CreateUserResponse {
-    return response();
-  }
+class Api {}
+
+@endpoint({
+  method: "POST",
+  path: "/users"
+})
+class CreateUser {
+  @request
+  request(@body body: CreateUserRequest) {}
+
+  @response({ status: 201 })
+  response(@body body: CreateUserResponse) {}
 }
 
 interface CreateUserRequest {
@@ -31,7 +35,9 @@ interface CreateUserRequest {
 }
 
 interface CreateUserResponse {
-  success: boolean;
+  firstName: string;
+  lastName: string;
+  role: string;
 }
 ```
 
@@ -40,7 +46,7 @@ For available methods, please check [here](https://github.com/airtasker/spot/wik
 You can pass the definition above to a generator by simply running:
 
 ```sh
-npx @airtasker/spot generate --api api.ts
+npx @airtasker/spot generate --contract api.ts
 ```
 
 # Why we built Spot
@@ -88,12 +94,13 @@ This is work in progress as of 14 Nov 2018:
 [![License](https://img.shields.io/npm/l/@airtasker/spot.svg)](https://github.com/airtasker/spot/blob/master/package.json)
 
 <!-- toc -->
-* [Spot](#spot)
-* [Why we built Spot](#why-we-built-spot)
-* [Status](#status)
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+
+- [Spot](#spot)
+- [Why we built Spot](#why-we-built-spot)
+- [Status](#status)
+- [Usage](#usage)
+- [Commands](#commands)
+  <!-- tocstop -->
 
 # Usage
 
@@ -106,17 +113,18 @@ npx @airtasker/spot init
 You can then run a generator with:
 
 ```
-npx @airtasker/spot generate --api api.ts
+npx @airtasker/spot generate --contract api.ts
 ```
 
 # Commands
 
 <!-- commands -->
-* [`spot generate`](#spot-generate)
-* [`spot help [COMMAND]`](#spot-help-command)
-* [`spot init`](#spot-init)
-* [`spot mock SPOT_CONTRACT`](#spot-mock-spot-contract)
-* [`spot validate SPOT_CONTRACT`](#spot-validate-spot-contract)
+
+- [`spot generate`](#spot-generate)
+- [`spot help [COMMAND]`](#spot-help-command)
+- [`spot init`](#spot-init)
+- [`spot mock SPOT_CONTRACT`](#spot-mock-spot-contract)
+- [`spot validate SPOT_CONTRACT`](#spot-validate-spot-contract)
 
 ## `spot generate`
 
@@ -218,4 +226,5 @@ EXAMPLE
 ```
 
 _See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v0.1.34/build/cli/src/commands/validate.js)_
+
 <!-- commandsstop -->
