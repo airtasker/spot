@@ -1,7 +1,7 @@
 {
   "name": "@airtasker/spot",
   "version": "0.2.0",
-  "author": "Francois Wouts",
+  "author": "Francois Wouts, Leslie Fung",
   "bin": {
     "spot": "./bin/run"
   },
