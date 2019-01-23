@@ -75,18 +75,6 @@ Depending on what you're trying to achieve (testing, documentation, client code 
 
 We built Spot with this in mind. Instead of having to juggle various API format converters, Spot can generate every major API document format. This is why we called it "Single Point Of Truth".
 
-# Status
-
-This is work in progress as of 14 Nov 2018:
-
-- [x] Functional TypeScript DSL
-- [x] Support for multiple files (using import statements)
-- [x] OpenAPI 3 generator
-- [x] OpenAPI 2 generator
-- [x] JSON Schema generator
-- [ ] Pact generator
-- [ ] API Blueprint generator
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@airtasker/spot.svg)](https://npmjs.org/package/@airtasker/spot)
 [![CircleCI](https://circleci.com/gh/airtasker/spot/tree/master.svg?style=shield)](https://circleci.com/gh/airtasker/spot/tree/master)
