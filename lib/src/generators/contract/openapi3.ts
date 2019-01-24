@@ -150,6 +150,21 @@ function response(response: DefaultResponseDefinition): OpenAPIV3Body {
         }
       }
     }),
+    headers: response.headers.reduce<{
+      [header: string]: {
+        description?: string;
+        required: boolean;
+        schema: OpenAPI3SchemaType;
+      };
+    }>((headerAcc, header) => {
+      const schemaType = openApi3TypeSchema(header.type);
+      headerAcc[header.name] = {
+        description: header.description,
+        required: !header.optional,
+        schema: schemaType
+      };
+      return headerAcc;
+    }, {}),
     description: response.description || ""
   };
 }
@@ -217,6 +232,13 @@ export interface OpenAPIV3Parameter {
 export interface OpenAPIV3Body {
   content?: {
     "application/json": {
+      schema: OpenAPI3SchemaType;
+    };
+  };
+  headers?: {
+    [header: string]: {
+      description?: string;
+      required: boolean;
       schema: OpenAPI3SchemaType;
     };
   };
