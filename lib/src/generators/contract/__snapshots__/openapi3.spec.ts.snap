@@ -67,6 +67,15 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
+            \\"headers\\": {
+              \\"Location\\": {
+                \\"description\\": \\"Location header\\",
+                \\"required\\": true,
+                \\"schema\\": {
+                  \\"type\\": \\"string\\"
+                }
+              }
+            },
             \\"description\\": \\"Successful creation of user\\"
           },
           \\"404\\": {
@@ -77,6 +86,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
+            \\"headers\\": {},
             \\"description\\": \\"Bad request response\\"
           }
         }
@@ -138,6 +148,15 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
+            \\"headers\\": {
+              \\"Location\\": {
+                \\"description\\": \\"Location header\\",
+                \\"required\\": true,
+                \\"schema\\": {
+                  \\"type\\": \\"string\\"
+                }
+              }
+            },
             \\"description\\": \\"Successful creation of user\\"
           },
           \\"400\\": {
@@ -148,6 +167,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
+            \\"headers\\": {},
             \\"description\\": \\"Bad request response\\"
           },
           \\"default\\": {
@@ -158,6 +178,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 }
               }
             },
+            \\"headers\\": {},
             \\"description\\": \\"\\"
           }
         }
@@ -330,12 +351,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBody'
+          headers:
+            Location:
+              description: Location header
+              required: true
+              schema:
+                type: string
           description: Successful creation of user
         '404':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
+          headers: {}
           description: Bad request response
   '/company/{companyId}/users':
     post:
@@ -375,18 +403,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBody'
+          headers:
+            Location:
+              description: Location header
+              required: true
+              schema:
+                type: string
           description: Successful creation of user
         '400':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
+          headers: {}
           description: Bad request response
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
+          headers: {}
           description: ''
 components:
   schemas:
