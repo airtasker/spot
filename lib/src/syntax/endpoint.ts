@@ -1,3 +1,5 @@
+import { HttpMethod } from "../models/http";
+
 /**
  * Endpoint decorator factory for describing an API.
  *
@@ -19,7 +21,7 @@ export function endpoint(config: EndpointConfig) {
 }
 interface EndpointConfig {
   /** HTTP method */
-  method: string;
+  method: HttpMethod;
   /** URL path */
   path: string;
   /** Endpoint grouping tags */
