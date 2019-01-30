@@ -148,6 +148,16 @@ function requestBody(body: BodyDefinition): OpenAPIV2Parameter {
 function response(response: DefaultResponseDefinition): OpenAPIV2Response {
   return {
     schema: response.body && openApi2TypeSchema(response.body.type),
+    headers: response.headers.reduce<{
+      [header: string]: OpenAPIV2Header;
+    }>((headerAcc, header) => {
+      const schemaType = openApi2TypeSchema(header.type);
+      headerAcc[header.name] = {
+        ...schemaType,
+        description: header.description
+      };
+      return headerAcc;
+    }, {}),
     description: response.description || ""
   };
 }
@@ -220,5 +230,12 @@ export type OpenAPIV2BodyParameter = {
 
 export interface OpenAPIV2Response {
   schema?: OpenAPI2SchemaType;
+  headers?: {
+    [header: string]: OpenAPIV2Header;
+  };
   description: string;
 }
+
+export type OpenAPIV2Header = {
+  description?: string;
+} & OpenAPI2SchemaType;
