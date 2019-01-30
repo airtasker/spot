@@ -137,6 +137,12 @@ function inferDiscriminator(
   types: TypeDefinition[],
   type: UnionType
 ): OpenAPI3Discriminator | null {
+  // To infer the discriminator, we do the following:
+  // - loop through each type in the union
+  // - if the type isn't a reference to an object type, then there cannot be a discriminator
+  // - look for required properties that are string literals (constants)
+  // - if there's such a property that is defined for every type and has a different value
+  //   for each type, then this is a good discriminator.
   const possibleDiscriminators: {
     [propertyName: string]: {
       [value: string]: OpenAPI3SchemaTypeRef;
