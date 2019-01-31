@@ -55,12 +55,19 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/UserBody\\"
             },
+            \\"headers\\": {
+              \\"Location\\": {
+                \\"type\\": \\"string\\",
+                \\"description\\": \\"Location header\\"
+              }
+            },
             \\"description\\": \\"Successful creation of user\\"
           },
           \\"404\\": {
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/ErrorBody\\"
             },
+            \\"headers\\": {},
             \\"description\\": \\"Bad request response\\"
           }
         }
@@ -111,18 +118,26 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/UserBody\\"
             },
+            \\"headers\\": {
+              \\"Location\\": {
+                \\"type\\": \\"string\\",
+                \\"description\\": \\"Location header\\"
+              }
+            },
             \\"description\\": \\"Successful creation of user\\"
           },
           \\"400\\": {
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/ErrorBody\\"
             },
+            \\"headers\\": {},
             \\"description\\": \\"Bad request response\\"
           },
           \\"default\\": {
             \\"schema\\": {
               \\"$ref\\": \\"#/definitions/ErrorBody\\"
             },
+            \\"headers\\": {},
             \\"description\\": \\"\\"
           }
         }
@@ -287,10 +302,15 @@ paths:
         '201':
           schema:
             $ref: '#/definitions/UserBody'
+          headers:
+            Location:
+              type: string
+              description: Location header
           description: Successful creation of user
         '404':
           schema:
             $ref: '#/definitions/ErrorBody'
+          headers: {}
           description: Bad request response
   '/company/{companyId}/users':
     post:
@@ -325,14 +345,20 @@ paths:
         '201':
           schema:
             $ref: '#/definitions/UserBody'
+          headers:
+            Location:
+              type: string
+              description: Location header
           description: Successful creation of user
         '400':
           schema:
             $ref: '#/definitions/ErrorBody'
+          headers: {}
           description: Bad request response
         default:
           schema:
             $ref: '#/definitions/ErrorBody'
+          headers: {}
           description: ''
 definitions:
   UserBody:
