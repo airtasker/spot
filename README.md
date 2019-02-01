@@ -12,8 +12,7 @@ Example of an API definition file `api.ts` which defines a single `POST` endpoin
 import { api, endpoint, request, response, body } from "@airtasker/spot";
 
 @api({
-  name: "My API",
-  description: "My really cool API"
+  name: "My API"
 })
 class Api {}
 
@@ -42,6 +41,13 @@ interface CreateUserResponse {
 ```
 
 For available methods, please check [here](https://github.com/airtasker/spot/wiki/Spot-available-methods)
+
+
+With [yarn](https://yarnpkg.com/en/docs/usage) installed and initialised add `@airtasker/spot` to your project:
+
+```sh
+yarn add @airtasker/spot 
+```
 
 You can pass the definition above to a generator by simply running:
 
