@@ -267,6 +267,9 @@ Object {
   ],
 }
 `);
+    });
+
+    test("union of types without a discriminator", () => {
       expect(
         openApi3TypeSchema(
           [
@@ -274,11 +277,58 @@ Object {
               name: "Type1",
               type: objectType([
                 {
-                  name: "not-disc-because-optional",
-                  optional: true,
+                  name: "name",
+                  optional: false,
                   type: {
-                    kind: TypeKind.STRING_LITERAL,
-                    value: "type-1"
+                    kind: TypeKind.STRING
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of types with a valid discriminator", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
                   }
                 },
                 {
@@ -295,11 +345,10 @@ Object {
               name: "Type2",
               type: objectType([
                 {
-                  name: "not-disc-because-optional",
-                  optional: true,
+                  name: "other",
+                  optional: false,
                   type: {
-                    kind: TypeKind.STRING_LITERAL,
-                    value: "type-2"
+                    kind: TypeKind.STRING
                   }
                 },
                 {
@@ -333,6 +382,115 @@ Object {
     },
     Object {
       "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of types with where one of the discriminators is optional", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "disc",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "disc",
+                  optional: true,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of inline object types", () => {
+      expect(
+        openApi3TypeSchema(
+          [],
+          unionType([
+            objectType([
+              {
+                name: "disc",
+                optional: true,
+                type: {
+                  kind: TypeKind.STRING_LITERAL,
+                  value: "type-1"
+                }
+              }
+            ]),
+            objectType([
+              {
+                name: "disc",
+                optional: true,
+                type: {
+                  kind: TypeKind.STRING_LITERAL,
+                  value: "type-2"
+                }
+              }
+            ])
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "oneOf": Array [
+    Object {
+      "properties": Object {
+        "disc": Object {
+          "enum": Array [
+            "type-1",
+          ],
+          "type": "string",
+        },
+      },
+      "required": Array [],
+      "type": "object",
+    },
+    Object {
+      "properties": Object {
+        "disc": Object {
+          "enum": Array [
+            "type-2",
+          ],
+          "type": "string",
+        },
+      },
+      "required": Array [],
+      "type": "object",
     },
   ],
 }
