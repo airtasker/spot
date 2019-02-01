@@ -388,6 +388,180 @@ Object {
 `);
     });
 
+    test("union of types with several valid discriminators", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "other",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "discriminator": Object {
+    "mapping": Object {
+      "type-1": "#/components/schemas/Type1",
+      "type-2": "#/components/schemas/Type2",
+    },
+    "propertyName": "disc1",
+  },
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of types with one discriminator that has conflicting values", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "conflict"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "other",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "conflict"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "discriminator": Object {
+    "mapping": Object {
+      "type-1": "#/components/schemas/Type1",
+      "type-2": "#/components/schemas/Type2",
+    },
+    "propertyName": "disc2",
+  },
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
     test("union of types with where one of the discriminators is optional", () => {
       expect(
         openApi3TypeSchema(
