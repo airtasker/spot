@@ -1,13 +1,15 @@
 import assertNever from "assert-never";
 import YAML from "js-yaml";
+import compact from "lodash/compact";
+import pickBy from "lodash/pickBy";
 import {
   ContractDefinition,
   DefaultResponseDefinition,
   EndpointDefinition
 } from "../../models/definitions";
-import compact from "lodash/compact";
-import pickBy from "lodash/pickBy";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
+
+const SECURITY_HEADER_SCHEME_NAME = "securityHeader";
 
 export function generateOpenApiV3(
   contractDefinition: ContractDefinition,
@@ -37,6 +39,13 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
         name: "TODO"
       }
     },
+    ...(contractDefinition.api.securityHeader
+      ? {
+          security: {
+            [SECURITY_HEADER_SCHEME_NAME]: []
+          }
+        }
+      : {}),
     paths: contractDefinition.endpoints.reduce(
       (acc, endpoint) => {
         const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
@@ -82,7 +91,17 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
       }>((acc, typeNode) => {
         acc[typeNode.name] = openApi3TypeSchema(typeNode.type);
         return acc;
-      }, {})
+      }, {}),
+      securitySchemes: contractDefinition.api.securityHeader
+        ? {
+            [SECURITY_HEADER_SCHEME_NAME]: {
+              type: "apiKey",
+              in: "header",
+              name: contractDefinition.api.securityHeader.name,
+              description: contractDefinition.api.securityHeader.description
+            }
+          }
+        : {}
     }
   };
 }
@@ -191,6 +210,9 @@ export interface OpenApiV3 {
     url: string;
     description?: string;
   }[];
+  security?: {
+    [securitySchemeName: string]: string[];
+  };
   paths: {
     [endpointPath: string]: {
       [method: string]: OpenAPIV3Operation;
@@ -199,6 +221,9 @@ export interface OpenApiV3 {
   components: {
     schemas: {
       [typeName: string]: OpenAPI3SchemaType;
+    };
+    securitySchemes?: {
+      [securitySchemeName: string]: OpenAPIV3SecurityScheme;
     };
   };
 }
@@ -243,4 +268,14 @@ export interface OpenAPIV3Body {
     };
   };
   description: string;
+}
+
+// TODO: Consider adding support for other security schemes.
+export type OpenAPIV3SecurityScheme = OpenApiV3SecurityScheme_ApiKey;
+
+export interface OpenApiV3SecurityScheme_ApiKey {
+  type: "apiKey";
+  description?: string;
+  name: string;
+  in: "query" | "header" | "cookie";
 }

@@ -16,6 +16,13 @@ export interface TypeDefinition {
 export interface ApiDefinition {
   name: string;
   description?: string;
+  securityHeader?: SecurityHeaderDefinition;
+}
+
+export interface SecurityHeaderDefinition {
+  name: string;
+  description?: string;
+  type: DataType;
 }
 
 export interface EndpointDefinition {

@@ -257,6 +257,16 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
     \\"Address\\": {
       \\"type\\": \\"string\\"
     }
+  },
+  \\"securityDefinitions\\": {
+    \\"securityHeader\\": {
+      \\"type\\": \\"apiKey\\",
+      \\"in\\": \\"header\\",
+      \\"name\\": \\"x-auth-token\\"
+    }
+  },
+  \\"security\\": {
+    \\"securityHeader\\": []
   }
 }"
 `;
@@ -436,5 +446,12 @@ definitions:
     type: string
   Address:
     type: string
+securityDefinitions:
+  securityHeader:
+    type: apiKey
+    in: header
+    name: x-auth-token
+security:
+  securityHeader: []
 "
 `;

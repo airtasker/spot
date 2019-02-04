@@ -9,12 +9,16 @@ import {
   request,
   response
 } from "@airtasker/spot";
+import { securityHeader } from "lib/src/syntax/security-header";
 import "./contract-endpoint";
 import { Address, ErrorBody, UserBody } from "./models";
 
 /** This is the company API. It does cool things */
 @api({ name: "company-api" })
-class ExampleApi {}
+class ExampleApi {
+  @securityHeader
+  "x-auth-token": string;
+}
 
 /** Creates a user in a company */
 @endpoint({

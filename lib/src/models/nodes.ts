@@ -1,6 +1,6 @@
 import { HttpMethod } from "./http";
-import { DataType } from "./types";
 import { Locatable } from "./locatable";
+import { DataType } from "./types";
 
 export interface ContractNode {
   api: Locatable<ApiNode>;
@@ -17,6 +17,13 @@ export interface TypeNode {
 export interface ApiNode {
   name: Locatable<string>;
   description?: Locatable<string>;
+  securityHeader?: Locatable<SecurityHeaderNode>;
+}
+
+export interface SecurityHeaderNode {
+  name: Locatable<string>;
+  description?: Locatable<string>;
+  type: DataType;
 }
 
 export interface EndpointNode {

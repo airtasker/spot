@@ -11,6 +11,9 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
       \\"name\\": \\"TODO\\"
     }
   },
+  \\"security\\": {
+    \\"securityHeader\\": []
+  },
   \\"paths\\": {
     \\"/company/{companyId}/users/{userId}\\": {
       \\"post\\": {
@@ -299,6 +302,13 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
       \\"Address\\": {
         \\"type\\": \\"string\\"
       }
+    },
+    \\"securitySchemes\\": {
+      \\"securityHeader\\": {
+        \\"type\\": \\"apiKey\\",
+        \\"in\\": \\"header\\",
+        \\"name\\": \\"x-auth-token\\"
+      }
     }
   }
 }"
@@ -312,6 +322,8 @@ info:
   description: This is the company API. It does cool things
   contact:
     name: TODO
+security:
+  securityHeader: []
 paths:
   '/company/{companyId}/users/{userId}':
     post:
@@ -501,5 +513,10 @@ components:
       type: string
     Address:
       type: string
+  securitySchemes:
+    securityHeader:
+      type: apiKey
+      in: header
+      name: x-auth-token
 "
 `;
