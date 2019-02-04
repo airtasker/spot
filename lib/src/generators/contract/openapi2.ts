@@ -89,9 +89,11 @@ export function openApiV2(contractDefinition: ContractDefinition): OpenApiV2 {
               description: contractDefinition.api.securityHeader.description
             }
           },
-          security: {
-            [SECURITY_HEADER_SCHEME_NAME]: []
-          }
+          security: [
+            {
+              [SECURITY_HEADER_SCHEME_NAME]: []
+            }
+          ]
         }
       : {})
   };
@@ -211,7 +213,7 @@ export interface OpenApiV2 {
   };
   security?: {
     [securitySchemeName: string]: string[];
-  };
+  }[];
 }
 
 export interface OpenAPIV2TagObject {

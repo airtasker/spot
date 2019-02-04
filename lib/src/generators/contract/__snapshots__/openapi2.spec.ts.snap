@@ -265,9 +265,11 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
       \\"name\\": \\"x-auth-token\\"
     }
   },
-  \\"security\\": {
-    \\"securityHeader\\": []
-  }
+  \\"security\\": [
+    {
+      \\"securityHeader\\": []
+    }
+  ]
 }"
 `;
 
@@ -452,6 +454,6 @@ securityDefinitions:
     in: header
     name: x-auth-token
 security:
-  securityHeader: []
+  - securityHeader: []
 "
 `;

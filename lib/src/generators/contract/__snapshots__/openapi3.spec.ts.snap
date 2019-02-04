@@ -11,9 +11,11 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
       \\"name\\": \\"TODO\\"
     }
   },
-  \\"security\\": {
-    \\"securityHeader\\": []
-  },
+  \\"security\\": [
+    {
+      \\"securityHeader\\": []
+    }
+  ],
   \\"paths\\": {
     \\"/company/{companyId}/users/{userId}\\": {
       \\"post\\": {
@@ -323,7 +325,7 @@ info:
   contact:
     name: TODO
 security:
-  securityHeader: []
+  - securityHeader: []
 paths:
   '/company/{companyId}/users/{userId}':
     post:

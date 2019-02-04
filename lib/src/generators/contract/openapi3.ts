@@ -41,9 +41,11 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
     },
     ...(contractDefinition.api.securityHeader
       ? {
-          security: {
-            [SECURITY_HEADER_SCHEME_NAME]: []
-          }
+          security: [
+            {
+              [SECURITY_HEADER_SCHEME_NAME]: []
+            }
+          ]
         }
       : {}),
     paths: contractDefinition.endpoints.reduce(
@@ -212,7 +214,7 @@ export interface OpenApiV3 {
   }[];
   security?: {
     [securitySchemeName: string]: string[];
-  };
+  }[];
   paths: {
     [endpointPath: string]: {
       [method: string]: OpenAPIV3Operation;
