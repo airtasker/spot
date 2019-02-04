@@ -1,6 +1,12 @@
 import assertNever from "assert-never";
+import { TypeDefinition } from "lib/src/models/definitions";
 import compact from "lodash/compact";
-import { DataType, TypeKind, UnionType } from "../../models/types";
+import {
+  DataType,
+  ReferenceType,
+  TypeKind,
+  UnionType
+} from "../../models/types";
 
 function isStringConstantUnion(type: UnionType): boolean {
   return type.types.reduce((acc, type) => {
@@ -8,7 +14,10 @@ function isStringConstantUnion(type: UnionType): boolean {
   }, true);
 }
 
-export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
+export function openApi3TypeSchema(
+  types: TypeDefinition[],
+  type: DataType
+): OpenAPI3SchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
       throw new Error(
@@ -69,7 +78,10 @@ export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
           if (!property.optional) {
             acc.required.push(property.name);
           }
-          acc.properties[property.name] = openApi3TypeSchema(property.type);
+          acc.properties[property.name] = openApi3TypeSchema(
+            types,
+            property.type
+          );
           return acc;
         },
         {
@@ -81,11 +93,11 @@ export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
     case TypeKind.ARRAY:
       return {
         type: "array",
-        items: openApi3TypeSchema(type.elements)
+        items: openApi3TypeSchema(types, type.elements)
       };
     case TypeKind.UNION:
       if (type.types.length === 1) {
-        return openApi3TypeSchema(type.types[0]);
+        return openApi3TypeSchema(types, type.types[0]);
       }
       if (isStringConstantUnion(type)) {
         return {
@@ -100,23 +112,89 @@ export function openApi3TypeSchema(type: DataType): OpenAPI3SchemaType {
       const nullable = !!type.types.find(t => t.kind === TypeKind.NULL);
       const typesWithoutNull = type.types.filter(t => t.kind !== TypeKind.NULL);
       if (nullable) {
-        const type = openApi3TypeSchema({
+        const type = openApi3TypeSchema(types, {
           kind: TypeKind.UNION,
           types: typesWithoutNull
         });
         type.nullable = true;
         return type;
       }
+      const discriminator = inferDiscriminator(types, type);
       return {
-        oneOf: type.types.map(openApi3TypeSchema)
+        oneOf: type.types.map(t => openApi3TypeSchema(types, t)),
+        ...(discriminator && { discriminator })
       };
     case TypeKind.TYPE_REFERENCE:
       return {
-        $ref: `#/components/schemas/${type.name}`
+        $ref: openApi3RefForType(type)
       };
     default:
       throw assertNever(type);
   }
+}
+
+function inferDiscriminator(
+  types: TypeDefinition[],
+  type: UnionType
+): OpenAPI3Discriminator | null {
+  // To infer the discriminator, we do the following:
+  // - loop through each type in the union
+  // - if the type isn't a reference to an object type, then there cannot be a discriminator
+  // - look for required properties that are string literals (constants)
+  // - if there's such a property that is defined for every type and has a different value
+  //   for each type, then this is a good discriminator.
+  const possibleDiscriminators: {
+    [propertyName: string]: {
+      [value: string]: OpenAPI3SchemaTypeRef;
+    };
+  } = {};
+  for (const possibleType of type.types) {
+    if (possibleType.kind !== TypeKind.TYPE_REFERENCE) {
+      // If any of the types in the union isn't a referenced type, then we can't discriminate
+      // since discriminators require refs to other types.
+      return null;
+    }
+    const referencedType = types.find(t => t.name === possibleType.name);
+    if (!referencedType) {
+      // Missing referenced type. This is unlikely to happen, since it means the contract
+      // itself is invalid. Bail early if that happen though.
+      return null;
+    }
+    if (referencedType.type.kind !== TypeKind.OBJECT) {
+      // Referenced type isn't an object type, therefore it cannot have a discriminator property.
+      return null;
+    }
+    for (const property of referencedType.type.properties) {
+      if (property.optional) {
+        // Optional properties cannot be discriminators, since they may not always be present.
+        continue;
+      }
+      if (property.type.kind === TypeKind.STRING_LITERAL) {
+        possibleDiscriminators[property.name] =
+          possibleDiscriminators[property.name] || {};
+        possibleDiscriminators[property.name][
+          property.type.value
+        ] = openApi3RefForType(possibleType);
+      }
+    }
+  }
+  for (const [propertyName, mapping] of Object.entries(
+    possibleDiscriminators
+  )) {
+    if (Object.keys(mapping).length === type.types.length) {
+      // We have a valid discriminator, yay!
+      return {
+        propertyName,
+        mapping
+      };
+    }
+  }
+  // No discriminator found.
+  return null;
+}
+
+function openApi3RefForType(type: ReferenceType): string {
+  return `#/components/schemas/${type.name}`;
 }
 
 export type OpenAPI3SchemaType =
@@ -134,11 +212,13 @@ export type OpenAPI3SchemaType =
 
 export interface OpenAPI3BaseSchemaType {
   nullable?: boolean;
-  discriminator?: {
-    propertyName: string;
-    mapping: {
-      [value: string]: OpenAPI3SchemaType;
-    };
+  discriminator?: OpenAPI3Discriminator;
+}
+
+export interface OpenAPI3Discriminator {
+  propertyName: string;
+  mapping: {
+    [value: string]: OpenAPI3SchemaTypeRef;
   };
 }
 
@@ -195,5 +275,8 @@ export interface OpenAPI3SchemaTypeBoolean extends OpenAPI3BaseSchemaType {
 }
 
 export interface OpenAPI3SchemaTypeReference extends OpenAPI3BaseSchemaType {
-  $ref: string;
+  $ref: OpenAPI3SchemaTypeRef;
 }
+
+// A reference to a schema, of the form "#/components/schemas/[schema-type]"
+export type OpenAPI3SchemaTypeRef = string;

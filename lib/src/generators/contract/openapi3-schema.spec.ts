@@ -18,13 +18,13 @@ import { openApi3TypeSchema } from "./openapi3-schema";
 describe("OpenAPI 3 generator", () => {
   describe("generates type validator", () => {
     test("null", () => {
-      expect(() => openApi3TypeSchema(NULL)).toThrowError(
+      expect(() => openApi3TypeSchema([], NULL)).toThrowError(
         "The null type is only supported within a union in OpenAPI 3."
       );
     });
 
     test("boolean", () => {
-      expect(openApi3TypeSchema(BOOLEAN)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], BOOLEAN)).toMatchInlineSnapshot(`
 Object {
   "type": "boolean",
 }
@@ -32,7 +32,8 @@ Object {
     });
 
     test("boolean literal", () => {
-      expect(openApi3TypeSchema(booleanLiteral(true))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], booleanLiteral(true)))
+        .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     true,
@@ -40,7 +41,8 @@ Object {
   "type": "boolean",
 }
 `);
-      expect(openApi3TypeSchema(booleanLiteral(false))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], booleanLiteral(false)))
+        .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     false,
@@ -51,7 +53,7 @@ Object {
     });
 
     test("string", () => {
-      expect(openApi3TypeSchema(STRING)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], STRING)).toMatchInlineSnapshot(`
 Object {
   "type": "string",
 }
@@ -59,7 +61,7 @@ Object {
     });
 
     test("string literal", () => {
-      expect(openApi3TypeSchema(stringLiteral("some literal")))
+      expect(openApi3TypeSchema([], stringLiteral("some literal")))
         .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
@@ -71,7 +73,7 @@ Object {
     });
 
     test("number", () => {
-      expect(openApi3TypeSchema(NUMBER)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], NUMBER)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -79,7 +81,7 @@ Object {
     });
 
     test("number literal", () => {
-      expect(openApi3TypeSchema(numberLiteral(1.5))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], numberLiteral(1.5))).toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     1.5,
@@ -87,7 +89,8 @@ Object {
   "type": "number",
 }
 `);
-      expect(openApi3TypeSchema(numberLiteral(-23.1))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], numberLiteral(-23.1)))
+        .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     -23.1,
@@ -98,7 +101,7 @@ Object {
     });
 
     test("integer", () => {
-      expect(openApi3TypeSchema(INTEGER)).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], INTEGER)).toMatchInlineSnapshot(`
 Object {
   "format": "int32",
   "type": "integer",
@@ -107,7 +110,7 @@ Object {
     });
 
     test("integer literal", () => {
-      expect(openApi3TypeSchema(numberLiteral(0))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], numberLiteral(0))).toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     0,
@@ -115,7 +118,7 @@ Object {
   "type": "integer",
 }
 `);
-      expect(openApi3TypeSchema(numberLiteral(123))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], numberLiteral(123))).toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     123,
@@ -123,7 +126,8 @@ Object {
   "type": "integer",
 }
 `);
-      expect(openApi3TypeSchema(numberLiteral(-1000))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], numberLiteral(-1000)))
+        .toMatchInlineSnapshot(`
 Object {
   "enum": Array [
     -1000,
@@ -134,7 +138,7 @@ Object {
     });
 
     test("object", () => {
-      expect(openApi3TypeSchema(objectType([]))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], objectType([]))).toMatchInlineSnapshot(`
 Object {
   "properties": Object {},
   "required": Array [],
@@ -143,6 +147,7 @@ Object {
 `);
       expect(
         openApi3TypeSchema(
+          [],
           objectType([
             {
               name: "singleField",
@@ -166,6 +171,7 @@ Object {
 `);
       expect(
         openApi3TypeSchema(
+          [],
           objectType([
             {
               name: "field1",
@@ -207,7 +213,7 @@ Object {
     });
 
     test("array", () => {
-      expect(openApi3TypeSchema(arrayType(STRING))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], arrayType(STRING))).toMatchInlineSnapshot(`
 Object {
   "items": Object {
     "type": "string",
@@ -218,19 +224,20 @@ Object {
     });
 
     test("union", () => {
-      expect(openApi3TypeSchema(unionType([STRING]))).toMatchInlineSnapshot(`
+      expect(openApi3TypeSchema([], unionType([STRING])))
+        .toMatchInlineSnapshot(`
 Object {
   "type": "string",
 }
 `);
-      expect(openApi3TypeSchema(unionType([STRING, NULL])))
+      expect(openApi3TypeSchema([], unionType([STRING, NULL])))
         .toMatchInlineSnapshot(`
 Object {
   "nullable": true,
   "type": "string",
 }
 `);
-      expect(openApi3TypeSchema(unionType([STRING, NUMBER, NULL])))
+      expect(openApi3TypeSchema([], unionType([STRING, NUMBER, NULL])))
         .toMatchInlineSnapshot(`
 Object {
   "nullable": true,
@@ -244,7 +251,7 @@ Object {
   ],
 }
 `);
-      expect(openApi3TypeSchema(unionType([STRING, NUMBER, BOOLEAN])))
+      expect(openApi3TypeSchema([], unionType([STRING, NUMBER, BOOLEAN])))
         .toMatchInlineSnapshot(`
 Object {
   "oneOf": Array [
@@ -262,9 +269,412 @@ Object {
 `);
     });
 
+    test("union of types without a discriminator", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of types with a valid discriminator", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "other",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "discriminator": Object {
+    "mapping": Object {
+      "type-1": "#/components/schemas/Type1",
+      "type-2": "#/components/schemas/Type2",
+    },
+    "propertyName": "disc",
+  },
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of types with several valid discriminators", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "other",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "discriminator": Object {
+    "mapping": Object {
+      "type-1": "#/components/schemas/Type1",
+      "type-2": "#/components/schemas/Type2",
+    },
+    "propertyName": "disc1",
+  },
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of types with one discriminator that has conflicting values", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "conflict"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "other",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc1",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "conflict"
+                  }
+                },
+                {
+                  name: "disc2",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "discriminator": Object {
+    "mapping": Object {
+      "type-1": "#/components/schemas/Type1",
+      "type-2": "#/components/schemas/Type2",
+    },
+    "propertyName": "disc2",
+  },
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of types with where one of the discriminators is optional", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "disc",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-1"
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "disc",
+                  optional: true,
+                  type: {
+                    kind: TypeKind.STRING_LITERAL,
+                    value: "type-2"
+                  }
+                }
+              ])
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "oneOf": Array [
+    Object {
+      "$ref": "#/components/schemas/Type1",
+    },
+    Object {
+      "$ref": "#/components/schemas/Type2",
+    },
+  ],
+}
+`);
+    });
+
+    test("union of inline object types", () => {
+      expect(
+        openApi3TypeSchema(
+          [],
+          unionType([
+            objectType([
+              {
+                name: "disc",
+                optional: true,
+                type: {
+                  kind: TypeKind.STRING_LITERAL,
+                  value: "type-1"
+                }
+              }
+            ]),
+            objectType([
+              {
+                name: "disc",
+                optional: true,
+                type: {
+                  kind: TypeKind.STRING_LITERAL,
+                  value: "type-2"
+                }
+              }
+            ])
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "oneOf": Array [
+    Object {
+      "properties": Object {
+        "disc": Object {
+          "enum": Array [
+            "type-1",
+          ],
+          "type": "string",
+        },
+      },
+      "required": Array [],
+      "type": "object",
+    },
+    Object {
+      "properties": Object {
+        "disc": Object {
+          "enum": Array [
+            "type-2",
+          ],
+          "type": "string",
+        },
+      },
+      "required": Array [],
+      "type": "object",
+    },
+  ],
+}
+`);
+    });
+
     test("type reference", () => {
       expect(
         openApi3TypeSchema(
+          [],
           referenceType("OtherType", "location", TypeKind.STRING)
         )
       ).toMatchInlineSnapshot(`
