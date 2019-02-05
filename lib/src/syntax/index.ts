@@ -3,6 +3,7 @@ export * from "./body";
 export * from "./default-response";
 export * from "./endpoint";
 export * from "./headers";
+export * from "./interaction";
 export * from "./path-params";
 export * from "./query-params";
 export * from "./request";

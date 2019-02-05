@@ -2,6 +2,7 @@ import {
   body,
   endpoint,
   headers,
+  interaction,
   pathParams,
   queryParams,
   request,
@@ -55,4 +56,20 @@ class GetUser {
     /** Error response body */
     @body body: ErrorBody
   ) {}
+
+  @interaction({
+    states: [userExistsState(101)],
+    request: {},
+    response: { status: 201 }
+  })
+  successResponseInteraction() {}
+}
+
+function userExistsState(id: number) {
+  return {
+    name: "user exists",
+    params: {
+      id: id
+    }
+  };
 }

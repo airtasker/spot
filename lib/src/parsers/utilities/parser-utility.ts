@@ -174,6 +174,50 @@ export function extractNumberProperty(
 }
 
 /**
+ * Extract an optional object literal property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractOptionalObjectProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<ObjectLiteralExpression> | undefined {
+  const property = objectLiteral.getProperty(propertyName);
+  if (property) {
+    const value = property.getLastChildIfKindOrThrow(
+      ts.SyntaxKind.ObjectLiteralExpression
+    );
+    const location = property.getSourceFile().getFilePath();
+    const line = value.getStartLineNumber();
+
+    return { value, location, line };
+  } else {
+    return;
+  }
+}
+
+/**
+ * Extract an object literal property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractObjectProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<ObjectLiteralExpression> {
+  const property = objectLiteral.getPropertyOrThrow(propertyName);
+  const value = property.getLastChildIfKindOrThrow(
+    ts.SyntaxKind.ObjectLiteralExpression
+  );
+  const location = property.getSourceFile().getFilePath();
+  const line = value.getStartLineNumber();
+
+  return { value, location, line };
+}
+
+/**
  * Extract the Configuration object (first argument) from a Spot decorator factory.
  *
  * @param decorator a decorator factory

@@ -73,3 +73,27 @@ export interface BodyNode {
   description?: Locatable<string>;
   type: DataType;
 }
+
+export interface InteractionNode {
+  description?: Locatable<string>;
+  request?: Locatable<InteractionRequestNode>;
+  response: Locatable<InteractionResponseNode>;
+}
+
+export interface InteractionStateNode {
+  name: string;
+  params?: object;
+}
+
+export interface InteractionRequestNode {
+  headers?: object;
+  pathParams?: object;
+  queryParams?: object;
+  body?: any;
+}
+
+export interface InteractionResponseNode {
+  status: Locatable<number>;
+  headers?: object;
+  body?: any;
+}
