@@ -7,7 +7,7 @@ import {
   extractObjectParameterProperties,
   extractPropertyName
 } from "../utilities/parser-utility";
-import { parseType } from "../utilities/type-parser";
+import { parseTypeNode } from "../utilities/type-parser";
 
 /**
  * Parse a `@headers` decorated parameter.
@@ -40,7 +40,7 @@ function parseHeader(property: PropertySignature): Locatable<HeaderNode> {
     line: property.getStartLineNumber()
   };
   const description = extractJsDocCommentLocatable(property);
-  const type = parseType(property.getTypeNodeOrThrow());
+  const type = parseTypeNode(property.getTypeNodeOrThrow());
   const optional = property.hasQuestionToken();
   const header = { name, description, type, optional };
   return {

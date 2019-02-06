@@ -42,7 +42,7 @@ import {
  *
  * @param type AST type node
  */
-export function parseType(typeNode: TypeNode): DataType {
+export function parseTypeNode(typeNode: TypeNode): DataType {
   // Type references must be parsed first to ensure internal type aliases are handled
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
     return parseTypeReference(typeNode);
@@ -106,7 +106,7 @@ function parseTypeReference(
       return referenceType(
         name,
         declaration.getSourceFile().getFilePath(),
-        parseType(targetTypeNode).kind
+        parseTypeNode(targetTypeNode).kind
       );
     }
   } else {
@@ -146,7 +146,7 @@ function parseLiteralType(typeNode: LiteralTypeNode): PrimitiveLiteral {
  * @param typeNode AST type node
  */
 function parseArrayType(typeNode: ArrayTypeNode): ArrayType {
-  const elementDataType = parseType(typeNode.getElementTypeNode());
+  const elementDataType = parseTypeNode(typeNode.getElementTypeNode());
   return arrayType(elementDataType);
 }
 
@@ -166,7 +166,7 @@ function parseObjectLiteralType(typeNode: TypeLiteralNode): ObjectType {
       return {
         name: propertySignature.getName(),
         description: extractJsDocComment(propertySignature),
-        type: parseType(propertySignature.getTypeNodeOrThrow()),
+        type: parseTypeNode(propertySignature.getTypeNodeOrThrow()),
         optional: propertySignature.hasQuestionToken()
       };
     });
@@ -184,9 +184,9 @@ function parseUnionType(typeNode: UnionTypeNode): DataType {
     .filter(type => !type.getType().isUndefined());
   if (allowedTargetTypes.length === 1) {
     // not a union
-    return parseType(allowedTargetTypes[0]);
+    return parseTypeNode(allowedTargetTypes[0]);
   } else if (allowedTargetTypes.length > 1) {
-    return unionType(allowedTargetTypes.map(type => parseType(type)));
+    return unionType(allowedTargetTypes.map(type => parseTypeNode(type)));
   } else {
     throw new Error("union type error");
   }
@@ -215,7 +215,7 @@ export function parseInterfaceDeclaration(
       return {
         name: propertySignature.getName(),
         description: extractJsDocComment(propertySignature),
-        type: parseType(propertySignature.getTypeNodeOrThrow()),
+        type: parseTypeNode(propertySignature.getTypeNodeOrThrow()),
         optional: propertySignature.hasQuestionToken()
       };
     });
