@@ -9,32 +9,32 @@ import {
   UnionType
 } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
-import { parseInterfaceDeclaration, parseType } from "./type-parser";
+import { parseInterfaceDeclaration, parseTypeNode } from "./type-parser";
 
 describe("type parser", () => {
   describe("primitive types", () => {
     test("parses the null type", () => {
       const typeNode = createTypeNode("null");
 
-      expect(parseType(typeNode)).toStrictEqual(NULL);
+      expect(parseTypeNode(typeNode)).toStrictEqual(NULL);
     });
 
     test("parses the boolean type", () => {
       const typeNode = createTypeNode("boolean");
 
-      expect(parseType(typeNode)).toStrictEqual(BOOLEAN);
+      expect(parseTypeNode(typeNode)).toStrictEqual(BOOLEAN);
     });
 
     test("parses the string type", () => {
       const typeNode = createTypeNode("string");
 
-      expect(parseType(typeNode)).toStrictEqual(STRING);
+      expect(parseTypeNode(typeNode)).toStrictEqual(STRING);
     });
 
     test("parses the number type", () => {
       const typeNode = createTypeNode("number");
 
-      expect(parseType(typeNode)).toStrictEqual(NUMBER);
+      expect(parseTypeNode(typeNode)).toStrictEqual(NUMBER);
     });
   });
 
@@ -42,7 +42,7 @@ describe("type parser", () => {
     test("parses literal true boolean", () => {
       const typeNode = createTypeNode("true");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.BOOLEAN_LITERAL,
         value: true
       });
@@ -51,7 +51,7 @@ describe("type parser", () => {
     test("parses literal false boolean", () => {
       const typeNode = createTypeNode("false");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.BOOLEAN_LITERAL,
         value: false
       });
@@ -60,7 +60,7 @@ describe("type parser", () => {
     test("parses literal string", () => {
       const typeNode = createTypeNode('"myStringLiteral"');
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.STRING_LITERAL,
         value: "myStringLiteral"
       });
@@ -69,7 +69,7 @@ describe("type parser", () => {
     test("parses literal number", () => {
       const typeNode = createTypeNode("54");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.NUMBER_LITERAL,
         value: 54
       });
@@ -77,7 +77,7 @@ describe("type parser", () => {
 
     test("parses type aliased literal", () => {
       const typeNode = createTypeNode("TrueAlias");
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.TYPE_REFERENCE,
         referenceKind: TypeKind.BOOLEAN_LITERAL,
         name: "TrueAlias",
@@ -90,7 +90,7 @@ describe("type parser", () => {
     test("parses Integer type", () => {
       const typeNode = createTypeNode("Integer");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.INTEGER
       });
     });
@@ -98,7 +98,7 @@ describe("type parser", () => {
     test("parses Date type", () => {
       const typeNode = createTypeNode("Date");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.DATE
       });
     });
@@ -106,7 +106,7 @@ describe("type parser", () => {
     test("parses DateTime type", () => {
       const typeNode = createTypeNode("DateTime");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.DATE_TIME
       });
     });
@@ -114,7 +114,7 @@ describe("type parser", () => {
     test("parses aliased custom primitive", () => {
       const typeNode = createTypeNode("AliasedCustomPrimitive");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.TYPE_REFERENCE,
         referenceKind: TypeKind.INTEGER,
         name: "AliasedCustomPrimitive",
@@ -127,7 +127,7 @@ describe("type parser", () => {
     test("parses custom string", () => {
       const typeNode = createTypeNode("TypeAlias");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.TYPE_REFERENCE,
         referenceKind: TypeKind.STRING,
         name: "TypeAlias",
@@ -151,7 +151,7 @@ describe("type parser", () => {
         }
       `);
 
-      const result = parseType(typeNode) as ObjectType;
+      const result = parseTypeNode(typeNode) as ObjectType;
 
       expect(result.kind).toEqual(TypeKind.OBJECT);
       expect(result.properties).toHaveLength(2);
@@ -172,7 +172,7 @@ describe("type parser", () => {
     test("parses object interface type", () => {
       const typeNode = createTypeNode("ObjectInterface");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.TYPE_REFERENCE,
         referenceKind: TypeKind.OBJECT,
         name: "ObjectInterface",
@@ -183,7 +183,7 @@ describe("type parser", () => {
     test("parses extended object interface type", () => {
       const typeNode = createTypeNode("ComplexInterface");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.TYPE_REFERENCE,
         referenceKind: TypeKind.OBJECT,
         name: "ComplexInterface",
@@ -194,7 +194,7 @@ describe("type parser", () => {
     test("parses array type", () => {
       const typeNode = createTypeNode("string[]");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.ARRAY,
         elements: STRING
       });
@@ -205,7 +205,7 @@ describe("type parser", () => {
     test("parses union types", () => {
       const typeNode = createTypeNode("string", "number", "null");
 
-      const result = parseType(typeNode) as UnionType;
+      const result = parseTypeNode(typeNode) as UnionType;
 
       expect(result.kind).toEqual(TypeKind.UNION);
       expect(result.types).toHaveLength(3);
@@ -217,7 +217,7 @@ describe("type parser", () => {
     test("parses chained type alias", () => {
       const typeNode = createTypeNode("ChainedAlias");
 
-      expect(parseType(typeNode)).toStrictEqual({
+      expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.TYPE_REFERENCE,
         referenceKind: TypeKind.TYPE_REFERENCE,
         name: "ChainedAlias",

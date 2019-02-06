@@ -2,7 +2,7 @@ import { ParameterDeclaration } from "ts-simple-ast";
 import { Locatable } from "../../models/locatable";
 import { BodyNode } from "../../models/nodes";
 import { ensureNodeNotOptional } from "../utilities/parser-utility";
-import { parseType } from "../utilities/type-parser";
+import { parseTypeNode } from "../utilities/type-parser";
 
 /**
  * Parse an `@body` decorated parameter.
@@ -14,7 +14,7 @@ export function parseBody(
 ): Locatable<BodyNode> {
   const decorator = parameter.getDecoratorOrThrow("body");
   ensureNodeNotOptional(parameter);
-  const dataType = parseType(parameter.getTypeNodeOrThrow());
+  const dataType = parseTypeNode(parameter.getTypeNodeOrThrow());
   const location = decorator.getSourceFile().getFilePath();
   const line = decorator.getStartLineNumber();
   return {
