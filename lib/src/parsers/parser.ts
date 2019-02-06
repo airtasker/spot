@@ -5,7 +5,10 @@ import { ReferenceType } from "../models/types";
 import { parseApi } from "./nodes/api-parser";
 import { parseEndpoint } from "./nodes/endpoint-parser";
 import { extractJsDocComment } from "./utilities/parser-utility";
-import { parseInterfaceDeclaration, parseType } from "./utilities/type-parser";
+import {
+  parseInterfaceDeclaration,
+  parseTypeNode
+} from "./utilities/type-parser";
 import {
   retrieveTypeReferencesFromEndpoints,
   retrieveTypeReferencesFromType,
@@ -115,7 +118,7 @@ function parseRootSourceFile(
     if (typeAlias !== undefined) {
       const name = typeAlias.getName();
       const description = extractJsDocComment(typeAlias);
-      const type = parseType(typeAlias.getTypeNodeOrThrow());
+      const type = parseTypeNode(typeAlias.getTypeNodeOrThrow());
       return { description, name, type };
     }
 

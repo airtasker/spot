@@ -19,7 +19,7 @@ import {
   ReferenceType,
   TypeKind
 } from "../../models/types";
-import { parseInterfaceDeclaration, parseType } from "./type-parser";
+import { parseInterfaceDeclaration, parseTypeNode } from "./type-parser";
 
 /**
  * Recursively retrieves all type references from a data type including itself.
@@ -48,7 +48,7 @@ export function retrieveTypeReferencesFromType(
         const typeAlias = file.getTypeAliasOrThrow(dataType.name);
         return [dataType].concat(
           retrieveTypeReferencesFromType(
-            parseType(typeAlias.getTypeNodeOrThrow()),
+            parseTypeNode(typeAlias.getTypeNodeOrThrow()),
             projectContext
           )
         );
@@ -58,7 +58,7 @@ export function retrieveTypeReferencesFromType(
         if (typeAlias !== undefined) {
           return [dataType].concat(
             retrieveTypeReferencesFromType(
-              parseType(typeAlias.getTypeNodeOrThrow()),
+              parseTypeNode(typeAlias.getTypeNodeOrThrow()),
               projectContext
             )
           );

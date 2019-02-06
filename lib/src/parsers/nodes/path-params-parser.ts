@@ -7,7 +7,7 @@ import {
   extractObjectParameterProperties,
   extractPropertyName
 } from "../utilities/parser-utility";
-import { parseType } from "../utilities/type-parser";
+import { parseTypeNode } from "../utilities/type-parser";
 
 /**
  * Parse an `@pathParams` decorated parameter.
@@ -42,7 +42,7 @@ function parsePathParam(property: PropertySignature): Locatable<PathParamNode> {
     line: property.getStartLineNumber()
   };
   const description = extractJsDocCommentLocatable(property);
-  const type = parseType(property.getTypeNodeOrThrow());
+  const type = parseTypeNode(property.getTypeNodeOrThrow());
   const pathParam = { name, description, type };
   return {
     value: pathParam,

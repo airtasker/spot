@@ -7,7 +7,7 @@ import {
   extractObjectParameterProperties,
   extractPropertyName
 } from "../utilities/parser-utility";
-import { parseType } from "../utilities/type-parser";
+import { parseTypeNode } from "../utilities/type-parser";
 
 /**
  * Parse an `@queryParams` decorated parameter.
@@ -42,7 +42,7 @@ function parseQueryParam(
     line: property.getStartLineNumber()
   };
   const description = extractJsDocCommentLocatable(property);
-  const type = parseType(property.getTypeNodeOrThrow());
+  const type = parseTypeNode(property.getTypeNodeOrThrow());
   const optional = property.hasQuestionToken();
   const queryParam = { name, description, type, optional };
   return {
