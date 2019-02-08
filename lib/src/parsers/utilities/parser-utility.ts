@@ -11,7 +11,8 @@ import {
   ts,
   TypeAliasDeclaration,
   TypeGuards,
-  TypeReferenceNode
+  TypeReferenceNode,
+  ArrayLiteralExpression
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
 import { Locatable } from "../../models/locatable";
@@ -187,6 +188,30 @@ export function extractOptionalObjectProperty(
   if (property) {
     const value = property.getLastChildIfKindOrThrow(
       ts.SyntaxKind.ObjectLiteralExpression
+    );
+    const location = property.getSourceFile().getFilePath();
+    const line = value.getStartLineNumber();
+
+    return { value, location, line };
+  } else {
+    return;
+  }
+}
+
+/**
+ * Extract an optional array literal property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractOptionalArrayProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<ArrayLiteralExpression> | undefined {
+  const property = objectLiteral.getProperty(propertyName);
+  if (property) {
+    const value = property.getLastChildIfKindOrThrow(
+      ts.SyntaxKind.ArrayLiteralExpression
     );
     const location = property.getSourceFile().getFilePath();
     const line = value.getStartLineNumber();

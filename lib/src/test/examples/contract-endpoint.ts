@@ -2,11 +2,11 @@ import {
   body,
   endpoint,
   headers,
-  interaction,
   pathParams,
   queryParams,
   request,
-  response
+  response,
+  test
 } from "@airtasker/spot";
 import { ErrorBody, UserBody } from "./models";
 
@@ -57,12 +57,13 @@ class GetUser {
     @body body: ErrorBody
   ) {}
 
-  @interaction({
-    states: [userExistsState(101)],
+  @test({
+    // states: [userExistsState(101)],
+    states: [{ name: "userExists", params: { id: 101 } }],
     request: {},
     response: { status: 201 }
   })
-  successResponseInteraction() {}
+  successResponseTest() {}
 }
 
 function userExistsState(id: number) {

@@ -3,7 +3,7 @@ import { parseEndpoint } from "./endpoint-parser";
 
 describe("@endpoint parser", () => {
   const content = `
-    import { endpoint, request, response, defaultResponse, pathParams, body } from "@airtasker/spot"
+    import { endpoint, request, response, defaultResponse, pathParams, body, test } from "@airtasker/spot"
 
     /** endpoint description */
     @endpoint({
@@ -31,6 +31,22 @@ describe("@endpoint parser", () => {
 
       @defaultResponse
       unexpectedResponse() {}
+
+      @test({
+        states: [{ name: "a user exists", params: { id: "abc" } }],
+        request: {
+          pathParams: {
+            id: "abc"
+          },
+          body: {
+            age: 45
+          }
+        },
+        response: {
+          status: 200
+        }
+      })
+      successResponseTest() {}
     }
   `;
 
@@ -89,7 +105,14 @@ describe("@endpoint parser", () => {
           value: expect.anything(),
           location: expect.stringMatching(/main\.ts$/),
           line: 27
-        }
+        },
+        tests: expect.arrayContaining([
+          {
+            value: expect.anything(),
+            location: expect.stringMatching(/main\.ts$/),
+            line: 30
+          }
+        ])
       },
       location: expect.stringMatching(/main\.ts$/),
       line: 4

@@ -1,5 +1,5 @@
 /**
- * Decorator for describing an interaction. This should be used within an `@endpoint` decorated class.
+ * Decorator for describing a test. This should be used within an `@endpoint` decorated class.
  * 
  * @example
 ```
@@ -14,7 +14,7 @@ class GetUser {
   @response({ status: 200 })
   successfulResponse(//...) {}
 
-  @interaction({
+  @test({
     states: [{ name: "a user exists", params: { id: 101 } }],
     request: {
       pathParams: { id: 101 }
@@ -23,27 +23,30 @@ class GetUser {
       status: 200
     }
   })
-  getUserSuccessInteraction() {}
+  getUserSuccessTest() {}
   //...
 }
 //...
 ```
  */
-export function interaction(config: InteractionConfig) {
+export function test(config: TestConfig) {
   return (
     target: any,
     propertyKey: string | symbol,
     descriptor: PropertyDescriptor
   ) => {};
 }
-interface InteractionConfig {
-  states?: { name: string; params?: object }[];
+interface TestConfig {
+  states?: { name: string; params?: { [key: string]: any } }[];
   request?: {
-    headers?: object;
-    pathParams?: object;
-    queryParams?: object;
+    headers?: { [key: string]: any };
+    pathParams?: { [key: string]: any };
+    queryParams?: { [key: string]: any };
+    body?: object;
   };
   response: {
     status: number;
+    headers?: { [key: string]: any };
+    body?: object;
   };
 }

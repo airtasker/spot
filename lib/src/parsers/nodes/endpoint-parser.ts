@@ -13,6 +13,7 @@ import {
 import { parseDefaultResponse } from "./default-response-parser";
 import { parseRequest } from "./request-parser";
 import { parseResponse } from "./response-parser";
+import { parseTest } from "./test-parser";
 
 /**
  * Parse an `@endpoint` decorated class.
@@ -48,6 +49,10 @@ export function parseEndpoint(
   );
   const defaultResponse =
     defaultResponseMethod && parseDefaultResponse(defaultResponseMethod);
+  const tests = klass
+    .getMethods()
+    .filter(klassMethod => klassMethod.getDecorator("test") !== undefined)
+    .map(testMethod => parseTest(testMethod));
 
   if (responses.length === 0) {
     throw new Error("expected at least one @response decorated method");
@@ -65,7 +70,8 @@ export function parseEndpoint(
       path,
       request,
       responses,
-      defaultResponse
+      defaultResponse,
+      tests
     },
     location,
     line
