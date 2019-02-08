@@ -71,7 +71,7 @@ describe("type expression parser", () => {
     });
   });
 
-  test("parses a object literal expression", () => {
+  test("parses an object literal expression", () => {
     const expression = createExpression(`
       { 
         title: "mytitle",
