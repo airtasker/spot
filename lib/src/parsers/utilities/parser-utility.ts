@@ -210,7 +210,7 @@ export function extractOptionalObjectProperty(
 
     return { value, location, line };
   } else {
-    return;
+    return undefined;
   }
 }
 
@@ -237,7 +237,7 @@ export function extractOptionalArrayProperty(
 
     return { value, location, line };
   } else {
-    return;
+    return undefined;
   }
 }
 

@@ -83,23 +83,23 @@ export interface BodyDefinition {
 
 export interface TestDefinition {
   description?: string;
-  states?: TestStateDefinition[];
+  states: TestStateDefinition[];
   request?: TestRequestDefinition;
   response: TestResponseDefinition;
 }
 
 export interface TestStateDefinition {
   name: string;
-  params?: { name: string; expression: DataExpression }[];
+  params: { name: string; expression: DataExpression }[];
 }
 
 export interface TestRequestDefinition {
-  headers?: { name: string; expression: DataExpression }[];
-  pathParams?: {
+  headers: { name: string; expression: DataExpression }[];
+  pathParams: {
     name: string;
     expression: DataExpression;
   }[];
-  queryParams?: {
+  queryParams: {
     name: string;
     expression: DataExpression;
   }[];
@@ -108,6 +108,6 @@ export interface TestRequestDefinition {
 
 export interface TestResponseDefinition {
   status: number;
-  headers?: { name: string; expression: DataExpression }[];
+  headers: { name: string; expression: DataExpression }[];
   body?: DataExpression;
 }
