@@ -3,6 +3,7 @@ import { EndpointNode } from "../../models/nodes";
 import { cleanseDefaultResponse } from "./default-response-cleanser";
 import { cleanseRequest } from "./request-cleanser";
 import { cleanseResponse } from "./response-cleanser";
+import { cleanseTest } from "./test-cleanser";
 
 export function cleanseEndpoint(
   endpointNode: EndpointNode
@@ -22,6 +23,7 @@ export function cleanseEndpoint(
   const responses = endpointNode.responses.map(response =>
     cleanseResponse(response.value)
   );
+  const tests = endpointNode.tests.map(test => cleanseTest(test.value));
 
   return {
     name,
@@ -31,6 +33,7 @@ export function cleanseEndpoint(
     path,
     request,
     responses,
-    defaultResponse
+    defaultResponse,
+    tests
   };
 }
