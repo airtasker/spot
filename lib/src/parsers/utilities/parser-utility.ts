@@ -6,6 +6,7 @@ import {
   MethodDeclaration,
   ObjectLiteralExpression,
   ParameterDeclaration,
+  PropertyDeclaration,
   PropertySignature,
   QuestionTokenableNode,
   ts,
@@ -95,7 +96,7 @@ export function extractJsDocCommentLocatable(
  * @param property property signature
  */
 export function extractPropertyNameLocatable(
-  property: PropertySignature
+  property: PropertyDeclaration | PropertySignature
 ): Locatable<string> {
   const nameNode = property.getNameNode();
 
@@ -345,6 +346,31 @@ export function classMethodWithDecorator(
     throw new Error(
       `expected decorator @${decoratorName} to be used only once, found ${
         matchingMethods.length
+      } usages`
+    );
+  }
+  return undefined;
+}
+
+/**
+ * Retrieve a property from a class declaration with a particular decorator.
+ *
+ * @param klass class declaration
+ * @param decoratorName name of decorator to search for
+ */
+export function classPropertyWithDecorator(
+  klass: ClassDeclaration,
+  decoratorName: string
+): PropertyDeclaration | undefined {
+  const matchingProperties = klass
+    .getProperties()
+    .filter(property => property.getDecorator(decoratorName) !== undefined);
+  if (matchingProperties.length === 1) {
+    return matchingProperties[0];
+  } else if (matchingProperties.length > 1) {
+    throw new Error(
+      `expected decorator @${decoratorName} to be used only once, found ${
+        matchingProperties.length
       } usages`
     );
   }

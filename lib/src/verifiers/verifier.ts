@@ -7,7 +7,7 @@ import { VerificationError } from "./verification-error";
 export function verify(contract: ContractNode): VerificationError[] {
   let errors: VerificationError[] = [];
 
-  errors.push(...verifyApiNode(contract.api.value));
+  errors.push(...verifyApiNode(contract.api.value, contract.types));
 
   contract.endpoints.forEach(endpoint =>
     errors.push(...verifyEndpointNode(endpoint.value, contract.types))

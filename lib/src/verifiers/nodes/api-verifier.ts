@@ -1,7 +1,11 @@
-import { ApiNode } from "../../models/nodes";
+import { ApiNode, TypeNode } from "../../models/nodes";
 import { VerificationError } from "../verification-error";
+import { verifySecurityHeaderNode } from "./security-header-verifier";
 
-export function verifyApiNode(api: ApiNode): VerificationError[] {
+export function verifyApiNode(
+  api: ApiNode,
+  typeStore: TypeNode[]
+): VerificationError[] {
   let errors: VerificationError[] = [];
 
   if (/(^\s+)|(\s+$)/.test(api.name.value)) {
@@ -18,6 +22,11 @@ export function verifyApiNode(api: ApiNode): VerificationError[] {
       location: api.name.location,
       line: api.name.line
     });
+  }
+  if (api.securityHeader) {
+    errors.push(
+      ...verifySecurityHeaderNode(api.securityHeader.value, typeStore)
+    );
   }
   return errors;
 }

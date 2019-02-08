@@ -8,4 +8,5 @@ export * from "./path-params";
 export * from "./query-params";
 export * from "./request";
 export * from "./response";
+export * from "./security-header";
 export * from "./types";

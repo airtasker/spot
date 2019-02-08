@@ -10,7 +10,7 @@ describe("api node verifier", () => {
         line: 4
       }
     };
-    expect(verifyApiNode(apiNode)).toHaveLength(0);
+    expect(verifyApiNode(apiNode, [])).toHaveLength(0);
   });
 
   test("invalid for incorrect usage", () => {
@@ -21,7 +21,7 @@ describe("api node verifier", () => {
         line: 4
       }
     };
-    const errors = verifyApiNode(apiNode);
+    const errors = verifyApiNode(apiNode, []);
     expect(errors).toHaveLength(2);
     expect(errors).toContainEqual({
       message: "api name may not contain leading or trailing white space",
