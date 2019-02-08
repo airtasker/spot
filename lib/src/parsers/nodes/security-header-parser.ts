@@ -5,7 +5,7 @@ import {
   extractJsDocCommentLocatable,
   extractPropertyNameLocatable
 } from "../utilities/parser-utility";
-import { parseType } from "../utilities/type-parser";
+import { parseTypeNode } from "../utilities/type-parser";
 
 /**
  * Parse a `@securityHeader` decorated method.
@@ -19,7 +19,7 @@ export function parseSecurityHeader(
 
   const name = extractPropertyNameLocatable(property);
   const description = extractJsDocCommentLocatable(property);
-  const type = parseType(property.getTypeNodeOrThrow());
+  const type = parseTypeNode(property.getTypeNodeOrThrow());
 
   const location = decorator.getSourceFile().getFilePath();
   const line = decorator.getStartLineNumber();
