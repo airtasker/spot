@@ -5,7 +5,8 @@ import {
   pathParams,
   queryParams,
   request,
-  response
+  response,
+  test
 } from "@airtasker/spot";
 import { ErrorBody, UserBody } from "./models";
 
@@ -55,4 +56,11 @@ class GetUser {
     /** Error response body */
     @body body: ErrorBody
   ) {}
+
+  @test({
+    states: [{ name: "userExists", params: { id: 101 } }],
+    request: {},
+    response: { status: 201 }
+  })
+  successResponseTest() {}
 }

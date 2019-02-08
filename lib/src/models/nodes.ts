@@ -1,6 +1,6 @@
 import { HttpMethod } from "./http";
+import { DataType, DataExpression } from "./types";
 import { Locatable } from "./locatable";
-import { DataType } from "./types";
 
 export interface ContractNode {
   api: Locatable<ApiNode>;
@@ -35,6 +35,7 @@ export interface EndpointNode {
   request?: Locatable<RequestNode>;
   responses: Locatable<ResponseNode>[];
   defaultResponse?: Locatable<DefaultResponseNode>;
+  tests: Locatable<TestNode>[];
 }
 
 export interface RequestNode {
@@ -79,4 +80,35 @@ export interface QueryParamNode {
 export interface BodyNode {
   description?: Locatable<string>;
   type: DataType;
+}
+
+export interface TestNode {
+  description?: Locatable<string>;
+  states?: TestStateNode[];
+  request?: Locatable<TestRequestNode>;
+  response: Locatable<TestResponseNode>;
+}
+
+export interface TestStateNode {
+  name: string;
+  params?: { name: string; expression: DataExpression }[];
+}
+
+export interface TestRequestNode {
+  headers?: { name: string; expression: DataExpression }[];
+  pathParams?: {
+    name: string;
+    expression: DataExpression;
+  }[];
+  queryParams?: {
+    name: string;
+    expression: DataExpression;
+  }[];
+  body?: DataExpression;
+}
+
+export interface TestResponseNode {
+  status: Locatable<number>;
+  headers?: { name: string; expression: DataExpression }[];
+  body?: DataExpression;
 }

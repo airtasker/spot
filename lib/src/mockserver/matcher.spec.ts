@@ -10,7 +10,8 @@ const BASE_ENDPOINT = {
     queryParams: []
   },
   responses: [],
-  tags: []
+  tags: [],
+  tests: []
 };
 
 describe("Matcher", () => {

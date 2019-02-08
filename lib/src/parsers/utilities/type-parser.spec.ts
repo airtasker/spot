@@ -11,7 +11,7 @@ import {
 import { createSourceFile } from "../../test/helper";
 import { parseInterfaceDeclaration, parseTypeNode } from "./type-parser";
 
-describe("type parser", () => {
+describe("type node parser", () => {
   describe("primitive types", () => {
     test("parses the null type", () => {
       const typeNode = createTypeNode("null");
@@ -138,16 +138,11 @@ describe("type parser", () => {
 
   describe("object types", () => {
     test("parses object literal type", () => {
-      const titlePropName = "title";
-      const titlePropDescription = "Some description for title";
-      const yearPropName = "year";
-
       const typeNode = createTypeNode(`
         { 
-          /** ${titlePropDescription} */
-          ${titlePropName}: string;
-          
-          ${yearPropName}?: number;
+          /** Some description for title */
+          title: string;
+          year?: number;
         }
       `);
 
@@ -156,13 +151,13 @@ describe("type parser", () => {
       expect(result.kind).toEqual(TypeKind.OBJECT);
       expect(result.properties).toHaveLength(2);
       expect(result.properties).toContainEqual({
-        name: titlePropName,
-        description: titlePropDescription,
+        name: "title",
+        description: "Some description for title",
         type: STRING,
         optional: false
       });
       expect(result.properties).toContainEqual({
-        name: yearPropName,
+        name: "year",
         description: undefined,
         type: NUMBER,
         optional: true

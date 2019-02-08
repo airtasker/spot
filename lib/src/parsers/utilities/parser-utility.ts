@@ -12,7 +12,8 @@ import {
   ts,
   TypeAliasDeclaration,
   TypeGuards,
-  TypeReferenceNode
+  TypeReferenceNode,
+  ArrayLiteralExpression
 } from "ts-simple-ast";
 import { HttpMethod } from "../../models/http";
 import { Locatable } from "../../models/locatable";
@@ -55,9 +56,12 @@ export function extractStringProperty(
   objectLiteral: ObjectLiteralExpression,
   propertyName: string
 ): string {
-  return objectLiteral
-    .getPropertyOrThrow(propertyName)
-    .getLastChildIfKindOrThrow(ts.SyntaxKind.StringLiteral)
+  const property = objectLiteral.getPropertyOrThrow(propertyName);
+  if (!TypeGuards.isPropertyAssignment(property)) {
+    throw new Error("expected property assignment");
+  }
+  return property
+    .getInitializerIfKindOrThrow(ts.SyntaxKind.StringLiteral)
     .getLiteralText();
 }
 
@@ -114,7 +118,10 @@ export function extractStringPropertyValueLocatable(
   propertyName: string
 ): Locatable<string> {
   const property = objectLiteral.getPropertyOrThrow(propertyName);
-  const literal = property.getLastChildIfKindOrThrow(
+  if (!TypeGuards.isPropertyAssignment(property)) {
+    throw new Error("expected property assignment");
+  }
+  const literal = property.getInitializerIfKindOrThrow(
     ts.SyntaxKind.StringLiteral
   );
   const value = literal.getLiteralText();
@@ -138,7 +145,10 @@ export function extractOptionalStringArrayPropertyValueLocatable(
   if (!property) {
     return undefined;
   }
-  const literal = property.getLastChildIfKindOrThrow(
+  if (!TypeGuards.isPropertyAssignment(property)) {
+    throw new Error("expected property assignment");
+  }
+  const literal = property.getInitializerIfKindOrThrow(
     ts.SyntaxKind.ArrayLiteralExpression
   );
   const value = literal.getElements().map(e => {
@@ -164,12 +174,92 @@ export function extractNumberProperty(
   propertyName: string
 ): Locatable<number> {
   const property = objectLiteral.getPropertyOrThrow(propertyName);
-  const literal = property.getLastChildIfKindOrThrow(
+  if (!TypeGuards.isPropertyAssignment(property)) {
+    throw new Error("expected property assignment");
+  }
+  const literal = property.getInitializerIfKindOrThrow(
     ts.SyntaxKind.NumericLiteral
   );
   const value = literal.getLiteralValue();
   const location = property.getSourceFile().getFilePath();
   const line = literal.getStartLineNumber();
+
+  return { value, location, line };
+}
+
+/**
+ * Extract an optional object literal property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractOptionalObjectProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<ObjectLiteralExpression> | undefined {
+  const property = objectLiteral.getProperty(propertyName);
+  if (property) {
+    if (!TypeGuards.isPropertyAssignment(property)) {
+      throw new Error("expected property assignment");
+    }
+    const value = property.getInitializerIfKindOrThrow(
+      ts.SyntaxKind.ObjectLiteralExpression
+    );
+    const location = property.getSourceFile().getFilePath();
+    const line = value.getStartLineNumber();
+
+    return { value, location, line };
+  } else {
+    return undefined;
+  }
+}
+
+/**
+ * Extract an optional array literal property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractOptionalArrayProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<ArrayLiteralExpression> | undefined {
+  const property = objectLiteral.getProperty(propertyName);
+  if (property) {
+    if (!TypeGuards.isPropertyAssignment(property)) {
+      throw new Error("expected property assignment");
+    }
+    const value = property.getInitializerIfKindOrThrow(
+      ts.SyntaxKind.ArrayLiteralExpression
+    );
+    const location = property.getSourceFile().getFilePath();
+    const line = value.getStartLineNumber();
+
+    return { value, location, line };
+  } else {
+    return undefined;
+  }
+}
+
+/**
+ * Extract an object literal property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractObjectProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<ObjectLiteralExpression> {
+  const property = objectLiteral.getPropertyOrThrow(propertyName);
+  if (!TypeGuards.isPropertyAssignment(property)) {
+    throw new Error("expected property assignment");
+  }
+  const value = property.getInitializerIfKindOrThrow(
+    ts.SyntaxKind.ObjectLiteralExpression
+  );
+  const location = property.getSourceFile().getFilePath();
+  const line = value.getStartLineNumber();
 
   return { value, location, line };
 }

@@ -1,5 +1,5 @@
 import { HttpMethod } from "./http";
-import { DataType } from "./types";
+import { DataExpression, DataType } from "./types";
 
 export interface ContractDefinition {
   api: ApiDefinition;
@@ -34,6 +34,7 @@ export interface EndpointDefinition {
   request: RequestDefinition;
   responses: ResponseDefinition[];
   defaultResponse?: DefaultResponseDefinition;
+  tests: TestDefinition[];
 }
 
 export interface RequestDefinition {
@@ -78,4 +79,35 @@ export interface QueryParamDefinition {
 export interface BodyDefinition {
   description?: string;
   type: DataType;
+}
+
+export interface TestDefinition {
+  description?: string;
+  states: TestStateDefinition[];
+  request?: TestRequestDefinition;
+  response: TestResponseDefinition;
+}
+
+export interface TestStateDefinition {
+  name: string;
+  params: { name: string; expression: DataExpression }[];
+}
+
+export interface TestRequestDefinition {
+  headers: { name: string; expression: DataExpression }[];
+  pathParams: {
+    name: string;
+    expression: DataExpression;
+  }[];
+  queryParams: {
+    name: string;
+    expression: DataExpression;
+  }[];
+  body?: DataExpression;
+}
+
+export interface TestResponseDefinition {
+  status: number;
+  headers: { name: string; expression: DataExpression }[];
+  body?: DataExpression;
 }

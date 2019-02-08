@@ -20,6 +20,7 @@ export * from "./object-types";
 export * from "./primitive-literals";
 export * from "./primitive-types";
 export * from "./special-types";
+export * from "./expressions";
 
 export type DataType =
   | PrimitiveType

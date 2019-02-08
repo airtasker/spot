@@ -83,7 +83,8 @@ describe("endpoint node verifier", () => {
           location: "somelocation.ts",
           line: 5
         }
-      ]
+      ],
+      tests: []
     };
     expect(verifyEndpointNode(endpointNode, [])).toHaveLength(0);
   });
