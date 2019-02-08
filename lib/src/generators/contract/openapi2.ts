@@ -14,6 +14,8 @@ import {
   openApi2TypeSchema
 } from "./openapi2-schema";
 
+const SECURITY_HEADER_SCHEME_NAME = "securityHeader";
+
 export function generateOpenApiV2(
   contractDefinition: ContractDefinition,
   format: "json" | "yaml"
@@ -76,7 +78,24 @@ export function openApiV2(contractDefinition: ContractDefinition): OpenApiV2 {
     }>((acc, typeNode) => {
       acc[typeNode.name] = openApi2TypeSchema(typeNode.type);
       return acc;
-    }, {})
+    }, {}),
+    ...(contractDefinition.api.securityHeader
+      ? {
+          securityDefinitions: {
+            [SECURITY_HEADER_SCHEME_NAME]: {
+              type: "apiKey",
+              in: "header",
+              name: contractDefinition.api.securityHeader.name,
+              description: contractDefinition.api.securityHeader.description
+            }
+          },
+          security: [
+            {
+              [SECURITY_HEADER_SCHEME_NAME]: []
+            }
+          ]
+        }
+      : {})
   };
 }
 
@@ -189,6 +208,12 @@ export interface OpenApiV2 {
   definitions: {
     [typeName: string]: OpenAPI2SchemaType;
   };
+  securityDefinitions?: {
+    [securitySchemeName: string]: OpenAPIV2SecurityScheme;
+  };
+  security?: {
+    [securitySchemeName: string]: string[];
+  }[];
 }
 
 export interface OpenAPIV2TagObject {
@@ -239,3 +264,13 @@ export interface OpenAPIV2Response {
 export type OpenAPIV2Header = {
   description?: string;
 } & OpenAPI2SchemaType;
+
+// TODO: Consider adding support for other security schemes.
+export type OpenAPIV2SecurityScheme = OpenApiV2SecurityScheme_ApiKey;
+
+export interface OpenApiV2SecurityScheme_ApiKey {
+  type: "apiKey";
+  description?: string;
+  name: string;
+  in: "query" | "header";
+}
