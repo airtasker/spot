@@ -58,19 +58,9 @@ class GetUser {
   ) {}
 
   @test({
-    // states: [userExistsState(101)],
     states: [{ name: "userExists", params: { id: 101 } }],
     request: {},
     response: { status: 201 }
   })
   successResponseTest() {}
-}
-
-function userExistsState(id: number) {
-  return {
-    name: "user exists",
-    params: {
-      id: id
-    }
-  };
 }
