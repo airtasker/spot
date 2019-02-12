@@ -22,7 +22,7 @@
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
     "randomstring": "^1.1.5",
-    "ts-simple-ast": "^20.0.0",
+    "ts-morph": "^1.0.0",
     "tslib": "^1",
     "typescript": "^3.2.2"
   },
@@ -35,14 +35,14 @@
     "@types/js-yaml": "^3.11.2",
     "@types/lodash": "^4.14.117",
     "@types/moxios": "^0.4.8",
-    "@types/node": "^10",
+    "@types/node": "^11.9.0",
     "axios": "^0.18.0",
-    "globby": "^8",
+    "globby": "^9.0.0",
     "jest": "^23.6.0",
     "moxios": "^0.4.0",
     "prettier": "^1.14.3",
     "ts-jest": "^23.10.4",
-    "ts-node": "^7"
+    "ts-node": "^8.0.2"
   },
   "engines": {
     "node": ">=8.0.0"

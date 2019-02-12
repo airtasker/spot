@@ -1,4 +1,4 @@
-import { PropertyDeclaration } from "ts-simple-ast";
+import { PropertyDeclaration } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import { SecurityHeaderNode } from "../../models/nodes";
 import {

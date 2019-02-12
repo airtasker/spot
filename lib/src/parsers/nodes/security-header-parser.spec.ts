@@ -1,4 +1,4 @@
-import { ClassDeclaration } from "ts-simple-ast";
+import { ClassDeclaration } from "ts-morph";
 import { TypeKind } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
 import { parseSecurityHeader } from "./security-header-parser";

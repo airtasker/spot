@@ -1,4 +1,4 @@
-import { ClassDeclaration, ObjectLiteralExpression } from "ts-simple-ast";
+import { ClassDeclaration, ObjectLiteralExpression } from "ts-morph";
 import { HttpMethod } from "../../models/http";
 import { Locatable } from "../../models/locatable";
 import { EndpointNode } from "../../models/nodes";

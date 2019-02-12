@@ -1,4 +1,4 @@
-import { Expression, TypeGuards } from "ts-simple-ast";
+import { Expression, TypeGuards } from "ts-morph";
 import {
   arrayExpression,
   booleanExpression,

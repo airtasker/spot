@@ -1,5 +1,5 @@
 import assertNever from "assert-never";
-import { TypeDefinition } from "lib/src/models/definitions";
+import { TypeDefinition } from "../../models/definitions";
 import compact from "lodash/compact";
 import {
   DataType,
@@ -103,8 +103,8 @@ export function openApi3TypeSchema(
         return {
           type: "string",
           enum: compact(
-            type.types.map(
-              t => (t.kind === TypeKind.STRING_LITERAL ? t.value : null)
+            type.types.map(t =>
+              t.kind === TypeKind.STRING_LITERAL ? t.value : null
             )
           )
         };

@@ -1,4 +1,5 @@
 import {
+  ArrayLiteralExpression,
   ClassDeclaration,
   Decorator,
   InterfaceDeclaration,
@@ -12,9 +13,8 @@ import {
   ts,
   TypeAliasDeclaration,
   TypeGuards,
-  TypeReferenceNode,
-  ArrayLiteralExpression
-} from "ts-simple-ast";
+  TypeReferenceNode
+} from "ts-morph";
 import { HttpMethod } from "../../models/http";
 import { Locatable } from "../../models/locatable";
 

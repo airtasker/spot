@@ -1,4 +1,4 @@
-import { Project, ts } from "ts-simple-ast";
+import { Project, ts } from "ts-morph";
 
 /**
  * Create an AST source file. Any files imported from the main file must also be provided.

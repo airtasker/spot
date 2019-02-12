@@ -1,4 +1,4 @@
-import { Expression } from "ts-simple-ast";
+import { Expression } from "ts-morph";
 import { NULL, TypeKind } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
 import { parseExpression } from "./expression-parser";

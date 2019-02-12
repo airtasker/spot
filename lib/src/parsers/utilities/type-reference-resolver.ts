@@ -1,14 +1,14 @@
 import { uniqBy } from "lodash";
-import Project from "ts-simple-ast";
+import Project from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import {
   BodyNode,
   EndpointNode,
   HeaderNode,
-  RequestNode,
-  ResponseNode,
   PathParamNode,
-  QueryParamNode
+  QueryParamNode,
+  RequestNode,
+  ResponseNode
 } from "../../models/nodes";
 import {
   DataType,

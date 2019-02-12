@@ -7,7 +7,7 @@ import {
   TypeNode,
   TypeReferenceNode,
   UnionTypeNode
-} from "ts-simple-ast";
+} from "ts-morph";
 import {
   arrayType,
   ArrayType,

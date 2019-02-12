@@ -7,9 +7,9 @@ import {
   pathParams,
   queryParams,
   request,
-  response
+  response,
+  securityHeader
 } from "@airtasker/spot";
-import { securityHeader } from "lib/src/syntax/security-header";
 import "./contract-endpoint";
 import { Address, ErrorBody, UserBody } from "./models";
 

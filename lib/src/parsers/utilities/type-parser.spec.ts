@@ -1,4 +1,4 @@
-import { TypeNode } from "ts-simple-ast";
+import { TypeNode } from "ts-morph";
 import {
   BOOLEAN,
   NULL,
