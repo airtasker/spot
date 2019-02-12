@@ -103,8 +103,8 @@ export function openApi3TypeSchema(
         return {
           type: "string",
           enum: compact(
-            type.types.map(
-              t => (t.kind === TypeKind.STRING_LITERAL ? t.value : null)
+            type.types.map(t =>
+              t.kind === TypeKind.STRING_LITERAL ? t.value : null
             )
           )
         };

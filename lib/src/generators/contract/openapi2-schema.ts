@@ -91,8 +91,8 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
         return {
           type: "string",
           enum: compact(
-            type.types.map(
-              t => (t.kind === TypeKind.STRING_LITERAL ? t.value : null)
+            type.types.map(t =>
+              t.kind === TypeKind.STRING_LITERAL ? t.value : null
             )
           )
         };
