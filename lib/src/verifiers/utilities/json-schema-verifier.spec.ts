@@ -18,118 +18,12 @@ import {
   TypeKind,
   UnionType
 } from "../../models/types";
-import { dataExpressionToJson, verifyJsonSchema } from "./json-schema-verifier";
+import { verifyJsonSchema } from "./json-schema-verifier";
 
 describe("json schema verifier", () => {
-  describe("dataExpressionToJson", () => {
-    it("converts null expressions to null", () => {
-      const data: NullExpression = {
-        kind: TypeKind.NULL
-      };
-      expect(dataExpressionToJson(data)).toBeNull();
-    });
-
-    it("converts boolean expressions to boolean values", () => {
-      const data: BooleanExpression = {
-        kind: TypeKind.BOOLEAN_LITERAL,
-        value: true
-      };
-      expect(dataExpressionToJson(data)).toBe(true);
-    });
-
-    it("converts string expressions to string values", () => {
-      const data: StringExpression = {
-        kind: TypeKind.STRING_LITERAL,
-        value: "hello there"
-      };
-      expect(dataExpressionToJson(data)).toBe("hello there");
-    });
-
-    it("converts number expressions to number values", () => {
-      const data: NumberExpression = {
-        kind: TypeKind.NUMBER_LITERAL,
-        value: 456
-      };
-      expect(dataExpressionToJson(data)).toBe(456);
-    });
-
-    it("converts array expressions to array objects", () => {
-      const data: ArrayExpression = {
-        kind: TypeKind.ARRAY,
-        elements: [
-          {
-            kind: TypeKind.STRING_LITERAL,
-            value: "hello"
-          },
-          {
-            kind: TypeKind.NUMBER_LITERAL,
-            value: 123
-          },
-          {
-            kind: TypeKind.BOOLEAN_LITERAL,
-            value: false
-          },
-          {
-            kind: TypeKind.NULL
-          }
-        ]
-      };
-      expect(dataExpressionToJson(data)).toStrictEqual([
-        "hello",
-        123,
-        false,
-        null
-      ]);
-    });
-
-    it("converts object expressions to objects", () => {
-      const data: ObjectExpression = {
-        kind: TypeKind.OBJECT,
-        properties: [
-          {
-            name: "nameA",
-            expression: {
-              kind: TypeKind.STRING_LITERAL,
-              value: "one"
-            }
-          },
-          {
-            name: "nameB",
-            expression: {
-              kind: TypeKind.OBJECT,
-              properties: [
-                {
-                  name: "nameB1",
-                  expression: {
-                    kind: TypeKind.NUMBER_LITERAL,
-                    value: 2
-                  }
-                },
-                {
-                  name: "nameB2",
-                  expression: {
-                    kind: TypeKind.BOOLEAN_LITERAL,
-                    value: false
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      };
-      expect(dataExpressionToJson(data)).toStrictEqual({
-        nameA: "one",
-        nameB: {
-          nameB1: 2,
-          nameB2: false
-        }
-      });
-    });
-  });
-
   describe("verifyJsonSchema", () => {
     describe("null schema", () => {
-      it("validates", () => {
+      it("validates null expression", () => {
         const dataType: NullType = {
           kind: TypeKind.NULL
         };
@@ -139,7 +33,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates", () => {
+      it("invalidates non null expression", () => {
         const dataType: NullType = {
           kind: TypeKind.NULL
         };
@@ -152,7 +46,7 @@ describe("json schema verifier", () => {
     });
 
     describe("boolean schema", () => {
-      it("validates", () => {
+      it("validates boolean expression", () => {
         const dataType: BooleanType = {
           kind: TypeKind.BOOLEAN
         };
@@ -163,7 +57,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates", () => {
+      it("invalidates non boolean expression", () => {
         const dataType: BooleanType = {
           kind: TypeKind.BOOLEAN
         };
@@ -174,7 +68,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).toThrow();
       });
 
-      it("validates literal", () => {
+      it("validates matching boolean literal", () => {
         const dataType: BooleanLiteral = {
           kind: TypeKind.BOOLEAN_LITERAL,
           value: false
@@ -186,7 +80,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates literal", () => {
+      it("invalidates non matching boolean literal", () => {
         const dataType: BooleanLiteral = {
           kind: TypeKind.BOOLEAN_LITERAL,
           value: false
@@ -200,7 +94,7 @@ describe("json schema verifier", () => {
     });
 
     describe("string schema", () => {
-      it("validates", () => {
+      it("validates string expression", () => {
         const dataType: StringType = {
           kind: TypeKind.STRING
         };
@@ -211,7 +105,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates", () => {
+      it("invalidates non string expression", () => {
         const dataType: StringType = {
           kind: TypeKind.STRING
         };
@@ -222,7 +116,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).toThrow();
       });
 
-      it("validates literal", () => {
+      it("validates matching string literal", () => {
         const dataType: StringLiteral = {
           kind: TypeKind.STRING_LITERAL,
           value: "hello"
@@ -234,7 +128,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates literal", () => {
+      it("invalidates non matching string literal", () => {
         const dataType: StringLiteral = {
           kind: TypeKind.STRING_LITERAL,
           value: "hello"
@@ -248,7 +142,7 @@ describe("json schema verifier", () => {
     });
 
     describe("number schema", () => {
-      it("validates", () => {
+      it("validates number expression", () => {
         const dataType: NumberType = {
           kind: TypeKind.NUMBER
         };
@@ -259,7 +153,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates", () => {
+      it("invalidates number expression", () => {
         const dataType: NumberType = {
           kind: TypeKind.NUMBER
         };
@@ -270,7 +164,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).toThrow();
       });
 
-      it("validates literal", () => {
+      it("validates matching number literal", () => {
         const dataType: NumberLiteral = {
           kind: TypeKind.NUMBER_LITERAL,
           value: 54
@@ -282,7 +176,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates literal", () => {
+      it("invalidates non matching number literal", () => {
         const dataType: NumberLiteral = {
           kind: TypeKind.NUMBER_LITERAL,
           value: 54
@@ -296,7 +190,7 @@ describe("json schema verifier", () => {
     });
 
     describe("array schema", () => {
-      it("validates", () => {
+      it("validates array expression", () => {
         const dataType: ArrayType = {
           kind: TypeKind.ARRAY,
           elements: {
@@ -319,7 +213,21 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
       });
 
-      it("invalidates", () => {
+      it("validates an empty array expression", () => {
+        const dataType: ArrayType = {
+          kind: TypeKind.ARRAY,
+          elements: {
+            kind: TypeKind.NUMBER
+          }
+        };
+        const data: ArrayExpression = {
+          kind: TypeKind.ARRAY,
+          elements: []
+        };
+        expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
+      });
+
+      it("invalidates non array expression", () => {
         const dataType: ArrayType = {
           kind: TypeKind.ARRAY,
           elements: {
@@ -344,7 +252,7 @@ describe("json schema verifier", () => {
     });
 
     describe("object schema", () => {
-      it("validates", () => {
+      it("validates object expression", () => {
         const dataType: ObjectType = {
           kind: TypeKind.OBJECT,
           properties: [
@@ -404,6 +312,26 @@ describe("json schema verifier", () => {
                     }
                   }
                 ]
+              }
+            }
+          ]
+        };
+        expect(() => verifyJsonSchema(dataType, data, [])).not.toThrow();
+      });
+
+      it("validates object with extra attributes", () => {
+        const dataType: ObjectType = {
+          kind: TypeKind.OBJECT,
+          properties: []
+        };
+        const data: ObjectExpression = {
+          kind: TypeKind.OBJECT,
+          properties: [
+            {
+              name: "nameA",
+              expression: {
+                kind: TypeKind.STRING_LITERAL,
+                value: "hello"
               }
             }
           ]
@@ -476,7 +404,7 @@ describe("json schema verifier", () => {
     });
 
     describe("schemas with references", () => {
-      it("validates", () => {
+      it("validates object with reference expressions", () => {
         const dataType: ObjectType = {
           kind: TypeKind.OBJECT,
           properties: [
@@ -515,7 +443,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, data, typeStore)).not.toThrow();
       });
 
-      it("invalidates", () => {
+      it("invalidates if referenced expressions do not exist", () => {
         const dataType: ObjectType = {
           kind: TypeKind.OBJECT,
           properties: [
@@ -556,7 +484,7 @@ describe("json schema verifier", () => {
     });
 
     describe("schemas with unions", () => {
-      it("validates", () => {
+      it("validates any expression matching the union", () => {
         const dataType: UnionType = {
           kind: TypeKind.UNION,
           types: [
@@ -580,7 +508,7 @@ describe("json schema verifier", () => {
         expect(() => verifyJsonSchema(dataType, dataB, [])).not.toThrow();
       });
 
-      it("invalidates", () => {
+      it("invalidates an expression that does not match the union", () => {
         const dataType: UnionType = {
           kind: TypeKind.UNION,
           types: [
