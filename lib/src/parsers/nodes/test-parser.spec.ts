@@ -1,4 +1,4 @@
-import { ClassDeclaration } from "ts-simple-ast";
+import { ClassDeclaration } from "ts-morph";
 import { createSourceFile } from "../../test/helper";
 import { parseTest } from "./test-parser";
 

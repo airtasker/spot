@@ -90,7 +90,6 @@ We built Spot with this in mind. Instead of having to juggle various API format 
 <!-- toc -->
 * [Spot](#spot)
 * [Why we built Spot](#why-we-built-spot)
-* [Status](#status)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
@@ -154,7 +153,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
 ## `spot init`
 

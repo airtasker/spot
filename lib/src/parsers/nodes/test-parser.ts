@@ -1,11 +1,10 @@
-import { DataExpression } from "lib/src/models/types";
 import {
   ArrayLiteralExpression,
   MethodDeclaration,
   ObjectLiteralExpression,
   ts,
   TypeGuards
-} from "ts-simple-ast";
+} from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import {
   TestNode,
@@ -13,6 +12,7 @@ import {
   TestResponseNode,
   TestStateNode
 } from "../../models/nodes";
+import { DataExpression } from "../../models/types";
 import { parseExpression } from "../utilities/expression-parser";
 import {
   extractDecoratorFactoryConfiguration,

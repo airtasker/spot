@@ -1,4 +1,4 @@
-import { ParameterDeclaration, PropertySignature } from "ts-simple-ast";
+import { ParameterDeclaration, PropertySignature } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import { HeaderNode } from "../../models/nodes";
 import {

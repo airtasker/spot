@@ -1,4 +1,4 @@
-import { ClassDeclaration } from "ts-simple-ast";
+import { ClassDeclaration } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import { ApiNode } from "../../models/nodes";
 import {

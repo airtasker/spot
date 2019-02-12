@@ -1,4 +1,5 @@
-import { CompilerOptions, Project, SourceFile, ts } from "ts-simple-ast";
+import path from "path";
+import { CompilerOptions, Project, SourceFile, ts } from "ts-morph";
 import { Locatable } from "../models/locatable";
 import { ContractNode, EndpointNode } from "../models/nodes";
 import { ReferenceType } from "../models/types";
@@ -14,7 +15,6 @@ import {
   retrieveTypeReferencesFromType,
   uniqueReferences
 } from "./utilities/type-reference-resolver";
-import path from "path";
 
 export function parse(sourcePath: string): ContractNode {
   const compilerOptions: CompilerOptions = {

@@ -1,4 +1,4 @@
-import { MethodDeclaration } from "ts-simple-ast";
+import { MethodDeclaration } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import { DefaultResponseNode } from "../../models/nodes";
 import {

@@ -1,4 +1,4 @@
-import { MethodDeclaration } from "ts-simple-ast";
+import { MethodDeclaration } from "ts-morph";
 import { createSourceFile } from "../../test/helper";
 import { parseRequest } from "./request-parser";
 

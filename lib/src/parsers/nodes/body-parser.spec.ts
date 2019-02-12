@@ -1,4 +1,4 @@
-import { MethodDeclaration } from "ts-simple-ast";
+import { MethodDeclaration } from "ts-morph";
 import { NUMBER, STRING, TypeKind } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
 import { parseBody } from "./body-parser";

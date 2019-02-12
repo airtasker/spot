@@ -1,4 +1,4 @@
-import { ParameterDeclaration } from "ts-simple-ast";
+import { ParameterDeclaration } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import { BodyNode } from "../../models/nodes";
 import { ensureNodeNotOptional } from "../utilities/parser-utility";
