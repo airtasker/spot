@@ -1,6 +1,6 @@
 import { HttpMethod } from "./http";
-import { DataType, DataExpression } from "./types";
 import { Locatable } from "./locatable";
+import { DataExpression, DataType } from "./types";
 
 export interface ContractNode {
   api: Locatable<ApiNode>;
@@ -91,24 +91,23 @@ export interface TestNode {
 
 export interface TestStateNode {
   name: string;
-  params?: { name: string; expression: DataExpression }[];
+  params?: AttributeExpression[];
 }
 
 export interface TestRequestNode {
-  headers?: { name: string; expression: DataExpression }[];
-  pathParams?: {
-    name: string;
-    expression: DataExpression;
-  }[];
-  queryParams?: {
-    name: string;
-    expression: DataExpression;
-  }[];
+  headers?: AttributeExpression[];
+  pathParams?: AttributeExpression[];
+  queryParams?: AttributeExpression[];
   body?: DataExpression;
 }
 
 export interface TestResponseNode {
   status: Locatable<number>;
-  headers?: { name: string; expression: DataExpression }[];
+  headers?: AttributeExpression[];
   body?: DataExpression;
+}
+
+export interface AttributeExpression {
+  name: string;
+  expression: DataExpression;
 }
