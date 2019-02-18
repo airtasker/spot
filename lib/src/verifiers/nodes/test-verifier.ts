@@ -1,12 +1,12 @@
 import { Locatable } from "../../models/locatable";
 import {
+  AttributeExpression,
   EndpointNode,
+  HeaderNode,
   RequestNode,
   TestNode,
   TestRequestNode,
-  TypeNode,
-  HeaderNode,
-  AttributeExpression
+  TypeNode
 } from "../../models/nodes";
 import { verifyJsonSchema } from "../utilities/json-schema-verifier";
 import { VerificationError } from "../verification-error";
