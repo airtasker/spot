@@ -1,88 +1,38 @@
-import { EndpointNode } from "../../models/nodes";
+import { HttpMethod } from "../../models/http";
+import { BodyNode, EndpointNode, PathParamNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
+import { fakeLocatable } from "../../test/fake-locatable";
 import { verifyEndpointNode } from "./endpoint-verifier";
 
 describe("endpoint node verifier", () => {
   test("valid for correct usage", () => {
     const endpointNode: EndpointNode = {
-      name: {
-        value: "SomeEndpoint",
-        location: "somelocation.ts",
-        line: 5
-      },
-      tags: {
-        value: ["Some Tag"],
-        location: "somelocation.ts",
-        line: 6
-      },
-      method: {
-        value: "POST",
-        location: "somelocation.ts",
-        line: 7
-      },
-      path: {
-        value: "/a/:b/c",
-        location: "somelocation.ts",
-        line: 8
-      },
-      request: {
-        value: {
-          pathParams: {
-            value: [
-              {
-                value: {
-                  name: {
-                    value: "b",
-                    location: "somelocation.ts",
-                    line: 5
-                  },
-                  type: {
-                    kind: TypeKind.STRING
-                  }
-                },
-                location: "somelocation.ts",
-                line: 5
-              }
-            ],
-            location: "somelocation.ts",
-            line: 7
-          },
-          body: {
-            value: {
-              type: {
-                kind: TypeKind.STRING
-              }
-            },
-            location: "somelocation.ts",
-            line: 11
+      name: fakeLocatable("SomeEndpoint"),
+      tags: fakeLocatable(["Some Tag"]),
+      method: fakeLocatable<HttpMethod>("POST"),
+      path: fakeLocatable("/a/:b/c"),
+      request: fakeLocatable({
+        pathParams: fakeLocatable([
+          fakeLocatable<PathParamNode>({
+            name: fakeLocatable("b"),
+            type: {
+              kind: TypeKind.STRING
+            }
+          })
+        ]),
+        body: fakeLocatable<BodyNode>({
+          type: {
+            kind: TypeKind.STRING
           }
-        },
-        location: "somelocation.ts",
-        line: 11
-      },
+        })
+      }),
       responses: [
-        {
-          value: {
-            status: {
-              value: 201,
-              location: "somelocation.ts",
-              line: 7
-            }
-          },
-          location: "somelocation.ts",
-          line: 5
-        },
-        {
-          value: {
-            status: {
-              value: 400,
-              location: "somelocation.ts",
-              line: 7
-            }
-          },
-          location: "somelocation.ts",
-          line: 5
-        }
+        fakeLocatable({
+          status: fakeLocatable(201)
+        }),
+        fakeLocatable({
+          status: fakeLocatable(400)
+        })
       ],
       tests: []
     };

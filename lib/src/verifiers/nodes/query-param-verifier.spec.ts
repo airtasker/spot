@@ -1,15 +1,12 @@
 import { QueryParamNode } from "../../models/nodes";
-import { verifyQueryParamNode } from "./query-param-verifier";
 import { TypeKind } from "../../models/types";
+import { fakeLocatable } from "../../test/fake-locatable";
+import { verifyQueryParamNode } from "./query-param-verifier";
 
 describe("query param node verifier", () => {
   test("valid for correct usage", () => {
     const queryParamNode: QueryParamNode = {
-      name: {
-        value: "somename",
-        location: "somelocation.ts",
-        line: 4
-      },
+      name: fakeLocatable("somename"),
       type: {
         kind: TypeKind.STRING
       },
@@ -20,11 +17,7 @@ describe("query param node verifier", () => {
 
   test("invalid for incorrect usage", () => {
     const queryParamNode: QueryParamNode = {
-      name: {
-        value: "so$men ame",
-        location: "somelocation.ts",
-        line: 4
-      },
+      name: fakeLocatable("so$men ame"),
       type: {
         kind: TypeKind.NULL
       },
