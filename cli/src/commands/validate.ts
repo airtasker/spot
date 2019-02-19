@@ -26,7 +26,7 @@ export default class Validate extends Command {
 
   async run() {
     const { args } = this.parse(Validate);
-    safeParse.bind(this)(args[ARG_API]);
+    const contract = safeParse.call(this, args[ARG_API]).definition;
     this.log("Contract is valid");
   }
 }
