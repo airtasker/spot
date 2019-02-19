@@ -1,15 +1,12 @@
 import { PathParamNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
+import { fakeLocatable } from "../../test/fake-locatable";
 import { verifyPathParamNode } from "./path-param-verifier";
 
 describe("path param node verifier", () => {
   test("valid for correct usage", () => {
     const pathParamNode: PathParamNode = {
-      name: {
-        value: "somename",
-        location: "somelocation.ts",
-        line: 4
-      },
+      name: fakeLocatable("somename"),
       type: {
         kind: TypeKind.STRING
       }
@@ -19,11 +16,7 @@ describe("path param node verifier", () => {
 
   test("invalid for incorrect usage", () => {
     const pathParamNode: PathParamNode = {
-      name: {
-        value: "so$men ame",
-        location: "somelocation.ts",
-        line: 4
-      },
+      name: fakeLocatable("so$men ame"),
       type: {
         kind: TypeKind.NULL
       }

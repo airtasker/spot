@@ -1,45 +1,26 @@
-import { ResponseNode } from "../../models/nodes";
+import { BodyNode, HeaderNode, ResponseNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
+import { fakeLocatable } from "../../test/fake-locatable";
 import { verifyResponseNode } from "./response-verifier";
 
 describe("response node verifier", () => {
   test("valid for correct usage", () => {
     const responseNode: ResponseNode = {
-      status: {
-        value: 201,
-        location: "somelocation.ts",
-        line: 5
-      },
-      headers: {
-        value: [
-          {
-            value: {
-              name: {
-                value: "someheader",
-                location: "somelocation.ts",
-                line: 5
-              },
-              type: {
-                kind: TypeKind.STRING
-              },
-              optional: true
-            },
-            location: "somelocation.ts",
-            line: 5
-          }
-        ],
-        location: "somelocation.ts",
-        line: 7
-      },
-      body: {
-        value: {
+      status: fakeLocatable(201),
+      headers: fakeLocatable([
+        fakeLocatable<HeaderNode>({
+          name: fakeLocatable("someheader"),
           type: {
             kind: TypeKind.STRING
-          }
-        },
-        location: "somelocation.ts",
-        line: 11
-      }
+          },
+          optional: true
+        })
+      ]),
+      body: fakeLocatable<BodyNode>({
+        type: {
+          kind: TypeKind.STRING
+        }
+      })
     };
     expect(verifyResponseNode(responseNode, [])).toHaveLength(0);
   });
