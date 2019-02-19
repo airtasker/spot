@@ -1,15 +1,12 @@
 import { HeaderNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
+import { fakeLocatable } from "../../test/fake-locatable";
 import { verifyHeaderNode } from "./header-verifier";
 
 describe("header node verifier", () => {
   test("valid for correct usage", () => {
     const headerNode: HeaderNode = {
-      name: {
-        value: "somename",
-        location: "somelocation.ts",
-        line: 4
-      },
+      name: fakeLocatable("somename"),
       type: {
         kind: TypeKind.STRING
       },
@@ -20,11 +17,7 @@ describe("header node verifier", () => {
 
   test("invalid for incorrect usage", () => {
     const headerNode: HeaderNode = {
-      name: {
-        value: "so$men ame",
-        location: "somelocation.ts",
-        line: 4
-      },
+      name: fakeLocatable("so$men ame"),
       type: {
         kind: TypeKind.NULL
       },

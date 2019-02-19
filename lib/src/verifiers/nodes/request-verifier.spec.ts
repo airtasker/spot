@@ -1,81 +1,48 @@
-import { RequestNode } from "../../models/nodes";
+import {
+  BodyNode,
+  HeaderNode,
+  PathParamNode,
+  QueryParamNode,
+  RequestNode
+} from "../../models/nodes";
 import { TypeKind } from "../../models/types";
+import { fakeLocatable } from "../../test/fake-locatable";
 import { verifyRequestNode } from "./request-verifier";
 
 describe("request node verifier", () => {
   test("valid for correct usage", () => {
     const requestNode: RequestNode = {
-      headers: {
-        value: [
-          {
-            value: {
-              name: {
-                value: "someheader",
-                location: "somelocation.ts",
-                line: 5
-              },
-              type: {
-                kind: TypeKind.STRING
-              },
-              optional: true
-            },
-            location: "somelocation.ts",
-            line: 5
-          }
-        ],
-        location: "somelocation.ts",
-        line: 7
-      },
-      pathParams: {
-        value: [
-          {
-            value: {
-              name: {
-                value: "somepathparam",
-                location: "somelocation.ts",
-                line: 5
-              },
-              type: {
-                kind: TypeKind.STRING
-              }
-            },
-            location: "somelocation.ts",
-            line: 5
-          }
-        ],
-        location: "somelocation.ts",
-        line: 7
-      },
-      queryParams: {
-        value: [
-          {
-            value: {
-              name: {
-                value: "somequeryparam",
-                location: "somelocation.ts",
-                line: 5
-              },
-              type: {
-                kind: TypeKind.STRING
-              },
-              optional: true
-            },
-            location: "somelocation.ts",
-            line: 5
-          }
-        ],
-        location: "somelocation.ts",
-        line: 7
-      },
-      body: {
-        value: {
+      headers: fakeLocatable([
+        fakeLocatable<HeaderNode>({
+          name: fakeLocatable("someheader"),
+          type: {
+            kind: TypeKind.STRING
+          },
+          optional: true
+        })
+      ]),
+      pathParams: fakeLocatable([
+        fakeLocatable<PathParamNode>({
+          name: fakeLocatable("somepathparam"),
           type: {
             kind: TypeKind.STRING
           }
-        },
-        location: "somelocation.ts",
-        line: 11
-      }
+        })
+      ]),
+      queryParams: fakeLocatable([
+        fakeLocatable<QueryParamNode>({
+          name: fakeLocatable("somequeryparam"),
+          type: {
+            kind: TypeKind.STRING
+          },
+          optional: true
+        })
+      ]),
+      body: fakeLocatable<BodyNode>({
+        type: {
+          kind: TypeKind.STRING
+        }
+      })
     };
     expect(verifyRequestNode(requestNode, [])).toHaveLength(0);
   });
