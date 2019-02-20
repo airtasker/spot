@@ -25,7 +25,7 @@ describe("@test parser", () => {
             testBody: "why"
           }
         }
-      })
+      }, { allowInvalidRequest: true })
       testMethod() {}
     `);
     const method = klass.getMethodOrThrow("testMethod");
@@ -38,6 +38,9 @@ describe("@test parser", () => {
           line: 4,
           location: expect.stringMatching(/main\.ts$/),
           value: "test description"
+        },
+        options: {
+          allowInvalidRequest: true
         },
         request: {
           line: 7,

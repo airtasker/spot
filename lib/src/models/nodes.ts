@@ -87,6 +87,9 @@ export interface TestNode {
   states?: TestStateNode[];
   request?: Locatable<TestRequestNode>;
   response: Locatable<TestResponseNode>;
+  options: {
+    allowInvalidRequest: boolean;
+  };
 }
 
 export interface TestStateNode {
