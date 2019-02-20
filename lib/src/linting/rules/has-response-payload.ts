@@ -12,16 +12,25 @@ import { LintingRule } from "../rule";
  */
 export const hasResponsePayload: LintingRule = contract => {
   return unnest(
-    contract.endpoints.map(endpoint =>
-      findResponses(endpoint)
-        .filter(hasNoPayload)
-        .map(response => ({
-          message: `${responseName(response)} is missing a body in endpoint ${
-            endpoint.value.name.value
-          }`,
-          source: response
-        }))
-    )
+    contract.endpoints.map(endpoint => {
+      const responses = findResponses(endpoint);
+      if (responses.length === 0) {
+        return [
+          {
+            message: `endpoint ${
+              endpoint.value.name.value
+            } does not declare any response`,
+            source: endpoint
+          }
+        ];
+      }
+      return responses.filter(hasNoPayload).map(response => ({
+        message: `${responseName(response)} is missing a body in endpoint ${
+          endpoint.value.name.value
+        }`,
+        source: response
+      }));
+    })
   );
 };
 

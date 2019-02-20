@@ -16,7 +16,7 @@ export const hasRequestPayload: LintingRule = contract => {
 const mutationEndpointsHaveRequestPayload: LintingRule = contract => {
   return contract.endpoints
     .filter(isMutationEndpoint)
-    .filter(endpointHasRequestPayload)
+    .filter(complement(endpointHasRequestPayload))
     .map(endpoint => ({
       message: `${
         endpoint.value.name.value
@@ -30,7 +30,7 @@ const mutationEndpointsHaveRequestPayload: LintingRule = contract => {
 const nonMutationEndpointsDoNotHaveRequestPayload: LintingRule = contract => {
   return contract.endpoints
     .filter(complement(isMutationEndpoint))
-    .filter(complement(endpointHasRequestPayload))
+    .filter(endpointHasRequestPayload)
     .map(endpoint => ({
       message: `${
         endpoint.value.name.value
@@ -52,6 +52,6 @@ function isMutationEndpoint(endpoint: Locatable<EndpointNode>) {
   }
 }
 
-function endpointHasRequestPayload(endpoint: Locatable<EndpointNode>) {
-  return Boolean(endpoint.value.request);
+function endpointHasRequestPayload(endpoint: Locatable<EndpointNode>): boolean {
+  return Boolean(endpoint.value.request && endpoint.value.request.value.body);
 }
