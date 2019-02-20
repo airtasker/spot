@@ -1,6 +1,7 @@
 import { PathParamNode, TypeNode } from "../../models/nodes";
-import { NumberLikeKind, StringLikeKind } from "../../models/types";
-import { possibleRootKinds } from "../utilities/type-resolver";
+import { DataType, TypeKind } from "../../models/types";
+import { isPrimitiveType } from "../utilities/primitive-check";
+import { possibleRootKinds, resolveType } from "../utilities/type-resolver";
 import { VerificationError } from "../verification-error";
 
 export function verifyPathParamNode(
@@ -18,16 +19,28 @@ export function verifyPathParamNode(
     });
   }
 
-  const typeKinds = possibleRootKinds(pathParam.type, typeStore);
-  const allowedKinds = StringLikeKind.concat(NumberLikeKind);
-
-  if (!typeKinds.every(kind => allowedKinds.includes(kind))) {
+  const pathParamType = resolveType(pathParam.type, typeStore);
+  if (
+    (pathParamType.kind === TypeKind.ARRAY &&
+      !hasOnlyPrimitiveTypes(typeStore, pathParamType.elements)) ||
+    !hasOnlyPrimitiveTypes(typeStore, pathParamType)
+  ) {
+    // Top-level primitives are allowed, as well as arrays of primitives.
     errors.push({
-      message: "path param type may only stem from string or number types",
+      message:
+        "path param type may only be a primitive or an array of primitivies",
       location: pathParam.name.location,
       line: pathParam.name.line
     });
   }
 
   return errors;
+}
+
+function hasOnlyPrimitiveTypes(
+  typeStore: TypeNode[],
+  dataType: DataType
+): boolean {
+  const typeKinds = possibleRootKinds(dataType, typeStore);
+  return typeKinds.every(isPrimitiveType);
 }
