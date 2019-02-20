@@ -1,5 +1,5 @@
-import { DataType, TypeKind } from "lib/src/models/types";
 import { QueryParamNode, TypeNode } from "../../models/nodes";
+import { DataType, TypeKind } from "../../models/types";
 import { isPrimitiveType } from "../utilities/primitive-check";
 import { possibleRootKinds, resolveType } from "../utilities/type-resolver";
 import { VerificationError } from "../verification-error";
