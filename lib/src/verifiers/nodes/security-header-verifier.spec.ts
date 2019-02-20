@@ -1,15 +1,12 @@
 import { SecurityHeaderNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
+import { fakeLocatable } from "../../test/fake-locatable";
 import { verifySecurityHeaderNode } from "./security-header-verifier";
 
 describe("security header node verifier", () => {
   test("valid for correct usage", () => {
     const responseNode: SecurityHeaderNode = {
-      name: {
-        value: "x-auth-token",
-        location: "somelocation.ts",
-        line: 5
-      },
+      name: fakeLocatable("x-auth-token"),
       type: {
         kind: TypeKind.STRING
       }
@@ -19,11 +16,7 @@ describe("security header node verifier", () => {
 
   test("invalid for incorrect usage", () => {
     const responseNode: SecurityHeaderNode = {
-      name: {
-        value: "x-auth-token",
-        location: "somelocation.ts",
-        line: 5
-      },
+      name: fakeLocatable("x-auth-token"),
       type: {
         kind: TypeKind.NUMBER
       }
@@ -33,7 +26,7 @@ describe("security header node verifier", () => {
     expect(errors).toContainEqual({
       message: "security header type may only be a string type",
       location: "somelocation.ts",
-      line: 5
+      line: 4
     });
   });
 });

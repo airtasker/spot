@@ -1,25 +1,18 @@
 import { ApiNode } from "../../models/nodes";
+import { fakeLocatable } from "../../test/fake-locatable";
 import { verifyApiNode } from "./api-verifier";
 
 describe("api node verifier", () => {
   test("valid for correct usage", () => {
     const apiNode: ApiNode = {
-      name: {
-        value: "somestring",
-        location: "somelocation.ts",
-        line: 4
-      }
+      name: fakeLocatable("somestring")
     };
     expect(verifyApiNode(apiNode, [])).toHaveLength(0);
   });
 
   test("invalid for incorrect usage", () => {
     const apiNode: ApiNode = {
-      name: {
-        value: "  somest*&^%$ring",
-        location: "somelocation.ts",
-        line: 4
-      }
+      name: fakeLocatable("  somest*&^%$ring")
     };
     const errors = verifyApiNode(apiNode, []);
     expect(errors).toHaveLength(2);
