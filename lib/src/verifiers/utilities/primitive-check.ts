@@ -1,11 +1,11 @@
 import assertNever from "assert-never";
-import { NotReferenceTypeKind, TypeKind } from "lib/src/models/types";
+import { NotReferenceTypeKind, TypeKind } from "../../models/types";
 
 /**
  * Returns whether a type kind corresponds to a primitive type.
  *
- * Note that a reference type is not considered to be primitive. You should
- * call `resolveType()` prior.
+ * Note that you should call `resolveType()` prior to ensure the type is not
+ * a reference kind.
  */
 export function isPrimitiveType(typeKind: NotReferenceTypeKind): boolean {
   switch (typeKind) {
