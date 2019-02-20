@@ -44,35 +44,32 @@ export function openApiV2(contractDefinition: ContractDefinition): OpenApiV2 {
         name: "TODO"
       }
     },
-    paths: contractDefinition.endpoints.reduce(
-      (acc, endpoint) => {
-        const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
-        acc[openApiPath] = acc[openApiPath] || {};
-        acc[openApiPath][endpoint.method.toLowerCase()] = {
-          operationId: endpoint.name,
-          description: endpoint.description,
-          tags: endpoint.tags,
-          parameters: getParameters(endpoint),
-          responses: {
-            ...(endpoint.defaultResponse
-              ? { default: response(endpoint.defaultResponse) }
-              : {}),
-            ...endpoint.responses.reduce<{
-              [statusCode: string]: OpenAPIV2Response;
-            }>((acc, responseNode) => {
-              acc[responseNode.status.toString(10)] = response(responseNode);
-              return acc;
-            }, {})
-          }
-        };
-        return acc;
-      },
-      {} as {
-        [endpointPath: string]: {
-          [method: string]: OpenAPIV2Operation;
-        };
-      }
-    ),
+    paths: contractDefinition.endpoints.reduce<{
+      [endpointPath: string]: {
+        [method: string]: OpenAPIV2Operation;
+      };
+    }>((acc, endpoint) => {
+      const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
+      acc[openApiPath] = acc[openApiPath] || {};
+      acc[openApiPath][endpoint.method.toLowerCase()] = {
+        operationId: endpoint.name,
+        description: endpoint.description,
+        tags: endpoint.tags,
+        parameters: getParameters(endpoint),
+        responses: {
+          ...(endpoint.defaultResponse
+            ? { default: response(endpoint.defaultResponse) }
+            : {}),
+          ...endpoint.responses.reduce<{
+            [statusCode: string]: OpenAPIV2Response;
+          }>((acc, responseNode) => {
+            acc[responseNode.status.toString(10)] = response(responseNode);
+            return acc;
+          }, {})
+        }
+      };
+      return acc;
+    }, {}),
     definitions: contractDefinition.types.reduce<{
       [typeName: string]: OpenAPI2SchemaType;
     }>((acc, typeNode) => {

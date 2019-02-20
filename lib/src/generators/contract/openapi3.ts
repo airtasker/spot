@@ -49,56 +49,53 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
           ]
         }
       : {}),
-    paths: contractDefinition.endpoints.reduce(
-      (acc, endpoint) => {
-        const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
-        acc[openApiPath] = acc[openApiPath] || {};
-        acc[openApiPath][endpoint.method.toLowerCase()] = {
-          operationId: endpoint.name,
-          description: endpoint.description,
-          tags: endpoint.tags,
-          parameters: getParameters(contractDefinition.types, endpoint),
-          ...(endpoint.request.body && {
-            requestBody: {
-              content: {
-                "application/json": {
-                  schema: openApi3TypeSchema(
-                    contractDefinition.types,
-                    endpoint.request.body.type
-                  )
-                }
-              },
-              description: endpoint.description || ""
-            }
-          }),
-          responses: {
-            ...(endpoint.defaultResponse
-              ? {
-                  default: response(
-                    contractDefinition.types,
-                    endpoint.defaultResponse
-                  )
-                }
-              : {}),
-            ...endpoint.responses.reduce<{
-              [statusCode: string]: OpenAPIV3Body;
-            }>((acc, responseNode) => {
-              acc[responseNode.status.toString(10)] = response(
-                contractDefinition.types,
-                responseNode
-              );
-              return acc;
-            }, {})
+    paths: contractDefinition.endpoints.reduce<{
+      [endpointPath: string]: {
+        [method: string]: OpenAPIV3Operation;
+      };
+    }>((acc, endpoint) => {
+      const openApiPath = endpoint.path.replace(/:(\w+)/g, "{$1}");
+      acc[openApiPath] = acc[openApiPath] || {};
+      acc[openApiPath][endpoint.method.toLowerCase()] = {
+        operationId: endpoint.name,
+        description: endpoint.description,
+        tags: endpoint.tags,
+        parameters: getParameters(contractDefinition.types, endpoint),
+        ...(endpoint.request.body && {
+          requestBody: {
+            content: {
+              "application/json": {
+                schema: openApi3TypeSchema(
+                  contractDefinition.types,
+                  endpoint.request.body.type
+                )
+              }
+            },
+            description: endpoint.description || ""
           }
-        };
-        return acc;
-      },
-      {} as {
-        [endpointPath: string]: {
-          [method: string]: OpenAPIV3Operation;
-        };
-      }
-    ),
+        }),
+        responses: {
+          ...(endpoint.defaultResponse
+            ? {
+                default: response(
+                  contractDefinition.types,
+                  endpoint.defaultResponse
+                )
+              }
+            : {}),
+          ...endpoint.responses.reduce<{
+            [statusCode: string]: OpenAPIV3Body;
+          }>((acc, responseNode) => {
+            acc[responseNode.status.toString(10)] = response(
+              contractDefinition.types,
+              responseNode
+            );
+            return acc;
+          }, {})
+        }
+      };
+      return acc;
+    }, {}),
     components: {
       schemas: contractDefinition.types.reduce<{
         [typeName: string]: OpenAPI3SchemaType;
