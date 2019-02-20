@@ -2,14 +2,12 @@ import assertNever from "assert-never";
 import { NotReferenceTypeKind, TypeKind } from "../../models/types";
 
 /**
- * Returns whether a type kind corresponds to a primitive type.
+ * Returns whether a type kind corresponds to a type that can be safely represented in a URL.
  *
- * Note that you should call `resolveType()` prior to ensure the type is not
- * a reference kind.
+ * You should call `resolveType()` prior to ensure the type is not a reference kind.
  */
-export function isPrimitiveType(typeKind: NotReferenceTypeKind): boolean {
+export function isUrlSafe(typeKind: NotReferenceTypeKind): boolean {
   switch (typeKind) {
-    case TypeKind.NULL:
     case TypeKind.BOOLEAN:
     case TypeKind.STRING:
     case TypeKind.NUMBER:
@@ -20,6 +18,7 @@ export function isPrimitiveType(typeKind: NotReferenceTypeKind): boolean {
     case TypeKind.STRING_LITERAL:
     case TypeKind.NUMBER_LITERAL:
       return true;
+    case TypeKind.NULL:
     case TypeKind.OBJECT:
     case TypeKind.ARRAY:
     case TypeKind.UNION:

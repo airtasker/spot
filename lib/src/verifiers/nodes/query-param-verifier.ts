@@ -1,6 +1,6 @@
 import { QueryParamNode, TypeNode } from "../../models/nodes";
 import { DataType, TypeKind } from "../../models/types";
-import { isPrimitiveType } from "../utilities/primitive-check";
+import { isUrlSafe } from "../utilities/is-url-safe";
 import { possibleRootKinds, resolveType } from "../utilities/type-resolver";
 import { VerificationError } from "../verification-error";
 
@@ -20,9 +20,10 @@ export function verifyQueryParamNode(
   }
 
   const queryParamType = resolveType(queryParam.type, typeStore);
-  if (!hasNoNonPrimitiveArrayTypes(typeStore, queryParamType)) {
+  if (!hasNoUrlUnsafeArrayTypes(typeStore, queryParamType)) {
     errors.push({
-      message: "query param type may not have non-primitive array types",
+      message:
+        "query param type may only be a URL-safe, an object, or an array of non-primitives",
       location: queryParam.name.location,
       line: queryParam.name.line
     });
@@ -30,27 +31,27 @@ export function verifyQueryParamNode(
   return errors;
 }
 
-function hasNoNonPrimitiveArrayTypes(
+function hasNoUrlUnsafeArrayTypes(
   typeStore: TypeNode[],
   dataType: DataType
 ): boolean {
   if (dataType.kind === TypeKind.OBJECT) {
     return dataType.properties
-      .map(p => hasNoNonPrimitiveArrayTypes(typeStore, p.type))
+      .map(p => hasNoUrlUnsafeArrayTypes(typeStore, p.type))
       .every(Boolean);
   } else if (dataType.kind === TypeKind.ARRAY) {
     // Arrays of primitives are allowed.
-    return hasOnlyPrimitiveTypes(typeStore, dataType.elements);
+    return hasOnlyUrlSafeTypes(typeStore, dataType.elements);
   } else {
     // Top-level primitives are allowed.
-    return hasOnlyPrimitiveTypes(typeStore, dataType);
+    return hasOnlyUrlSafeTypes(typeStore, dataType);
   }
 }
 
-function hasOnlyPrimitiveTypes(
+function hasOnlyUrlSafeTypes(
   typeStore: TypeNode[],
   dataType: DataType
 ): boolean {
   const typeKinds = possibleRootKinds(dataType, typeStore);
-  return typeKinds.every(isPrimitiveType);
+  return typeKinds.every(isUrlSafe);
 }
