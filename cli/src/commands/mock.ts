@@ -40,7 +40,7 @@ export default class Mock extends Command {
       flags: { port, pathPrefix }
     } = this.parse(Mock);
     try {
-      const contract = safeParse.bind(this)(args[ARG_API]);
+      const contract = safeParse.call(this, args[ARG_API]).definition;
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix || "",

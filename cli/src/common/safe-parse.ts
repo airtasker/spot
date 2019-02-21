@@ -3,11 +3,12 @@ import { parse } from "../../../lib/src/parsers/parser";
 import { verify } from "../../../lib/src/verifiers/verifier";
 import { cleanse } from "../../../lib/src/cleansers/cleanser";
 import { ContractDefinition } from "../../../lib/src/models/definitions";
+import { ContractNode } from "../../../lib/src/models/nodes";
 
 export function safeParse(
   this: Command,
   contractPath: string
-): ContractDefinition {
+): { definition: ContractDefinition; source: ContractNode } {
   try {
     const parsedContract = parse(contractPath);
     const contractErrors = verify(parsedContract);
@@ -17,7 +18,10 @@ export function safeParse(
       });
       throw new Error("Contract is not valid");
     }
-    return cleanse(parsedContract);
+    return {
+      definition: cleanse(parsedContract),
+      source: parsedContract
+    };
   } catch (e) {
     throw this.error(e, { exit: 1 });
   }
