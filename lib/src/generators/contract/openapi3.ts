@@ -137,11 +137,17 @@ function getParameters(
           description: pathParam.description,
           schema: schemaType,
           required: true,
-          style:
-            resolvedType.kind === TypeKind.ARRAY
-              ? "pipeDelimited"
-              : "deepObject",
-          explode: true
+          ...(resolvedType.kind === TypeKind.OBJECT
+            ? {
+                style: "deepObject",
+                explode: true
+              }
+            : resolvedType.kind === TypeKind.ARRAY
+            ? {
+                style: "pipeDelimited",
+                explode: true
+              }
+            : {})
         };
       }
     )

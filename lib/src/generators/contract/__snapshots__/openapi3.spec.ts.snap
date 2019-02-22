@@ -33,9 +33,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
             \\"schema\\": {
               \\"type\\": \\"string\\"
             },
-            \\"required\\": true,
-            \\"style\\": \\"deepObject\\",
-            \\"explode\\": true
+            \\"required\\": true
           },
           {
             \\"in\\": \\"path\\",
@@ -44,9 +42,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
             \\"schema\\": {
               \\"type\\": \\"string\\"
             },
-            \\"required\\": true,
-            \\"style\\": \\"deepObject\\",
-            \\"explode\\": true
+            \\"required\\": true
           },
           {
             \\"in\\": \\"query\\",
@@ -117,9 +113,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
             \\"schema\\": {
               \\"type\\": \\"string\\"
             },
-            \\"required\\": true,
-            \\"style\\": \\"deepObject\\",
-            \\"explode\\": true
+            \\"required\\": true
           },
           {
             \\"in\\": \\"query\\",
@@ -347,16 +341,12 @@ paths:
           schema:
             type: string
           required: true
-          style: deepObject
-          explode: true
         - in: path
           name: userId
           description: user identifier
           schema:
             type: string
           required: true
-          style: deepObject
-          explode: true
         - in: query
           name: sample-query
           description: a demo query param
@@ -403,8 +393,6 @@ paths:
           schema:
             type: string
           required: true
-          style: deepObject
-          explode: true
         - in: query
           name: sample-query
           description: a demo query param
