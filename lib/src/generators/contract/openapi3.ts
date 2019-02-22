@@ -8,6 +8,8 @@ import {
   EndpointDefinition,
   TypeDefinition
 } from "../../models/definitions";
+import { TypeKind } from "../../models/types";
+import { resolveType } from "../../verifiers/utilities/type-resolver";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
 
 const SECURITY_HEADER_SCHEME_NAME = "securityHeader";
@@ -127,26 +129,27 @@ function getParameters(
   const parameters = endpoint.request.pathParams
     .map(
       (pathParam): OpenAPIV3Parameter => {
+        const resolvedType = resolveType(pathParam.type, types);
         const schemaType = openApi3TypeSchema(types, pathParam.type);
-        if ("type" in schemaType && schemaType.type === "object") {
-          throw new Error(`Unsupported object type in path parameter`);
-        }
         return {
           in: "path",
           name: pathParam.name,
           description: pathParam.description,
           schema: schemaType,
-          required: true
+          required: true,
+          style:
+            resolvedType.kind === TypeKind.ARRAY
+              ? "pipeDelimited"
+              : "deepObject",
+          explode: true
         };
       }
     )
     .concat(
       endpoint.request.queryParams.map(
         (queryParam): OpenAPIV3Parameter => {
+          const resolvedType = resolveType(queryParam.type, types);
           const schemaType = openApi3TypeSchema(types, queryParam.type);
-          if ("type" in schemaType && schemaType.type === "object") {
-            throw new Error(`Unsupported object type in query parameter`);
-          }
           return {
             in: "query",
             name: queryParam.name,
@@ -272,6 +275,15 @@ export interface OpenAPIV3Parameter {
   description?: string;
   required: boolean;
   schema: OpenAPI3SchemaType;
+  explode?: boolean;
+  style?:
+    | "matrix"
+    | "label"
+    | "form"
+    | "simple"
+    | "spaceDelimited"
+    | "pipeDelimited"
+    | "deepObject";
 }
 
 export interface OpenAPIV3Body {
