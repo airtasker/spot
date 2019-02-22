@@ -6,6 +6,7 @@ import {
   queryParams,
   request,
   response,
+  String,
   test
 } from "@airtasker/spot";
 import { ErrorBody, UserBody } from "./models";
@@ -22,19 +23,19 @@ class GetUser {
     @pathParams
     pathParams: {
       /** company identifier */
-      companyId: string;
+      companyId: String;
       /** user identifier */
-      userId: string;
+      userId: String;
     },
     @headers
     headers: {
       /** Auth Header */
-      "x-auth-token": string;
+      "x-auth-token": String;
     },
     @queryParams
     queryParams: {
       /** a demo query param */
-      "sample-query"?: string;
+      "sample-query"?: String;
     }
   ) {}
 
@@ -44,7 +45,7 @@ class GetUser {
     @headers
     headers: {
       /** Location header */
-      Location: string;
+      Location: String;
     },
     /** User response body */
     @body body: UserBody

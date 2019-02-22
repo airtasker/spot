@@ -3,12 +3,14 @@ import {
   body,
   defaultResponse,
   endpoint,
+  Float,
   headers,
   pathParams,
   queryParams,
   request,
   response,
-  securityHeader
+  securityHeader,
+  String
 } from "@airtasker/spot";
 import "./contract-endpoint";
 import { Address, ErrorBody, UserBody } from "./models";
@@ -17,7 +19,7 @@ import { Address, ErrorBody, UserBody } from "./models";
 @api({ name: "company-api" })
 class ExampleApi {
   @securityHeader
-  "x-auth-token": string;
+  "x-auth-token": String;
 }
 
 /** Creates a user in a company */
@@ -32,17 +34,17 @@ class CreateUser {
     @pathParams
     pathParams: {
       /** company identifier */
-      companyId: string;
+      companyId: String;
     },
     @headers
     headers: {
       /** Auth Header */
-      "x-auth-token": string;
+      "x-auth-token": String;
     },
     @queryParams
     queryParams: {
       /** a demo query param */
-      "sample-query"?: string;
+      "sample-query"?: String;
     },
     /** request body */
     @body body: CreateUserRequestBody
@@ -54,7 +56,7 @@ class CreateUser {
     @headers
     headers: {
       /** Location header */
-      Location: string;
+      Location: String;
     },
     /** User response body */
     @body body: UserBody
@@ -79,11 +81,11 @@ interface CreateUserRequestBody {
   /** data wrapper */
   data: {
     /** user first name */
-    firstName: string;
+    firstName: String;
     /** user last name */
-    lastName: string;
+    lastName: String;
     /** user age */
-    age: number;
+    age: Float;
     /** user email */
     email: Email;
     /** user address */
@@ -92,4 +94,4 @@ interface CreateUserRequestBody {
 }
 
 /** an email */
-type Email = string;
+type Email = String;

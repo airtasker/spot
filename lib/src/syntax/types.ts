@@ -1,5 +1,11 @@
+/** A float */
+export type Float = number;
+
 /** An integer */
 export type Integer = number;
+
+/** A string */
+export type String = string;
 
 /**
  * A `full-date` as defined by https://tools.ietf.org/html/rfc3339#section-5.6
