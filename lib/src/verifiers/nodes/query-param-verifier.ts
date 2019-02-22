@@ -23,7 +23,7 @@ export function verifyQueryParamNode(
   if (!hasNoUrlUnsafeArrayTypes(typeStore, queryParamType)) {
     errors.push({
       message:
-        "query param type may only be a URL-safe, an object, or an array of non-primitives",
+        "query param type may only be a URL-safe, an object, or an array of URL-safe types",
       location: queryParam.name.location,
       line: queryParam.name.line
     });

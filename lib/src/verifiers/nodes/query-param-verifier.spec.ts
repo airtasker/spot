@@ -78,7 +78,7 @@ describe("query param node verifier", () => {
     expect(errors).toMatchObject([
       {
         message:
-          "query param type may only be a URL-safe, an object, or an array of non-primitives"
+          "query param type may only be a URL-safe, an object, or an array of URL-safe types"
       }
     ]);
   });
