@@ -148,7 +148,6 @@ function getParameters(
     .concat(
       endpoint.request.queryParams.map(
         (queryParam): OpenAPIV3Parameter => {
-          const resolvedType = resolveType(queryParam.type, types);
           const schemaType = openApi3TypeSchema(types, queryParam.type);
           return {
             in: "query",
