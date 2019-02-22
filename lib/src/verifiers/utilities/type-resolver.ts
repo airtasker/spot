@@ -4,7 +4,8 @@ import {
   DataType,
   isReferenceType,
   isUnionType,
-  TypeKind
+  NotReferenceTypeKind,
+  ReferenceType
 } from "../../models/types";
 
 /**
@@ -16,7 +17,31 @@ import {
 export function possibleRootKinds(
   dataType: DataType,
   typeStore: TypeNode[]
-): TypeKind[] {
+): NotReferenceTypeKind[] {
+  const resolvedType = resolveType(dataType, typeStore);
+  if (isUnionType(resolvedType)) {
+    return uniq(
+      resolvedType.types.reduce<NotReferenceTypeKind[]>(
+        (typeKindAcc, type) =>
+          typeKindAcc.concat(possibleRootKinds(type, typeStore)),
+        []
+      )
+    );
+  } else {
+    return [resolvedType.kind];
+  }
+}
+
+/**
+ * Resolves a type that may be a reference type to a non-reference type.
+ *
+ * @param dataType a data type
+ * @param typeStore collection of type references for lookup
+ */
+export function resolveType(
+  dataType: DataType,
+  typeStore: TypeNode[]
+): Exclude<DataType, ReferenceType> {
   if (isReferenceType(dataType)) {
     const referenceTypeNode = typeStore.find(
       type => type.name === dataType.name
@@ -24,16 +49,8 @@ export function possibleRootKinds(
     if (!referenceTypeNode) {
       throw new Error(`Type store does not contain type: ${dataType.name}`);
     }
-    return uniq(possibleRootKinds(referenceTypeNode.type, typeStore));
-  } else if (isUnionType(dataType)) {
-    return uniq(
-      dataType.types.reduce<TypeKind[]>(
-        (typeKindAcc, type) =>
-          typeKindAcc.concat(possibleRootKinds(type, typeStore)),
-        []
-      )
-    );
+    return resolveType(referenceTypeNode.type, typeStore);
   } else {
-    return [dataType.kind];
+    return dataType;
   }
 }
