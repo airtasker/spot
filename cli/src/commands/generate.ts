@@ -42,7 +42,7 @@ export default class Generate extends Command {
     const { flags } = this.parse(Generate);
     let { contract: contractPath, language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
-    const contract = safeParse.bind(this)(contractPath);
+    const contract = safeParse.call(this, contractPath).definition;
     if (!generator) {
       generator = (await prompt<{
         Generator: string;
