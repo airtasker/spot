@@ -39,7 +39,7 @@
     "@types/moxios": "^0.4.8",
     "@types/node": "^11.9.4",
     "axios": "^0.18.0",
-    "globby": "^9.0.0",
+    "globby": "^9.1.0",
     "jest": "^24.1.0",
     "moxios": "^0.4.0",
     "prettier": "^1.14.3",
