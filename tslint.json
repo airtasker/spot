@@ -6,6 +6,7 @@
     "interface-name": false,
     "jsdoc-format": false,
     "max-classes-per-file": false,
+    "member-access": [true, "no-public"],
     "no-empty": false,
     "no-shadowed-variable": false,
     "object-literal-sort-keys": false
