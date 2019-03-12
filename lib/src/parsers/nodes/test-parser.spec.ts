@@ -58,7 +58,7 @@ describe("@test parser", () => {
             headers: [
               {
                 expression: { kind: "string-literal", value: "abc" },
-                name: '"x-auth-token"'
+                name: "x-auth-token"
               }
             ],
             pathParams: [
