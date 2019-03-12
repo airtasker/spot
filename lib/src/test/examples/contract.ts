@@ -96,7 +96,7 @@ class CreateUser {
       status: 201
     }
   })
-  successResponseTest() {}
+  public successResponseTest() {}
 }
 
 /** User request body */

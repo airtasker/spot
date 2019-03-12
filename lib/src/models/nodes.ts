@@ -94,19 +94,19 @@ export interface TestNode {
 
 export interface TestStateNode {
   name: string;
-  params?: Array<AttributeExpression>;
+  params?: AttributeExpression[];
 }
 
 export interface TestRequestNode {
-  headers?: Array<AttributeExpression>;
-  pathParams?: Array<AttributeExpression>;
-  queryParams?: Array<AttributeExpression>;
+  headers?: AttributeExpression[];
+  pathParams?: AttributeExpression[];
+  queryParams?: AttributeExpression[];
   body?: DataExpression;
 }
 
 export interface TestResponseNode {
   status: Locatable<number>;
-  headers?: Array<AttributeExpression>;
+  headers?: AttributeExpression[];
   body?: DataExpression;
 }
 

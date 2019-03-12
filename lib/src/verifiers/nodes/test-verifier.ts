@@ -20,7 +20,7 @@ export function verifyTestNode(
   endpointNodeContext: EndpointNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   const testNode = locatableTestNode.value;
 
@@ -77,7 +77,7 @@ function verifyTestRequest(
   testRequestLocation: string,
   testRequestLine: number
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   const requestHeaderErrors = verifyTestRequestOptionableNode(
     ((endpointRequest.headers && endpointRequest.headers.value) || []).map(
@@ -152,7 +152,7 @@ function verifyTestRequestOptionableNode(
   optionableType: "header" | "query",
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   const endpointNodeNames = endpointOptionableNode.map(node => node.name.value);
   const testNodeNames = testNodeValues.map(node => node.name);
@@ -202,7 +202,7 @@ function verifyTestPathParams(
   testRequestLine: number,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   const endpointPathParamNames = endpointPathParams.map(
     pathParam => pathParam.name.value
@@ -257,7 +257,7 @@ function verifyTestBody(
   testRequestLine: number,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   try {
     verifyJsonSchema(endpointBody.type, testBody, typeStore);
