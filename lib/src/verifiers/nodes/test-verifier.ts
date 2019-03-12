@@ -223,7 +223,7 @@ function verifyTestPathParams(
       }
     } else {
       errors.push({
-        message: `test path param ${requestPathParam.name} missing`,
+        message: `test path param ${requestPathParam.name.value} missing`,
         location: testRequestLocation,
         line: testRequestLine
       });
