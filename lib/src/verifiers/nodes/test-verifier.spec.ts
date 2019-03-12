@@ -110,6 +110,22 @@ describe("test node verifier", () => {
     expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(0);
   });
 
+  test("invalid with no matching response", () => {
+    const testNode = fakeLocatable({
+      request: fakeLocatable<TestRequestNode>({
+        headers: [],
+        pathParams: []
+      }),
+      response: fakeLocatable({
+        status: fakeLocatable(204)
+      }),
+      options: {
+        allowInvalidRequest: true
+      }
+    });
+    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+  });
+
   test("invalid for missing header", () => {
     const testNode = fakeLocatable({
       request: fakeLocatable<TestRequestNode>({

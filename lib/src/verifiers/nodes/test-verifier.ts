@@ -1,6 +1,7 @@
 import { Locatable } from "../../models/locatable";
 import {
   AttributeExpression,
+  BodyNode,
   EndpointNode,
   HeaderNode,
   PathParamNode,
@@ -8,12 +9,11 @@ import {
   RequestNode,
   TestNode,
   TestRequestNode,
-  TypeNode,
-  BodyNode
+  TypeNode
 } from "../../models/nodes";
+import { DataExpression } from "../../models/types";
 import { verifyJsonSchema } from "../utilities/json-schema-verifier";
 import { VerificationError } from "../verification-error";
-import { DataExpression } from "../../models/types";
 
 export function verifyTestNode(
   locatableTestNode: Locatable<TestNode>,
@@ -23,6 +23,19 @@ export function verifyTestNode(
   let errors: VerificationError[] = [];
 
   const testNode = locatableTestNode.value;
+
+  const correlatedResponse = endpointNodeContext.responses.find(
+    response =>
+      response.value.status.value === testNode.response.value.status.value
+  );
+
+  if (!correlatedResponse) {
+    errors.push({
+      message: "test has no matching response",
+      location: locatableTestNode.location,
+      line: locatableTestNode.line
+    });
+  }
 
   if (testNode.options.allowInvalidRequest) {
     return errors;
