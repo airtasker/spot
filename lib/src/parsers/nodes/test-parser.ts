@@ -169,8 +169,12 @@ function objectExpressionToProperties(
 ): { name: string; expression: DataExpression }[] {
   return expression.getProperties().map(property => {
     if (TypeGuards.isPropertyAssignment(property)) {
+      const name = property
+        .getNameNode()
+        .getSymbolOrThrow()
+        .getEscapedName();
       return {
-        name: property.getName(),
+        name,
         expression: parseExpression(property.getInitializerOrThrow())
       };
     } else {

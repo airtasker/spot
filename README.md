@@ -114,9 +114,9 @@ npx @airtasker/spot generate --contract api.ts
 * [`spot generate`](#spot-generate)
 * [`spot help [COMMAND]`](#spot-help-command)
 * [`spot init`](#spot-init)
-* [`spot lint SPOT_CONTRACT`](#spot-lint-spot-contract)
-* [`spot mock SPOT_CONTRACT`](#spot-mock-spot-contract)
-* [`spot validate SPOT_CONTRACT`](#spot-validate-spot-contract)
+* [`spot lint SPOT_CONTRACT`](#spot-lint-spot_contract)
+* [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
+* [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
 
 ## `spot generate`
 
