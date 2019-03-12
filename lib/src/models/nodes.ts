@@ -87,28 +87,30 @@ export interface TestNode {
   states?: TestStateNode[];
   request?: Locatable<TestRequestNode>;
   response: Locatable<TestResponseNode>;
+  options: {
+    allowInvalidRequest: boolean;
+  };
 }
 
 export interface TestStateNode {
   name: string;
-  params?: Array<{ name: string; expression: DataExpression }>;
+  params?: Array<AttributeExpression>;
 }
 
 export interface TestRequestNode {
-  headers?: Array<{ name: string; expression: DataExpression }>;
-  pathParams?: Array<{
-    name: string;
-    expression: DataExpression;
-  }>;
-  queryParams?: Array<{
-    name: string;
-    expression: DataExpression;
-  }>;
+  headers?: Array<AttributeExpression>;
+  pathParams?: Array<AttributeExpression>;
+  queryParams?: Array<AttributeExpression>;
   body?: DataExpression;
 }
 
 export interface TestResponseNode {
   status: Locatable<number>;
-  headers?: Array<{ name: string; expression: DataExpression }>;
+  headers?: Array<AttributeExpression>;
   body?: DataExpression;
+}
+
+export interface AttributeExpression {
+  name: string;
+  expression: DataExpression;
 }

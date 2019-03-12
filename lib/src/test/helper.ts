@@ -69,7 +69,14 @@ export function validateProject(project: Project) {
   const diagnostics = project.getPreEmitDiagnostics();
   if (diagnostics.length > 0) {
     throw new Error(
-      diagnostics.map(diagnostic => diagnostic.getMessageText()).join("\n")
+      diagnostics
+        .map(diagnostic => {
+          const message = diagnostic.getMessageText();
+          return typeof message === "string"
+            ? message
+            : message.getMessageText();
+        })
+        .join("\n")
     );
   }
 }

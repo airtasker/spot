@@ -3,6 +3,7 @@ import { EndpointNode, TypeNode } from "../../models/nodes";
 import { VerificationError } from "../verification-error";
 import { verifyRequestNode } from "./request-verifier";
 import { verifyResponseNode } from "./response-verifier";
+import { verifyTestNode } from "./test-verifier";
 
 export function verifyEndpointNode(
   endpoint: EndpointNode,
@@ -103,6 +104,11 @@ export function verifyEndpointNode(
       line: endpoint.name.line
     });
   }
+
+  // verify tests
+  endpoint.tests.forEach(test => {
+    errors.push(...verifyTestNode(test, endpoint, typeStore));
+  });
 
   return errors;
 }
