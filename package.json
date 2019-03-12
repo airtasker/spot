@@ -37,7 +37,7 @@
     "@types/js-yaml": "^3.11.2",
     "@types/lodash": "^4.14.123",
     "@types/moxios": "^0.4.8",
-    "@types/node": "^11.9.4",
+    "@types/node": "^11.11.1",
     "axios": "^0.18.0",
     "globby": "^9.1.0",
     "jest": "^24.4.0",
