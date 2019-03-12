@@ -69,6 +69,24 @@ jobs:
           command: |
             ./node_modules/.bin/prettier --list-different "**/*.js" "**/*.jsx" "**/*.ts" "**/*.tsx"
 
+  tslint-check:
+    <<: *job_configuration
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: TSLint
+          command: |
+            yarn tslint -p .
+
   publish:
     <<: *job_configuration
     steps:
@@ -99,6 +117,10 @@ workflows:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
       - prettier-check:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - tslint-check:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/

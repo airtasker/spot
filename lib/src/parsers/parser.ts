@@ -79,7 +79,7 @@ function parseRootSourceFile(
     .getImportDeclarations()
     .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
 
-  const endpoints = importedFiles.reduce<Locatable<EndpointNode>[]>(
+  const endpoints = importedFiles.reduce<Array<Locatable<EndpointNode>>>(
     (endpointsAcc, currentFile) =>
       currentFile
         .getClasses()
@@ -145,7 +145,14 @@ function validateProject(project: Project) {
   const diagnostics = project.getPreEmitDiagnostics();
   if (diagnostics.length > 0) {
     throw new Error(
-      diagnostics.map(diagnostic => diagnostic.getMessageText()).join("\n")
+      diagnostics
+        .map(diagnostic => {
+          const message = diagnostic.getMessageText();
+          return typeof message === "string"
+            ? message
+            : message.getMessageText();
+        })
+        .join("\n")
     );
   }
 }

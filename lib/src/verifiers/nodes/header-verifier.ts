@@ -7,7 +7,7 @@ export function verifyHeaderNode(
   header: HeaderNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   if (!/^[\w\-]+$/.test(header.name.value)) {
     errors.push({

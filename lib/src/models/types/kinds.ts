@@ -15,6 +15,8 @@ export enum TypeKind {
   TYPE_REFERENCE = "type-reference"
 }
 
+export type NotReferenceTypeKind = Exclude<TypeKind, TypeKind.TYPE_REFERENCE>;
+
 export const StringLikeKind = [
   TypeKind.STRING,
   TypeKind.STRING_LITERAL,

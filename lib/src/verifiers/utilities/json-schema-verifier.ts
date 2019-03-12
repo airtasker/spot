@@ -1,3 +1,4 @@
+import JsonSchemaValidator = require("ajv");
 import {
   JsonSchemaType,
   jsonTypeSchema
@@ -5,7 +6,6 @@ import {
 import { TypeNode } from "../../models/nodes";
 import { DataExpression, DataType } from "../../models/types";
 import { valueFromDataExpression } from "../../utilities/data-expression-utils";
-import JsonSchemaValidator = require("ajv");
 
 export function verifyJsonSchema(
   dataType: DataType,

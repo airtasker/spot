@@ -6,7 +6,7 @@ export function verifyApiNode(
   api: ApiNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   if (/(^\s+)|(\s+$)/.test(api.name.value)) {
     errors.push({

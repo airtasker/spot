@@ -1,9 +1,9 @@
 import { Command } from "@oclif/command";
-import { parse } from "../../../lib/src/parsers/parser";
-import { verify } from "../../../lib/src/verifiers/verifier";
 import { cleanse } from "../../../lib/src/cleansers/cleanser";
 import { ContractDefinition } from "../../../lib/src/models/definitions";
 import { ContractNode } from "../../../lib/src/models/nodes";
+import { parse } from "../../../lib/src/parsers/parser";
+import { verify } from "../../../lib/src/verifiers/verifier";
 
 export function safeParse(
   this: Command,

@@ -9,7 +9,7 @@ export function verifyRequestNode(
   request: RequestNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   if (request.headers) {
     request.headers.value.forEach(header => {

@@ -90,24 +90,24 @@ export interface TestDefinition {
 
 export interface TestStateDefinition {
   name: string;
-  params: { name: string; expression: DataExpression }[];
+  params: Array<{ name: string; expression: DataExpression }>;
 }
 
 export interface TestRequestDefinition {
-  headers: { name: string; expression: DataExpression }[];
-  pathParams: {
+  headers: Array<{ name: string; expression: DataExpression }>;
+  pathParams: Array<{
     name: string;
     expression: DataExpression;
-  }[];
-  queryParams: {
+  }>;
+  queryParams: Array<{
     name: string;
     expression: DataExpression;
-  }[];
+  }>;
   body?: DataExpression;
 }
 
 export interface TestResponseDefinition {
   status: number;
-  headers: { name: string; expression: DataExpression }[];
+  headers: Array<{ name: string; expression: DataExpression }>;
   body?: DataExpression;
 }

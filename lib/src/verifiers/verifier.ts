@@ -5,7 +5,7 @@ import { verifyEndpointNode } from "./nodes/endpoint-verifier";
 import { VerificationError } from "./verification-error";
 
 export function verify(contract: ContractNode): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   errors.push(...verifyApiNode(contract.api.value, contract.types));
 

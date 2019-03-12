@@ -16,7 +16,7 @@ import { parseTypeNode } from "../utilities/type-parser";
  */
 export function parseHeaders(
   parameter: ParameterDeclaration
-): Locatable<Locatable<HeaderNode>[]> {
+): Locatable<Array<Locatable<HeaderNode>>> {
   const decorator = parameter.getDecoratorOrThrow("headers");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);

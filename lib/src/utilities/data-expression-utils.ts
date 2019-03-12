@@ -9,7 +9,7 @@ export function valueFromDataExpression(data: DataExpression): any {
     case TypeKind.NUMBER_LITERAL:
       return data.value;
     case TypeKind.ARRAY:
-      return data.elements.reduce<Array<any>>(
+      return data.elements.reduce<any[]>(
         (arrayAcc, element) =>
           arrayAcc.concat(valueFromDataExpression(element)),
         []

@@ -10,7 +10,8 @@ import {
   request,
   response,
   securityHeader,
-  String
+  String,
+  test
 } from "@airtasker/spot";
 import "./contract-endpoint";
 import { Address, ErrorBody, UserBody } from "./models";
@@ -74,6 +75,30 @@ class CreateUser {
     /** Error response body */
     @body body: ErrorBody
   ) {}
+
+  @test({
+    request: {
+      pathParams: {
+        companyId: "abc"
+      },
+      headers: {
+        "x-auth-token": "hellotoken"
+      },
+      body: {
+        data: {
+          firstName: "John",
+          lastName: "Snow",
+          age: 15,
+          email: "johnsnow@spot.com",
+          address: "some address"
+        }
+      }
+    },
+    response: {
+      status: 201
+    }
+  })
+  successResponseTest() {}
 }
 
 /** User request body */

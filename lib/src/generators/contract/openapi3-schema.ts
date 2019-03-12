@@ -1,6 +1,6 @@
 import assertNever from "assert-never";
-import { TypeDefinition } from "../../models/definitions";
 import compact from "lodash/compact";
+import { TypeDefinition } from "../../models/definitions";
 import {
   DataType,
   ReferenceType,

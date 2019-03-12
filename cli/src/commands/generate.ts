@@ -40,6 +40,7 @@ export default class Generate extends Command {
 
   async run() {
     const { flags } = this.parse(Generate);
+    // tslint:disable-next-line:prefer-const
     let { contract: contractPath, language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
     const contract = safeParse.call(this, contractPath).definition;

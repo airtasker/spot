@@ -1,10 +1,10 @@
 import { HttpMethod } from "./http";
-import { DataType, DataExpression } from "./types";
 import { Locatable } from "./locatable";
+import { DataExpression, DataType } from "./types";
 
 export interface ContractNode {
   api: Locatable<ApiNode>;
-  endpoints: Locatable<EndpointNode>[];
+  endpoints: Array<Locatable<EndpointNode>>;
   types: TypeNode[];
 }
 
@@ -33,15 +33,15 @@ export interface EndpointNode {
   method: Locatable<HttpMethod>;
   path: Locatable<string>;
   request?: Locatable<RequestNode>;
-  responses: Locatable<ResponseNode>[];
+  responses: Array<Locatable<ResponseNode>>;
   defaultResponse?: Locatable<DefaultResponseNode>;
-  tests: Locatable<TestNode>[];
+  tests: Array<Locatable<TestNode>>;
 }
 
 export interface RequestNode {
-  headers?: Locatable<Locatable<HeaderNode>[]>;
-  pathParams?: Locatable<Locatable<PathParamNode>[]>;
-  queryParams?: Locatable<Locatable<QueryParamNode>[]>;
+  headers?: Locatable<Array<Locatable<HeaderNode>>>;
+  pathParams?: Locatable<Array<Locatable<PathParamNode>>>;
+  queryParams?: Locatable<Array<Locatable<QueryParamNode>>>;
   body?: Locatable<BodyNode>;
 }
 
@@ -53,7 +53,7 @@ export interface ResponseNode extends DefaultResponseNode {
 /** The default response, is the assumed response when no status code is specified. */
 export interface DefaultResponseNode {
   description?: Locatable<string>;
-  headers?: Locatable<Locatable<HeaderNode>[]>;
+  headers?: Locatable<Array<Locatable<HeaderNode>>>;
   body?: Locatable<BodyNode>;
 }
 
@@ -87,28 +87,30 @@ export interface TestNode {
   states?: TestStateNode[];
   request?: Locatable<TestRequestNode>;
   response: Locatable<TestResponseNode>;
+  options: {
+    allowInvalidRequest: boolean;
+  };
 }
 
 export interface TestStateNode {
   name: string;
-  params?: { name: string; expression: DataExpression }[];
+  params?: AttributeExpression[];
 }
 
 export interface TestRequestNode {
-  headers?: { name: string; expression: DataExpression }[];
-  pathParams?: {
-    name: string;
-    expression: DataExpression;
-  }[];
-  queryParams?: {
-    name: string;
-    expression: DataExpression;
-  }[];
+  headers?: AttributeExpression[];
+  pathParams?: AttributeExpression[];
+  queryParams?: AttributeExpression[];
   body?: DataExpression;
 }
 
 export interface TestResponseNode {
   status: Locatable<number>;
-  headers?: { name: string; expression: DataExpression }[];
+  headers?: AttributeExpression[];
   body?: DataExpression;
+}
+
+export interface AttributeExpression {
+  name: string;
+  expression: DataExpression;
 }

@@ -164,6 +164,31 @@ export function extractOptionalStringArrayPropertyValueLocatable(
 }
 
 /**
+ * Extract a boolean property value from an object literal.
+ *
+ * @param objectLiteral an object literal
+ * @param propertyName the property to extract
+ */
+export function extractBooleanProperty(
+  objectLiteral: ObjectLiteralExpression,
+  propertyName: string
+): Locatable<boolean> {
+  const property = objectLiteral.getPropertyOrThrow(propertyName);
+  if (!TypeGuards.isPropertyAssignment(property)) {
+    throw new Error("expected property assignment");
+  }
+  const literal = property.getInitializerOrThrow();
+  if (!TypeGuards.isBooleanLiteral(literal)) {
+    throw new Error("expected boolean literal");
+  }
+  const value = literal.getLiteralValue();
+  const location = property.getSourceFile().getFilePath();
+  const line = literal.getStartLineNumber();
+
+  return { value, location, line };
+}
+
+/**
  * Extract a number property value from an object literal.
  *
  * @param objectLiteral an object literal
@@ -272,7 +297,7 @@ export function extractObjectProperty(
 export function extractDecoratorFactoryConfiguration(
   decorator: Decorator
 ): ObjectLiteralExpression {
-  if (decorator.getArguments().length === 1) {
+  if (decorator.getArguments().length >= 1) {
     const argument = decorator.getArguments()[0];
     if (TypeGuards.isObjectLiteralExpression(argument)) {
       return argument;
@@ -281,8 +306,28 @@ export function extractDecoratorFactoryConfiguration(
     }
   } else {
     throw new Error(
-      `expected 1 argument, got ${decorator.getArguments().length}`
+      `expected at least 1 argument, got ${decorator.getArguments().length}`
     );
+  }
+}
+
+/**
+ * Extract the Options object (second argument) from a Spot decorator factory.
+ *
+ * @param decorator a decorator factory
+ */
+export function extractDecoratorFactoryOptions(
+  decorator: Decorator
+): ObjectLiteralExpression | null {
+  if (decorator.getArguments().length >= 2) {
+    const argument = decorator.getArguments()[1];
+    if (TypeGuards.isObjectLiteralExpression(argument)) {
+      return argument;
+    } else {
+      throw new Error(`expected object literal`);
+    }
+  } else {
+    return null;
   }
 }
 

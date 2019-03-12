@@ -1,13 +1,14 @@
 import { QueryParamNode, TypeNode } from "../../models/nodes";
-import { NumberLikeKind, StringLikeKind } from "../../models/types";
-import { possibleRootKinds } from "../utilities/type-resolver";
+import { DataType, TypeKind } from "../../models/types";
+import { isUrlSafe } from "../utilities/is-url-safe";
+import { possibleRootKinds, resolveType } from "../utilities/type-resolver";
 import { VerificationError } from "../verification-error";
 
 export function verifyQueryParamNode(
   queryParam: QueryParamNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   if (!/^[\w\-]+$/.test(queryParam.name.value)) {
     errors.push({
@@ -18,16 +19,39 @@ export function verifyQueryParamNode(
     });
   }
 
-  const typeKinds = possibleRootKinds(queryParam.type, typeStore);
-  const allowedKinds = StringLikeKind.concat(NumberLikeKind);
-
-  if (!typeKinds.every(kind => allowedKinds.includes(kind))) {
+  const queryParamType = resolveType(queryParam.type, typeStore);
+  if (!hasNoUrlUnsafeArrayTypes(typeStore, queryParamType)) {
     errors.push({
-      message: "query param type may only stem from string or number types",
+      message:
+        "query param type may only be a URL-safe, an object, or an array of URL-safe types",
       location: queryParam.name.location,
       line: queryParam.name.line
     });
   }
-
   return errors;
+}
+
+function hasNoUrlUnsafeArrayTypes(
+  typeStore: TypeNode[],
+  dataType: DataType
+): boolean {
+  if (dataType.kind === TypeKind.OBJECT) {
+    return dataType.properties
+      .map(p => hasNoUrlUnsafeArrayTypes(typeStore, p.type))
+      .every(Boolean);
+  } else if (dataType.kind === TypeKind.ARRAY) {
+    // Arrays of primitives are allowed.
+    return hasOnlyUrlSafeTypes(typeStore, dataType.elements);
+  } else {
+    // Top-level primitives are allowed.
+    return hasOnlyUrlSafeTypes(typeStore, dataType);
+  }
+}
+
+function hasOnlyUrlSafeTypes(
+  typeStore: TypeNode[],
+  dataType: DataType
+): boolean {
+  const typeKinds = possibleRootKinds(dataType, typeStore);
+  return typeKinds.every(isUrlSafe);
 }

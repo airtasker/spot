@@ -60,7 +60,15 @@ class GetUser {
 
   @test({
     states: [{ name: "userExists", params: { id: 101 } }],
-    request: {},
+    request: {
+      headers: {
+        "x-auth-token": "sometoken"
+      },
+      pathParams: {
+        companyId: "company",
+        userId: "user"
+      }
+    },
     response: { status: 201 }
   })
   successResponseTest() {}
