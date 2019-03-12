@@ -318,7 +318,7 @@ export function extractDecoratorFactoryConfiguration(
  */
 export function extractDecoratorFactoryOptions(
   decorator: Decorator
-): ObjectLiteralExpression | undefined {
+): ObjectLiteralExpression | null {
   if (decorator.getArguments().length >= 2) {
     const argument = decorator.getArguments()[1];
     if (TypeGuards.isObjectLiteralExpression(argument)) {
@@ -327,7 +327,7 @@ export function extractDecoratorFactoryOptions(
       throw new Error(`expected object literal`);
     }
   } else {
-    return undefined;
+    return null;
   }
 }
 

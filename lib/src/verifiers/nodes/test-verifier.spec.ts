@@ -123,7 +123,9 @@ describe("test node verifier", () => {
         allowInvalidRequest: true
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("test has no matching response");
   });
 
   test("invalid for missing header", () => {
@@ -153,7 +155,9 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("test request header x-region missing");
   });
 
   test("invalid for unexpected header", () => {
@@ -192,7 +196,11 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual(
+      "unexpected request header blah-header in test"
+    );
   });
 
   test("invalid for malformed header", () => {
@@ -227,7 +235,9 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("Invalid: data should be string");
   });
 
   test("invalid for missing path param", () => {
@@ -257,7 +267,9 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("test path param companyId missing");
   });
 
   test("invalid for unexpected path param", () => {
@@ -296,7 +308,9 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("unexpected path param userId in test");
   });
 
   test("invalid for malformed path param", () => {
@@ -331,7 +345,9 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("Invalid: data should be string");
   });
 
   test("invalid for missing body", () => {
@@ -357,7 +373,9 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("test body missing");
   });
 
   test("invalid for malformed body", () => {
@@ -392,6 +410,8 @@ describe("test node verifier", () => {
         allowInvalidRequest: false
       }
     });
-    expect(verifyTestNode(testNode, endpointNode, [])).toHaveLength(1);
+    const errors = verifyTestNode(testNode, endpointNode, []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual("Invalid: data.name should be string");
   });
 });
