@@ -16,7 +16,7 @@ import { parseTypeNode } from "../utilities/type-parser";
  */
 export function parseQueryParams(
   parameter: ParameterDeclaration
-): Locatable<Locatable<QueryParamNode>[]> {
+): Locatable<Array<Locatable<QueryParamNode>>> {
   const decorator = parameter.getDecoratorOrThrow("queryParams");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);

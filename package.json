@@ -44,7 +44,9 @@
     "moxios": "^0.4.0",
     "prettier": "^1.14.3",
     "ts-jest": "^24.0.0",
-    "ts-node": "^8.0.3"
+    "ts-node": "^8.0.3",
+    "tslint": "^5.13.1",
+    "tslint-config-prettier": "^1.18.0"
   },
   "engines": {
     "node": ">=8.0.0"

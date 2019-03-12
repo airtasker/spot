@@ -18,7 +18,7 @@ import { ErrorBody, UserBody } from "./models";
 })
 class GetUser {
   @request
-  request(
+  public request(
     @pathParams
     pathParams: {
       /** company identifier */
@@ -40,7 +40,7 @@ class GetUser {
 
   /** Successful creation of user */
   @response({ status: 201 })
-  successResponse(
+  public successResponse(
     @headers
     headers: {
       /** Location header */
@@ -52,7 +52,7 @@ class GetUser {
 
   /** Bad request response */
   @response({ status: 404 })
-  badRequestResponse(
+  public badRequestResponse(
     /** Error response body */
     @body body: ErrorBody
   ) {}
@@ -70,5 +70,5 @@ class GetUser {
     },
     response: { status: 201 }
   })
-  successResponseTest() {}
+  public successResponseTest() {}
 }

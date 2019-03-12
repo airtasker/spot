@@ -4,9 +4,9 @@ import fs from "fs-extra";
 import { outputFile } from "../../../lib/src/io/output";
 
 export default class Init extends Command {
-  static description = "Generates the boilerplate for an API.";
+  public static description = "Generates the boilerplate for an API.";
 
-  static examples = [
+  public static examples = [
     `$ spot init
 Generated the following files:
 - api.ts
@@ -15,11 +15,11 @@ Generated the following files:
 `
   ];
 
-  static flags = {
+  public static flags = {
     help: flags.help({ char: "h" })
   };
 
-  async run() {
+  public async run() {
     if (fs.existsSync("api.ts")) {
       this.error(`There is already an API here!`);
       this.exit(1);

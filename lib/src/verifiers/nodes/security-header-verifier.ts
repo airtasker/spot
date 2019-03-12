@@ -7,7 +7,7 @@ export function verifySecurityHeaderNode(
   securityHeader: SecurityHeaderNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   const typeKinds = possibleRootKinds(securityHeader.type, typeStore);
 

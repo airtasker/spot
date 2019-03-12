@@ -9,7 +9,7 @@ export function verifyEndpointNode(
   endpoint: EndpointNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   // Ensure valid tags
   if (endpoint.tags) {

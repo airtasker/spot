@@ -110,7 +110,7 @@ export function retrieveTypeReferencesFromType(
  * @param endpoints collection of endpoints
  */
 export function retrieveTypeReferencesFromEndpoints(
-  endpoints: Locatable<EndpointNode>[]
+  endpoints: Array<Locatable<EndpointNode>>
 ): ReferenceType[] {
   return endpoints.reduce<ReferenceType[]>(
     (referenceTypesAcc, currentEndpoint) => {
@@ -168,7 +168,7 @@ function retrieveTypeReferencesFromRequest(
  * @param requests a collection of responses
  */
 function retrieveTypeReferencesFromResponses(
-  responses: Locatable<ResponseNode>[]
+  responses: Array<Locatable<ResponseNode>>
 ): ReferenceType[] {
   return responses.reduce<ReferenceType[]>(
     (typeReferencesAcc, currentResponse) => {
@@ -215,7 +215,7 @@ function retrieveTypeReferencesFromBody(
  * @param nodes a collection of headers, path params or query params
  */
 function retrieveTypeReferencesFromHeadersPathParamsQueryParams(
-  nodes: Locatable<HeaderNode | PathParamNode | QueryParamNode>[]
+  nodes: Array<Locatable<HeaderNode | PathParamNode | QueryParamNode>>
 ): ReferenceType[] {
   return nodes.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
     const type = currentHeader.value.type;

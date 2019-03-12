@@ -166,7 +166,7 @@ function parseTestResponse(
 
 function objectExpressionToProperties(
   expression: ObjectLiteralExpression
-): { name: string; expression: DataExpression }[] {
+): Array<{ name: string; expression: DataExpression }> {
   return expression.getProperties().map(property => {
     if (TypeGuards.isPropertyAssignment(property)) {
       const name = property
