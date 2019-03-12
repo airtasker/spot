@@ -8,7 +8,7 @@ export function verifyPathParamNode(
   pathParam: PathParamNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   if (!/^[\w\-]+$/.test(pathParam.name.value)) {
     errors.push({

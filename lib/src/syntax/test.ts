@@ -37,7 +37,7 @@ export function test(config: TestConfig) {
   ) => {};
 }
 interface TestConfig {
-  states?: { name: string; params?: { [key: string]: any } }[];
+  states?: Array<{ name: string; params?: { [key: string]: any } }>;
   request?: {
     headers?: { [key: string]: any };
     pathParams?: { [key: string]: any };

@@ -8,7 +8,7 @@ export function verifyQueryParamNode(
   queryParam: QueryParamNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   if (!/^[\w\-]+$/.test(queryParam.name.value)) {
     errors.push({

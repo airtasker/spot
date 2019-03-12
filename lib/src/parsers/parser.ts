@@ -79,7 +79,7 @@ function parseRootSourceFile(
     .getImportDeclarations()
     .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
 
-  const endpoints = importedFiles.reduce<Locatable<EndpointNode>[]>(
+  const endpoints = importedFiles.reduce<Array<Locatable<EndpointNode>>>(
     (endpointsAcc, currentFile) =>
       currentFile
         .getClasses()

@@ -16,7 +16,7 @@ import { parseTypeNode } from "../utilities/type-parser";
  */
 export function parsePathParams(
   parameter: ParameterDeclaration
-): Locatable<Locatable<PathParamNode>[]> {
+): Locatable<Array<Locatable<PathParamNode>>> {
   const decorator = parameter.getDecoratorOrThrow("pathParams");
   ensureNodeNotOptional(parameter);
   const properties = extractObjectParameterProperties(parameter);

@@ -208,9 +208,9 @@ export interface OpenApiV2 {
   securityDefinitions?: {
     [securitySchemeName: string]: OpenAPIV2SecurityScheme;
   };
-  security?: {
+  security?: Array<{
     [securitySchemeName: string]: string[];
-  }[];
+  }>;
 }
 
 export interface OpenAPIV2TagObject {
@@ -242,13 +242,13 @@ export type OpenAPIV2NonBodyParameter = {
   required: boolean;
 } & Exclude<OpenAPI2SchemaType, OpenAPI2SchemaTypeObject>;
 
-export type OpenAPIV2BodyParameter = {
+export interface OpenAPIV2BodyParameter {
   in: "body";
   name: "body";
   description?: string;
   required: boolean;
   schema: OpenAPI2SchemaType | undefined;
-};
+}
 
 export interface OpenAPIV2Response {
   schema?: OpenAPI2SchemaType;
@@ -265,6 +265,7 @@ export type OpenAPIV2Header = {
 // TODO: Consider adding support for other security schemes.
 export type OpenAPIV2SecurityScheme = OpenApiV2SecurityScheme_ApiKey;
 
+// tslint:disable-next-line:class-name
 export interface OpenApiV2SecurityScheme_ApiKey {
   type: "apiKey";
   description?: string;

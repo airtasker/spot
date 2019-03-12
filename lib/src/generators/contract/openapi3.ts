@@ -234,13 +234,13 @@ export interface OpenApiV3 {
       url?: string;
     };
   };
-  servers?: {
+  servers?: Array<{
     url: string;
     description?: string;
-  }[];
-  security?: {
+  }>;
+  security?: Array<{
     [securitySchemeName: string]: string[];
-  }[];
+  }>;
   paths: {
     [endpointPath: string]: {
       [method: string]: OpenAPIV3Operation;
@@ -310,6 +310,7 @@ export interface OpenAPIV3Body {
 // TODO: Consider adding support for other security schemes.
 export type OpenAPIV3SecurityScheme = OpenApiV3SecurityScheme_ApiKey;
 
+// tslint:disable-next-line:class-name
 export interface OpenApiV3SecurityScheme_ApiKey {
   type: "apiKey";
   description?: string;

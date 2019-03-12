@@ -17,7 +17,7 @@ import { Address, ErrorBody, UserBody } from "./models";
 @api({ name: "company-api" })
 class ExampleApi {
   @securityHeader
-  "x-auth-token": string;
+  public "x-auth-token": string;
 }
 
 /** Creates a user in a company */
@@ -28,7 +28,7 @@ class ExampleApi {
 })
 class CreateUser {
   @request
-  request(
+  public request(
     @pathParams
     pathParams: {
       /** company identifier */
@@ -50,7 +50,7 @@ class CreateUser {
 
   /** Successful creation of user */
   @response({ status: 201 })
-  successResponse(
+  public successResponse(
     @headers
     headers: {
       /** Location header */
@@ -62,13 +62,13 @@ class CreateUser {
 
   /** Bad request response */
   @response({ status: 400 })
-  badRequestResponse(
+  public badRequestResponse(
     /** Error response body */
     @body body: ErrorBody
   ) {}
 
   @defaultResponse
-  unexpectedResponse(
+  public unexpectedResponse(
     /** Error response body */
     @body body: ErrorBody
   ) {}

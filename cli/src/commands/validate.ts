@@ -7,11 +7,11 @@ const ARG_API = "spot_contract";
  * oclif command to validate a spot contract
  */
 export default class Validate extends Command {
-  static description = "Validate a Spot contract";
+  public static description = "Validate a Spot contract";
 
-  static examples = ["$ spot validate api.ts"];
+  public static examples = ["$ spot validate api.ts"];
 
-  static args = [
+  public static args = [
     {
       name: ARG_API,
       required: true,
@@ -20,11 +20,11 @@ export default class Validate extends Command {
     }
   ];
 
-  static flags = {
+  public static flags = {
     help: flags.help({ char: "h" })
   };
 
-  async run() {
+  public async run() {
     const { args } = this.parse(Validate);
     const contract = safeParse.call(this, args[ARG_API]).definition;
     this.log("Contract is valid");

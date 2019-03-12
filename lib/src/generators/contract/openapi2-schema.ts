@@ -1,6 +1,6 @@
 import assertNever from "assert-never";
-import { DataType, TypeKind, UnionType } from "../../models/types";
 import compact from "lodash/compact";
+import { DataType, TypeKind, UnionType } from "../../models/types";
 
 function isStringConstantUnion(type: UnionType): boolean {
   return type.types.reduce((acc, type) => {
@@ -159,7 +159,7 @@ export interface OpenAPI2SchemaTypeAllOf extends OpenAPI2BaseSchemaType {
   allOf: OpenAPI2SchemaType[];
 }
 
-export interface OpenAPI2SchemaTypeNull extends OpenAPI2BaseSchemaType {}
+export type OpenAPI2SchemaTypeNull = OpenAPI2BaseSchemaType;
 
 export interface OpenAPI2SchemaTypeString extends OpenAPI2BaseSchemaType {
   type: "string";

@@ -1,7 +1,7 @@
 import {
+  DefaultResponseNode,
   ResponseNode,
-  TypeNode,
-  DefaultResponseNode
+  TypeNode
 } from "../../models/nodes";
 import { VerificationError } from "../verification-error";
 import { verifyBodyNode } from "./body-verifier";
@@ -11,7 +11,7 @@ export function verifyResponseNode(
   response: ResponseNode | DefaultResponseNode,
   typeStore: TypeNode[]
 ): VerificationError[] {
-  let errors: VerificationError[] = [];
+  const errors: VerificationError[] = [];
 
   if (response.headers) {
     response.headers.value.forEach(header => {
