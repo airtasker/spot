@@ -10,14 +10,14 @@ import { ContractDefinition } from "../../../lib/src/models/definitions";
 import { safeParse } from "../common/safe-parse";
 
 export default class Generate extends Command {
-  public static description =
+  static description =
     "Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats such as OpenAPI.";
 
-  public static examples = [
+  static examples = [
     `$ spot generate --contract api.ts --language yaml --generator openapi3 --out output/`
   ];
 
-  public static flags = {
+  static flags = {
     help: flags.help({ char: "h" }),
     contract: flags.string({
       required: true,
@@ -38,7 +38,7 @@ export default class Generate extends Command {
     })
   };
 
-  public async run() {
+  async run() {
     const { flags } = this.parse(Generate);
     // tslint:disable-next-line:prefer-const
     let { contract: contractPath, language, generator, out: outDir } = flags;

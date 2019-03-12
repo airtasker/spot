@@ -8,11 +8,11 @@ const ARG_API = "spot_contract";
  * oclif command to lint a spot contract
  */
 export default class Lint extends Command {
-  public static description = "Lint a Spot contract";
+  static description = "Lint a Spot contract";
 
-  public static examples = ["$ spot lint api.ts"];
+  static examples = ["$ spot lint api.ts"];
 
-  public static args = [
+  static args = [
     {
       name: ARG_API,
       required: true,
@@ -21,11 +21,11 @@ export default class Lint extends Command {
     }
   ];
 
-  public static flags = {
+  static flags = {
     help: flags.help({ char: "h" })
   };
 
-  public async run() {
+  async run() {
     const { args } = this.parse(Lint);
     const contractPath = args[ARG_API];
     const parsedContract = safeParse.call(this, contractPath).source;
