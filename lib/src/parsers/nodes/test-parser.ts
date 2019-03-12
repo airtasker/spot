@@ -15,7 +15,9 @@ import {
 import { DataExpression } from "../../models/types";
 import { parseExpression } from "../utilities/expression-parser";
 import {
+  extractBooleanProperty,
   extractDecoratorFactoryConfiguration,
+  extractDecoratorFactoryOptions,
   extractJsDocCommentLocatable,
   extractNumberProperty,
   extractObjectProperty,
@@ -31,6 +33,7 @@ import {
 export function parseTest(method: MethodDeclaration): Locatable<TestNode> {
   const decorator = method.getDecoratorOrThrow("test");
   const configuration = extractDecoratorFactoryConfiguration(decorator);
+  const opts = extractDecoratorFactoryOptions(decorator);
 
   const description = extractJsDocCommentLocatable(method);
 
@@ -47,11 +50,17 @@ export function parseTest(method: MethodDeclaration): Locatable<TestNode> {
   const response = parseTestResponse(responseProperty);
   const states = statesProperty && parseStates(statesProperty.value);
 
+  const allowInvalidRequest = opts
+    ? extractBooleanProperty(opts, "allowInvalidRequest").value
+    : false;
+
+  const options = { allowInvalidRequest };
+
   const location = decorator.getSourceFile().getFilePath();
   const line = decorator.getStartLineNumber();
 
   return {
-    value: { description, states, request, response },
+    value: { description, states, request, response, options },
     location,
     line
   };
@@ -160,8 +169,12 @@ function objectExpressionToProperties(
 ): { name: string; expression: DataExpression }[] {
   return expression.getProperties().map(property => {
     if (TypeGuards.isPropertyAssignment(property)) {
+      const name = property
+        .getNameNode()
+        .getSymbolOrThrow()
+        .getEscapedName();
       return {
-        name: property.getName(),
+        name,
         expression: parseExpression(property.getInitializerOrThrow())
       };
     } else {

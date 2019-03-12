@@ -29,7 +29,10 @@ class GetUser {
 //...
 ```
  */
-export function test(config: TestConfig) {
+export function test(
+  config: TestConfig,
+  options?: { allowInvalidRequest: boolean }
+) {
   return (
     target: any,
     propertyKey: string | symbol,
