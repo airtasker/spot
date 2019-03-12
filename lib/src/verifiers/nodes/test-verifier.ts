@@ -3,13 +3,17 @@ import {
   AttributeExpression,
   EndpointNode,
   HeaderNode,
+  PathParamNode,
+  QueryParamNode,
   RequestNode,
   TestNode,
   TestRequestNode,
-  TypeNode
+  TypeNode,
+  BodyNode
 } from "../../models/nodes";
 import { verifyJsonSchema } from "../utilities/json-schema-verifier";
 import { VerificationError } from "../verification-error";
+import { DataExpression } from "../../models/types";
 
 export function verifyTestNode(
   locatableTestNode: Locatable<TestNode>,
@@ -48,6 +52,7 @@ export function verifyTestNode(
 
   return errors;
 }
+
 function verifyTestRequest(
   endpointRequest: RequestNode,
   testRequest: TestRequestNode,
@@ -57,56 +62,101 @@ function verifyTestRequest(
 ): VerificationError[] {
   let errors: VerificationError[] = [];
 
-  if (endpointRequest.headers) {
-    if (testRequest.headers) {
-      verifyTestRequestHeaders(
-        endpointRequest.headers.value.map(
-          locatableHeader => locatableHeader.value
-        ),
-        testRequest.headers,
+  const requestHeaderErrors = verifyTestRequestOptionableNode(
+    ((endpointRequest.headers && endpointRequest.headers.value) || []).map(
+      locatableHeader => locatableHeader.value
+    ),
+    testRequest.headers || [],
+    testRequestLocation,
+    testRequestLine,
+    "header",
+    typeStore
+  );
+  errors.push(...requestHeaderErrors);
+
+  const pathParamErrors = verifyTestPathParams(
+    (
+      (endpointRequest.pathParams && endpointRequest.pathParams.value) ||
+      []
+    ).map(locatablePathParam => locatablePathParam.value),
+    testRequest.pathParams || [],
+    testRequestLocation,
+    testRequestLine,
+    typeStore
+  );
+  errors.push(...pathParamErrors);
+
+  const queryParamErrors = verifyTestRequestOptionableNode(
+    (
+      (endpointRequest.queryParams && endpointRequest.queryParams.value) ||
+      []
+    ).map(locatableQueryParam => locatableQueryParam.value),
+    testRequest.queryParams || [],
+    testRequestLocation,
+    testRequestLine,
+    "query",
+    typeStore
+  );
+  errors.push(...queryParamErrors);
+
+  if (endpointRequest.body) {
+    if (testRequest.body) {
+      const bodyErrors = verifyTestBody(
+        endpointRequest.body.value,
+        testRequest.body,
         testRequestLocation,
         testRequestLine,
         typeStore
       );
+      errors.push(...bodyErrors);
     } else {
       errors.push({
-        message: "request headers required in test request",
+        message: "test body missing",
         location: testRequestLocation,
         line: testRequestLine
       });
     }
+  } else if (testRequest.body) {
+    errors.push({
+      message: "unexpected body in test",
+      location: testRequestLocation,
+      line: testRequestLine
+    });
   }
+
   return errors;
 }
-function verifyTestRequestHeaders(
-  endpointRequestHeaders: HeaderNode[],
-  testRequestHeaders: AttributeExpression[],
+
+function verifyTestRequestOptionableNode(
+  endpointOptionableNode: HeaderNode[] | QueryParamNode[],
+  testNodeValues: AttributeExpression[],
   testRequestLocation: string,
   testRequestLine: number,
+  optionableType: "header" | "query",
   typeStore: TypeNode[]
 ): VerificationError[] {
   let errors: VerificationError[] = [];
 
-  const endpointRequestHeaderNames = endpointRequestHeaders.map(
-    header => header.name.value
-  );
-  const testRequestHeaderNames = testRequestHeaders.map(header => header.name);
-  testRequestHeaderNames
-    .filter(headerName => !endpointRequestHeaderNames.includes(headerName))
-    .forEach(headerName => {
+  const endpointNodeNames = endpointOptionableNode.map(node => node.name.value);
+  const testNodeNames = testNodeValues.map(node => node.name);
+
+  testNodeNames
+    .filter(nodeName => !endpointNodeNames.includes(nodeName))
+    .forEach(nodeName => {
       errors.push({
-        message: `unexpected request header ${headerName} in test`,
+        message: `unexpected request ${optionableType} ${nodeName} in test`,
         location: testRequestLocation,
         line: testRequestLine
       });
     });
-  endpointRequestHeaders.forEach(requestHeader => {
-    const testHeader = testRequestHeaders.find(
-      header => header.name === requestHeader.name.value
+
+  endpointOptionableNode.forEach(requestNode => {
+    const testNode = testNodeValues.find(
+      node => node.name === requestNode.name.value
     );
-    if (testHeader) {
+    if (testNode) {
       try {
-        verifyJsonSchema(requestHeader.type, testHeader.expression, typeStore);
+        verifyJsonSchema(requestNode.type, testNode.expression, typeStore);
       } catch (e) {
         errors.push({
           message: e.message,
@@ -114,13 +164,93 @@ function verifyTestRequestHeaders(
           line: testRequestLine
         });
       }
-    } else if (!requestHeader.optional) {
+    } else if (!requestNode.optional) {
       errors.push({
-        message: `test request header ${requestHeader.name.value} missing`,
+        message: `test request ${optionableType} ${
+          requestNode.name.value
+        } missing`,
         location: testRequestLocation,
         line: testRequestLine
       });
     }
   });
+
+  return errors;
+}
+
+function verifyTestPathParams(
+  endpointPathParams: PathParamNode[],
+  testPathParams: AttributeExpression[],
+  testRequestLocation: string,
+  testRequestLine: number,
+  typeStore: TypeNode[]
+): VerificationError[] {
+  let errors: VerificationError[] = [];
+
+  const endpointPathParamNames = endpointPathParams.map(
+    pathParam => pathParam.name.value
+  );
+  const testPathParamNames = testPathParams.map(pathParam => pathParam.name);
+
+  testPathParamNames
+    .filter(pathParamName => !endpointPathParamNames.includes(pathParamName))
+    .forEach(pathParamName => {
+      errors.push({
+        message: `unexpected path param ${pathParamName} in test`,
+        location: testRequestLocation,
+        line: testRequestLine
+      });
+    });
+
+  endpointPathParams.forEach(requestPathParam => {
+    const testPathParam = testPathParams.find(
+      pathParam => pathParam.name === requestPathParam.name.value
+    );
+
+    if (testPathParam) {
+      try {
+        verifyJsonSchema(
+          requestPathParam.type,
+          testPathParam.expression,
+          typeStore
+        );
+      } catch (e) {
+        errors.push({
+          message: e.message,
+          location: testRequestLocation,
+          line: testRequestLine
+        });
+      }
+    } else {
+      errors.push({
+        message: `test path param ${requestPathParam.name} missing`,
+        location: testRequestLocation,
+        line: testRequestLine
+      });
+    }
+  });
+
+  return errors;
+}
+
+function verifyTestBody(
+  endpointBody: BodyNode,
+  testBody: DataExpression,
+  testRequestLocation: string,
+  testRequestLine: number,
+  typeStore: TypeNode[]
+): VerificationError[] {
+  let errors: VerificationError[] = [];
+
+  try {
+    verifyJsonSchema(endpointBody.type, testBody, typeStore);
+  } catch (e) {
+    errors.push({
+      message: e.message,
+      location: testRequestLocation,
+      line: testRequestLine
+    });
+  }
+
   return errors;
 }
