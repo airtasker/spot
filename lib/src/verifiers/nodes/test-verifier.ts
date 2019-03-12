@@ -24,6 +24,10 @@ export function verifyTestNode(
 
   const testNode = locatableTestNode.value;
 
+  if (testNode.options.allowInvalidRequest) {
+    return errors;
+  }
+
   if (endpointNodeContext.request) {
     if (testNode.request) {
       errors.push(
