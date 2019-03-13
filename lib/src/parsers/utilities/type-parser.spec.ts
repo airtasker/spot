@@ -25,7 +25,7 @@ describe("type node parser", () => {
       expect(parseTypeNode(typeNode)).toStrictEqual(BOOLEAN);
     });
 
-    test("parses the string type", () => {
+    test("parses the lowercase string type", () => {
       const typeNode = createTypeNode("string");
 
       expect(parseTypeNode(typeNode)).toStrictEqual(STRING);
@@ -87,6 +87,14 @@ describe("type node parser", () => {
   });
 
   describe("internal custom primitive types", () => {
+    test("parses Float type", () => {
+      const typeNode = createTypeNode("Float");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.NUMBER
+      });
+    });
+
     test("parses Integer type", () => {
       const typeNode = createTypeNode("Integer");
 
@@ -108,6 +116,14 @@ describe("type node parser", () => {
 
       expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.DATE_TIME
+      });
+    });
+
+    test("parses String type", () => {
+      const typeNode = createTypeNode("String");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.STRING
       });
     });
 
@@ -279,7 +295,7 @@ function createTypeNode(...types: string[]): TypeNode {
     throw new Error("at least one type required");
   }
   const content = `
-    import { Integer, Date, DateTime } from "@airtasker/spot"
+    import { Float, Integer, String, Date, DateTime } from "@airtasker/spot"
     import { TypeAlias } from "./alias"
 
     interface TestInterface {

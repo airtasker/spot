@@ -3,6 +3,7 @@
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "jsRules": {},
   "rules": {
+    "ban-types": false,
     "interface-name": false,
     "jsdoc-format": false,
     "max-classes-per-file": false,
