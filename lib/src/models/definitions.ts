@@ -82,6 +82,7 @@ export interface BodyDefinition {
 }
 
 export interface TestDefinition {
+  name: string;
   description?: string;
   states: TestStateDefinition[];
   request?: TestRequestDefinition;

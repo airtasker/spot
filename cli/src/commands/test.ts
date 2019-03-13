@@ -1,7 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import axios, { AxiosRequestConfig } from "axios";
 import {
-  ContractDefinition,
   EndpointDefinition,
   TestDefinition
 } from "../../../lib/src/models/definitions";
@@ -33,19 +32,52 @@ export default class Test extends Command {
       required: true,
       char: "u",
       description: "Base URL"
+    }),
+    stateUrl: flags.string({
+      char: "s",
+      description: "State change URL"
+    }),
+    testFilter: flags.string({
+      char: "t",
+      description: "Filter by endpoint and test"
     })
   };
 
   async run() {
     const { args, flags } = this.parse(Test);
-    const { url: baseUrl } = flags;
+    const { url: baseUrl, stateUrl, testFilter } = flags;
     const { definition } = safeParse.call(this, args[ARG_API]);
 
-    (definition as ContractDefinition).endpoints.forEach(endpoint => {
+    definition.endpoints.forEach(endpoint => {
       endpoint.tests.forEach(test => {
+        if (testFilter) {
+          const [specificEndpoint, specificTest] = testFilter.split(":");
+          if (
+            specificEndpoint !== endpoint.name ||
+            (specificTest && specificTest !== test.name)
+          ) {
+            this.warn(`test ${endpoint.name}:${test.name} skipped`);
+            return;
+          }
+        }
+
+        test.states.forEach(state => {
+          const resolvedStateUrl = stateUrl ? stateUrl : `${baseUrl}/state`;
+          const data = {
+            name: state.name,
+            params: state.params.reduce<GenericParams>((acc, param) => {
+              acc[param.name] = valueFromDataExpression(param.expression);
+              return acc;
+            }, {})
+          };
+          // await axios.post(resolvedStateUrl, data);
+        });
+
         const config = generateAxiosConfig(endpoint, test, baseUrl);
         axios.request(config).then(response => {
-          // TODO: check the response
+          if (test.response.status !== response.status) {
+            throw new Error("test failed");
+          }
         });
       });
     });
@@ -98,7 +130,7 @@ function generateAxiosConfig(
       {}
     );
 
-    config.params = test.request.queryParams.reduce<AxiosParams>(
+    config.params = test.request.queryParams.reduce<GenericParams>(
       (acc, param) => {
         acc[param.name] = valueFromDataExpression(param.expression);
         return acc;
@@ -117,6 +149,6 @@ interface AxiosHeaders {
   [key: string]: string;
 }
 
-interface AxiosParams {
+interface GenericParams {
   [key: string]: any;
 }
