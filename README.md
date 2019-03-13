@@ -232,7 +232,8 @@ ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help     show CLI help
+  -u, --url=url  Base URL
 
 EXAMPLE
   $ spot test api.ts
