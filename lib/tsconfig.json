@@ -1,8 +1,0 @@
-{
-  "extends": "../tsconfig",
-  "compilerOptions": {
-    "rootDir": "src",
-    "composite": true
-  },
-  "exclude": ["**/*.spec.ts"]
-}
