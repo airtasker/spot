@@ -1,8 +1,7 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
-    "rootDir": "src",
-    "composite": true
+    "rootDir": "src"
   },
   "references": [
     {
