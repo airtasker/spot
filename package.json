@@ -73,7 +73,7 @@
   "repository": "airtasker/spot",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf build; tsc -b --force && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf build; tsc && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",
     "test": "jest --testPathIgnorePatterns '<rootDir>/node_modules/' --testPathIgnorePatterns '<rootDir>/clients'",
     "prettier:list": "prettier --list-different \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",
     "prettier:write": "prettier --write \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",
