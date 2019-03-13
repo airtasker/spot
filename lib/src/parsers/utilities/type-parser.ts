@@ -25,6 +25,7 @@ import {
   ObjectType,
   ObjectTypeProperty,
   PrimitiveLiteral,
+  PrimitiveType,
   referenceType,
   ReferenceType,
   STRING,
@@ -74,17 +75,19 @@ export function parseTypeNode(typeNode: TypeNode): DataType {
  */
 function parseTypeReference(
   typeNode: TypeReferenceNode
-): ReferenceType | CustomPrimitiveType {
+): ReferenceType | PrimitiveType | CustomPrimitiveType {
   const declaration = getTargetDeclarationFromTypeReference(typeNode);
   const name = declaration.getName();
   if (TypeGuards.isTypeAliasDeclaration(declaration)) {
     const targetTypeNode = declaration.getTypeNodeOrThrow();
     // if the type name is one of of the internal ones ensure they have not been redefined
-    if (["Date", "DateTime", "Integer"].includes(name)) {
+    if (["Date", "DateTime", "Float", "Integer", "String"].includes(name)) {
       if (TypeGuards.isTypeReferenceNode(targetTypeNode)) {
         throw new Error(`Internal type ${name} must not be redefined`);
       } else if (declaration.getType().isString()) {
         switch (name) {
+          case "String":
+            return STRING;
           case "Date":
             return DATE;
           case "DateTime":
@@ -94,6 +97,8 @@ function parseTypeReference(
         }
       } else if (declaration.getType().isNumber()) {
         switch (name) {
+          case "Float":
+            return NUMBER;
           case "Integer":
             return INTEGER;
           default:
@@ -110,7 +115,7 @@ function parseTypeReference(
       );
     }
   } else {
-    if (["Date", "DateTime", "Integer"].includes(name)) {
+    if (["Date", "DateTime", "Float", "Integer", "String"].includes(name)) {
       throw new Error(`Internal type ${name} must not be redefined`);
     } else {
       return referenceType(
