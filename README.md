@@ -233,7 +233,7 @@ ARGUMENTS
 
 OPTIONS
   -h, --help     show CLI help
-  -u, --url=url  Base URL
+  -u, --url=url  (required) Base URL
 
 EXAMPLE
   $ spot test api.ts

@@ -35,6 +35,12 @@ export function parseTest(method: MethodDeclaration): Locatable<TestNode> {
   const configuration = extractDecoratorFactoryConfiguration(decorator);
   const opts = extractDecoratorFactoryOptions(decorator);
 
+  const name = {
+    value: method.getName(),
+    location: method.getSourceFile().getFilePath(),
+    line: method.getNameNode().getStartLineNumber()
+  };
+
   const description = extractJsDocCommentLocatable(method);
 
   const requestProperty = extractOptionalObjectProperty(
@@ -60,7 +66,7 @@ export function parseTest(method: MethodDeclaration): Locatable<TestNode> {
   const line = decorator.getStartLineNumber();
 
   return {
-    value: { description, states, request, response, options },
+    value: { name, description, states, request, response, options },
     location,
     line
   };

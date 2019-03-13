@@ -83,6 +83,7 @@ export interface BodyNode {
 }
 
 export interface TestNode {
+  name: Locatable<string>;
   description?: Locatable<string>;
   states?: TestStateNode[];
   request?: Locatable<TestRequestNode>;
