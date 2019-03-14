@@ -11,7 +11,7 @@ export default TestLogger;
 
 function log(message: string) {
   // tslint:disable-next-line: no-console
-  console.log(chalk.gray(message));
+  console.log(chalk.white(message));
 }
 
 function success(message: string) {
