@@ -1,11 +1,21 @@
 import { Command, flags } from "@oclif/command";
+import JsonSchemaValidator = require("ajv");
 import axios, { AxiosRequestConfig } from "axios";
 import {
+  JsonSchemaType,
+  jsonTypeSchema
+} from "../../../lib/src/generators/contract/json-schema";
+import {
+  DefaultResponseDefinition,
   EndpointDefinition,
   TestDefinition
 } from "../../../lib/src/models/definitions";
+import { TypeNode } from "../../../lib/src/models/nodes";
+import { DataType } from "../../../lib/src/models/types";
 import { valueFromDataExpression } from "../../../lib/src/utilities/data-expression-utils";
 import { safeParse } from "../common/safe-parse";
+import TestLogger from "../common/test-logger";
+import { asyncForEach } from "../common/utils";
 
 const ARG_API = "spot_contract";
 
@@ -48,40 +58,100 @@ export default class Test extends Command {
     const { url: baseUrl, stateUrl, testFilter } = flags;
     const { definition } = safeParse.call(this, args[ARG_API]);
 
-    definition.endpoints.forEach(endpoint => {
-      endpoint.tests.forEach(test => {
+    const resolvedStateUrl = stateUrl ? stateUrl : `${baseUrl}/state`;
+
+    await asyncForEach(definition.endpoints, async endpoint => {
+      await asyncForEach(endpoint.tests, async test => {
         if (testFilter) {
           const [specificEndpoint, specificTest] = testFilter.split(":");
           if (
             specificEndpoint !== endpoint.name ||
             (specificTest && specificTest !== test.name)
           ) {
-            this.warn(`test ${endpoint.name}:${test.name} skipped`);
+            TestLogger.warn(`test ${endpoint.name}:${test.name} skipped`);
             return;
           }
         }
 
-        test.states.forEach(state => {
-          const resolvedStateUrl = stateUrl ? stateUrl : `${baseUrl}/state`;
-          const data = {
-            name: state.name,
-            params: state.params.reduce<GenericParams>((acc, param) => {
-              acc[param.name] = valueFromDataExpression(param.expression);
-              return acc;
-            }, {})
-          };
-          // await axios.post(resolvedStateUrl, data);
-        });
+        TestLogger.log(`Testing ${endpoint.name}:${test.name}`);
 
-        const config = generateAxiosConfig(endpoint, test, baseUrl);
-        axios.request(config).then(response => {
-          if (test.response.status !== response.status) {
-            throw new Error("test failed");
-          }
-        });
+        const correlatedResponse = findCorrelatedResponse(endpoint, test);
+
+        const result = await executeTest(
+          test,
+          resolvedStateUrl,
+          baseUrl,
+          endpoint,
+          correlatedResponse,
+          definition.types
+        );
+        if (result) {
+          TestLogger.success(`Test ${endpoint.name}:${test.name} passed`);
+        } else {
+          TestLogger.error(`Test ${endpoint.name}:${test.name} failed`);
+        }
       });
     });
   }
+}
+
+async function executeTest(
+  test: TestDefinition,
+  stateUrl: string,
+  baseUrl: string,
+  endpoint: EndpointDefinition,
+  correlatedResponse: DefaultResponseDefinition,
+  typeStore: TypeNode[]
+): Promise<boolean> {
+  try {
+    await asyncForEach(test.states, async state => {
+      TestLogger.log(`Performing state setup request: ${state.name}`);
+      const data = {
+        name: state.name,
+        params: state.params.reduce<GenericParams>((acc, param) => {
+          acc[param.name] = valueFromDataExpression(param.expression);
+          return acc;
+        }, {})
+      };
+      try {
+        await axios.post(stateUrl, data);
+        TestLogger.success(`State setup request success: ${state.name}`);
+      } catch (e) {
+        TestLogger.error(`State change request failed: ${state.name}`);
+        throw e;
+      }
+    });
+
+    const config = generateAxiosConfig(endpoint, test, baseUrl);
+    const response = await axios.request(config);
+    const statusResult = verifyStatus(test, response);
+    // TODO: check headers
+    const bodyResult = correlatedResponse.body
+      ? verifyBody(correlatedResponse.body.type, response.data, typeStore)
+      : true;
+
+    return statusResult && bodyResult;
+  } catch {
+    return false;
+  }
+}
+
+function findCorrelatedResponse(
+  endpoint: EndpointDefinition,
+  test: TestDefinition
+) {
+  const correlatedResponse =
+    endpoint.responses.find(
+      response => response.status === test.response.status
+    ) || endpoint.defaultResponse;
+  if (!correlatedResponse) {
+    throw new Error(
+      `a response with status ${
+        test.response.status
+      } was not found and a default response has not been defined`
+    );
+  }
+  return correlatedResponse;
 }
 
 function generateAxiosConfig(
@@ -143,6 +213,46 @@ function generateAxiosConfig(
     }
   }
   return config;
+}
+
+function verifyStatus(test: TestDefinition, response: any): boolean {
+  if (test.response.status === response.status) {
+    TestLogger.success("Status matched");
+    return true;
+  } else {
+    TestLogger.error(
+      `Expected status ${test.response.status}, got ${response.status}`
+    );
+    return false;
+  }
+}
+
+function verifyBody(
+  dataType: DataType,
+  value: any,
+  typeStore: TypeNode[]
+): boolean {
+  const jsv = new JsonSchemaValidator();
+  const schema = {
+    ...jsonTypeSchema(dataType),
+    definitions: typeStore.reduce<{ [key: string]: JsonSchemaType }>(
+      (defAcc, typeNode) => {
+        return { [typeNode.name]: jsonTypeSchema(typeNode.type), ...defAcc };
+      },
+      {}
+    )
+  };
+  const validateFn = jsv.compile(schema);
+  const valid = validateFn(value);
+  if (valid) {
+    TestLogger.success("Body matched");
+    return true;
+  } else {
+    TestLogger.error(
+      `Body does not match: ${jsv.errorsText(validateFn.errors)}`
+    );
+    return false;
+  }
 }
 
 interface AxiosHeaders {
