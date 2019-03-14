@@ -232,8 +232,10 @@ ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
 OPTIONS
-  -h, --help     show CLI help
-  -u, --url=url  (required) Base URL
+  -h, --help                   show CLI help
+  -s, --stateUrl=stateUrl      State change URL
+  -t, --testFilter=testFilter  Filter by endpoint and test
+  -u, --url=url                (required) Base URL
 
 EXAMPLE
   $ spot test api.ts
