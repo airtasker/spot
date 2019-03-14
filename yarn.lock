@@ -313,9 +313,9 @@
     semver "^5.6.0"
 
 "@oclif/config@^1", "@oclif/config@^1.12.8":
-  version "1.12.9"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.9.tgz#60e666135938e5c9159fbd60675606546d2d7c30"
-  integrity sha512-kirFdwOPHmcKPJWcTvM8Xhz30i/usC0rITfENshIvFZySWigpWaj3nLWMbu482EOcxzUqjaz55kSHv6jDFjc5w==
+  version "1.12.10"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.10.tgz#08ef278cfad981d618468c969c1a1c64f3a38c98"
+  integrity sha512-AQYFA72ktXgmrY4hjRtBQRfKLDKXPG4WGSLUgWn0KencNuqnmbiKS6zfKXf1umfZ26zoDOEfCdqZjm3aNZnIaw==
   dependencies:
     debug "^4.1.1"
     tslib "^1.9.3"
