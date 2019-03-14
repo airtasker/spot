@@ -60,6 +60,8 @@ export default class Test extends Command {
 
     const resolvedStateUrl = stateUrl ? stateUrl : `${baseUrl}/state`;
 
+    let allPassed = true;
+
     await asyncForEach(definition.endpoints, async endpoint => {
       await asyncForEach(endpoint.tests, async test => {
         if (testFilter) {
@@ -85,13 +87,20 @@ export default class Test extends Command {
           correlatedResponse,
           definition.types
         );
+
         if (result) {
           TestLogger.success(`Test ${endpoint.name}:${test.name} passed`);
         } else {
           TestLogger.error(`Test ${endpoint.name}:${test.name} failed`);
         }
+
+        allPassed = allPassed && result;
       });
     });
+
+    if (!allPassed) {
+      this.exit(1);
+    }
   }
 }
 
@@ -110,41 +119,19 @@ async function executeTest(
       return false;
     }
 
-    const config = generateAxiosConfig(endpoint, test, baseUrl);
-    const response = await axios.request(config);
-    const statusResult = verifyStatus(test, response);
-    // TODO: check headers
-    const bodyResult = correlatedResponse.body
-      ? verifyBody(correlatedResponse.body.type, response.data, typeStore)
-      : true;
-    const testResult = statusResult && bodyResult;
+    const testResult = await executeRequestUnderTest(
+      endpoint,
+      test,
+      baseUrl,
+      correlatedResponse,
+      typeStore
+    );
 
     await executeStateTeardown(stateUrl);
 
     return testResult;
   } catch {
     return false;
-  }
-}
-
-async function executeStateTeardown(stateUrl: string): Promise<void> {
-  try {
-    TestLogger.log("Performing state teardown request");
-    await axios.post(stateUrl, undefined, { params: { action: "teardown" } });
-    TestLogger.success("State teardown request success");
-  } catch (error) {
-    if (error.response) {
-      TestLogger.error(
-        `State teardown request failed: received ${
-          error.response.status
-        } status`
-      );
-    } else if (error.request) {
-      TestLogger.error(`State teardown request failed: no response`);
-    } else {
-      TestLogger.error(`State teardown request failed: ${error.message}`);
-    }
-    throw error;
   }
 }
 
@@ -200,7 +187,8 @@ function generateAxiosConfig(
   const config: AxiosRequestConfig = {
     baseURL: baseUrl,
     url: urlPath,
-    method: endpoint.method
+    method: endpoint.method,
+    validateStatus: () => true // never invalidate the status
   };
 
   if (test.request) {
@@ -225,6 +213,24 @@ function generateAxiosConfig(
     }
   }
   return config;
+}
+
+async function executeRequestUnderTest(
+  endpoint: EndpointDefinition,
+  test: TestDefinition,
+  baseUrl: string,
+  correlatedResponse: DefaultResponseDefinition,
+  typeStore: TypeNode[]
+) {
+  const config = generateAxiosConfig(endpoint, test, baseUrl);
+  const response = await axios.request(config);
+  const statusResult = verifyStatus(test, response);
+  // TODO: check headers
+  const bodyResult = correlatedResponse.body
+    ? verifyBody(correlatedResponse.body.type, response.data, typeStore)
+    : true;
+  const testResult = statusResult && bodyResult;
+  return testResult;
 }
 
 async function executeStateSetup(
@@ -262,6 +268,27 @@ async function executeStateSetup(
       throw error;
     }
   });
+}
+
+async function executeStateTeardown(stateUrl: string): Promise<void> {
+  try {
+    TestLogger.log("Performing state teardown request");
+    await axios.post(stateUrl, undefined, { params: { action: "teardown" } });
+    TestLogger.success("State teardown request success");
+  } catch (error) {
+    if (error.response) {
+      TestLogger.error(
+        `State teardown request failed: received ${
+          error.response.status
+        } status`
+      );
+    } else if (error.request) {
+      TestLogger.error(`State teardown request failed: no response`);
+    } else {
+      TestLogger.error(`State teardown request failed: ${error.message}`);
+    }
+    throw error;
+  }
 }
 
 function verifyStatus(test: TestDefinition, response: any): boolean {
