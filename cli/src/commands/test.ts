@@ -104,23 +104,11 @@ async function executeTest(
   typeStore: TypeNode[]
 ): Promise<boolean> {
   try {
-    await asyncForEach(test.states, async state => {
-      TestLogger.log(`Performing state setup request: ${state.name}`);
-      const data = {
-        name: state.name,
-        params: state.params.reduce<GenericParams>((acc, param) => {
-          acc[param.name] = valueFromDataExpression(param.expression);
-          return acc;
-        }, {})
-      };
-      try {
-        await axios.post(stateUrl, data);
-        TestLogger.success(`State setup request success: ${state.name}`);
-      } catch (e) {
-        TestLogger.error(`State change request failed: ${state.name}`);
-        throw e;
-      }
-    });
+    try {
+      await executeStateSetup(test, stateUrl);
+    } catch {
+      return false;
+    }
 
     const config = generateAxiosConfig(endpoint, test, baseUrl);
     const response = await axios.request(config);
@@ -129,17 +117,41 @@ async function executeTest(
     const bodyResult = correlatedResponse.body
       ? verifyBody(correlatedResponse.body.type, response.data, typeStore)
       : true;
+    const testResult = statusResult && bodyResult;
 
-    return statusResult && bodyResult;
+    await executeStateTeardown(stateUrl);
+
+    return testResult;
   } catch {
     return false;
+  }
+}
+
+async function executeStateTeardown(stateUrl: string): Promise<void> {
+  try {
+    TestLogger.log("Performing state teardown request");
+    await axios.post(stateUrl, undefined, { params: { action: "teardown" } });
+    TestLogger.success("State teardown request success");
+  } catch (error) {
+    if (error.response) {
+      TestLogger.error(
+        `State teardown request failed: received ${
+          error.response.status
+        } status`
+      );
+    } else if (error.request) {
+      TestLogger.error(`State teardown request failed: no response`);
+    } else {
+      TestLogger.error(`State teardown request failed: ${error.message}`);
+    }
+    throw error;
   }
 }
 
 function findCorrelatedResponse(
   endpoint: EndpointDefinition,
   test: TestDefinition
-) {
+): DefaultResponseDefinition {
   const correlatedResponse =
     endpoint.responses.find(
       response => response.status === test.response.status
@@ -213,6 +225,43 @@ function generateAxiosConfig(
     }
   }
   return config;
+}
+
+async function executeStateSetup(
+  test: TestDefinition,
+  stateUrl: string
+): Promise<void> {
+  await asyncForEach(test.states, async state => {
+    TestLogger.log(`Performing state setup request: ${state.name}`);
+    const data = {
+      name: state.name,
+      params: state.params.reduce<GenericParams>((acc, param) => {
+        acc[param.name] = valueFromDataExpression(param.expression);
+        return acc;
+      }, {})
+    };
+    try {
+      await axios.post(stateUrl, data, { params: { action: "setup" } });
+      TestLogger.success(`State setup request (${state.name}) success`);
+    } catch (error) {
+      if (error.response) {
+        TestLogger.error(
+          `State change request (${state.name}) failed: received ${
+            error.response.status
+          } status`
+        );
+      } else if (error.request) {
+        TestLogger.error(
+          `State change request (${state.name}) failed: no response`
+        );
+      } else {
+        TestLogger.error(
+          `State change request (${state.name}) failed: ${error.message}`
+        );
+      }
+      throw error;
+    }
+  });
 }
 
 function verifyStatus(test: TestDefinition, response: any): boolean {
