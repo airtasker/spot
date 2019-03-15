@@ -39,6 +39,11 @@ describe("@test parser", () => {
           location: expect.stringMatching(/main\.ts$/),
           value: "test description"
         },
+        name: {
+          line: 25,
+          location: expect.stringMatching(/main\.ts$/),
+          value: "testMethod"
+        },
         options: {
           allowInvalidRequest: true
         },

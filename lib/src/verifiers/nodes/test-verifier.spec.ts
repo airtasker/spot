@@ -61,6 +61,7 @@ describe("test node verifier", () => {
 
   test("valid for correct usage", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
@@ -96,6 +97,7 @@ describe("test node verifier", () => {
 
   test("valid when invalid request is allowed", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [],
         pathParams: []
@@ -112,6 +114,7 @@ describe("test node verifier", () => {
 
   test("invalid with no matching response", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [],
         pathParams: []
@@ -130,6 +133,7 @@ describe("test node verifier", () => {
 
   test("invalid for missing header", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [],
         pathParams: [
@@ -162,6 +166,7 @@ describe("test node verifier", () => {
 
   test("invalid for unexpected header", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
@@ -205,6 +210,7 @@ describe("test node verifier", () => {
 
   test("invalid for malformed header", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
@@ -242,6 +248,7 @@ describe("test node verifier", () => {
 
   test("invalid for missing path param", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
@@ -274,6 +281,7 @@ describe("test node verifier", () => {
 
   test("invalid for unexpected path param", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
@@ -315,6 +323,7 @@ describe("test node verifier", () => {
 
   test("invalid for malformed path param", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
@@ -352,6 +361,7 @@ describe("test node verifier", () => {
 
   test("invalid for missing body", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
@@ -380,6 +390,7 @@ describe("test node verifier", () => {
 
   test("invalid for malformed body", () => {
     const testNode = fakeLocatable({
+      name: fakeLocatable("myTest"),
       request: fakeLocatable<TestRequestNode>({
         headers: [
           {
