@@ -241,30 +241,7 @@ EXAMPLE
   $ spot test api.ts
 ```
 
-_See code: [build/cli/src/commands/test.js](https://github.com/airtasker/spot/blob/v0.2.1/build/cli/src/commands/test.js)_
-
-## `spot test SPOT_CONTRACT`
-
-Test a Spot contract
-
-```
-USAGE
-  $ spot test SPOT_CONTRACT
-
-ARGUMENTS
-  SPOT_CONTRACT  path to Spot contract
-
-OPTIONS
-  -h, --help                   show CLI help
-  -s, --stateUrl=stateUrl      State change URL
-  -t, --testFilter=testFilter  Filter by endpoint and test
-  -u, --url=url                (required) Base URL
-
-EXAMPLE
-  $ spot test api.ts
-```
-
-_See code: [build/cli/src/commands/test.js](https://github.com/airtasker/spot/blob/v0.2.1/build/cli/src/commands/test.js)_
+_See code: [build/cli/src/commands/test.js](https://github.com/airtasker/spot/blob/v0.2.2/build/cli/src/commands/test.js)_
 
 ## `spot validate SPOT_CONTRACT`
 
