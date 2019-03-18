@@ -238,7 +238,7 @@ OPTIONS
   -u, --url=url                (required) Base URL
 
 EXAMPLE
-  $ spot test api.ts
+  $ spot test api.ts -u http://localhost:3000
 ```
 
 _See code: [build/cli/src/commands/test.js](https://github.com/airtasker/spot/blob/v0.2.2/build/cli/src/commands/test.js)_
