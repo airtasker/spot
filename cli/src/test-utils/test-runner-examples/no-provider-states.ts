@@ -3,8 +3,6 @@ import {
   body,
   endpoint,
   headers,
-  Integer,
-  pathParams,
   request,
   response,
   String,
@@ -16,17 +14,11 @@ class CompanyApi {}
 
 @endpoint({
   method: "POST",
-  path: "/companies/:companyId/users"
+  path: "/companies"
 })
-class CreateUser {
+class CreateCompany {
   @request
-  request(
-    @pathParams
-    pathParams: {
-      companyId: String;
-    },
-    @body body: CreateUserRequestBody
-  ) {}
+  request(@body body: CreateCompanyRequestBody) {}
 
   @response({ status: 201 })
   successResponse(
@@ -34,19 +26,14 @@ class CreateUser {
     headers: {
       Location: String;
     },
-    @body body: UserBody
+    @body body: CompanyBody
   ) {}
 
   @test({
     request: {
-      pathParams: {
-        companyId: "abc"
-      },
       body: {
-        firstName: "John",
-        lastName: "Snow",
-        age: 15,
-        email: "johnsnow@spot.com"
+        name: "My Company",
+        private: true
       }
     },
     response: {
@@ -56,15 +43,11 @@ class CreateUser {
   successResponseTest() {}
 }
 
-interface CreateUserRequestBody {
-  firstName: String;
-  lastName: String;
-  age: Integer;
-  email: String;
+interface CreateCompanyRequestBody {
+  name: String;
+  private: boolean;
 }
 
-interface UserBody {
-  firstName: string;
-  lastName: string;
-  email: String;
+interface CompanyBody {
+  name: String;
 }

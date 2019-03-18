@@ -31,7 +31,7 @@ export async function runTest(
           testFilter.endpoint !== endpoint.name ||
           (testFilter.test && testFilter.test !== test.name)
         ) {
-          TestLogger.warn(`test ${endpoint.name}:${test.name} skipped`);
+          TestLogger.warn(`Test ${endpoint.name}:${test.name} skipped`);
           return;
         }
       }
@@ -46,9 +46,9 @@ export async function runTest(
         definition.types
       );
       if (result) {
-        TestLogger.success(`Test ${endpoint.name}:${test.name} passed`);
+        TestLogger.success(`\tTest ${endpoint.name}:${test.name} passed`);
       } else {
-        TestLogger.error(`Test ${endpoint.name}:${test.name} failed`);
+        TestLogger.error(`\tTest ${endpoint.name}:${test.name} failed`);
       }
       allPassed = allPassed && result;
     });
@@ -65,13 +65,7 @@ async function executeTest(
   correlatedResponse: DefaultResponseDefinition,
   typeStore: TypeNode[]
 ): Promise<boolean> {
-  try {
-    try {
-      await executeStateSetup(test, stateUrl);
-    } catch {
-      return false;
-    }
-
+  if (await executeStateSetup(test, stateUrl)) {
     const testResult = await executeRequestUnderTest(
       endpoint,
       test,
@@ -79,11 +73,10 @@ async function executeTest(
       correlatedResponse,
       typeStore
     );
-
+    const stateTearDownResult = await executeStateTeardown(stateUrl);
+    return testResult && stateTearDownResult;
+  } else {
     await executeStateTeardown(stateUrl);
-
-    return testResult;
-  } catch {
     return false;
   }
 }
@@ -176,6 +169,9 @@ async function executeRequestUnderTest(
   typeStore: TypeNode[]
 ) {
   const config = generateAxiosConfig(endpoint, test, baseUrl);
+  TestLogger.mute(
+    `\tPerforming request under test: ${config.method} ${config.url}`
+  );
   const response = await axios.request(config);
   const statusResult = verifyStatus(test, response);
   // TODO: check headers
@@ -189,68 +185,74 @@ async function executeRequestUnderTest(
 async function executeStateSetup(
   test: TestDefinition,
   stateUrl: string
-): Promise<void> {
-  await asyncForEach(test.states, async state => {
-    TestLogger.log(`Performing state setup request: ${state.name}`);
-    const data = {
-      name: state.name,
-      params: state.params.reduce<GenericParams>((acc, param) => {
-        acc[param.name] = valueFromDataExpression(param.expression);
-        return acc;
-      }, {})
-    };
-    try {
-      await axios.post(stateUrl, data, { params: { action: "setup" } });
-      TestLogger.success(`State setup request (${state.name}) success`);
-    } catch (error) {
-      if (error.response) {
-        TestLogger.error(
-          `State change request (${state.name}) failed: received ${
-            error.response.status
-          } status`
-        );
-      } else if (error.request) {
-        TestLogger.error(
-          `State change request (${state.name}) failed: no response`
-        );
-      } else {
-        TestLogger.error(
-          `State change request (${state.name}) failed: ${error.message}`
-        );
+): Promise<boolean> {
+  try {
+    await asyncForEach(test.states, async state => {
+      TestLogger.mute(`\tPerforming state setup request: ${state.name}`);
+      const data = {
+        name: state.name,
+        params: state.params.reduce<GenericParams>((acc, param) => {
+          acc[param.name] = valueFromDataExpression(param.expression);
+          return acc;
+        }, {})
+      };
+      try {
+        await axios.post(stateUrl, data, { params: { action: "setup" } });
+        TestLogger.success(`\t\tState setup request (${state.name}) success`);
+      } catch (error) {
+        if (error.response) {
+          TestLogger.error(
+            `\t\tState change request (${state.name}) failed: received ${
+              error.response.status
+            } status`
+          );
+        } else if (error.request) {
+          TestLogger.error(
+            `\t\tState change request (${state.name}) failed: no response`
+          );
+        } else {
+          TestLogger.error(
+            `\t\tState change request (${state.name}) failed: ${error.message}`
+          );
+        }
+        throw error;
       }
-      throw error;
-    }
-  });
+    });
+  } catch (error) {
+    return false;
+  }
+  return true;
 }
 
-async function executeStateTeardown(stateUrl: string): Promise<void> {
+async function executeStateTeardown(stateUrl: string): Promise<boolean> {
   try {
-    TestLogger.log("Performing state teardown request");
+    TestLogger.mute("\tPerforming state teardown request");
     await axios.post(stateUrl, undefined, { params: { action: "teardown" } });
-    TestLogger.success("State teardown request success");
+    TestLogger.success("\t\tState teardown request success");
+    return true;
   } catch (error) {
     if (error.response) {
       TestLogger.error(
-        `State teardown request failed: received ${
+        `\t\tState teardown request failed: received ${
           error.response.status
         } status`
       );
     } else if (error.request) {
-      TestLogger.error(`State teardown request failed: no response`);
+      TestLogger.error(`\t\tState teardown request failed: no response`);
     } else {
-      TestLogger.error(`State teardown request failed: ${error.message}`);
+      TestLogger.error(`\t\tState teardown request failed: ${error.message}`);
     }
-    throw error;
+    return false;
   }
 }
 
 function verifyStatus(test: TestDefinition, response: any): boolean {
   if (test.response.status === response.status) {
-    TestLogger.success("Status matched");
+    TestLogger.success("\t\tStatus matched");
     return true;
   } else {
     TestLogger.error(
-      `Expected status ${test.response.status}, got ${response.status}`
+      `\t\tExpected status ${test.response.status}, got ${response.status}`
     );
     return false;
   }
@@ -274,11 +276,11 @@ function verifyBody(
   const validateFn = jsv.compile(schema);
   const valid = validateFn(value);
   if (valid) {
-    TestLogger.success("Body matched");
+    TestLogger.success("\t\tBody matched");
     return true;
   } else {
     TestLogger.error(
-      `Body does not match: ${jsv.errorsText(validateFn.errors)}`
+      `\t\tBody does not match: ${jsv.errorsText(validateFn.errors)}`
     );
     return false;
   }
