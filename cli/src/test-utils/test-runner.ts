@@ -18,19 +18,18 @@ import TestLogger from "./test-logger";
 
 export async function runTest(
   definition: ContractDefinition,
-  testFilter: string | undefined,
-  resolvedStateUrl: string,
-  baseUrl: string
-) {
+  stateUrl: string,
+  baseUrl: string,
+  testFilter?: TestFilter
+): Promise<boolean> {
   let allPassed = true;
 
   await asyncForEach(definition.endpoints, async endpoint => {
     await asyncForEach(endpoint.tests, async test => {
       if (testFilter) {
-        const [specificEndpoint, specificTest] = testFilter.split(":");
         if (
-          specificEndpoint !== endpoint.name ||
-          (specificTest && specificTest !== test.name)
+          testFilter.endpoint !== endpoint.name ||
+          (testFilter.test && testFilter.test !== test.name)
         ) {
           TestLogger.warn(`test ${endpoint.name}:${test.name} skipped`);
           return;
@@ -40,7 +39,7 @@ export async function runTest(
       const correlatedResponse = findCorrelatedResponse(endpoint, test);
       const result = await executeTest(
         test,
-        resolvedStateUrl,
+        stateUrl,
         baseUrl,
         endpoint,
         correlatedResponse,
@@ -291,4 +290,9 @@ interface AxiosHeaders {
 
 interface GenericParams {
   [key: string]: any;
+}
+
+export interface TestFilter {
+  endpoint: string;
+  test?: string;
 }

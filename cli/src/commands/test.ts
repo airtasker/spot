@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import { safeParse } from "../common/safe-parse";
-import { runTest } from "../test-utils/test-runner";
+import { runTest, TestFilter } from "../test-utils/test-runner";
 
 const ARG_API = "spot_contract";
 
@@ -45,15 +45,25 @@ export default class Test extends Command {
 
     const resolvedStateUrl = stateUrl ? stateUrl : `${baseUrl}/state`;
 
+    const filter = testFilter ? parseTestFilter(testFilter) : undefined;
+
     const allPassed = await runTest(
       definition,
-      testFilter,
       resolvedStateUrl,
-      baseUrl
+      baseUrl,
+      filter
     );
 
     if (!allPassed) {
       this.exit(1);
     }
   }
+}
+
+function parseTestFilter(rawTestFilter: string): TestFilter {
+  const [specificEndpoint, specificTest] = rawTestFilter.split(":");
+  return {
+    endpoint: specificEndpoint,
+    test: specificTest
+  };
 }
