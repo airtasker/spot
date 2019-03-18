@@ -2,9 +2,9 @@ import { HttpMethod } from "../../models/http";
 import {
   BodyNode,
   EndpointNode,
+  HeaderNode,
   PathParamNode,
-  TestRequestNode,
-  HeaderNode
+  TestRequestNode
 } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
 import { fakeLocatable } from "../../test/fake-locatable";
