@@ -1,4 +1,4 @@
-import JsonSchemaValidator = require("ajv");
+import JsonSchemaValidator from "ajv";
 import {
   JsonSchemaType,
   jsonTypeSchema
