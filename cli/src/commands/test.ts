@@ -10,7 +10,10 @@ const ARG_API = "spot_contract";
 export default class Test extends Command {
   static description = "Test a Spot contract";
 
-  static examples = ["$ spot test api.ts -u http://localhost:3000"];
+  static examples = [
+    "$ spot test api.ts -u http://localhost:3000",
+    "$ spot test api.ts -u http://localhost:3000 -t MyEndpoint:myTest"
+  ];
 
   static args = [
     {

@@ -1,14 +1,12 @@
 import chalk from "chalk";
 
-const TestLogger = {
+export const TestLogger = {
   error,
   log,
   mute,
   success,
   warn
 };
-
-export default TestLogger;
 
 function error(message: string) {
   // tslint:disable-next-line: no-console

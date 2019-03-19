@@ -30,8 +30,8 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(true);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(true);
   });
 
   test("single provider state", async () => {
@@ -53,8 +53,8 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(true);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(true);
   });
 
   test("multiple provider states", async () => {
@@ -83,8 +83,69 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(true);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(true);
+  });
+
+  test("multiple tests", async () => {
+    const contract = parseAndCleanse(
+      "./cli/src/test-utils/test-runner-examples/multiple-tests.ts"
+    );
+
+    const scopeA = nock(baseUrl)
+      .post("/companies", { name: "My Company", private: true })
+      .reply(
+        201,
+        { name: "My Company" },
+        { Location: `${baseUrl}/companies/abc` }
+      )
+      .post("/state")
+      .query({ action: "teardown" })
+      .reply(200);
+
+    const scopeB = nock(baseUrl)
+      .post("/companies", { name: 5 })
+      .reply(400, { message: "error" })
+      .post("/state")
+      .query({ action: "teardown" })
+      .reply(200);
+
+    const result = await runTest(contract, stateUrl, baseUrl);
+    expect(scopeA.isDone()).toBe(true);
+    expect(scopeB.isDone()).toBe(true);
+    expect(result).toBe(true);
+  });
+
+  test("test filtering", async () => {
+    const contract = parseAndCleanse(
+      "./cli/src/test-utils/test-runner-examples/multiple-tests.ts"
+    );
+
+    const scopeA = nock(baseUrl)
+      .post("/companies", { name: "My Company", private: true })
+      .reply(
+        201,
+        { name: "My Company" },
+        { Location: `${baseUrl}/companies/abc` }
+      );
+
+    const scopeB = nock(baseUrl)
+      .post("/companies", { name: 5 })
+      .reply(400, { message: "error" });
+
+    const tearDownScope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "teardown" })
+      .reply(200);
+
+    const result = await runTest(contract, stateUrl, baseUrl, {
+      endpoint: "CreateCompany",
+      test: "badRequestTest"
+    });
+    expect(scopeA.isDone()).toBe(false);
+    expect(scopeB.isDone()).toBe(true);
+    expect(tearDownScope.isDone()).toBe(true);
+    expect(result).toBe(true);
   });
 
   test("provider state setup fail", async () => {
@@ -101,8 +162,8 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(false);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(false);
   });
 
   test("provider state teardown fail", async () => {
@@ -124,8 +185,8 @@ describe("test runner", () => {
       .reply(400);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(false);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(false);
   });
 
   test("response status mismatch", async () => {
@@ -147,8 +208,8 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(false);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(false);
   });
 
   test.skip("response header mismatch", async () => {
@@ -168,11 +229,11 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(false);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(false);
   });
 
-  test("response body mismatch", async () => {
+  test("response body mismatch - missing attribute", async () => {
     const contract = parseAndCleanse(
       "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
     );
@@ -190,8 +251,55 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
-    expect(scope.isDone()).toEqual(true);
-    expect(result).toEqual(false);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(false);
+  });
+
+  test("response body mismatch - attribute type mismatch", async () => {
+    const contract = parseAndCleanse(
+      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+    );
+
+    const scope = nock(baseUrl)
+      .get("/companies/abc")
+      .reply(200, {
+        name: "My Company",
+        employeeCount: "15"
+      })
+      .post("/state", { name: "a company exists", params: { id: "abc" } })
+      .query({ action: "setup" })
+      .reply(200)
+      .post("/state")
+      .query({ action: "teardown" })
+      .reply(200);
+
+    const result = await runTest(contract, stateUrl, baseUrl);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(false);
+  });
+
+  test("response body mismatch - extra attribute", async () => {
+    const contract = parseAndCleanse(
+      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+    );
+
+    const scope = nock(baseUrl)
+      .get("/companies/abc")
+      .reply(200, {
+        name: "My Company",
+        employeeCount: 15,
+        extra: true
+      })
+      .post("/state", { name: "a company exists", params: { id: "abc" } })
+      .query({ action: "setup" })
+      .reply(200)
+      .post("/state")
+      .query({ action: "teardown" })
+      .reply(200);
+
+    const result = await runTest(contract, stateUrl, baseUrl);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(true);
   });
 });
 
