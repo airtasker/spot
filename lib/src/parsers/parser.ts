@@ -120,7 +120,7 @@ function parseRootSourceFile(
 }
 
 /**
- * Parses a file and its local imports recursively, looking for endpoint definitions.
+ * Parses a file and its local imports/exports recursively, looking for endpoint definitions.
  *
  * @param file The current source file (starting with the root file where the API is defined).
  * @param visitedPaths The list of paths that were already visited, to avoid an infinite loop
@@ -149,7 +149,18 @@ function parseRecursively(
     .filter(i => i.getModuleSpecifierValue().startsWith("."))
     .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
 
-  return importedFiles.reduce<Array<Locatable<EndpointNode>>>(
+  const exportedFiles = file
+    .getExportDeclarations()
+    // We only care about local imports.
+    .filter(e => {
+      const moduleSpecifierValue = e.getModuleSpecifierValue();
+      return moduleSpecifierValue && moduleSpecifierValue.startsWith(".");
+    })
+    .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
+
+  return [...importedFiles, ...exportedFiles].reduce<
+    Array<Locatable<EndpointNode>>
+  >(
     (endpointsAcc, currentFile) =>
       parseRecursively(currentFile, visitedPaths).concat(endpointsAcc),
     endpoints
