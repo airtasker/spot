@@ -70,7 +70,7 @@ function parseRootSourceFile(
   }
   const api = parseApi(apiClasses[0]);
 
-  const endpoints = parseRecursively(file)
+  const endpoints = parseRecursively(file);
 
   // Direct reference types, filtered to unique references for efficiency
   const uniqueDirectReferenceTypes = uniqueReferences(
@@ -121,18 +121,21 @@ function parseRootSourceFile(
 
 /**
  * Parses a file and its local imports recursively, looking for endpoint definitions.
- * 
+ *
  * @param file The current source file (starting with the root file where the API is defined).
  * @param visitedPaths The list of paths that were already visited, to avoid an infinite loop
  * with circular dependencies.
  */
-function parseRecursively(file: SourceFile, visitedPaths: string[] = []): Array<Locatable<EndpointNode>> {
-  const filePath = file.getFilePath()
+function parseRecursively(
+  file: SourceFile,
+  visitedPaths: string[] = []
+): Array<Locatable<EndpointNode>> {
+  const filePath = file.getFilePath();
   if (visitedPaths.indexOf(filePath) !== -1) {
     // Don't visit the same file multiple times.
     return [];
   } else {
-    visitedPaths.push(filePath)
+    visitedPaths.push(filePath);
   }
 
   const endpoints = file
@@ -143,13 +146,12 @@ function parseRecursively(file: SourceFile, visitedPaths: string[] = []): Array<
   const importedFiles = file
     .getImportDeclarations()
     // We only care about local imports.
-    .filter(i => i.getModuleSpecifierValue().startsWith('.'))
+    .filter(i => i.getModuleSpecifierValue().startsWith("."))
     .map(myImport => myImport.getModuleSpecifierSourceFileOrThrow());
 
   return importedFiles.reduce<Array<Locatable<EndpointNode>>>(
     (endpointsAcc, currentFile) =>
-      parseRecursively(currentFile, visitedPaths)
-        .concat(endpointsAcc),
+      parseRecursively(currentFile, visitedPaths).concat(endpointsAcc),
     endpoints
   );
 }
