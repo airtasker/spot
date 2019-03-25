@@ -544,10 +544,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.5.tgz#0c57e12eb44d44e5b6735593925286553ee7cebf"
   integrity sha512-pz6wNe/XwyesgfVX7P6B0hY3TnTAYXk6KSTLdpQfbuq3be+hnMoCuFzE+yLTskPdBwmNiGRL2TAsnF09aRugvQ==
 
-"@types/ramda@^0.26.3":
-  version "0.26.3"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.3.tgz#e6c35cb0a75843c9cfe58e0be294ffbc4480f33e"
-  integrity sha512-ZTepXW1dgQySkTUbxb2JC61vJxnLqofq4S43rFWpobRRsDh9HgNQxjEWhjQcjoYAMhkyV8JsE9mhE7Pgo3AYbg==
+"@types/ramda@^0.26.5":
+  version "0.26.5"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.5.tgz#99f62d7c29fc9a5381008128e33c08e951fbb620"
+  integrity sha512-0W7/G3OfpqoNLp10UA+2a7cKNZeUaqSULdCrHU8Xrum1O+ZZQR9dk3CgNFD2u2+eJ5PfTL3kk/xzrfgjFf6f8w==
 
 "@types/randomstring@^1.1.6":
   version "1.1.6"
