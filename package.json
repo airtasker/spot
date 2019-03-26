@@ -40,7 +40,7 @@
     "@types/lodash": "^4.14.123",
     "@types/moxios": "^0.4.8",
     "@types/nock": "^9.3.1",
-    "@types/node": "^11.11.6",
+    "@types/node": "^11.11.7",
     "globby": "^9.1.0",
     "jest": "^24.5.0",
     "nock": "^10.0.6",
