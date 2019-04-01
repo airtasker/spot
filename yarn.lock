@@ -4558,10 +4558,10 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
 
-ts-jest@^24.0.0:
-  version "24.0.0"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-24.0.0.tgz#3f26bf2ec1fa584863a5a9c29bd8717d549efbf6"
-  integrity sha512-o8BO3TkMREpAATaFTrXkovMsCpBl2z4NDBoLJuWZcJJj1ijI49UnvDMfVpj+iogn/Jl8Pbhuei5nc/Ti+frEHw==
+ts-jest@^24.0.1:
+  version "24.0.1"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-24.0.1.tgz#77258061cc354c3fa8616b8ac03baa0f8580f854"
+  integrity sha512-mgNZmYPuGBNgYpUzchI7vdSr6zATQI0TrSyzREnXHuPCvlW8T1DQ/fdscgx4ivS5vAMUGUaoxGdWIVHC5I8imw==
   dependencies:
     bs-logger "0.x"
     buffer-from "1.x"
@@ -4573,10 +4573,10 @@ ts-jest@^24.0.0:
     semver "^5.5"
     yargs-parser "10.x"
 
-ts-morph@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-1.3.1.tgz#70795b7d54489c419b50911273675151b7bab8af"
-  integrity sha512-zWjy62PNOeX7LP6Q1h5UM7uBetEHKu9P2EoRQn0CZwqANxU/ZXvEiOtKeQJwKihRfslES+pLNCfIG7R0WS4ZbQ==
+ts-morph@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-1.3.2.tgz#7cca879159291a031db6ca7a06c39c36a97307f0"
+  integrity sha512-NaPUD0NY1nfRfdWnGaYMFsIAcQyuS0teCOjZ+v5nvBYziuKZaJ7z5JLkHkhrBkffqR9DLnn2Zx1vdW5Ub1doxg==
   dependencies:
     "@dsherret/to-absolute-glob" "^2.0.2"
     code-block-writer "7.2.2"
@@ -4586,7 +4586,7 @@ ts-morph@^1.3.1:
     is-negated-glob "^1.0.0"
     multimatch "^2.1.0"
     tslib "^1.9.0"
-    typescript "^3.0.1"
+    typescript ">=3.0.1 <3.4.0"
 
 ts-node@^8.0.3:
   version "8.0.3"
@@ -4667,7 +4667,7 @@ type-is@~1.6.16:
     media-typer "0.3.0"
     mime-types "~2.1.18"
 
-typescript@^3.0.1, typescript@^3.3.4000:
+"typescript@>=3.0.1 <3.4.0", typescript@^3.3.4000:
   version "3.3.4000"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.4000.tgz#76b0f89cfdbf97827e1112d64f283f1151d6adf0"
   integrity sha512-jjOcCZvpkl2+z7JFn0yBOoLQyLoIkNZAs/fYJkUG6VKy6zLPHJGfQJYFHzibB6GJaF/8QrcECtlQ5cpvRHSMEA==
