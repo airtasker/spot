@@ -45,7 +45,7 @@ jobs:
 
       - run:
           name: Speccy OpenAPI 2
-          command: ./bin/run generate --contract lib/src/test/examples/contract.ts -l yaml --generator openapi2 -o output/ && yarn swagger2openapi output/contract.yml > output/contract.json && yarn speccy lint -s openapi-tags -s parameter-description output/contract.json
+          command: ./bin/run generate --contract lib/src/test/examples/contract.ts -l yaml --generator openapi2 -o output/ && yarn --silent swagger2openapi output/contract.yml > output/contract.json && yarn speccy lint -s openapi-tags -s parameter-description output/contract.json
 
   prettier-check:
     <<: *job_configuration
