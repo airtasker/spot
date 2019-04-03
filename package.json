@@ -74,6 +74,8 @@
   },
   "repository": "airtasker/spot",
   "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc && rm -rf build/examples && oclif-dev manifest && oclif-dev readme",
     "test": "jest --testPathIgnorePatterns '<rootDir>/node_modules/' --testPathIgnorePatterns '<rootDir>/clients'",
