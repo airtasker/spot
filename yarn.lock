@@ -541,10 +541,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.13.0.tgz#b0df8d6ef9b5001b2be3a94d909ce3c29a80f9e1"
   integrity sha512-rx29MMkRdVmzunmiA4lzBYJNnXsW/PhG4kMBy2ATsYaDjGGR75dCFEVVROKpNwlVdcUX3xxlghKQOeDPBJobng==
 
-"@types/ramda@^0.26.5":
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.5.tgz#99f62d7c29fc9a5381008128e33c08e951fbb620"
-  integrity sha512-0W7/G3OfpqoNLp10UA+2a7cKNZeUaqSULdCrHU8Xrum1O+ZZQR9dk3CgNFD2u2+eJ5PfTL3kk/xzrfgjFf6f8w==
+"@types/ramda@^0.26.6":
+  version "0.26.6"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.6.tgz#1aaf5060da8ebb99529420b6eb997c50f74c218e"
+  integrity sha512-AmTHEkGo/EEufYY7MRqlgI0HLsLiAnc02pKOTVzE2D9IHf6yH2Xz71ompfEnduuaFGplYrtIOFOUOLs0AbMj9Q==
 
 "@types/randomstring@^1.1.6":
   version "1.1.6"
