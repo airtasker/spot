@@ -9,7 +9,7 @@ import {
 } from "../../models/types";
 
 function isStringConstantUnion(type: UnionType): boolean {
-  return type.types.reduce((acc, type) => {
+  return type.types.reduce<boolean>((acc, type) => {
     return acc && type.kind === TypeKind.STRING_LITERAL;
   }, true);
 }
