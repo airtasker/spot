@@ -82,7 +82,7 @@ async function executeTest(
   typeStore: TypeNode[]
 ): Promise<boolean> {
   if (
-    (await executeStateInitialisation(stateUrl)) &&
+    (await executeStateInitialization(stateUrl)) &&
     (await executeStateSetup(test, stateUrl))
   ) {
     const testResult = await executeRequestUnderTest(
@@ -226,28 +226,28 @@ async function executeRequestUnderTest(
 }
 
 /**
- * Execute the state initialisation request.
+ * Execute the state initialization request.
  *
  * @param stateUrl state change URL
  */
-async function executeStateInitialisation(stateUrl: string): Promise<boolean> {
+async function executeStateInitialization(stateUrl: string): Promise<boolean> {
   try {
-    TestLogger.mute("\tPerforming state initialisation request");
-    await axios.post(stateUrl, undefined, { params: { action: "initialise" } });
-    TestLogger.success("\t\tState initialisation request success");
+    TestLogger.mute("\tPerforming state initialization request");
+    await axios.post(stateUrl, undefined, { params: { action: "initialize" } });
+    TestLogger.success("\t\tState initialization request success");
     return true;
   } catch (error) {
     if (error.response) {
       TestLogger.error(
-        `\t\tState initialisation request failed: received ${
+        `\t\tState initialization request failed: received ${
           error.response.status
         } status`
       );
     } else if (error.request) {
-      TestLogger.error(`\t\tState initialisation request failed: no response`);
+      TestLogger.error(`\t\tState initialization request failed: no response`);
     } else {
       TestLogger.error(
-        `\t\tState initialisation request failed: ${error.message}`
+        `\t\tState initialization request failed: ${error.message}`
       );
     }
     return false;
