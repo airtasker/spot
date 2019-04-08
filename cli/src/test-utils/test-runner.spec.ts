@@ -19,6 +19,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .post("/companies", { name: "My Company", private: true })
       .reply(
         201,
@@ -40,6 +43,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company",
@@ -63,6 +69,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .get("/companies/abc/users/def")
       .reply(200, {
         firstName: "John",
@@ -93,6 +102,9 @@ describe("test runner", () => {
     );
 
     const scopeA = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .post("/companies", { name: "My Company", private: true })
       .reply(
         201,
@@ -104,6 +116,9 @@ describe("test runner", () => {
       .reply(200);
 
     const scopeB = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .post("/companies", { name: 5 })
       .reply(400, { message: "error" })
       .post("/state")
@@ -133,6 +148,11 @@ describe("test runner", () => {
       .post("/companies", { name: 5 })
       .reply(400, { message: "error" });
 
+    const initializeScope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200);
+
     const tearDownScope = nock(baseUrl)
       .post("/state")
       .query({ action: "teardown" })
@@ -142,10 +162,39 @@ describe("test runner", () => {
       endpoint: "CreateCompany",
       test: "badRequestTest"
     });
+
     expect(scopeA.isDone()).toBe(false);
     expect(scopeB.isDone()).toBe(true);
+    expect(initializeScope.isDone()).toBe(true);
     expect(tearDownScope.isDone()).toBe(true);
     expect(result).toBe(true);
+  });
+
+  test("provider state initialization fail", async () => {
+    const contract = parseAndCleanse(
+      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+    );
+
+    const initializeScope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(500);
+
+    const setupScope = nock(baseUrl)
+      .post("/state", { name: "a company exists", params: { id: "abc" } })
+      .query({ action: "setup" })
+      .reply(200);
+
+    const tearDownScope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "teardown" })
+      .reply(200);
+
+    const result = await runTest(contract, stateUrl, baseUrl);
+    expect(initializeScope.isDone()).toBe(true);
+    expect(tearDownScope.isDone()).toBe(true);
+    expect(setupScope.isDone()).toBe(false);
+    expect(result).toBe(false);
   });
 
   test("provider state setup fail", async () => {
@@ -154,6 +203,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .post("/state", { name: "a company exists", params: { id: "abc" } })
       .query({ action: "setup" })
       .reply(400)
@@ -172,6 +224,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company",
@@ -195,6 +250,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .get("/companies/abc")
       .reply(204, {
         name: "My Company",
@@ -218,6 +276,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .post("/companies", { name: "My Company", private: true })
       .reply(
         201,
@@ -239,6 +300,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company"
@@ -261,6 +325,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company",
@@ -284,6 +351,9 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company",

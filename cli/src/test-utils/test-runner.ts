@@ -81,7 +81,10 @@ async function executeTest(
   correlatedResponse: DefaultResponseDefinition,
   typeStore: TypeNode[]
 ): Promise<boolean> {
-  if (await executeStateSetup(test, stateUrl)) {
+  if (
+    (await executeStateInitialization(stateUrl)) &&
+    (await executeStateSetup(test, stateUrl))
+  ) {
     const testResult = await executeRequestUnderTest(
       endpoint,
       test,
@@ -220,6 +223,35 @@ async function executeRequestUnderTest(
   const bodyResult = verifyBody(correlatedResponse, response, typeStore);
 
   return statusResult && bodyResult;
+}
+
+/**
+ * Execute the state initialization request.
+ *
+ * @param stateUrl state change URL
+ */
+async function executeStateInitialization(stateUrl: string): Promise<boolean> {
+  try {
+    TestLogger.mute("\tPerforming state initialization request");
+    await axios.post(stateUrl, undefined, { params: { action: "initialize" } });
+    TestLogger.success("\t\tState initialization request success");
+    return true;
+  } catch (error) {
+    if (error.response) {
+      TestLogger.error(
+        `\t\tState initialization request failed: received ${
+          error.response.status
+        } status`
+      );
+    } else if (error.request) {
+      TestLogger.error(`\t\tState initialization request failed: no response`);
+    } else {
+      TestLogger.error(
+        `\t\tState initialization request failed: ${error.message}`
+      );
+    }
+    return false;
+  }
 }
 
 /**
