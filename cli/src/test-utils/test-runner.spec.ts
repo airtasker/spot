@@ -371,6 +371,31 @@ describe("test runner", () => {
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(true);
   });
+
+  test("request serializes query string objects using the deepObject strategy", async () => {
+    const contract = parseAndCleanse(
+      "./cli/src/test-utils/test-runner-examples/object-query-param.ts"
+    );
+
+    const scope = nock(baseUrl)
+      .post("/state")
+      .query({ action: "initialize" })
+      .reply(200)
+      .get("/companies?profile%5Bname%5D=testname")
+      .reply(200, [
+        {
+          name: "testname",
+          employeeCount: 15
+        }
+      ])
+      .post("/state")
+      .query({ action: "teardown" })
+      .reply(200);
+
+    const result = await runTest(contract, stateUrl, baseUrl);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(true);
+  });
 });
 
 function parseAndCleanse(path: string): ContractDefinition {
