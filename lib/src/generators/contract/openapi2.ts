@@ -70,12 +70,22 @@ export function openApiV2(contractDefinition: ContractDefinition): OpenApiV2 {
       };
       return acc;
     }, {}),
-    definitions: contractDefinition.types.reduce<{
-      [typeName: string]: OpenAPI2SchemaType;
-    }>((acc, typeNode) => {
-      acc[typeNode.name] = openApi2TypeSchema(typeNode.type);
-      return acc;
-    }, {}),
+    definitions: contractDefinition.types
+      .sort((prevType, currType) => {
+        if (prevType.name < currType.name) {
+          return -1;
+        }
+        if (prevType.name > currType.name) {
+          return 1;
+        }
+        return 0;
+      })
+      .reduce<{
+        [typeName: string]: OpenAPI2SchemaType;
+      }>((acc, typeNode) => {
+        acc[typeNode.name] = openApi2TypeSchema(typeNode.type);
+        return acc;
+      }, {}),
     ...(contractDefinition.api.securityHeader
       ? {
           securityDefinitions: {

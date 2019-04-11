@@ -22,9 +22,140 @@ import {
 import { parseInterfaceDeclaration, parseTypeNode } from "./type-parser";
 
 /**
+ * Retrieve all the type references from a collection of endpoints recurisvely.
+ *
+ * @param endpoints collection of endpoints
+ * @param projectContext ts-morph project
+ */
+export function retrieveTypeReferencesFromEndpoints(
+  endpoints: Array<Locatable<EndpointNode>>,
+  projectContext: Project
+): ReferenceType[] {
+  return endpoints.reduce<ReferenceType[]>(
+    (referenceTypesAcc, currentEndpoint) => {
+      const fromResponses = retrieveTypeReferencesFromResponses(
+        currentEndpoint.value.responses,
+        projectContext
+      );
+      if (currentEndpoint.value.request) {
+        const fromRequest = fromResponses.concat(
+          retrieveTypeReferencesFromRequest(
+            currentEndpoint.value.request,
+            projectContext
+          )
+        );
+        return referenceTypesAcc.concat(fromRequest).concat(fromResponses);
+      }
+      return referenceTypesAcc.concat(fromResponses);
+    },
+    []
+  );
+}
+
+/**
+ * Retrieve all type references from a request recursively.
+ *
+ * @param request a request
+ * @param projectContext ts-morph project
+ */
+function retrieveTypeReferencesFromRequest(
+  request: Locatable<RequestNode>,
+  projectContext: Project
+): ReferenceType[] {
+  const fromHeaders = request.value.headers
+    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+        request.value.headers.value,
+        projectContext
+      )
+    : [];
+  const fromPathParams = request.value.pathParams
+    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+        request.value.pathParams.value,
+        projectContext
+      )
+    : [];
+  const fromQueryParams = request.value.queryParams
+    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+        request.value.queryParams.value,
+        projectContext
+      )
+    : [];
+  const fromBody = request.value.body
+    ? retrieveTypeReferencesFromBody(request.value.body, projectContext)
+    : [];
+
+  return fromHeaders
+    .concat(fromPathParams)
+    .concat(fromQueryParams)
+    .concat(fromBody);
+}
+
+/**
+ * Retrieve all type references from a collection of responses recursively.
+ *
+ * @param requests a collection of responses
+ * @param projectContext ts-morph project
+ */
+function retrieveTypeReferencesFromResponses(
+  responses: Array<Locatable<ResponseNode>>,
+  projectContext: Project
+): ReferenceType[] {
+  return responses.reduce<ReferenceType[]>(
+    (typeReferencesAcc, currentResponse) => {
+      const fromHeaders = currentResponse.value.headers
+        ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+            currentResponse.value.headers.value,
+            projectContext
+          )
+        : [];
+      const fromBody = currentResponse.value.body
+        ? retrieveTypeReferencesFromBody(
+            currentResponse.value.body,
+            projectContext
+          )
+        : [];
+      return typeReferencesAcc.concat(fromHeaders).concat(fromBody);
+    },
+    []
+  );
+}
+
+/**
+ * Retrieve all type references from a body recursively.
+ *
+ * @param body a body
+ * @param projectContext ts-morph project
+ */
+function retrieveTypeReferencesFromBody(
+  body: Locatable<BodyNode>,
+  projectContext: Project
+): ReferenceType[] {
+  return retrieveTypeReferencesFromType(body.value.type, projectContext);
+}
+
+/**
+ * Retrieve all type references from a collection of headers, path params or query params recursively.
+ *
+ * @param nodes a collection of headers, path params or query params
+ * @param projectContext ts-morph project
+ */
+function retrieveTypeReferencesFromHeadersPathParamsQueryParams(
+  nodes: Array<Locatable<HeaderNode | PathParamNode | QueryParamNode>>,
+  projectContext: Project
+): ReferenceType[] {
+  return nodes.reduce<ReferenceType[]>(
+    (typeReferencesAcc, currentHeader) =>
+      typeReferencesAcc.concat(
+        retrieveTypeReferencesFromType(currentHeader.value.type, projectContext)
+      ),
+    []
+  );
+}
+
+/**
  * Recursively retrieves all type references from a data type including itself.
  */
-export function retrieveTypeReferencesFromType(
+function retrieveTypeReferencesFromType(
   dataType: DataType,
   projectContext: Project
 ): ReferenceType[] {
@@ -101,138 +232,6 @@ export function retrieveTypeReferencesFromType(
   } else {
     return [];
   }
-}
-
-/**
- * Retrieve all the type references from a collection of endpoints. This will only retrieve direct references (not recursive)
- * from each node of an endpoint.
- *
- * @param endpoints collection of endpoints
- */
-export function retrieveTypeReferencesFromEndpoints(
-  endpoints: Array<Locatable<EndpointNode>>
-): ReferenceType[] {
-  return endpoints.reduce<ReferenceType[]>(
-    (referenceTypesAcc, currentEndpoint) => {
-      const fromResponses = retrieveTypeReferencesFromResponses(
-        currentEndpoint.value.responses
-      );
-      if (currentEndpoint.value.request) {
-        const fromRequest = fromResponses.concat(
-          retrieveTypeReferencesFromRequest(currentEndpoint.value.request)
-        );
-        return referenceTypesAcc.concat(fromRequest).concat(fromResponses);
-      }
-      return referenceTypesAcc.concat(fromResponses);
-    },
-    []
-  );
-}
-
-/**
- * Retrieve all type references from a request. This will only retrieve direct references (not recursive).
- *
- * @param request a request
- */
-function retrieveTypeReferencesFromRequest(
-  request: Locatable<RequestNode>
-): ReferenceType[] {
-  const fromHeaders = request.value.headers
-    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
-        request.value.headers.value
-      )
-    : [];
-  const fromPathParams = request.value.pathParams
-    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
-        request.value.pathParams.value
-      )
-    : [];
-  const fromQueryParams = request.value.queryParams
-    ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
-        request.value.queryParams.value
-      )
-    : [];
-  const fromBody = request.value.body
-    ? retrieveTypeReferencesFromBody(request.value.body)
-    : [];
-
-  return fromHeaders
-    .concat(fromPathParams)
-    .concat(fromQueryParams)
-    .concat(fromBody);
-}
-
-/**
- * Retrieve all type references from a collection of responses. This will only retrieve direct references (not recursive).
- *
- * @param requests a collection of responses
- */
-function retrieveTypeReferencesFromResponses(
-  responses: Array<Locatable<ResponseNode>>
-): ReferenceType[] {
-  return responses.reduce<ReferenceType[]>(
-    (typeReferencesAcc, currentResponse) => {
-      const fromHeaders = currentResponse.value.headers
-        ? retrieveTypeReferencesFromHeadersPathParamsQueryParams(
-            currentResponse.value.headers.value
-          )
-        : [];
-      const fromBody = currentResponse.value.body
-        ? retrieveTypeReferencesFromBody(currentResponse.value.body)
-        : [];
-      return typeReferencesAcc.concat(fromHeaders).concat(fromBody);
-    },
-    []
-  );
-}
-
-/**
- * Retrieve all type references from a body. This will only retrieve direct references (not recursive).
- *
- * @param body a body
- */
-function retrieveTypeReferencesFromBody(
-  body: Locatable<BodyNode>
-): ReferenceType[] {
-  const type = body.value.type;
-  if (isReferenceType(type)) {
-    return [type];
-  } else if (isUnionType(type)) {
-    return type.types.reduce<ReferenceType[]>(
-      (typeAcc, currType) =>
-        isReferenceType(currType) ? typeAcc.concat(currType) : typeAcc,
-      []
-    );
-  } else {
-    return [];
-  }
-}
-
-/**
- * Retrieve all type references from a collection of headers, path params or query params.
- * This will only retrieve direct references (not recursive).
- *
- * @param nodes a collection of headers, path params or query params
- */
-function retrieveTypeReferencesFromHeadersPathParamsQueryParams(
-  nodes: Array<Locatable<HeaderNode | PathParamNode | QueryParamNode>>
-): ReferenceType[] {
-  return nodes.reduce<ReferenceType[]>((typeReferencesAcc, currentHeader) => {
-    const type = currentHeader.value.type;
-    if (isReferenceType(type)) {
-      return typeReferencesAcc.concat(type);
-    } else if (isUnionType(type)) {
-      return typeReferencesAcc.concat(
-        type.types.reduce<ReferenceType[]>(
-          (typeAcc, currType) =>
-            isReferenceType(currType) ? typeAcc.concat(currType) : typeAcc,
-          []
-        )
-      );
-    } else {
-      return typeReferencesAcc;
-    }
-  }, []);
 }
 
 /**
