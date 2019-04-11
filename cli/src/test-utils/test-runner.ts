@@ -1,5 +1,6 @@
 import JsonSchemaValidator from "ajv";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { stringify as qsStringify } from "qs";
 import {
   JsonSchemaType,
   jsonTypeSchema
@@ -189,6 +190,10 @@ function generateAxiosConfig(
       },
       {}
     );
+
+    config.paramsSerializer = params => {
+      return qsStringify(params);
+    };
 
     if (test.request.body) {
       config.data = valueFromDataExpression(test.request.body);
