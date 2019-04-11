@@ -100,11 +100,11 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
     }, {}),
     components: {
       schemas: contractDefinition.types
-        .sort((a, b) => {
-          if (a.name < b.name) {
+        .sort((prevType, currType) => {
+          if (prevType.name < currType.name) {
             return -1;
           }
-          if (a.name > b.name) {
+          if (prevType.name > currType.name) {
             return 1;
           }
           return 0;
