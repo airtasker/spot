@@ -2,7 +2,6 @@ import path from "path";
 import { CompilerOptions, Project, SourceFile, ts } from "ts-morph";
 import { Locatable } from "../models/locatable";
 import { ContractNode, EndpointNode } from "../models/nodes";
-import { ReferenceType } from "../models/types";
 import { parseApi } from "./nodes/api-parser";
 import { parseEndpoint } from "./nodes/endpoint-parser";
 import { extractJsDocComment } from "./utilities/parser-utility";
@@ -12,7 +11,6 @@ import {
 } from "./utilities/type-parser";
 import {
   retrieveTypeReferencesFromEndpoints,
-  retrieveTypeReferencesFromType,
   uniqueReferences
 } from "./utilities/type-reference-resolver";
 
@@ -72,29 +70,12 @@ function parseRootSourceFile(
 
   const endpoints = parseRecursively(file);
 
-  // Direct reference types, filtered to unique references for efficiency
-  const uniqueDirectReferenceTypes = uniqueReferences(
-    retrieveTypeReferencesFromEndpoints(endpoints)
-  );
-
-  // Reference types from the direct reference type hierarchy
-  const secondaryReferenceTypes = uniqueDirectReferenceTypes.reduce<
-    ReferenceType[]
-  >(
-    (referenceTypesAcc, currentReferenceType) =>
-      referenceTypesAcc.concat(
-        retrieveTypeReferencesFromType(currentReferenceType, projectContext)
-      ),
-    []
-  );
-
-  // Combine and filter to unique type references
-  const allReferenceTypes = uniqueReferences(
-    uniqueDirectReferenceTypes.concat(secondaryReferenceTypes)
+  const referenceTypes = uniqueReferences(
+    retrieveTypeReferencesFromEndpoints(endpoints, projectContext)
   );
 
   // Construct the equivalent TypeNode for each reference type
-  const types = allReferenceTypes.map(referenceType => {
+  const types = referenceTypes.map(referenceType => {
     const file = projectContext.getSourceFileOrThrow(referenceType.location);
 
     const typeAlias = file.getTypeAlias(referenceType.name);

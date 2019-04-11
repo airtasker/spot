@@ -31,6 +31,32 @@ exports[`JSON Schema generator produces valid code: json 1`] = `
         \\"data\\"
       ]
     },
+    \\"Profile\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"private\\": {
+          \\"type\\": \\"boolean\\"
+        },
+        \\"messageOptions\\": {
+          \\"$ref\\": \\"#/definitions/MessageOptions\\"
+        }
+      },
+      \\"required\\": [
+        \\"private\\",
+        \\"messageOptions\\"
+      ]
+    },
+    \\"MessageOptions\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"newsletter\\": {
+          \\"type\\": \\"boolean\\"
+        }
+      },
+      \\"required\\": [
+        \\"newsletter\\"
+      ]
+    },
     \\"ErrorBody\\": {
       \\"type\\": \\"object\\",
       \\"properties\\": {
@@ -84,32 +110,6 @@ exports[`JSON Schema generator produces valid code: json 1`] = `
         \\"data\\"
       ]
     },
-    \\"Profile\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"private\\": {
-          \\"type\\": \\"boolean\\"
-        },
-        \\"messageOptions\\": {
-          \\"$ref\\": \\"#/definitions/MessageOptions\\"
-        }
-      },
-      \\"required\\": [
-        \\"private\\",
-        \\"messageOptions\\"
-      ]
-    },
-    \\"MessageOptions\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"newsletter\\": {
-          \\"type\\": \\"boolean\\"
-        }
-      },
-      \\"required\\": [
-        \\"newsletter\\"
-      ]
-    },
     \\"Email\\": {
       \\"type\\": \\"string\\"
     },
@@ -141,6 +141,23 @@ definitions:
           - profile
     required:
       - data
+  Profile:
+    type: object
+    properties:
+      private:
+        type: boolean
+      messageOptions:
+        $ref: '#/definitions/MessageOptions'
+    required:
+      - private
+      - messageOptions
+  MessageOptions:
+    type: object
+    properties:
+      newsletter:
+        type: boolean
+    required:
+      - newsletter
   ErrorBody:
     type: object
     properties:
@@ -177,23 +194,6 @@ definitions:
           - address
     required:
       - data
-  Profile:
-    type: object
-    properties:
-      private:
-        type: boolean
-      messageOptions:
-        $ref: '#/definitions/MessageOptions'
-    required:
-      - private
-      - messageOptions
-  MessageOptions:
-    type: object
-    properties:
-      newsletter:
-        type: boolean
-    required:
-      - newsletter
   Email:
     type: string
   Address:

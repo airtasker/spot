@@ -99,15 +99,25 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
       return acc;
     }, {}),
     components: {
-      schemas: contractDefinition.types.reduce<{
-        [typeName: string]: OpenAPI3SchemaType;
-      }>((acc, typeNode) => {
-        acc[typeNode.name] = openApi3TypeSchema(
-          contractDefinition.types,
-          typeNode.type
-        );
-        return acc;
-      }, {}),
+      schemas: contractDefinition.types
+        .sort((a, b) => {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        })
+        .reduce<{
+          [typeName: string]: OpenAPI3SchemaType;
+        }>((acc, typeNode) => {
+          acc[typeNode.name] = openApi3TypeSchema(
+            contractDefinition.types,
+            typeNode.type
+          );
+          return acc;
+        }, {}),
       securitySchemes: contractDefinition.api.securityHeader
         ? {
             [SECURITY_HEADER_SCHEME_NAME]: {

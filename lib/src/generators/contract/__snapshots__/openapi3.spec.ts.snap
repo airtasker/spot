@@ -192,50 +192,8 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
   },
   \\"components\\": {
     \\"schemas\\": {
-      \\"UserBody\\": {
-        \\"type\\": \\"object\\",
-        \\"properties\\": {
-          \\"data\\": {
-            \\"type\\": \\"object\\",
-            \\"properties\\": {
-              \\"firstName\\": {
-                \\"type\\": \\"string\\"
-              },
-              \\"lastName\\": {
-                \\"type\\": \\"string\\"
-              },
-              \\"profile\\": {
-                \\"$ref\\": \\"#/components/schemas/Profile\\"
-              }
-            },
-            \\"required\\": [
-              \\"firstName\\",
-              \\"lastName\\",
-              \\"profile\\"
-            ]
-          }
-        },
-        \\"required\\": [
-          \\"data\\"
-        ]
-      },
-      \\"ErrorBody\\": {
-        \\"type\\": \\"object\\",
-        \\"properties\\": {
-          \\"name\\": {
-            \\"type\\": \\"string\\"
-          },
-          \\"message\\": {
-            \\"type\\": \\"array\\",
-            \\"items\\": {
-              \\"type\\": \\"string\\"
-            }
-          }
-        },
-        \\"required\\": [
-          \\"name\\",
-          \\"message\\"
-        ]
+      \\"Address\\": {
+        \\"type\\": \\"string\\"
       },
       \\"CreateUserRequestBody\\": {
         \\"type\\": \\"object\\",
@@ -272,6 +230,38 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
           \\"data\\"
         ]
       },
+      \\"Email\\": {
+        \\"type\\": \\"string\\"
+      },
+      \\"ErrorBody\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"name\\": {
+            \\"type\\": \\"string\\"
+          },
+          \\"message\\": {
+            \\"type\\": \\"array\\",
+            \\"items\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        },
+        \\"required\\": [
+          \\"name\\",
+          \\"message\\"
+        ]
+      },
+      \\"MessageOptions\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"newsletter\\": {
+            \\"type\\": \\"boolean\\"
+          }
+        },
+        \\"required\\": [
+          \\"newsletter\\"
+        ]
+      },
       \\"Profile\\": {
         \\"type\\": \\"object\\",
         \\"properties\\": {
@@ -287,22 +277,32 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
           \\"messageOptions\\"
         ]
       },
-      \\"MessageOptions\\": {
+      \\"UserBody\\": {
         \\"type\\": \\"object\\",
         \\"properties\\": {
-          \\"newsletter\\": {
-            \\"type\\": \\"boolean\\"
+          \\"data\\": {
+            \\"type\\": \\"object\\",
+            \\"properties\\": {
+              \\"firstName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"lastName\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"profile\\": {
+                \\"$ref\\": \\"#/components/schemas/Profile\\"
+              }
+            },
+            \\"required\\": [
+              \\"firstName\\",
+              \\"lastName\\",
+              \\"profile\\"
+            ]
           }
         },
         \\"required\\": [
-          \\"newsletter\\"
+          \\"data\\"
         ]
-      },
-      \\"Email\\": {
-        \\"type\\": \\"string\\"
-      },
-      \\"Address\\": {
-        \\"type\\": \\"string\\"
       }
     },
     \\"securitySchemes\\": {
@@ -440,36 +440,8 @@ paths:
           description: ''
 components:
   schemas:
-    UserBody:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            firstName:
-              type: string
-            lastName:
-              type: string
-            profile:
-              $ref: '#/components/schemas/Profile'
-          required:
-            - firstName
-            - lastName
-            - profile
-      required:
-        - data
-    ErrorBody:
-      type: object
-      properties:
-        name:
-          type: string
-        message:
-          type: array
-          items:
-            type: string
-      required:
-        - name
-        - message
+    Address:
+      type: string
     CreateUserRequestBody:
       type: object
       properties:
@@ -494,6 +466,27 @@ components:
             - address
       required:
         - data
+    Email:
+      type: string
+    ErrorBody:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - message
+    MessageOptions:
+      type: object
+      properties:
+        newsletter:
+          type: boolean
+      required:
+        - newsletter
     Profile:
       type: object
       properties:
@@ -504,17 +497,24 @@ components:
       required:
         - private
         - messageOptions
-    MessageOptions:
+    UserBody:
       type: object
       properties:
-        newsletter:
-          type: boolean
+        data:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            profile:
+              $ref: '#/components/schemas/Profile'
+          required:
+            - firstName
+            - lastName
+            - profile
       required:
-        - newsletter
-    Email:
-      type: string
-    Address:
-      type: string
+        - data
   securitySchemes:
     securityHeader:
       type: apiKey

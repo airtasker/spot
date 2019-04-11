@@ -145,50 +145,8 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
     }
   },
   \\"definitions\\": {
-    \\"UserBody\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"data\\": {
-          \\"type\\": \\"object\\",
-          \\"properties\\": {
-            \\"firstName\\": {
-              \\"type\\": \\"string\\"
-            },
-            \\"lastName\\": {
-              \\"type\\": \\"string\\"
-            },
-            \\"profile\\": {
-              \\"$ref\\": \\"#/definitions/Profile\\"
-            }
-          },
-          \\"required\\": [
-            \\"firstName\\",
-            \\"lastName\\",
-            \\"profile\\"
-          ]
-        }
-      },
-      \\"required\\": [
-        \\"data\\"
-      ]
-    },
-    \\"ErrorBody\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"name\\": {
-          \\"type\\": \\"string\\"
-        },
-        \\"message\\": {
-          \\"type\\": \\"array\\",
-          \\"items\\": {
-            \\"type\\": \\"string\\"
-          }
-        }
-      },
-      \\"required\\": [
-        \\"name\\",
-        \\"message\\"
-      ]
+    \\"Address\\": {
+      \\"type\\": \\"string\\"
     },
     \\"CreateUserRequestBody\\": {
       \\"type\\": \\"object\\",
@@ -225,6 +183,38 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
         \\"data\\"
       ]
     },
+    \\"Email\\": {
+      \\"type\\": \\"string\\"
+    },
+    \\"ErrorBody\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"message\\": {
+          \\"type\\": \\"array\\",
+          \\"items\\": {
+            \\"type\\": \\"string\\"
+          }
+        }
+      },
+      \\"required\\": [
+        \\"name\\",
+        \\"message\\"
+      ]
+    },
+    \\"MessageOptions\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"newsletter\\": {
+          \\"type\\": \\"boolean\\"
+        }
+      },
+      \\"required\\": [
+        \\"newsletter\\"
+      ]
+    },
     \\"Profile\\": {
       \\"type\\": \\"object\\",
       \\"properties\\": {
@@ -240,22 +230,32 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
         \\"messageOptions\\"
       ]
     },
-    \\"MessageOptions\\": {
+    \\"UserBody\\": {
       \\"type\\": \\"object\\",
       \\"properties\\": {
-        \\"newsletter\\": {
-          \\"type\\": \\"boolean\\"
+        \\"data\\": {
+          \\"type\\": \\"object\\",
+          \\"properties\\": {
+            \\"firstName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"lastName\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"profile\\": {
+              \\"$ref\\": \\"#/definitions/Profile\\"
+            }
+          },
+          \\"required\\": [
+            \\"firstName\\",
+            \\"lastName\\",
+            \\"profile\\"
+          ]
         }
       },
       \\"required\\": [
-        \\"newsletter\\"
+        \\"data\\"
       ]
-    },
-    \\"Email\\": {
-      \\"type\\": \\"string\\"
-    },
-    \\"Address\\": {
-      \\"type\\": \\"string\\"
     }
   },
   \\"securityDefinitions\\": {
@@ -373,36 +373,8 @@ paths:
           headers: {}
           description: ''
 definitions:
-  UserBody:
-    type: object
-    properties:
-      data:
-        type: object
-        properties:
-          firstName:
-            type: string
-          lastName:
-            type: string
-          profile:
-            $ref: '#/definitions/Profile'
-        required:
-          - firstName
-          - lastName
-          - profile
-    required:
-      - data
-  ErrorBody:
-    type: object
-    properties:
-      name:
-        type: string
-      message:
-        type: array
-        items:
-          type: string
-    required:
-      - name
-      - message
+  Address:
+    type: string
   CreateUserRequestBody:
     type: object
     properties:
@@ -427,6 +399,27 @@ definitions:
           - address
     required:
       - data
+  Email:
+    type: string
+  ErrorBody:
+    type: object
+    properties:
+      name:
+        type: string
+      message:
+        type: array
+        items:
+          type: string
+    required:
+      - name
+      - message
+  MessageOptions:
+    type: object
+    properties:
+      newsletter:
+        type: boolean
+    required:
+      - newsletter
   Profile:
     type: object
     properties:
@@ -437,17 +430,24 @@ definitions:
     required:
       - private
       - messageOptions
-  MessageOptions:
+  UserBody:
     type: object
     properties:
-      newsletter:
-        type: boolean
+      data:
+        type: object
+        properties:
+          firstName:
+            type: string
+          lastName:
+            type: string
+          profile:
+            $ref: '#/definitions/Profile'
+        required:
+          - firstName
+          - lastName
+          - profile
     required:
-      - newsletter
-  Email:
-    type: string
-  Address:
-    type: string
+      - data
 securityDefinitions:
   securityHeader:
     type: apiKey
