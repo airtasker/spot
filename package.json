@@ -49,7 +49,7 @@
     "prettier": "^1.17.0",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.0.3",
-    "tslint": "^5.15.0",
+    "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0"
   },
   "engines": {
