@@ -16,7 +16,7 @@
     "@types/ramda": "^0.26.8",
     "@types/randomstring": "^1.1.6",
     "ajv": "^6.10.0",
-    "assert-never": "^1.1.0",
+    "assert-never": "^1.2.0",
     "axios": "^0.18.0",
     "chalk": "^2.4.2",
     "cors": "^2.8.5",
