@@ -10,7 +10,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "@types/cors": "^2.8.4",
+    "@types/cors": "^2.8.5",
     "@types/express": "^4.16.0",
     "@types/qs": "^6.5.3",
     "@types/ramda": "^0.26.8",
