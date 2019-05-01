@@ -12,6 +12,7 @@ export default class Test extends Command {
 
   static examples = [
     "$ spot test api.ts -u http://localhost:3000",
+    "$ spot test api.ts -u http://localhost:3000 -s http://localhost:3000/spot",
     "$ spot test api.ts -u http://localhost:3000 -t MyEndpoint:myTest"
   ];
 
@@ -33,7 +34,7 @@ export default class Test extends Command {
     }),
     stateUrl: flags.string({
       char: "s",
-      description: "State change URL"
+      description: "Base URL for state changes"
     }),
     testFilter: flags.string({
       char: "t",
@@ -43,16 +44,18 @@ export default class Test extends Command {
 
   async run() {
     const { args, flags } = this.parse(Test);
-    const { url: baseUrl, stateUrl, testFilter } = flags;
+    const { url: baseUrl, stateUrl: baseStateUrl, testFilter } = flags;
     const { definition } = safeParse.call(this, args[ARG_API]);
 
-    const resolvedStateUrl = stateUrl ? stateUrl : `${baseUrl}/state`;
+    const resolvedBaseStateUrl = baseStateUrl
+      ? baseStateUrl
+      : `${baseUrl}/state`;
 
     const filter = testFilter ? parseTestFilter(testFilter) : undefined;
 
     const allPassed = await runTest(
       definition,
-      resolvedStateUrl,
+      resolvedBaseStateUrl,
       baseUrl,
       filter
     );

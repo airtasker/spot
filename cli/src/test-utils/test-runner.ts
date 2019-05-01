@@ -19,13 +19,13 @@ import { TestLogger } from "./test-logger";
  * Run the contract test suite for a contract.
  *
  * @param definition contract definition
- * @param stateUrl state change URL
+ * @param baseStateUrl base state change URL
  * @param baseUrl base URL
  * @param testFilter optional test filter
  */
 export async function runTest(
   definition: ContractDefinition,
-  stateUrl: string,
+  baseStateUrl: string,
   baseUrl: string,
   testFilter?: TestFilter
 ): Promise<boolean> {
@@ -46,7 +46,7 @@ export async function runTest(
       const correlatedResponse = findCorrelatedResponse(endpoint, test);
       const result = await executeTest(
         test,
-        stateUrl,
+        baseStateUrl,
         baseUrl,
         endpoint,
         correlatedResponse,
@@ -68,7 +68,7 @@ export async function runTest(
  * Run a particular contract test.
  *
  * @param test test definition
- * @param stateUrl state change URL
+ * @param baseStateUrl base state change URL
  * @param baseUrl base URL
  * @param endpoint endpoint definition
  * @param correlatedResponse expected test response
@@ -76,15 +76,15 @@ export async function runTest(
  */
 async function executeTest(
   test: TestDefinition,
-  stateUrl: string,
+  baseStateUrl: string,
   baseUrl: string,
   endpoint: EndpointDefinition,
   correlatedResponse: DefaultResponseDefinition,
   typeStore: TypeNode[]
 ): Promise<boolean> {
   if (
-    (await executeStateInitialization(stateUrl)) &&
-    (await executeStateSetup(test, stateUrl))
+    (await executeStateInitialization(baseStateUrl)) &&
+    (await executeStateSetup(test, baseStateUrl))
   ) {
     const testResult = await executeRequestUnderTest(
       endpoint,
@@ -93,10 +93,10 @@ async function executeTest(
       correlatedResponse,
       typeStore
     );
-    const stateTearDownResult = await executeStateTeardown(stateUrl);
+    const stateTearDownResult = await executeStateTeardown(baseStateUrl);
     return testResult && stateTearDownResult;
   } else {
-    await executeStateTeardown(stateUrl);
+    await executeStateTeardown(baseStateUrl);
     return false;
   }
 }
@@ -233,12 +233,14 @@ async function executeRequestUnderTest(
 /**
  * Execute the state initialization request.
  *
- * @param stateUrl state change URL
+ * @param baseStateUrl base state change URL
  */
-async function executeStateInitialization(stateUrl: string): Promise<boolean> {
+async function executeStateInitialization(
+  baseStateUrl: string
+): Promise<boolean> {
   try {
     TestLogger.mute("\tPerforming state initialization request");
-    await axios.post(stateUrl, undefined, { params: { action: "initialize" } });
+    await axios.post(`${baseStateUrl}/initialize`);
     TestLogger.success("\t\tState initialization request success");
     return true;
   } catch (error) {
@@ -263,11 +265,11 @@ async function executeStateInitialization(stateUrl: string): Promise<boolean> {
  * Execute state setup requests defined for a test.
  *
  * @param test test definition
- * @param stateUrl state change URL
+ * @param baseStateUrl base state change URL
  */
 async function executeStateSetup(
   test: TestDefinition,
-  stateUrl: string
+  baseStateUrl: string
 ): Promise<boolean> {
   for (const state of test.states) {
     TestLogger.mute(`\tPerforming state setup request: ${state.name}`);
@@ -279,7 +281,7 @@ async function executeStateSetup(
       }, {})
     };
     try {
-      await axios.post(stateUrl, data, { params: { action: "setup" } });
+      await axios.post(`${baseStateUrl}/setup`, data);
       TestLogger.success(`\t\tState setup request (${state.name}) success`);
     } catch (error) {
       if (error.response) {
@@ -306,12 +308,12 @@ async function executeStateSetup(
 /**
  * Execute the state teardown request.
  *
- * @param stateUrl state change URL
+ * @param baseStateUrl base state change URL
  */
-async function executeStateTeardown(stateUrl: string): Promise<boolean> {
+async function executeStateTeardown(baseStateUrl: string): Promise<boolean> {
   try {
     TestLogger.mute("\tPerforming state teardown request");
-    await axios.post(stateUrl, undefined, { params: { action: "teardown" } });
+    await axios.post(`${baseStateUrl}/teardown`);
     TestLogger.success("\t\tState teardown request success");
     return true;
   } catch (error) {

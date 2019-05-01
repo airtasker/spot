@@ -19,8 +19,7 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .post("/companies", { name: "My Company", private: true })
       .reply(
@@ -28,8 +27,7 @@ describe("test runner", () => {
         { name: "My Company" },
         { Location: `${baseUrl}/companies/abc` }
       )
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -43,19 +41,16 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company",
         employeeCount: 15
       })
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -69,8 +64,7 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies/abc/users/def")
       .reply(200, {
@@ -78,17 +72,14 @@ describe("test runner", () => {
         lastName: "Snow",
         email: "johnsnow@spot.com"
       })
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200)
-      .post("/state", {
+      .post("/state/setup", {
         name: "a user exists",
         params: { id: "def", companyId: "abc" }
       })
-      .query({ action: "setup" })
       .reply(200)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -102,8 +93,7 @@ describe("test runner", () => {
     );
 
     const scopeA = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .post("/companies", { name: "My Company", private: true })
       .reply(
@@ -111,18 +101,15 @@ describe("test runner", () => {
         { name: "My Company" },
         { Location: `${baseUrl}/companies/abc` }
       )
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const scopeB = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .post("/companies", { name: 5 })
       .reply(400, { message: "error" })
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -149,13 +136,11 @@ describe("test runner", () => {
       .reply(400, { message: "error" });
 
     const initializeScope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200);
 
     const tearDownScope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl, {
@@ -176,18 +161,15 @@ describe("test runner", () => {
     );
 
     const initializeScope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(500);
 
     const setupScope = nock(baseUrl)
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200);
 
     const tearDownScope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -203,14 +185,11 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(400)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -224,19 +203,16 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company",
         employeeCount: 15
       })
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(400);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -250,19 +226,16 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies/abc")
       .reply(204, {
         name: "My Company",
         employeeCount: 15
       })
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -276,8 +249,7 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .post("/companies", { name: "My Company", private: true })
       .reply(
@@ -285,8 +257,7 @@ describe("test runner", () => {
         { name: "My Company" },
         { NotLocation: `${baseUrl}/companies/abc` }
       )
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -300,18 +271,15 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company"
       })
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -325,19 +293,16 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies/abc")
       .reply(200, {
         name: "My Company",
         employeeCount: "15"
       })
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -351,8 +316,7 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies/abc")
       .reply(200, {
@@ -360,11 +324,9 @@ describe("test runner", () => {
         employeeCount: 15,
         extra: true
       })
-      .post("/state", { name: "a company exists", params: { id: "abc" } })
-      .query({ action: "setup" })
+      .post("/state/setup", { name: "a company exists", params: { id: "abc" } })
       .reply(200)
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
@@ -378,8 +340,7 @@ describe("test runner", () => {
     );
 
     const scope = nock(baseUrl)
-      .post("/state")
-      .query({ action: "initialize" })
+      .post("/state/initialize")
       .reply(200)
       .get("/companies?profile%5Bname%5D=testname")
       .reply(200, [
@@ -388,8 +349,7 @@ describe("test runner", () => {
           employeeCount: 15
         }
       ])
-      .post("/state")
-      .query({ action: "teardown" })
+      .post("/state/teardown")
       .reply(200);
 
     const result = await runTest(contract, stateUrl, baseUrl);
