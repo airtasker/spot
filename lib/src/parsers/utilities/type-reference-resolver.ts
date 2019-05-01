@@ -1,5 +1,5 @@
 import { uniqBy } from "lodash";
-import Project from "ts-morph";
+import { Project } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import {
   BodyNode,
