@@ -239,10 +239,10 @@ async function executeRequestUnderTest(
   const testStartTime = process.hrtime();
 
   const config = generateAxiosConfig(endpoint, test, baseUrl);
-  TestLogger.mute(
+  TestLogger.log(
     `\tPerforming request under test: ${config.method} ${config.url}`
   );
-  TestLogger.mute(
+  TestLogger.log(
     `\t\tRequest complete (${TestTimer.formattedDiff(testStartTime)})`
   );
   const response = await axios.request(config);
@@ -264,7 +264,7 @@ async function executeStateInitialization(
   const testInitStartTime = process.hrtime();
 
   try {
-    TestLogger.mute("\tPerforming state initialization request");
+    TestLogger.log("\tPerforming state initialization request");
     await axios.post(`${baseStateUrl}/initialize`);
     TestLogger.success(
       `\t\tState initialization request success (${TestTimer.formattedDiff(
@@ -309,7 +309,7 @@ async function executeStateSetup(
   for (const state of test.states) {
     const testSetupStartTime = process.hrtime();
 
-    TestLogger.mute(`\tPerforming state setup request: ${state.name}`);
+    TestLogger.log(`\tPerforming state setup request: ${state.name}`);
     const data = {
       name: state.name,
       params: state.params.reduce<GenericParams>((acc, param) => {
@@ -361,7 +361,7 @@ async function executeStateTeardown(baseStateUrl: string): Promise<boolean> {
   const testTeardownStartTime = process.hrtime();
 
   try {
-    TestLogger.mute("\tPerforming state teardown request");
+    TestLogger.log("\tPerforming state teardown request");
     await axios.post(`${baseStateUrl}/teardown`);
     TestLogger.success(
       `\t\tState teardown request success (${TestTimer.formattedDiff(

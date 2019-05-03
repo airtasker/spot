@@ -3,7 +3,6 @@ import chalk from "chalk";
 export const TestLogger = {
   error,
   log,
-  mute,
   success,
   warn
 };
@@ -14,10 +13,6 @@ function error(message: string) {
 }
 
 function log(message: string) {
-  console.log(chalk.white(message));
-}
-
-function mute(message: string) {
   console.log(chalk.dim.white(message));
 }
 
