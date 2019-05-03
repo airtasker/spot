@@ -14,6 +14,7 @@ import {
 import { TypeNode } from "../../../lib/src/models/nodes";
 import { valueFromDataExpression } from "../../../lib/src/utilities/data-expression-utils";
 import { TestLogger } from "./test-logger";
+import { TestTimer } from "./test-timer";
 
 /**
  * Run the contract test suite for a contract.
@@ -29,6 +30,8 @@ export async function runTest(
   baseUrl: string,
   testFilter?: TestFilter
 ): Promise<boolean> {
+  const testSuiteStartTime = TestTimer.startTime();
+
   let allPassed = true;
 
   for (const endpoint of definition.endpoints) {
@@ -60,6 +63,10 @@ export async function runTest(
       allPassed = allPassed && result;
     }
   }
+
+  TestLogger.log(
+    `\nTotal time: ${TestTimer.formattedDiff(testSuiteStartTime)}\n`
+  );
 
   return allPassed;
 }
@@ -218,9 +225,14 @@ async function executeRequestUnderTest(
   correlatedResponse: DefaultResponseDefinition,
   typeStore: TypeNode[]
 ) {
+  const testStartTime = process.hrtime();
+
   const config = generateAxiosConfig(endpoint, test, baseUrl);
   TestLogger.mute(
     `\tPerforming request under test: ${config.method} ${config.url}`
+  );
+  TestLogger.mute(
+    `\t\tRequest complete (${TestTimer.formattedDiff(testStartTime)})`
   );
   const response = await axios.request(config);
   const statusResult = verifyStatus(test, response);
@@ -238,23 +250,35 @@ async function executeRequestUnderTest(
 async function executeStateInitialization(
   baseStateUrl: string
 ): Promise<boolean> {
+  const testInitStartTime = process.hrtime();
+
   try {
     TestLogger.mute("\tPerforming state initialization request");
     await axios.post(`${baseStateUrl}/initialize`);
-    TestLogger.success("\t\tState initialization request success");
+    TestLogger.success(
+      `\t\tState initialization request success (${TestTimer.formattedDiff(
+        testInitStartTime
+      )})`
+    );
     return true;
   } catch (error) {
     if (error.response) {
       TestLogger.error(
         `\t\tState initialization request failed: received ${
           error.response.status
-        } status`
+        } status (${TestTimer.formattedDiff(testInitStartTime)})`
       );
     } else if (error.request) {
-      TestLogger.error(`\t\tState initialization request failed: no response`);
+      TestLogger.error(
+        `\t\tState initialization request failed: no response (${TestTimer.formattedDiff(
+          testInitStartTime
+        )})`
+      );
     } else {
       TestLogger.error(
-        `\t\tState initialization request failed: ${error.message}`
+        `\t\tState initialization request failed: ${
+          error.message
+        } (${TestTimer.formattedDiff(testInitStartTime)})`
       );
     }
     return false;
@@ -272,6 +296,8 @@ async function executeStateSetup(
   baseStateUrl: string
 ): Promise<boolean> {
   for (const state of test.states) {
+    const testSetupStartTime = process.hrtime();
+
     TestLogger.mute(`\tPerforming state setup request: ${state.name}`);
     const data = {
       name: state.name,
@@ -282,21 +308,31 @@ async function executeStateSetup(
     };
     try {
       await axios.post(`${baseStateUrl}/setup`, data);
-      TestLogger.success(`\t\tState setup request (${state.name}) success`);
+      TestLogger.success(
+        `\t\tState setup request (${
+          state.name
+        }) success (${TestTimer.formattedDiff(testSetupStartTime)})`
+      );
     } catch (error) {
       if (error.response) {
         TestLogger.error(
           `\t\tState change request (${state.name}) failed: received ${
             error.response.status
-          } status`
+          } status (${TestTimer.formattedDiff(testSetupStartTime)})`
         );
       } else if (error.request) {
         TestLogger.error(
-          `\t\tState change request (${state.name}) failed: no response`
+          `\t\tState change request (${
+            state.name
+          }) failed: no response (${TestTimer.formattedDiff(
+            testSetupStartTime
+          )})`
         );
       } else {
         TestLogger.error(
-          `\t\tState change request (${state.name}) failed: ${error.message}`
+          `\t\tState change request (${state.name}) failed: ${
+            error.message
+          } (${TestTimer.formattedDiff(testSetupStartTime)})`
         );
       }
       return false;
@@ -311,22 +347,36 @@ async function executeStateSetup(
  * @param baseStateUrl base state change URL
  */
 async function executeStateTeardown(baseStateUrl: string): Promise<boolean> {
+  const testTeardownStartTime = process.hrtime();
+
   try {
     TestLogger.mute("\tPerforming state teardown request");
     await axios.post(`${baseStateUrl}/teardown`);
-    TestLogger.success("\t\tState teardown request success");
+    TestLogger.success(
+      `\t\tState teardown request success (${TestTimer.formattedDiff(
+        testTeardownStartTime
+      )})`
+    );
     return true;
   } catch (error) {
     if (error.response) {
       TestLogger.error(
         `\t\tState teardown request failed: received ${
           error.response.status
-        } status`
+        } status (${TestTimer.formattedDiff(testTeardownStartTime)})`
       );
     } else if (error.request) {
-      TestLogger.error(`\t\tState teardown request failed: no response`);
+      TestLogger.error(
+        `\t\tState teardown request failed: no response (${TestTimer.formattedDiff(
+          testTeardownStartTime
+        )})`
+      );
     } else {
-      TestLogger.error(`\t\tState teardown request failed: ${error.message}`);
+      TestLogger.error(
+        `\t\tState teardown request failed: ${
+          error.message
+        } (${TestTimer.formattedDiff(testTeardownStartTime)})`
+      );
     }
     return false;
   }
