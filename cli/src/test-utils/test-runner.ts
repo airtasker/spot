@@ -45,6 +45,8 @@ export async function runTest(
           continue;
         }
       }
+      const testStartTime = TestTimer.startTime();
+
       TestLogger.log(`Testing ${endpoint.name}:${test.name}`);
       const correlatedResponse = findCorrelatedResponse(endpoint, test);
       const result = await executeTest(
@@ -55,10 +57,19 @@ export async function runTest(
         correlatedResponse,
         definition.types
       );
+
       if (result) {
-        TestLogger.success(`\tTest ${endpoint.name}:${test.name} passed`);
+        TestLogger.success(
+          `\tTest ${endpoint.name}:${
+            test.name
+          } passed (${TestTimer.formattedDiff(testStartTime)})`
+        );
       } else {
-        TestLogger.error(`\tTest ${endpoint.name}:${test.name} failed`);
+        TestLogger.error(
+          `\tTest ${endpoint.name}:${
+            test.name
+          } failed (${TestTimer.formattedDiff(testStartTime)})`
+        );
       }
       allPassed = allPassed && result;
     }

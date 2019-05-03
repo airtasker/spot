@@ -18,7 +18,7 @@ function log(message: string) {
 }
 
 function mute(message: string) {
-  console.log(chalk.grey(message));
+  console.log(chalk.dim.white(message));
 }
 
 function success(message: string) {
