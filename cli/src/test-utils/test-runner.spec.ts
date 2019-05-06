@@ -265,7 +265,7 @@ describe("test runner", () => {
     expect(result).toBe(false);
   });
 
-  test("response body mismatch - missing attribute", async () => {
+  test.only("response body mismatch - missing attribute", async () => {
     const contract = parseAndCleanse(
       "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
     );
