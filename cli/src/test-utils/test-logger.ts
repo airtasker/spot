@@ -2,7 +2,6 @@ import chalk from "chalk";
 
 export const TestLogger = {
   error,
-  errorDebug,
   log,
   success,
   warn
