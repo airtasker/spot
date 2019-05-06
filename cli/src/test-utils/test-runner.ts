@@ -60,15 +60,17 @@ export async function runTest(
 
       if (result) {
         TestLogger.success(
-          `\tTest ${endpoint.name}:${
-            test.name
-          } passed (${TestTimer.formattedDiff(testStartTime)})`
+          `Test ${endpoint.name}:${test.name} passed (${TestTimer.formattedDiff(
+            testStartTime
+          )})`,
+          { indent: 1 }
         );
       } else {
         TestLogger.error(
-          `\tTest ${endpoint.name}:${
-            test.name
-          } failed (${TestTimer.formattedDiff(testStartTime)})`
+          `Test ${endpoint.name}:${test.name} failed (${TestTimer.formattedDiff(
+            testStartTime
+          )})`,
+          { indent: 1 }
         );
       }
       allPassed = allPassed && result;
@@ -76,7 +78,7 @@ export async function runTest(
   }
 
   TestLogger.log(
-    `\nTotal time: ${TestTimer.formattedDiff(testSuiteStartTime)}\n`
+    `Total time: ${TestTimer.formattedDiff(testSuiteStartTime)}\n`
   );
 
   return allPassed;
@@ -240,10 +242,12 @@ async function executeRequestUnderTest(
 
   const config = generateAxiosConfig(endpoint, test, baseUrl);
   TestLogger.log(
-    `\tPerforming request under test: ${config.method} ${config.url}`
+    `Performing request under test: ${config.method} ${config.url}`,
+    { indent: 1 }
   );
   TestLogger.log(
-    `\t\tRequest complete (${TestTimer.formattedDiff(testStartTime)})`
+    `Request complete (${TestTimer.formattedDiff(testStartTime)})`,
+    { indent: 2 }
   );
   const response = await axios.request(config);
   const statusResult = verifyStatus(test, response);
@@ -264,32 +268,38 @@ async function executeStateInitialization(
   const testInitStartTime = process.hrtime();
 
   try {
-    TestLogger.log("\tPerforming state initialization request");
+    TestLogger.log("Performing state initialization request", { indent: 1 });
     await axios.post(`${baseStateUrl}/initialize`);
     TestLogger.success(
-      `\t\tState initialization request success (${TestTimer.formattedDiff(
+      `State initialization request success (${TestTimer.formattedDiff(
         testInitStartTime
-      )})`
+      )})`,
+      { indent: 2 }
     );
     return true;
   } catch (error) {
     if (error.response) {
       TestLogger.error(
-        `\t\tState initialization request failed: received ${
+        `State initialization request failed: received ${
           error.response.status
-        } status (${TestTimer.formattedDiff(testInitStartTime)})`
+        } status (${TestTimer.formattedDiff(
+          testInitStartTime
+        )})\nReceived:\n${JSON.stringify(error.response.data, undefined, 2)}`,
+        { indent: 2 }
       );
     } else if (error.request) {
       TestLogger.error(
-        `\t\tState initialization request failed: no response (${TestTimer.formattedDiff(
+        `State initialization request failed: no response (${TestTimer.formattedDiff(
           testInitStartTime
-        )})`
+        )})`,
+        { indent: 2 }
       );
     } else {
       TestLogger.error(
-        `\t\tState initialization request failed: ${
+        `State initialization request failed: ${
           error.message
-        } (${TestTimer.formattedDiff(testInitStartTime)})`
+        } (${TestTimer.formattedDiff(testInitStartTime)})`,
+        { indent: 2 }
       );
     }
     return false;
@@ -309,7 +319,9 @@ async function executeStateSetup(
   for (const state of test.states) {
     const testSetupStartTime = process.hrtime();
 
-    TestLogger.log(`\tPerforming state setup request: ${state.name}`);
+    TestLogger.log(`Performing state setup request: ${state.name}`, {
+      indent: 1
+    });
     const data = {
       name: state.name,
       params: state.params.reduce<GenericParams>((acc, param) => {
@@ -320,30 +332,36 @@ async function executeStateSetup(
     try {
       await axios.post(`${baseStateUrl}/setup`, data);
       TestLogger.success(
-        `\t\tState setup request (${
-          state.name
-        }) success (${TestTimer.formattedDiff(testSetupStartTime)})`
+        `State setup request (${state.name}) success (${TestTimer.formattedDiff(
+          testSetupStartTime
+        )})`,
+        { indent: 2 }
       );
     } catch (error) {
       if (error.response) {
         TestLogger.error(
-          `\t\tState change request (${state.name}) failed: received ${
+          `State change request (${state.name}) failed: received ${
             error.response.status
-          } status (${TestTimer.formattedDiff(testSetupStartTime)})`
+          } status (${TestTimer.formattedDiff(
+            testSetupStartTime
+          )})\nReceived:\n${JSON.stringify(error.response.data, undefined, 2)}`,
+          { indent: 2 }
         );
       } else if (error.request) {
         TestLogger.error(
-          `\t\tState change request (${
+          `State change request (${
             state.name
           }) failed: no response (${TestTimer.formattedDiff(
             testSetupStartTime
-          )})`
+          )})`,
+          { indent: 2 }
         );
       } else {
         TestLogger.error(
-          `\t\tState change request (${state.name}) failed: ${
+          `State change request (${state.name}) failed: ${
             error.message
-          } (${TestTimer.formattedDiff(testSetupStartTime)})`
+          } (${TestTimer.formattedDiff(testSetupStartTime)})`,
+          { indent: 2 }
         );
       }
       return false;
@@ -361,32 +379,38 @@ async function executeStateTeardown(baseStateUrl: string): Promise<boolean> {
   const testTeardownStartTime = process.hrtime();
 
   try {
-    TestLogger.log("\tPerforming state teardown request");
+    TestLogger.log("Performing state teardown request", { indent: 1 });
     await axios.post(`${baseStateUrl}/teardown`);
     TestLogger.success(
-      `\t\tState teardown request success (${TestTimer.formattedDiff(
+      `State teardown request success (${TestTimer.formattedDiff(
         testTeardownStartTime
-      )})`
+      )})`,
+      { indent: 2 }
     );
     return true;
   } catch (error) {
     if (error.response) {
       TestLogger.error(
-        `\t\tState teardown request failed: received ${
+        `State teardown request failed: received ${
           error.response.status
-        } status (${TestTimer.formattedDiff(testTeardownStartTime)})`
+        } status (${TestTimer.formattedDiff(
+          testTeardownStartTime
+        )})\nReceived:\n${JSON.stringify(error.response.data, undefined, 2)}`,
+        { indent: 2 }
       );
     } else if (error.request) {
       TestLogger.error(
-        `\t\tState teardown request failed: no response (${TestTimer.formattedDiff(
+        `State teardown request failed: no response (${TestTimer.formattedDiff(
           testTeardownStartTime
-        )})`
+        )})`,
+        { indent: 2 }
       );
     } else {
       TestLogger.error(
-        `\t\tState teardown request failed: ${
+        `State teardown request failed: ${
           error.message
-        } (${TestTimer.formattedDiff(testTeardownStartTime)})`
+        } (${TestTimer.formattedDiff(testTeardownStartTime)})`,
+        { indent: 2 }
       );
     }
     return false;
@@ -404,11 +428,12 @@ function verifyStatus(
   response: AxiosResponse<any>
 ): boolean {
   if (test.response.status === response.status) {
-    TestLogger.success("\t\tStatus matched");
+    TestLogger.success("Status matched", { indent: 2 });
     return true;
   } else {
     TestLogger.error(
-      `\t\tExpected status ${test.response.status}, got ${response.status}`
+      `Expected status ${test.response.status}, got ${response.status}`,
+      { indent: 2 }
     );
     return false;
   }
@@ -443,11 +468,14 @@ function verifyBody(
   const validateFn = jsv.compile(schema);
   const valid = validateFn(response.data);
   if (valid) {
-    TestLogger.success("\t\tBody matched");
+    TestLogger.success("Body matched", { indent: 2 });
     return true;
   } else {
     TestLogger.error(
-      `\t\tBody does not match: ${jsv.errorsText(validateFn.errors)}`
+      `Body does not match: ${jsv.errorsText(
+        validateFn.errors
+      )}\nReceived:\n${JSON.stringify(response.data, undefined, 2)}`,
+      { indent: 2 }
     );
     return false;
   }
