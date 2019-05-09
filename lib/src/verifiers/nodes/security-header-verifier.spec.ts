@@ -18,7 +18,7 @@ describe("security header node verifier", () => {
     const responseNode: SecurityHeaderNode = {
       name: fakeLocatable("x-auth-token"),
       type: {
-        kind: TypeKind.NUMBER
+        kind: TypeKind.FLOAT
       }
     };
     const errors = verifySecurityHeaderNode(responseNode, []);

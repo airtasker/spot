@@ -1,8 +1,8 @@
 import { TypeNode } from "ts-morph";
 import {
   BOOLEAN,
+  FLOAT,
   NULL,
-  NUMBER,
   ObjectType,
   STRING,
   TypeKind,
@@ -34,7 +34,7 @@ describe("type node parser", () => {
     test("parses the number type", () => {
       const typeNode = createTypeNode("number");
 
-      expect(parseTypeNode(typeNode)).toStrictEqual(NUMBER);
+      expect(parseTypeNode(typeNode)).toStrictEqual(FLOAT);
     });
   });
 
@@ -91,7 +91,7 @@ describe("type node parser", () => {
       const typeNode = createTypeNode("Float");
 
       expect(parseTypeNode(typeNode)).toStrictEqual({
-        kind: TypeKind.NUMBER
+        kind: TypeKind.FLOAT
       });
     });
 
@@ -99,7 +99,23 @@ describe("type node parser", () => {
       const typeNode = createTypeNode("Integer");
 
       expect(parseTypeNode(typeNode)).toStrictEqual({
-        kind: TypeKind.INTEGER
+        kind: TypeKind.INT32
+      });
+    });
+
+    test("parses Int32 type", () => {
+      const typeNode = createTypeNode("Int32");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.INT32
+      });
+    });
+
+    test("parses Integer type", () => {
+      const typeNode = createTypeNode("Int64");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.INT64
       });
     });
 
@@ -132,7 +148,7 @@ describe("type node parser", () => {
 
       expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.TYPE_REFERENCE,
-        referenceKind: TypeKind.INTEGER,
+        referenceKind: TypeKind.INT32,
         name: "AliasedCustomPrimitive",
         location: expect.stringMatching(/main\.ts$/)
       });
@@ -175,7 +191,7 @@ describe("type node parser", () => {
       expect(result.properties).toContainEqual({
         name: "year",
         description: undefined,
-        type: NUMBER,
+        type: FLOAT,
         optional: true
       });
     });
@@ -221,7 +237,7 @@ describe("type node parser", () => {
       expect(result.kind).toEqual(TypeKind.UNION);
       expect(result.types).toHaveLength(3);
       expect(result.types).toContainEqual(STRING);
-      expect(result.types).toContainEqual(NUMBER);
+      expect(result.types).toContainEqual(FLOAT);
       expect(result.types).toContainEqual(NULL);
     });
 
@@ -295,7 +311,7 @@ function createTypeNode(...types: string[]): TypeNode {
     throw new Error("at least one type required");
   }
   const content = `
-    import { Float, Integer, String, Date, DateTime } from "@airtasker/spot"
+    import { Float, Integer, Int32, Int64, String, Date, DateTime } from "@airtasker/spot"
     import { TypeAlias } from "./alias"
 
     interface TestInterface {

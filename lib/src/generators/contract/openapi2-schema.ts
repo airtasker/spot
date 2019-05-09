@@ -42,7 +42,7 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
         type: "string",
         enum: [type.value]
       };
-    case TypeKind.NUMBER:
+    case TypeKind.FLOAT:
       return {
         type: "number"
       };
@@ -56,10 +56,15 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
             type: "number",
             enum: [type.value]
           };
-    case TypeKind.INTEGER:
+    case TypeKind.INT32:
       return {
         type: "integer",
         format: "int32"
+      };
+    case TypeKind.INT64:
+      return {
+        type: "integer",
+        format: "int64"
       };
     case TypeKind.OBJECT:
       return type.properties.reduce<

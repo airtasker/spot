@@ -1,13 +1,25 @@
 import { TypeKind } from "./kinds";
 
-export type CustomPrimitiveType = IntegerType | DateType | DateTimeType;
+export type CustomPrimitiveType =
+  | Int32Type
+  | Int64Type
+  | DateType
+  | DateTimeType;
 
-export const INTEGER: IntegerType = {
-  kind: TypeKind.INTEGER
+export const INT32: Int32Type = {
+  kind: TypeKind.INT32
 };
 
-export interface IntegerType {
-  kind: TypeKind.INTEGER;
+export interface Int32Type {
+  kind: TypeKind.INT32;
+}
+
+export const INT64: Int64Type = {
+  kind: TypeKind.INT64
+};
+
+export interface Int64Type {
+  kind: TypeKind.INT64;
 }
 
 export const DATE: DateType = {

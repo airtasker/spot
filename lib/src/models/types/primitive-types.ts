@@ -1,7 +1,7 @@
 import { TypeKind } from "./kinds";
 
 /** Primitive types native to the TypeScript language. */
-export type PrimitiveType = NullType | BooleanType | StringType | NumberType;
+export type PrimitiveType = NullType | BooleanType | StringType | FloatType;
 
 export const NULL: NullType = {
   kind: TypeKind.NULL
@@ -27,10 +27,10 @@ export interface StringType {
   kind: TypeKind.STRING;
 }
 
-export const NUMBER: NumberType = {
-  kind: TypeKind.NUMBER
+export const FLOAT: FloatType = {
+  kind: TypeKind.FLOAT
 };
 
-export interface NumberType {
-  kind: TypeKind.NUMBER;
+export interface FloatType {
+  kind: TypeKind.FLOAT;
 }

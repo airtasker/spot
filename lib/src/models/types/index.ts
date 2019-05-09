@@ -2,7 +2,7 @@ import {
   CustomPrimitiveType,
   DateTimeType,
   DateType,
-  IntegerType
+  Int32Type
 } from "./custom-primitive-types";
 import { TypeKind } from "./kinds";
 import { ArrayType, ObjectType } from "./object-types";
@@ -11,16 +11,16 @@ import {
   PrimitiveLiteral,
   StringLiteral
 } from "./primitive-literals";
-import { NumberType, PrimitiveType, StringType } from "./primitive-types";
+import { FloatType, PrimitiveType, StringType } from "./primitive-types";
 import { ReferenceType, UnionType } from "./special-types";
 
 export * from "./custom-primitive-types";
+export * from "./expressions";
 export * from "./kinds";
 export * from "./object-types";
 export * from "./primitive-literals";
 export * from "./primitive-types";
 export * from "./special-types";
-export * from "./expressions";
 
 export type DataType =
   | PrimitiveType
@@ -32,9 +32,9 @@ export type DataType =
   | UnionType;
 
 export type NumberLikeType =
-  | NumberType
+  | FloatType
   | NumberLiteral
-  | IntegerType
+  | Int32Type
   | ReferenceType;
 
 export type StringLikeType =

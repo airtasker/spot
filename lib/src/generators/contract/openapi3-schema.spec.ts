@@ -2,9 +2,10 @@ import {
   arrayType,
   BOOLEAN,
   booleanLiteral,
-  INTEGER,
+  FLOAT,
+  INT32,
+  INT64,
   NULL,
-  NUMBER,
   numberLiteral,
   objectType,
   referenceType,
@@ -72,8 +73,8 @@ Object {
 `);
     });
 
-    test("number", () => {
-      expect(openApi3TypeSchema([], NUMBER)).toMatchInlineSnapshot(`
+    test("float", () => {
+      expect(openApi3TypeSchema([], FLOAT)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -100,10 +101,19 @@ Object {
 `);
     });
 
-    test("integer", () => {
-      expect(openApi3TypeSchema([], INTEGER)).toMatchInlineSnapshot(`
+    test("int32", () => {
+      expect(openApi3TypeSchema([], INT32)).toMatchInlineSnapshot(`
 Object {
   "format": "int32",
+  "type": "integer",
+}
+`);
+    });
+
+    test("int64", () => {
+      expect(openApi3TypeSchema([], INT64)).toMatchInlineSnapshot(`
+Object {
+  "format": "int64",
   "type": "integer",
 }
 `);
@@ -151,7 +161,7 @@ Object {
           objectType([
             {
               name: "singleField",
-              type: NUMBER,
+              type: FLOAT,
               optional: false
             }
           ])
@@ -175,7 +185,7 @@ Object {
           objectType([
             {
               name: "field1",
-              type: NUMBER,
+              type: FLOAT,
               optional: false
             },
             {
@@ -237,7 +247,7 @@ Object {
   "type": "string",
 }
 `);
-      expect(openApi3TypeSchema([], unionType([STRING, NUMBER, NULL])))
+      expect(openApi3TypeSchema([], unionType([STRING, FLOAT, NULL])))
         .toMatchInlineSnapshot(`
 Object {
   "nullable": true,
@@ -251,7 +261,7 @@ Object {
   ],
 }
 `);
-      expect(openApi3TypeSchema([], unionType([STRING, NUMBER, BOOLEAN])))
+      expect(openApi3TypeSchema([], unionType([STRING, FLOAT, BOOLEAN])))
         .toMatchInlineSnapshot(`
 Object {
   "oneOf": Array [

@@ -17,9 +17,10 @@ import {
   DataType,
   DATE,
   DATETIME,
-  INTEGER,
+  FLOAT,
+  INT32,
+  INT64,
   NULL,
-  NUMBER,
   numberLiteral,
   objectType,
   ObjectType,
@@ -54,7 +55,7 @@ export function parseTypeNode(typeNode: TypeNode): DataType {
   } else if (TypeGuards.isStringKeyword(typeNode)) {
     return STRING;
   } else if (TypeGuards.isNumberKeyword(typeNode)) {
-    return NUMBER;
+    return FLOAT;
   } else if (TypeGuards.isLiteralTypeNode(typeNode)) {
     return parseLiteralType(typeNode);
   } else if (TypeGuards.isArrayTypeNode(typeNode)) {
@@ -67,6 +68,16 @@ export function parseTypeNode(typeNode: TypeNode): DataType {
     throw new Error("unknown type");
   }
 }
+
+const SPOT_TYPE_ALIASES = [
+  "Date",
+  "DateTime",
+  "Float",
+  "Integer",
+  "Int32",
+  "Int64",
+  "String"
+];
 
 /**
  * Parse an reference node. Reference nodes refer to type aliases and interfaces.
@@ -81,7 +92,7 @@ function parseTypeReference(
   if (TypeGuards.isTypeAliasDeclaration(declaration)) {
     const targetTypeNode = declaration.getTypeNodeOrThrow();
     // if the type name is one of of the internal ones ensure they have not been redefined
-    if (["Date", "DateTime", "Float", "Integer", "String"].includes(name)) {
+    if (SPOT_TYPE_ALIASES.includes(name)) {
       if (TypeGuards.isTypeReferenceNode(targetTypeNode)) {
         throw new Error(`Internal type ${name} must not be redefined`);
       } else if (declaration.getType().isString()) {
@@ -98,9 +109,12 @@ function parseTypeReference(
       } else if (declaration.getType().isNumber()) {
         switch (name) {
           case "Float":
-            return NUMBER;
+            return FLOAT;
           case "Integer":
-            return INTEGER;
+          case "Int32":
+            return INT32;
+          case "Int64":
+            return INT64;
           default:
             throw new Error(`Internal type ${name} must not be redefined`);
         }
@@ -115,7 +129,7 @@ function parseTypeReference(
       );
     }
   } else {
-    if (["Date", "DateTime", "Float", "Integer", "String"].includes(name)) {
+    if (SPOT_TYPE_ALIASES.includes(name)) {
       throw new Error(`Internal type ${name} must not be redefined`);
     } else {
       return referenceType(

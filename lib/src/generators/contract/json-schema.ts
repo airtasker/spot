@@ -56,11 +56,12 @@ export function jsonTypeSchema(type: DataType): JsonSchemaType {
         type: "string",
         const: type.value
       };
-    case TypeKind.NUMBER:
+    case TypeKind.FLOAT:
       return {
         type: "number"
       };
-    case TypeKind.INTEGER:
+    case TypeKind.INT32:
+    case TypeKind.INT64:
       return {
         type: "integer"
       };

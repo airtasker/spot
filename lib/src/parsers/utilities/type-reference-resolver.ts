@@ -165,8 +165,8 @@ function retrieveTypeReferencesFromType(
       case TypeKind.NULL:
       case TypeKind.BOOLEAN:
       case TypeKind.STRING:
-      case TypeKind.NUMBER:
-      case TypeKind.INTEGER:
+      case TypeKind.FLOAT:
+      case TypeKind.INT32:
       case TypeKind.DATE:
       case TypeKind.DATE_TIME:
       case TypeKind.BOOLEAN_LITERAL:

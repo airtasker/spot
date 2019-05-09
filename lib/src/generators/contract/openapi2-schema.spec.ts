@@ -2,9 +2,10 @@ import {
   arrayType,
   BOOLEAN,
   booleanLiteral,
-  INTEGER,
+  FLOAT,
+  INT32,
+  INT64,
   NULL,
-  NUMBER,
   numberLiteral,
   objectType,
   referenceType,
@@ -70,8 +71,8 @@ Object {
 `);
     });
 
-    test("number", () => {
-      expect(openApi2TypeSchema(NUMBER)).toMatchInlineSnapshot(`
+    test("float", () => {
+      expect(openApi2TypeSchema(FLOAT)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -97,10 +98,19 @@ Object {
 `);
     });
 
-    test("integer", () => {
-      expect(openApi2TypeSchema(INTEGER)).toMatchInlineSnapshot(`
+    test("int32", () => {
+      expect(openApi2TypeSchema(INT32)).toMatchInlineSnapshot(`
 Object {
   "format": "int32",
+  "type": "integer",
+}
+`);
+    });
+
+    test("int64", () => {
+      expect(openApi2TypeSchema(INT64)).toMatchInlineSnapshot(`
+Object {
+  "format": "int64",
   "type": "integer",
 }
 `);
@@ -146,7 +156,7 @@ Object {
           objectType([
             {
               name: "singleField",
-              type: NUMBER,
+              type: FLOAT,
               optional: false
             }
           ])
@@ -169,7 +179,7 @@ Object {
           objectType([
             {
               name: "field1",
-              type: NUMBER,
+              type: FLOAT,
               optional: false
             },
             {
@@ -231,7 +241,7 @@ Object {
 }
 `);
       expect(() =>
-        openApi2TypeSchema(unionType([STRING, NUMBER, BOOLEAN]))
+        openApi2TypeSchema(unionType([STRING, FLOAT, BOOLEAN]))
       ).toThrowError("Unions are not supported in OpenAPI 2");
     });
 

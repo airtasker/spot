@@ -4,9 +4,10 @@ import {
   arrayType,
   BOOLEAN,
   booleanLiteral,
-  INTEGER,
+  FLOAT,
+  INT32,
+  INT64,
   NULL,
-  NUMBER,
   numberLiteral,
   objectType,
   referenceType,
@@ -89,8 +90,8 @@ Object {
 `);
     });
 
-    test("number", () => {
-      expect(jsonTypeSchema(NUMBER)).toMatchInlineSnapshot(`
+    test("float", () => {
+      expect(jsonTypeSchema(FLOAT)).toMatchInlineSnapshot(`
 Object {
   "type": "number",
 }
@@ -112,8 +113,16 @@ Object {
 `);
     });
 
-    test("integer", () => {
-      expect(jsonTypeSchema(INTEGER)).toMatchInlineSnapshot(`
+    test("int32", () => {
+      expect(jsonTypeSchema(INT32)).toMatchInlineSnapshot(`
+Object {
+  "type": "integer",
+}
+`);
+    });
+
+    test("int64", () => {
+      expect(jsonTypeSchema(INT64)).toMatchInlineSnapshot(`
 Object {
   "type": "integer",
 }
@@ -154,7 +163,7 @@ Object {
           objectType([
             {
               name: "singleField",
-              type: NUMBER,
+              type: FLOAT,
               optional: false
             }
           ])
@@ -177,7 +186,7 @@ Object {
           objectType([
             {
               name: "field1",
-              type: NUMBER,
+              type: FLOAT,
               optional: false
             },
             {
@@ -226,7 +235,7 @@ Object {
     });
 
     test("union", () => {
-      expect(jsonTypeSchema(unionType([STRING, NUMBER, BOOLEAN])))
+      expect(jsonTypeSchema(unionType([STRING, FLOAT, BOOLEAN])))
         .toMatchInlineSnapshot(`
 Object {
   "oneOf": Array [

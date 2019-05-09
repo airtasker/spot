@@ -4,9 +4,9 @@ import {
   booleanLiteral,
   DATE,
   DATETIME,
-  INTEGER,
+  FLOAT,
+  INT32,
   NULL,
-  NUMBER,
   numberLiteral,
   objectType,
   referenceType,
@@ -35,12 +35,12 @@ describe("Dummy", () => {
     test("string literal", () => {
       expect(generateData([], stringLiteral("abc"))).toBe("abc");
     });
-    test("number", () => {
-      expect(typeof generateData([], NUMBER)).toBe("number");
+    test("float", () => {
+      expect(typeof generateData([], FLOAT)).toBe("number");
     });
-    test("integer", () => {
-      expect(typeof generateData([], INTEGER)).toBe("number");
-      expect(decimalPart(generateData([], INTEGER))).toBe(0);
+    test("int32", () => {
+      expect(typeof generateData([], INT32)).toBe("number");
+      expect(decimalPart(generateData([], INT32))).toBe(0);
     });
     test("date", () => {
       expect(typeof generateData([], DATE)).toBe("string");
