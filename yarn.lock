@@ -561,10 +561,10 @@
   dependencies:
     axios "^0.16.1"
 
-"@types/nock@^10.0.1":
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/@types/nock/-/nock-10.0.1.tgz#ca545bdd0c2559fe76e3cda1ba011a74fb940d45"
-  integrity sha512-3Dbkj/f0HxuvyYfInbQCHLASFyjnNUcidabwrbhJDMZOXXznNyQpzsBgZnY2K+c43OekqWvZ+tDjGsGTKm1d5g==
+"@types/nock@^10.0.2":
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@types/nock/-/nock-10.0.2.tgz#907c5cd44b02408608b1fada030c1fbe0a2cd9cd"
+  integrity sha512-jOdoZ3zVLmPWZOoPJDoks+Zo6GsogdZuVBWs8/prWau993qno5PPtukVXKfc+WtS/ROgTPWpiru92z2K6KFYgQ==
   dependencies:
     "@types/node" "*"
 
