@@ -28,7 +28,8 @@ export const StringLikeKind = [
 export const NumberLikeKind = [
   TypeKind.FLOAT,
   TypeKind.NUMBER_LITERAL,
-  TypeKind.INT32
+  TypeKind.INT32,
+  TypeKind.INT64
 ];
 
 export const BooleanLikeKind = [TypeKind.BOOLEAN, TypeKind.BOOLEAN_LITERAL];
