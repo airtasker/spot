@@ -72,10 +72,11 @@ export function openApi3TypeSchema(
       };
     case TypeKind.OBJECT:
       return type.properties.reduce<
-        OpenAPI3SchemaTypeObject & { required: string[] }
+        OpenAPI3SchemaTypeObject
       >(
         (acc, property) => {
           if (!property.optional) {
+            if (acc.required === undefined) { acc.required = []; }
             acc.required.push(property.name);
           }
           acc.properties[property.name] = openApi3TypeSchema(
@@ -86,8 +87,7 @@ export function openApi3TypeSchema(
         },
         {
           type: "object",
-          properties: {},
-          required: []
+          properties: {}
         }
       );
     case TypeKind.ARRAY:
