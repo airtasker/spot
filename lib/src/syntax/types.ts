@@ -4,6 +4,12 @@ export type Float = number;
 /** An integer */
 export type Integer = number;
 
+/** A 32-bit integer */
+export type Int32 = number;
+
+/** A 64-bit integer */
+export type Int64 = number;
+
 /** A string */
 export type String = string;
 

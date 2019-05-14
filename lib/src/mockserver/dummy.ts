@@ -18,10 +18,12 @@ export function generateData(types: TypeDefinition[], type: DataType): any {
       return generateRandomString();
     case TypeKind.STRING_LITERAL:
       return type.value;
-    case TypeKind.NUMBER:
+    case TypeKind.FLOAT:
       return randomDouble(100);
-    case TypeKind.INTEGER:
+    case TypeKind.INT32:
       return randomInteger(100);
+    case TypeKind.INT64:
+      return Math.pow(2, 50) + randomInteger(10000);
     case TypeKind.DATE:
     case TypeKind.DATE_TIME:
       return new Date().toISOString();

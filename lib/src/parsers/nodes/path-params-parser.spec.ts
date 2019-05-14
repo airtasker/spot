@@ -1,5 +1,5 @@
 import { MethodDeclaration } from "ts-morph";
-import { NUMBER, STRING } from "../../models/types";
+import { FLOAT, STRING } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
 import { parsePathParams } from "./path-params-parser";
 
@@ -48,7 +48,7 @@ describe("@pathParams parser", () => {
               location: expect.stringMatching(/main\.ts$/),
               line: 9
             },
-            type: NUMBER
+            type: FLOAT
           },
           location: expect.stringMatching(/main\.ts$/),
           line: 10

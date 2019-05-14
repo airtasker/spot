@@ -1,5 +1,5 @@
 import { MethodDeclaration } from "ts-morph";
-import { NUMBER, STRING, TypeKind } from "../../models/types";
+import { FLOAT, STRING, TypeKind } from "../../models/types";
 import { createSourceFile } from "../../test/helper";
 import { parseBody } from "./body-parser";
 
@@ -32,7 +32,7 @@ describe("@body parser", () => {
               description: "age description",
               name: "age",
               optional: true,
-              type: NUMBER
+              type: FLOAT
             }
           ]
         }

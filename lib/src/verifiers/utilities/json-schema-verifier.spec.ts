@@ -5,11 +5,11 @@ import {
   BooleanExpression,
   BooleanLiteral,
   BooleanType,
+  FloatType,
   NullExpression,
   NullType,
   NumberExpression,
   NumberLiteral,
-  NumberType,
   ObjectExpression,
   ObjectType,
   StringExpression,
@@ -143,8 +143,8 @@ describe("json schema verifier", () => {
 
     describe("number schema", () => {
       it("validates number expression", () => {
-        const dataType: NumberType = {
-          kind: TypeKind.NUMBER
+        const dataType: FloatType = {
+          kind: TypeKind.FLOAT
         };
         const data: NumberExpression = {
           kind: TypeKind.NUMBER_LITERAL,
@@ -154,8 +154,8 @@ describe("json schema verifier", () => {
       });
 
       it("invalidates number expression", () => {
-        const dataType: NumberType = {
-          kind: TypeKind.NUMBER
+        const dataType: FloatType = {
+          kind: TypeKind.FLOAT
         };
         const data: StringExpression = {
           kind: TypeKind.STRING_LITERAL,
@@ -217,7 +217,7 @@ describe("json schema verifier", () => {
         const dataType: ArrayType = {
           kind: TypeKind.ARRAY,
           elements: {
-            kind: TypeKind.NUMBER
+            kind: TypeKind.FLOAT
           }
         };
         const data: ArrayExpression = {
@@ -492,7 +492,7 @@ describe("json schema verifier", () => {
               kind: TypeKind.STRING
             },
             {
-              kind: TypeKind.NUMBER
+              kind: TypeKind.FLOAT
             }
           ]
         };
@@ -516,7 +516,7 @@ describe("json schema verifier", () => {
               kind: TypeKind.STRING
             },
             {
-              kind: TypeKind.NUMBER
+              kind: TypeKind.FLOAT
             }
           ]
         };

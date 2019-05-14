@@ -2,8 +2,9 @@ export enum TypeKind {
   NULL = "null",
   BOOLEAN = "boolean",
   STRING = "string",
-  NUMBER = "number",
-  INTEGER = "integer",
+  FLOAT = "float",
+  INT32 = "int32",
+  INT64 = "int64",
   DATE = "date",
   DATE_TIME = "date-time",
   BOOLEAN_LITERAL = "boolean-literal",
@@ -25,9 +26,10 @@ export const StringLikeKind = [
 ];
 
 export const NumberLikeKind = [
-  TypeKind.NUMBER,
+  TypeKind.FLOAT,
   TypeKind.NUMBER_LITERAL,
-  TypeKind.INTEGER
+  TypeKind.INT32,
+  TypeKind.INT64
 ];
 
 export const BooleanLikeKind = [TypeKind.BOOLEAN, TypeKind.BOOLEAN_LITERAL];
