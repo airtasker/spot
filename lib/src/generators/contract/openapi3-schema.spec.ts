@@ -184,7 +184,7 @@ Object {
           objectType([
             {
               name: "singleOptionalField",
-              type: NUMBER,
+              type: FLOAT,
               optional: true
             }
           ])
