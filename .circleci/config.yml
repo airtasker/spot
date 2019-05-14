@@ -6,6 +6,7 @@ job_configuration: &job_configuration
 jobs:
   build-and-test:
     <<: *job_configuration
+    resource_class: xlarge
     steps:
       - checkout
 
