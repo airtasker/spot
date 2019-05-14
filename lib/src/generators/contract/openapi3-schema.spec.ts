@@ -141,7 +141,6 @@ Object {
       expect(openApi3TypeSchema([], objectType([]))).toMatchInlineSnapshot(`
 Object {
   "properties": Object {},
-  "required": Array [],
   "type": "object",
 }
 `);
@@ -166,6 +165,27 @@ Object {
   "required": Array [
     "singleField",
   ],
+  "type": "object",
+}
+`);
+      expect(
+        openApi3TypeSchema(
+          [],
+          objectType([
+            {
+              name: "singleOptionalField",
+              type: NUMBER,
+              optional: true
+            }
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+Object {
+  "properties": Object {
+    "singleOptionalField": Object {
+      "type": "number",
+    },
+  },
   "type": "object",
 }
 `);
@@ -651,7 +671,6 @@ Object {
           "type": "string",
         },
       },
-      "required": Array [],
       "type": "object",
     },
     Object {
@@ -663,7 +682,6 @@ Object {
           "type": "string",
         },
       },
-      "required": Array [],
       "type": "object",
     },
   ],
