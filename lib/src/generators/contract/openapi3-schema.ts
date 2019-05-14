@@ -71,12 +71,12 @@ export function openApi3TypeSchema(
         format: "int32"
       };
     case TypeKind.OBJECT:
-      return type.properties.reduce<
-        OpenAPI3SchemaTypeObject
-      >(
+      return type.properties.reduce<OpenAPI3SchemaTypeObject>(
         (acc, property) => {
           if (!property.optional) {
-            if (acc.required === undefined) { acc.required = []; }
+            if (acc.required === undefined) {
+              acc.required = [];
+            }
             acc.required.push(property.name);
           }
           acc.properties[property.name] = openApi3TypeSchema(
