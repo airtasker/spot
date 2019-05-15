@@ -64,7 +64,7 @@ describe("unique endpoint names verifier", () => {
     };
     expect(verifyUniqueEndpointNames(contractNode)).toMatchObject([
       {
-        message: "endpoints must have unique names"
+        message: "endpoints must have unique names: EndpointOne"
       }
     ]);
   });
