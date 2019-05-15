@@ -37,10 +37,6 @@ jobs:
       - run: ./bin/run --help
 
       - run:
-          name: Install speccy and swagger2openapi
-          command: yarn add speccy swagger2openapi
-
-      - run:
           name: Speccy OpenAPI 3
           command: ./bin/run generate --contract lib/src/test/examples/contract.ts -l yaml --generator openapi3 -o output/ && yarn speccy lint -s openapi-tags -s parameter-description output/contract.yml
 
