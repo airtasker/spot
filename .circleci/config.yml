@@ -6,6 +6,7 @@ job_configuration: &job_configuration
 jobs:
   build-and-test:
     <<: *job_configuration
+    resource_class: xlarge
     steps:
       - checkout
 
@@ -25,7 +26,7 @@ jobs:
 
       - run:
           name: Run tests
-          command: yarn test --runInBand
+          command: yarn test
 
       - run:
           name: Compile
