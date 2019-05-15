@@ -1,4 +1,4 @@
-import { uniq } from "lodash";
+import { groupBy, keys, pickBy } from "lodash";
 import { ContractNode } from "../../models/nodes";
 import { VerificationError } from "../verification-error";
 
@@ -6,16 +6,25 @@ export function verifyUniqueEndpointNames(
   contract: ContractNode
 ): VerificationError[] {
   const errors: VerificationError[] = [];
-  const endpointNames = contract.endpoints.map(
+
+  const endpointsByName = groupBy(
+    contract.endpoints,
     endpoint => endpoint.value.name.value
   );
-  if (uniq(endpointNames).length !== endpointNames.length) {
+
+  const duplicatedEndpoints = pickBy(
+    endpointsByName,
+    endpointCollection => endpointCollection.length > 1
+  );
+
+  keys(duplicatedEndpoints).forEach(endpointName => {
+    const firstEndpointWithName = duplicatedEndpoints[endpointName][0];
     errors.push({
-      message: "endpoints must have unique names",
-      // TODO: use a duplicated endpoint location
-      location: contract.api.location,
-      line: contract.api.line
+      message: `endpoints must have unique names: ${endpointName}`,
+      location: firstEndpointWithName.value.name.location,
+      line: firstEndpointWithName.value.name.line
     });
-  }
+  });
+
   return errors;
 }
