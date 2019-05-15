@@ -9,6 +9,31 @@ import {
 
 export type Coverage = ObjectTypeCoverage | UnionTypeCoverage | BasicCoverage;
 
+/**
+ * Coverage of object types.
+ *
+ * Each property has its own coverage.
+ */
+export interface ObjectTypeCoverage {
+  kind: "object";
+  properties: {
+    [key: string]: Coverage;
+  };
+}
+
+/**
+ * Coverage of union types.
+ *
+ * Each possible type has its own coverage.
+ */
+export interface UnionTypeCoverage {
+  kind: "union";
+  types: Coverage[];
+}
+
+/**
+ * Coverage of a basic value (which is either covered or not),
+ */
 export interface BasicCoverage {
   kind: "basic";
   is: "missing" | "covered";
@@ -24,21 +49,13 @@ const MISSING: BasicCoverage = {
   is: "missing"
 };
 
-export interface ObjectTypeCoverage {
-  kind: "object";
-  properties: {
-    [key: string]: Coverage;
-  };
-}
-
-export interface UnionTypeCoverage {
-  kind: "union";
-  types: Coverage[];
-}
-
+/**
+ * Computes the score of a coverage, between 0 (no coverage) and 1 (full coverage).
+ */
 export function coverageScore(coverage: Coverage): number {
   switch (coverage.kind) {
     case "object":
+      // The coverage is the average coverage of all properties.
       const propertiesCoverage = Object.values(coverage.properties);
       if (propertiesCoverage.length === 0) {
         return 1;
@@ -50,6 +67,7 @@ export function coverageScore(coverage: Coverage): number {
         ) / propertiesCoverage.length
       );
     case "union":
+      // The coverage is the average coverage of all possible types.
       if (coverage.types.length === 0) {
         return 1;
       }
@@ -64,6 +82,12 @@ export function coverageScore(coverage: Coverage): number {
   }
 }
 
+/**
+ * Computes the coverage of a type for a given value.
+ *
+ * For example if the value is { name: "John" } and the type is  { name: string, age?: number }
+ * then the coverage will be { name: COVERED, age: MISSING }.
+ */
 export function coverage(
   types: TypeDefinition[],
   type: DataType,
@@ -135,6 +159,13 @@ export function coverage(
   }
 }
 
+/**
+ * Merges several coverages for the same type into one.
+ *
+ * This is useful when multiple tests cover the same type. We want to make sure
+ * that across all tests, we have good coverage. It's not actually important
+ * that each test on its own has very high coverage.
+ */
 export function mergeCoverage(
   types: TypeDefinition[],
   type: DataType,
