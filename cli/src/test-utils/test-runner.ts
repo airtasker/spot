@@ -13,6 +13,12 @@ import {
 } from "../../../lib/src/models/definitions";
 import { TypeNode } from "../../../lib/src/models/nodes";
 import { valueFromDataExpression } from "../../../lib/src/utilities/data-expression-utils";
+import {
+  Coverage,
+  coverage,
+  coverageScore,
+  mergeCoverage
+} from "./test-coverage";
 import { TestLogger } from "./test-logger";
 import { TestTimer } from "./test-timer";
 
@@ -35,6 +41,7 @@ export async function runTest(
   let allPassed = true;
 
   for (const endpoint of definition.endpoints) {
+    const requestCoverages: Coverage[] = [];
     for (const test of endpoint.tests) {
       if (testFilter) {
         if (
@@ -59,6 +66,18 @@ export async function runTest(
       );
 
       if (result) {
+        // TODO: Coverage of headers, query params, headers.
+        if (test.request) {
+          if (endpoint.request.body && test.request.body) {
+            requestCoverages.push(
+              coverage(
+                definition.types,
+                endpoint.request.body.type,
+                valueFromDataExpression(test.request.body)
+              )
+            );
+          }
+        }
         TestLogger.success(
           `Test ${endpoint.name}:${test.name} passed (${TestTimer.formattedDiff(
             testStartTime
@@ -75,6 +94,20 @@ export async function runTest(
       }
       allPassed = allPassed && result;
     }
+    if (endpoint.request.body) {
+      const requestBodyCoverage = mergeCoverage(
+        definition.types,
+        endpoint.request.body.type,
+        requestCoverages
+      );
+      const requestBodyScore = coverageScore(requestBodyCoverage);
+      TestLogger.log(
+        `Coverage score for ${endpoint.name} is ${Math.round(
+          requestBodyScore * 100
+        )}%.`
+      );
+    }
+    // TODO: Also response coverage.
   }
 
   TestLogger.log(
