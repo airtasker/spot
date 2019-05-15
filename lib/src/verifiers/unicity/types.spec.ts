@@ -39,7 +39,7 @@ describe("unique type names verifier", () => {
     };
     expect(verifyUniqueTypeNames(contractNode)).toMatchObject([
       {
-        message: "types must have unique names"
+        message: "types must have unique names: TypeOne"
       }
     ]);
   });
