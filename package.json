@@ -50,7 +50,7 @@
     "speccy": "^0.10.1",
     "swagger2openapi": "^5.3.0",
     "ts-jest": "^24.0.2",
-    "ts-node": "^8.1.0",
+    "ts-node": "^8.2.0",
     "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0"
   },
