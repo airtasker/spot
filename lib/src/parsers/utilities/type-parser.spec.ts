@@ -143,6 +143,22 @@ describe("type node parser", () => {
       });
     });
 
+    test("identifies that the String type has not been imported", () => {
+      const content = `
+        interface TestInterface {
+          testProperty: String;
+        }
+      `;
+      const sourceFile = createSourceFile({ path: "main", content });
+      const interphace = sourceFile.getInterfaceOrThrow("TestInterface");
+      const property = interphace.getPropertyOrThrow("testProperty");
+      const typeNode = property.getTypeNodeOrThrow();
+
+      expect(() => parseTypeNode(typeNode)).toThrowError(
+        'expected exactly one declaration for String\nDid you forget to import String? => import { String } from "@airtasker/spot"'
+      );
+    });
+
     test("parses aliased custom primitive", () => {
       const typeNode = createTypeNode("AliasedCustomPrimitive");
 
@@ -171,7 +187,7 @@ describe("type node parser", () => {
   describe("object types", () => {
     test("parses object literal type", () => {
       const typeNode = createTypeNode(`
-        { 
+        {
           /** Some description for title */
           title: string;
           year?: number;
@@ -343,7 +359,7 @@ function createTypeNode(...types: string[]): TypeNode {
     type ChainedAlias = AliasedCustomPrimitive;
   `;
   const sourceFile = createSourceFile(
-    { path: "main", content: content },
+    { path: "main", content },
     { path: "alias", content: `export type TypeAlias = string;` }
   );
   const interphace = sourceFile.getInterfaceOrThrow("TestInterface");

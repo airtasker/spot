@@ -449,7 +449,17 @@ export function getTargetDeclarationFromTypeReference(
     : symbol;
   const declarations = targetSymbol.getDeclarations();
   if (declarations.length !== 1) {
-    throw new Error("expected exactly one declaration");
+    const location = typeReference.getSourceFile().getFilePath();
+    const line = typeReference.getStartLineNumber();
+    // String interface must not be redefined and must be imported from the Spot native types
+    const errorMsg = `${location}#${line}: expected exactly one declaration for ${symbol.getName()}`;
+    if (symbol.getName() === "String") {
+      throw new Error(
+        `${errorMsg}\nDid you forget to import String? => import { String } from "@airtasker/spot"`
+      );
+    } else {
+      throw new Error(errorMsg);
+    }
   }
   const targetDeclaration = declarations[0];
   if (
