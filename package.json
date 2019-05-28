@@ -28,7 +28,7 @@
     "qs": "^6.7.0",
     "ramda": "^0.26.1",
     "randomstring": "^1.1.5",
-    "ts-morph": "^2.1.2",
+    "ts-morph": "^2.2.0",
     "tslib": "^1",
     "typescript": "^3.4.5"
   },
