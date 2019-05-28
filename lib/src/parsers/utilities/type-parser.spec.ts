@@ -171,7 +171,7 @@ describe("type node parser", () => {
   describe("object types", () => {
     test("parses object literal type", () => {
       const typeNode = createTypeNode(`
-        { 
+        {
           /** Some description for title */
           title: string;
           year?: number;
@@ -343,7 +343,7 @@ function createTypeNode(...types: string[]): TypeNode {
     type ChainedAlias = AliasedCustomPrimitive;
   `;
   const sourceFile = createSourceFile(
-    { path: "main", content: content },
+    { path: "main", content },
     { path: "alias", content: `export type TypeAlias = string;` }
   );
   const interphace = sourceFile.getInterfaceOrThrow("TestInterface");
