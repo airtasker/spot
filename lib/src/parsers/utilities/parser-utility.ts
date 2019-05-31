@@ -483,9 +483,7 @@ export function isHttpMethod(method: string): method is HttpMethod {
     case "POST":
     case "PUT":
     case "DELETE":
-    case "CONNECT":
     case "OPTIONS":
-    case "TRACE":
     case "PATCH":
       return true;
     default:
