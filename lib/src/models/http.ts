@@ -6,5 +6,4 @@ export type HttpMethod =
   | "PUT"
   | "DELETE"
   | "OPTIONS"
-  | "TRACE"
   | "PATCH";
