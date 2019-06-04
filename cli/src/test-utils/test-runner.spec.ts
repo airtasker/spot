@@ -6,8 +6,9 @@ import { verify } from "../../../lib/src/verifiers/verifier";
 import { runTest } from "./test-runner";
 
 describe("test runner", () => {
-  const stateUrl = "http://localhost:9988/state";
+  const baseStateUrl = "http://localhost:9988/state";
   const baseUrl = "http://localhost:9988";
+  const testConfig = { baseStateUrl, baseUrl };
 
   afterEach(() => {
     nock.cleanAll();
@@ -30,7 +31,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(true);
   });
@@ -53,7 +54,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(true);
   });
@@ -82,7 +83,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(true);
   });
@@ -112,7 +113,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scopeA.isDone()).toBe(true);
     expect(scopeB.isDone()).toBe(true);
     expect(result).toBe(true);
@@ -143,10 +144,13 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl, {
-      endpoint: "CreateCompany",
-      test: "badRequestTest"
-    });
+    const result = await runTest(
+      contract,
+      Object.assign(
+        { testFilter: { endpoint: "CreateCompany", test: "badRequestTest" } },
+        testConfig
+      )
+    );
 
     expect(scopeA.isDone()).toBe(false);
     expect(scopeB.isDone()).toBe(true);
@@ -172,7 +176,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(initializeScope.isDone()).toBe(true);
     expect(tearDownScope.isDone()).toBe(true);
     expect(setupScope.isDone()).toBe(false);
@@ -192,7 +196,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(false);
   });
@@ -215,7 +219,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(400);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(false);
   });
@@ -238,7 +242,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(false);
   });
@@ -260,7 +264,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(false);
   });
@@ -282,7 +286,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(false);
   });
@@ -305,7 +309,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(false);
   });
@@ -329,7 +333,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(true);
   });
@@ -352,7 +356,7 @@ describe("test runner", () => {
       .post("/state/teardown")
       .reply(200);
 
-    const result = await runTest(contract, stateUrl, baseUrl);
+    const result = await runTest(contract, testConfig);
     expect(scope.isDone()).toBe(true);
     expect(result).toBe(true);
   });

@@ -13,6 +13,7 @@ import {
 } from "../../../lib/src/models/definitions";
 import { TypeNode } from "../../../lib/src/models/nodes";
 import { valueFromDataExpression } from "../../../lib/src/utilities/data-expression-utils";
+import { TestConfig } from "./common";
 import { TestLogger } from "./test-logger";
 import { TestTimer } from "./test-timer";
 
@@ -26,9 +27,7 @@ import { TestTimer } from "./test-timer";
  */
 export async function runTest(
   definition: ContractDefinition,
-  baseStateUrl: string,
-  baseUrl: string,
-  testFilter?: TestFilter
+  config: TestConfig
 ): Promise<boolean> {
   const testSuiteStartTime = TestTimer.startTime();
 
@@ -36,10 +35,10 @@ export async function runTest(
 
   for (const endpoint of definition.endpoints) {
     for (const test of endpoint.tests) {
-      if (testFilter) {
+      if (config.testFilter) {
         if (
-          testFilter.endpoint !== endpoint.name ||
-          (testFilter.test && testFilter.test !== test.name)
+          config.testFilter.endpoint !== endpoint.name ||
+          (config.testFilter.test && config.testFilter.test !== test.name)
         ) {
           TestLogger.warn(`Test ${endpoint.name}:${test.name} skipped`);
           continue;
@@ -51,8 +50,8 @@ export async function runTest(
       const correlatedResponse = findCorrelatedResponse(endpoint, test);
       const result = await executeTest(
         test,
-        baseStateUrl,
-        baseUrl,
+        config.baseStateUrl,
+        config.baseUrl,
         endpoint,
         correlatedResponse,
         definition.types
@@ -487,9 +486,4 @@ interface AxiosHeaders {
 
 interface GenericParams {
   [key: string]: any;
-}
-
-export interface TestFilter {
-  endpoint: string;
-  test?: string;
 }
