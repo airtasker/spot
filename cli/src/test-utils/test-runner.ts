@@ -468,11 +468,11 @@ function verifyBody(
   const validateFn = jsv.compile(schema);
   const valid = validateFn(response.data);
   if (valid) {
-    TestLogger.success("Body matched", { indent: 2 });
+    TestLogger.success("Body compliant", { indent: 2 });
     return true;
   } else {
     TestLogger.error(
-      `Body does not match: ${jsv.errorsText(
+      `Body is not compliant: ${jsv.errorsText(
         validateFn.errors
       )}\nReceived:\n${JSON.stringify(response.data, undefined, 2)}`,
       { indent: 2 }
