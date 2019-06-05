@@ -19,6 +19,8 @@ import {
   ObjectTypeProperty
 } from "../models/types";
 import { type } from "os";
+import { resolveType } from "../verifiers/utilities/type-resolver";
+import assertNever from "assert-never";
 
 export function compare(
   before: ContractDefinition,
@@ -69,6 +71,8 @@ export function compare(
 }
 
 function compareEndpoint(
+  beforeTypes: TypeDefinition[],
+  afterTypes: TypeDefinition[],
   before: EndpointDefinition,
   after: EndpointDefinition
 ): EndpointDiff | null {
@@ -79,6 +83,8 @@ function compareEndpoint(
   // TODO: Check when one has a body and the other one doesn't.
   if (before.request.body && after.request.body) {
     endpointDiff.requestDiff = compareType(
+      beforeTypes,
+      afterTypes,
       before.request.body.type,
       after.request.body.type
     );
@@ -89,15 +95,50 @@ function compareEndpoint(
   return null;
 }
 
-function compareType(before: DataType, after: DataType): TypeDiff | null {
+function compareType(
+  beforeTypes: TypeDefinition[],
+  afterTypes: TypeDefinition[],
+  unresolvedBefore: DataType,
+  uresolvedAfter: DataType
+): TypeDiff | null {
+  // Resolve each type. For example, replacing a string type with a reference to
+  // a string type is perfectly backwards compatible. There is no actual change.
+  const before = resolveType(unresolvedBefore, beforeTypes);
+  const after = resolveType(uresolvedAfter, afterTypes);
   if (before.kind !== after.kind) {
     throw new Error(`TODO`);
   }
-  const typeKind = before.kind;
-  if (typeKind === TypeKind.OBJECT) {
-    return compareObjectType(before as ObjectType, after as ObjectType);
+  switch (
+    before.kind // Same as after.kind, as above.
+  ) {
+    case TypeKind.NULL:
+    case TypeKind.BOOLEAN:
+    case TypeKind.STRING:
+    case TypeKind.FLOAT:
+    case TypeKind.INT32:
+    case TypeKind.INT64:
+    case TypeKind.DATE:
+    case TypeKind.DATE_TIME:
+      // Well that's great. It hasn't changed (per the check before.kind !== after.kind above), so we're happy.
+      break;
+    case TypeKind.BOOLEAN_LITERAL:
+      // Has it changed?
+      if (before.value !== after.value) {
+      }
+      break;
+    case TypeKind.STRING_LITERAL:
+      break;
+    case TypeKind.NUMBER_LITERAL:
+      break;
+    case TypeKind.OBJECT:
+      return compareObjectType(before as ObjectType, after as ObjectType);
+    case TypeKind.ARRAY:
+      break;
+    case TypeKind.UNION:
+      break;
+    default:
+      throw assertNever(typeKind);
   }
-  throw new Error(`TODO`);
 }
 
 function compareObjectType(

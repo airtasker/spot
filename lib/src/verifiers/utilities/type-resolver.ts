@@ -43,6 +43,7 @@ export function resolveType(
   typeStore: TypeNode[]
 ): Exclude<DataType, ReferenceType> {
   if (isReferenceType(dataType)) {
+    // A reference type is resolved to the referenced type.
     const referenceTypeNode = typeStore.find(
       type => type.name === dataType.name
     );
@@ -50,6 +51,9 @@ export function resolveType(
       throw new Error(`Type store does not contain type: ${dataType.name}`);
     }
     return resolveType(referenceTypeNode.type, typeStore);
+  } else if (isUnionType(dataType) && dataType.types.length === 1) {
+    // A union type with a single type is resolved to the type itself.
+    return resolveType(dataType.types[0], typeStore);
   } else {
     return dataType;
   }
