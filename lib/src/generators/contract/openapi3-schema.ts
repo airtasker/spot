@@ -7,6 +7,7 @@ import {
   TypeKind,
   UnionType
 } from "../../models/types";
+import { resolveType } from "../../models/types/resolve-type";
 
 function isStringConstantUnion(type: UnionType): boolean {
   return type.types.reduce<boolean>((acc, type) => {
@@ -174,11 +175,12 @@ function inferDiscriminator(
         // Optional properties cannot be discriminators, since they may not always be present.
         continue;
       }
-      if (property.type.kind === TypeKind.STRING_LITERAL) {
+      const resolvedPropertyType = resolveType(types, property.type);
+      if (resolvedPropertyType.kind === TypeKind.STRING_LITERAL) {
         possibleDiscriminators[property.name] =
           possibleDiscriminators[property.name] || {};
         possibleDiscriminators[property.name][
-          property.type.value
+          resolvedPropertyType.value
         ] = openApi3RefForType(possibleType);
       }
     }

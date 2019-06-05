@@ -418,6 +418,89 @@ Object {
 `);
     });
 
+    test("union of types with a valid discriminator which is a type alias", () => {
+      expect(
+        openApi3TypeSchema(
+          [
+            {
+              name: "Type1",
+              type: objectType([
+                {
+                  name: "name",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.TYPE_REFERENCE,
+                    name: "TypeDiscriminator1",
+                    referenceKind: TypeKind.STRING_LITERAL,
+                    location: ""
+                  }
+                }
+              ])
+            },
+            {
+              name: "Type2",
+              type: objectType([
+                {
+                  name: "other",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.STRING
+                  }
+                },
+                {
+                  name: "disc",
+                  optional: false,
+                  type: {
+                    kind: TypeKind.TYPE_REFERENCE,
+                    name: "TypeDiscriminator2",
+                    referenceKind: TypeKind.STRING_LITERAL,
+                    location: ""
+                  }
+                }
+              ])
+            },
+            {
+              name: "TypeDiscriminator1",
+              type: stringLiteral("referenced-type-1")
+            },
+            {
+              name: "TypeDiscriminator2",
+              type: stringLiteral("referenced-type-2")
+            }
+          ],
+          unionType([
+            referenceType("Type1", "", TypeKind.OBJECT),
+            referenceType("Type2", "", TypeKind.OBJECT)
+          ])
+        )
+      ).toMatchInlineSnapshot(`
+        Object {
+          "discriminator": Object {
+            "mapping": Object {
+              "referenced-type-1": "#/components/schemas/Type1",
+              "referenced-type-2": "#/components/schemas/Type2",
+            },
+            "propertyName": "disc",
+          },
+          "oneOf": Array [
+            Object {
+              "$ref": "#/components/schemas/Type1",
+            },
+            Object {
+              "$ref": "#/components/schemas/Type2",
+            },
+          ],
+        }
+      `);
+    });
+
     test("union of types with several valid discriminators", () => {
       expect(
         openApi3TypeSchema(
