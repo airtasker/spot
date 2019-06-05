@@ -7,7 +7,7 @@ import {
   TypeKind,
   UnionType
 } from "../../models/types";
-import { resolveType } from "../../models/types/resolve-type";
+import { resolveType } from "../../verifiers/utilities/type-resolver";
 
 function isStringConstantUnion(type: UnionType): boolean {
   return type.types.reduce<boolean>((acc, type) => {
@@ -175,7 +175,7 @@ function inferDiscriminator(
         // Optional properties cannot be discriminators, since they may not always be present.
         continue;
       }
-      const resolvedPropertyType = resolveType(types, property.type);
+      const resolvedPropertyType = resolveType(property.type, types);
       if (resolvedPropertyType.kind === TypeKind.STRING_LITERAL) {
         possibleDiscriminators[property.name] =
           possibleDiscriminators[property.name] || {};
