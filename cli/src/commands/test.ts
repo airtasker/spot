@@ -28,7 +28,7 @@ export default class Test extends Command {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    debug: flags.boolean(),
+    debug: flags.boolean({ description: "Enable debug logs" }),
     url: flags.string({
       required: true,
       char: "u",
