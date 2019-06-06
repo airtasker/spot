@@ -13,7 +13,6 @@ describe("test runner", () => {
     baseUrl,
     debugMode: true
   };
-  // const testConfig = { baseStateUrl, baseUrl };
 
   const testRunner = new TestRunner(testRunnerConfig);
 
@@ -43,7 +42,7 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
-  test("single provider state", async () => {
+  test.only("single provider state", async () => {
     const contract = parseAndCleanse(
       "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
     );

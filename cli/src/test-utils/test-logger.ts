@@ -1,6 +1,11 @@
 import chalk from "chalk";
 
 export class TestLogger {
+  /** Prepares an object for printing */
+  static formatObject(obj: any): string {
+    return JSON.stringify(obj, undefined, 2);
+  }
+
   private readonly debugMode: boolean;
 
   constructor(opts?: LoggerOpts) {
@@ -10,7 +15,7 @@ export class TestLogger {
   // tslint:disable:no-console
   debug(message: string, opts?: LogOpts): void {
     if (this.debugMode) {
-      console.log(chalk.gray(this.transformMessage(message, opts)));
+      console.log(chalk.magenta(this.transformMessage(message, opts)));
     }
   }
 
@@ -39,39 +44,6 @@ export class TestLogger {
     return indents + message.replace(/\n/g, `\n${indents}`);
   }
 }
-
-// export const TestLogger = {
-//   error,
-//   log,
-//   success,
-//   warn
-// };
-
-// tslint:disable:no-console
-// function error(message: string, opts?: LogOpts) {
-//   console.log(chalk.red(transformMessage(message, opts)));
-// }
-
-// function log(message: string, opts?: LogOpts) {
-//   console.log(chalk.dim.white(transformMessage(message, opts)));
-// }
-
-// function success(message: string, opts?: LogOpts) {
-//   console.log(chalk.green(transformMessage(message, opts)));
-// }
-
-// function warn(message: string, opts?: LogOpts) {
-//   console.log(chalk.yellow(transformMessage(message, opts)));
-// }
-// tslint:enable:no-console
-
-// function transformMessage(message: string, customOpts?: LogOpts) {
-//   const opts = {
-//     indent: customOpts ? customOpts.indent || 0 : 0
-//   };
-//   const indents = "\t".repeat(opts.indent);
-//   return indents + message.replace(/\n/g, `\n${indents}`);
-// }
 
 interface LoggerOpts {
   debugMode?: boolean;

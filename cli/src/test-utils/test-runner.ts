@@ -224,7 +224,6 @@ export class TestRunner {
    *
    * @param endpoint endpoint definition
    * @param test test definition
-   * @param baseUrl base URL
    * @param correlatedResponse expected test response
    * @param typeStore reference type definitions
    */
@@ -241,11 +240,19 @@ export class TestRunner {
       `Performing request under test: ${config.method} ${config.url}`,
       { indent: 1 }
     );
+    const response = await axios.request(config);
     this.logger.log(
       `Request complete (${TestTimer.formattedDiff(testStartTime)})`,
       { indent: 2 }
     );
-    const response = await axios.request(config);
+    this.logger.debug(
+      `Received:\n===============\nStatus: ${
+        response.status
+      }\nHeaders: ${TestLogger.formatObject(
+        response.headers
+      )}\nBody: ${TestLogger.formatObject(response.data)}\n===============`,
+      { indent: 2 }
+    );
     const statusResult = this.verifyStatus(test, response);
     // TODO: check headers
     const bodyResult = this.verifyBody(correlatedResponse, response, typeStore);
@@ -255,8 +262,6 @@ export class TestRunner {
 
   /**
    * Execute the state initialization request.
-   *
-   * @param baseStateUrl base state change URL
    */
   private async executeStateInitialization(): Promise<boolean> {
     const testInitStartTime = process.hrtime();
@@ -278,7 +283,7 @@ export class TestRunner {
             error.response.status
           } status (${TestTimer.formattedDiff(
             testInitStartTime
-          )})\nReceived:\n${JSON.stringify(error.response.data, undefined, 2)}`,
+          )})\nReceived:\n${TestLogger.formatObject(error.response.data)}`,
           { indent: 2 }
         );
       } else if (error.request) {
@@ -334,11 +339,7 @@ export class TestRunner {
               error.response.status
             } status (${TestTimer.formattedDiff(
               testSetupStartTime
-            )})\nReceived:\n${JSON.stringify(
-              error.response.data,
-              undefined,
-              2
-            )}`,
+            )})\nReceived:\n${TestLogger.formatObject(error.response.data)}`,
             { indent: 2 }
           );
         } else if (error.request) {
@@ -387,7 +388,7 @@ export class TestRunner {
             error.response.status
           } status (${TestTimer.formattedDiff(
             testTeardownStartTime
-          )})\nReceived:\n${JSON.stringify(error.response.data, undefined, 2)}`,
+          )})\nReceived:\n${TestLogger.formatObject(error.response.data)}`,
           { indent: 2 }
         );
       } else if (error.request) {
@@ -466,7 +467,7 @@ export class TestRunner {
       this.logger.error(
         `Body is not compliant: ${jsv.errorsText(
           validateFn.errors
-        )}\nReceived:\n${JSON.stringify(response.data, undefined, 2)}`,
+        )}\nReceived:\n${TestLogger.formatObject(response.data)}`,
         { indent: 2 }
       );
       return false;
@@ -477,7 +478,7 @@ export class TestRunner {
 export interface TestRunnerConfig {
   baseStateUrl: string;
   baseUrl: string;
-  debugMode: boolean;
+  debugMode?: boolean;
 }
 
 interface AxiosHeaders {
