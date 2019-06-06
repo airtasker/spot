@@ -463,15 +463,14 @@ export class TestRunner {
     if (valid) {
       this.logger.success("Body compliant", { indent: 2 });
       return true;
-    } else {
-      this.logger.error(
-        `Body is not compliant: ${jsv.errorsText(
-          validateFn.errors
-        )}\nReceived:\n${TestLogger.formatObject(response.data)}`,
-        { indent: 2 }
-      );
-      return false;
     }
+    this.logger.error(
+      `Body is not compliant: ${jsv.errorsText(
+        validateFn.errors
+      )}\nReceived:\n${TestLogger.formatObject(response.data)}`,
+      { indent: 2 }
+    );
+    return false;
   }
 }
 
