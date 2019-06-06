@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import { safeParse } from "../common/safe-parse";
 import { TestFilter } from "../test-utils/common";
-import { runTest } from "../test-utils/test-runner";
+import { TestRunner } from "../test-utils/test-runner";
 
 const ARG_API = "spot_contract";
 
@@ -49,16 +49,19 @@ export default class Test extends Command {
     const { url: baseUrl, stateUrl: baseStateUrl, testFilter, debug } = flags;
     const { definition } = safeParse.call(this, args[ARG_API]);
 
-    const testConfig = {
+    const testRunnerConfig = {
       baseStateUrl: baseStateUrl ? baseStateUrl : `${baseUrl}/state`,
       baseUrl,
-      testFilter: testFilter ? parseTestFilter(testFilter) : undefined,
       debugMode: debug
     };
+    const testConfig = {
+      testFilter: testFilter ? parseTestFilter(testFilter) : undefined
+    };
 
-    const allPassed = await runTest(definition, testConfig);
+    const testRunner = new TestRunner(testRunnerConfig);
+    const passed = await testRunner.test(definition, testConfig);
 
-    if (!allPassed) {
+    if (!passed) {
       this.exit(1);
     }
   }
