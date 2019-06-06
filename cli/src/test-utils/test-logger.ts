@@ -1,38 +1,54 @@
 import chalk from "chalk";
 
-export const TestLogger = {
-  error,
-  log,
-  success,
-  warn
-};
+export class TestLogger {
+  /** Prepares an object for printing */
+  static formatObject(obj: any): string {
+    return JSON.stringify(obj, undefined, 2);
+  }
 
-// tslint:disable:no-console
-function error(message: string, opts?: LoggerOpts) {
-  console.log(chalk.red(transformMessage(message, opts)));
-}
+  private readonly debugMode: boolean;
 
-function log(message: string, opts?: LoggerOpts) {
-  console.log(chalk.dim.white(transformMessage(message, opts)));
-}
+  constructor(opts?: LoggerOpts) {
+    this.debugMode = opts ? !!opts.debugMode : false;
+  }
 
-function success(message: string, opts?: LoggerOpts) {
-  console.log(chalk.green(transformMessage(message, opts)));
-}
+  // tslint:disable:no-console
+  debug(message: string, opts?: LogOpts): void {
+    if (this.debugMode) {
+      console.log(chalk.magenta(this.transformMessage(message, opts)));
+    }
+  }
 
-function warn(message: string, opts?: LoggerOpts) {
-  console.log(chalk.yellow(transformMessage(message, opts)));
-}
-// tslint:enable:no-console
+  log(message: string, opts?: LogOpts): void {
+    console.log(chalk.dim.white(this.transformMessage(message, opts)));
+  }
 
-function transformMessage(message: string, customOpts?: LoggerOpts) {
-  const opts = {
-    indent: customOpts ? customOpts.indent || 0 : 0
-  };
-  const indents = "\t".repeat(opts.indent);
-  return indents + message.replace(/\n/g, `\n${indents}`);
+  success(message: string, opts?: LogOpts): void {
+    console.log(chalk.green(this.transformMessage(message, opts)));
+  }
+
+  warn(message: string, opts?: LogOpts): void {
+    console.log(chalk.yellow(this.transformMessage(message, opts)));
+  }
+
+  error(message: string, opts?: LogOpts): void {
+    console.log(chalk.red(this.transformMessage(message, opts)));
+  }
+  // tslint:enable:no-console
+
+  private transformMessage(message: string, customOpts?: LogOpts): string {
+    const opts = {
+      indent: customOpts ? customOpts.indent || 0 : 0
+    };
+    const indents = "\t".repeat(opts.indent);
+    return indents + message.replace(/\n/g, `\n${indents}`);
+  }
 }
 
 interface LoggerOpts {
+  debugMode?: boolean;
+}
+
+interface LogOpts {
   indent?: number; // number of tabs
 }
