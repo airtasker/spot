@@ -212,6 +212,17 @@ describe("type node parser", () => {
       });
     });
 
+    test("parses object literal type", () => {
+      const typeNode = createTypeNode("ObjectLiteralType");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.OBJECT,
+        name: "ObjectLiteralType",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    });
+
     test("parses object interface type", () => {
       const typeNode = createTypeNode("ObjectInterface");
 
@@ -267,6 +278,45 @@ describe("type node parser", () => {
         location: expect.stringMatching(/main\.ts$/)
       });
     });
+  });
+});
+
+describe("enum types", () => {
+  test("throws a helpful error when encountering an enum type", () => {
+    const typeNode = createTypeNode("TestEnum");
+    expect(() => parseTypeNode(typeNode)).toThrow(
+      "enums are not supported (offending type: TestEnum)"
+    );
+  });
+
+  test("throws a helpful error when encountering an enum constant", () => {
+    const typeNode = createTypeNode("TestEnum.A");
+    expect(() => parseTypeNode(typeNode)).toThrow(
+      "enums are not supported (offending type: TestEnum)"
+    );
+  });
+});
+
+describe("map types", () => {
+  test("throws a helpful error when encountering an ES6 map type", () => {
+    const typeNode = createTypeNode("TestMap");
+    expect(() => parseTypeNode(typeNode)).toThrow("Map is not supported");
+  });
+});
+
+describe("indexed types", () => {
+  test("throws a helpful error when encountering a dictionary interface", () => {
+    const typeNode = createTypeNode("TestDictionaryInterface");
+    expect(() => parseTypeNode(typeNode)).toThrow(
+      "indexed types are not supported (offending type: TestDictionaryInterface)"
+    );
+  });
+
+  test("throws a helpful error when encountering a dictionary type", () => {
+    const typeNode = createTypeNode("TestDictionaryType");
+    expect(() => parseTypeNode(typeNode)).toThrow(
+      "indexed types are not supported (offending type: TestDictionaryType)"
+    );
   });
 });
 
@@ -352,6 +402,26 @@ function createTypeNode(...types: string[]): TypeNode {
     interface ComplexInterfaceExtension {
       /** Number of siblings */
       siblings: number;
+    }
+
+    type ObjectLiteralType = {
+      name: string;
+    }
+
+    enum TestEnum {
+      A,
+      B,
+      C
+    }
+
+    type TestMap = Map<string, Integer>;
+
+    interface TestDictionaryInterface {
+      [key: string]: Integer;
+    }
+
+    type TestDictionaryType = {
+      [key: string]: Integer;
     }
 
     type TrueAlias = true;

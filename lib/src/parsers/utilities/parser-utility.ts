@@ -17,6 +17,7 @@ import {
 } from "ts-morph";
 import { HttpMethod } from "../../models/http";
 import { Locatable } from "../../models/locatable";
+import { inspect } from "util";
 
 /**
  * Extracts the JS Doc comment from a node.
@@ -448,12 +449,19 @@ export function getTargetDeclarationFromTypeReference(
     ? symbol.getAliasedSymbolOrThrow()
     : symbol;
   const declarations = targetSymbol.getDeclarations();
+  const location = typeReference.getSourceFile().getFilePath();
+  const line = typeReference.getStartLineNumber();
+  const typeName = symbol.getName();
+
+  if (typeName === "Map") {
+    const errorMsg = `${location}#${line}: Map is not supported`;
+    throw new Error(errorMsg);
+  }
+
   if (declarations.length !== 1) {
-    const location = typeReference.getSourceFile().getFilePath();
-    const line = typeReference.getStartLineNumber();
     // String interface must not be redefined and must be imported from the Spot native types
-    const errorMsg = `${location}#${line}: expected exactly one declaration for ${symbol.getName()}`;
-    if (symbol.getName() === "String") {
+    const errorMsg = `${location}#${line}: expected exactly one declaration for ${typeName}`;
+    if (typeName === "String") {
       throw new Error(
         `${errorMsg}\nDid you forget to import String? => import { String } from "@airtasker/spot"`
       );
@@ -463,10 +471,41 @@ export function getTargetDeclarationFromTypeReference(
   }
   const targetDeclaration = declarations[0];
   if (
+    TypeGuards.isInterfaceDeclaration(targetDeclaration) &&
+    targetDeclaration.getIndexSignatures().length > 0
+  ) {
+    throw new Error(
+      `indexed types are not supported (offending type: ${targetDeclaration.getName()})`
+    );
+  }
+  if (TypeGuards.isTypeAliasDeclaration(targetDeclaration)) {
+    const typeNode = targetDeclaration.getTypeNodeOrThrow();
+    if (
+      TypeGuards.isTypeLiteralNode(typeNode) &&
+      typeNode.getIndexSignatures().length > 0
+    ) {
+      throw new Error(
+        `indexed types are not supported (offending type: ${targetDeclaration.getName()})`
+      );
+    }
+  }
+  if (
     TypeGuards.isInterfaceDeclaration(targetDeclaration) ||
     TypeGuards.isTypeAliasDeclaration(targetDeclaration)
   ) {
     return targetDeclaration;
+  }
+  if (TypeGuards.isEnumDeclaration(targetDeclaration)) {
+    throw new Error(
+      `enums are not supported (offending type: ${targetDeclaration.getName()})`
+    );
+  }
+  if (TypeGuards.isEnumMember(targetDeclaration)) {
+    throw new Error(
+      `enums are not supported (offending type: ${targetDeclaration
+        .getParent()
+        .getName()})`
+    );
   }
   throw new Error("expected a type alias or interface declaration");
 }
