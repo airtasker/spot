@@ -15,7 +15,6 @@ import {
   TypeGuards,
   TypeReferenceNode
 } from "ts-morph";
-import { inspect } from "util";
 import { HttpMethod } from "../../models/http";
 import { Locatable } from "../../models/locatable";
 
