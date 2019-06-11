@@ -76,7 +76,7 @@ class CreateUser {
     @body body: ErrorBody
   ) {}
 
-  @test({
+  @test<CreateUserRequestBody, UserBody>({
     request: {
       pathParams: {
         companyId: "abc"
