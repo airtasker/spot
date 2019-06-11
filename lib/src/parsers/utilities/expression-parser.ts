@@ -31,8 +31,19 @@ export function parseExpression(expression: Expression): DataExpression {
       .getProperties()
       .map(property => {
         if (TypeGuards.isPropertyAssignment(property)) {
+          const nameNode = property.getNameNode();
+          let name;
+          if (TypeGuards.isIdentifier(nameNode)) {
+            name = nameNode.getText();
+          } else if (TypeGuards.isStringLiteral(nameNode)) {
+            name = nameNode.getLiteralValue();
+          } else {
+            throw new Error(
+              "only identifiers and string literals are valid object property keys"
+            );
+          }
           return {
-            name: property.getName(),
+            name,
             expression: parseExpression(property.getInitializerOrThrow())
           };
         } else {
