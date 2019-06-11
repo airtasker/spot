@@ -17,9 +17,7 @@ export const hasResponsePayload: LintingRule = contract => {
       if (responses.length === 0) {
         return [
           {
-            message: `endpoint ${
-              endpoint.value.name.value
-            } does not declare any response`,
+            message: `endpoint ${endpoint.value.name.value} does not declare any response`,
             source: endpoint
           }
         ];
