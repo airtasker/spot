@@ -364,9 +364,7 @@ export function methodParamWithDecorator(
     return matchingParams[0];
   } else if (matchingParams.length > 1) {
     throw new Error(
-      `expected a decorator @${decoratorName} to be used only once, found ${
-        matchingParams.length
-      } usages`
+      `expected a decorator @${decoratorName} to be used only once, found ${matchingParams.length} usages`
     );
   }
   return undefined;
@@ -389,9 +387,7 @@ export function classMethodWithDecorator(
     return matchingMethods[0];
   } else if (matchingMethods.length > 1) {
     throw new Error(
-      `expected decorator @${decoratorName} to be used only once, found ${
-        matchingMethods.length
-      } usages`
+      `expected decorator @${decoratorName} to be used only once, found ${matchingMethods.length} usages`
     );
   }
   return undefined;
@@ -414,9 +410,7 @@ export function classPropertyWithDecorator(
     return matchingProperties[0];
   } else if (matchingProperties.length > 1) {
     throw new Error(
-      `expected decorator @${decoratorName} to be used only once, found ${
-        matchingProperties.length
-      } usages`
+      `expected decorator @${decoratorName} to be used only once, found ${matchingProperties.length} usages`
     );
   }
   return undefined;
