@@ -183,9 +183,7 @@ function verifyTestRequestOptionableNode(
       }
     } else if (!requestNode.optional) {
       errors.push({
-        message: `test request ${optionableType} ${
-          requestNode.name.value
-        } missing`,
+        message: `test request ${optionableType} ${requestNode.name.value} missing`,
         location: testRequestLocation,
         line: testRequestLine
       });

@@ -75,7 +75,9 @@ describe("type expression parser", () => {
     const expression = createExpression(`
       { 
         title: "mytitle",
-        year: 1999
+        year: 1999,
+        'month': 5,
+        "author": "J. K. Rowling"
       }
     `);
 
@@ -89,6 +91,14 @@ describe("type expression parser", () => {
         {
           name: "year",
           expression: { kind: "number-literal", value: 1999 }
+        },
+        {
+          name: "month",
+          expression: { kind: "number-literal", value: 5 }
+        },
+        {
+          name: "author",
+          expression: { kind: "string-literal", value: "J. K. Rowling" }
         }
       ]
     });

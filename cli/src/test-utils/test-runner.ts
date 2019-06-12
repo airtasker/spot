@@ -138,9 +138,7 @@ export class TestRunner {
       ) || endpoint.defaultResponse;
     if (!correlatedResponse) {
       throw new Error(
-        `a response with status ${
-          test.response.status
-        } was not found and a default response has not been defined`
+        `a response with status ${test.response.status} was not found and a default response has not been defined`
       );
     }
     return correlatedResponse;
