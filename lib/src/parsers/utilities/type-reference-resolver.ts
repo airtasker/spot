@@ -3,13 +3,12 @@ import { Project } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import {
   BodyNode,
+  DefaultResponseNode,
   EndpointNode,
   HeaderNode,
   PathParamNode,
   QueryParamNode,
-  RequestNode,
-  ResponseNode,
-  DefaultResponseNode
+  RequestNode
 } from "../../models/nodes";
 import {
   DataType,
