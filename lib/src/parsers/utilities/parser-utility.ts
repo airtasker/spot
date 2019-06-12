@@ -364,9 +364,7 @@ export function methodParamWithDecorator(
     return matchingParams[0];
   } else if (matchingParams.length > 1) {
     throw new Error(
-      `expected a decorator @${decoratorName} to be used only once, found ${
-        matchingParams.length
-      } usages`
+      `expected a decorator @${decoratorName} to be used only once, found ${matchingParams.length} usages`
     );
   }
   return undefined;
@@ -389,9 +387,7 @@ export function classMethodWithDecorator(
     return matchingMethods[0];
   } else if (matchingMethods.length > 1) {
     throw new Error(
-      `expected decorator @${decoratorName} to be used only once, found ${
-        matchingMethods.length
-      } usages`
+      `expected decorator @${decoratorName} to be used only once, found ${matchingMethods.length} usages`
     );
   }
   return undefined;
@@ -414,9 +410,7 @@ export function classPropertyWithDecorator(
     return matchingProperties[0];
   } else if (matchingProperties.length > 1) {
     throw new Error(
-      `expected decorator @${decoratorName} to be used only once, found ${
-        matchingProperties.length
-      } usages`
+      `expected decorator @${decoratorName} to be used only once, found ${matchingProperties.length} usages`
     );
   }
   return undefined;
@@ -469,6 +463,13 @@ export function getTargetDeclarationFromTypeReference(
     }
   }
   const targetDeclaration = declarations[0];
+
+  // Indexed interfaces, which allow for any key, are not supported:
+  // interface SomeInterface {
+  //   [key: string]: Integer
+  // }
+  //
+  // See https://www.typescriptlang.org/docs/handbook/interfaces.html#indexable-types for details.
   if (
     TypeGuards.isInterfaceDeclaration(targetDeclaration) &&
     targetDeclaration.getIndexSignatures().length > 0
@@ -477,6 +478,10 @@ export function getTargetDeclarationFromTypeReference(
       `indexed types are not supported (offending type: ${targetDeclaration.getName()})`
     );
   }
+  // Indexed type aliases are also not supported:
+  // type SomeType = {
+  //   [key: string]: Integer
+  // }
   if (TypeGuards.isTypeAliasDeclaration(targetDeclaration)) {
     const typeNode = targetDeclaration.getTypeNodeOrThrow();
     if (
@@ -488,23 +493,29 @@ export function getTargetDeclarationFromTypeReference(
       );
     }
   }
-  if (
-    TypeGuards.isInterfaceDeclaration(targetDeclaration) ||
-    TypeGuards.isTypeAliasDeclaration(targetDeclaration)
-  ) {
-    return targetDeclaration;
-  }
+
+  // Enums are not supported:
+  // enum SomeEnum { A, B, C }
   if (TypeGuards.isEnumDeclaration(targetDeclaration)) {
     throw new Error(
       `enums are not supported (offending type: ${targetDeclaration.getName()})`
     );
   }
+
+  // References to enum constants (e.g SomeEnum.A) are not supported either.
   if (TypeGuards.isEnumMember(targetDeclaration)) {
     throw new Error(
       `enums are not supported (offending type: ${targetDeclaration
         .getParent()
         .getName()})`
     );
+  }
+
+  if (
+    TypeGuards.isInterfaceDeclaration(targetDeclaration) ||
+    TypeGuards.isTypeAliasDeclaration(targetDeclaration)
+  ) {
+    return targetDeclaration;
   }
   throw new Error("expected a type alias or interface declaration");
 }
