@@ -18,11 +18,7 @@ const mutationEndpointsHaveRequestPayload: LintingRule = contract => {
     .filter(isMutationEndpoint)
     .filter(complement(endpointHasRequestPayload))
     .map(endpoint => ({
-      message: `${
-        endpoint.value.name.value
-      } should have a request payload as its method is ${
-        endpoint.value.method.value
-      }`,
+      message: `${endpoint.value.name.value} should have a request payload as its method is ${endpoint.value.method.value}`,
       source: endpoint
     }));
 };
@@ -32,11 +28,7 @@ const nonMutationEndpointsDoNotHaveRequestPayload: LintingRule = contract => {
     .filter(complement(isMutationEndpoint))
     .filter(endpointHasRequestPayload)
     .map(endpoint => ({
-      message: `${
-        endpoint.value.name.value
-      } should not have a request payload as its method is ${
-        endpoint.value.method.value
-      }`,
+      message: `${endpoint.value.name.value} should not have a request payload as its method is ${endpoint.value.method.value}`,
       source: endpoint
     }));
 };

@@ -61,9 +61,7 @@ function parseRootSourceFile(
 
   if (apiClasses.length !== 1) {
     throw new Error(
-      `expected class decorated with @api to be defined exactly once in root source file, found ${
-        apiClasses.length
-      } usages`
+      `expected class decorated with @api to be defined exactly once in root source file, found ${apiClasses.length} usages`
     );
   }
   const api = parseApi(apiClasses[0]);
