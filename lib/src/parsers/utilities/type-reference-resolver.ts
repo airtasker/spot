@@ -3,12 +3,12 @@ import { Project } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import {
   BodyNode,
+  DefaultResponseNode,
   EndpointNode,
   HeaderNode,
   PathParamNode,
   QueryParamNode,
-  RequestNode,
-  ResponseNode
+  RequestNode
 } from "../../models/nodes";
 import {
   DataType,
@@ -33,8 +33,12 @@ export function retrieveTypeReferencesFromEndpoints(
 ): ReferenceType[] {
   return endpoints.reduce<ReferenceType[]>(
     (referenceTypesAcc, currentEndpoint) => {
+      const allResponses = (currentEndpoint.value.defaultResponse
+        ? [currentEndpoint.value.defaultResponse]
+        : []
+      ).concat(currentEndpoint.value.responses);
       const fromResponses = retrieveTypeReferencesFromResponses(
-        currentEndpoint.value.responses,
+        allResponses,
         projectContext
       );
       if (currentEndpoint.value.request) {
@@ -97,7 +101,7 @@ function retrieveTypeReferencesFromRequest(
  * @param projectContext ts-morph project
  */
 function retrieveTypeReferencesFromResponses(
-  responses: Array<Locatable<ResponseNode>>,
+  responses: Array<Locatable<DefaultResponseNode>>,
   projectContext: Project
 ): ReferenceType[] {
   return responses.reduce<ReferenceType[]>(
