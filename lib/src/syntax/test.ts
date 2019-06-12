@@ -29,7 +29,7 @@ class GetUser {
 //...
 ```
  */
-export function test<RequestBody = object | undefined, ResponseBody = object>(
+export function test<RequestBody = object, ResponseBody = object>(
   config: TestConfig<RequestBody, ResponseBody>,
   options?: { allowInvalidRequest: boolean }
 ) {
@@ -45,7 +45,7 @@ interface TestConfig<RequestBody, ResponseBody> {
     headers?: { [key: string]: any };
     pathParams?: { [key: string]: any };
     queryParams?: { [key: string]: any };
-    body: RequestBody;
+    body?: RequestBody;
   };
   response: {
     status: number;
