@@ -123,7 +123,7 @@ export class TestRunner {
   /**
    * Find the the response that matches the response status for a particular test.
    * If no exact response status is found, the default response is used. Otherwise
-   * an error it thrown.
+   * an error is thrown.
    *
    * @param endpoint endpoint definition
    * @param test test definition

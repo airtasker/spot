@@ -6,6 +6,7 @@ import { verify } from "../../../lib/src/verifiers/verifier";
 import { TestRunner } from "./test-runner";
 
 describe("test runner", () => {
+  const testExamplesBasePath = "./cli/src/test-utils/test-runner-examples";
   const baseStateUrl = "http://localhost:9988/state";
   const baseUrl = "http://localhost:9988";
   const testRunnerConfig = {
@@ -22,7 +23,7 @@ describe("test runner", () => {
 
   test("no provider states passes", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/no-provider-states.ts"
+      `${testExamplesBasePath}/no-provider-states.ts`
     );
 
     const scope = nock(baseUrl)
@@ -44,7 +45,7 @@ describe("test runner", () => {
 
   test("single provider state", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const scope = nock(baseUrl)
@@ -67,7 +68,7 @@ describe("test runner", () => {
 
   test("multiple provider states", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/multiple-provider-states.ts"
+      `${testExamplesBasePath}/multiple-provider-states.ts`
     );
 
     const scope = nock(baseUrl)
@@ -96,7 +97,7 @@ describe("test runner", () => {
 
   test("multiple tests", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/multiple-tests.ts"
+      `${testExamplesBasePath}/multiple-tests.ts`
     );
 
     const scopeA = nock(baseUrl)
@@ -125,9 +126,27 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
+  test("default response", async () => {
+    const contract = parseAndCleanse(
+      `${testExamplesBasePath}/default-response.ts`
+    );
+
+    const scope = nock(baseUrl)
+      .post("/state/initialize")
+      .reply(200)
+      .post("/companies", { private: true })
+      .reply(400, { error: "Some Error" })
+      .post("/state/teardown")
+      .reply(200);
+
+    const result = await testRunner.test(contract);
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(true);
+  });
+
   test("test filtering", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/multiple-tests.ts"
+      `${testExamplesBasePath}/multiple-tests.ts`
     );
 
     const scopeA = nock(baseUrl)
@@ -163,7 +182,7 @@ describe("test runner", () => {
 
   test("provider state initialization fail", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const initializeScope = nock(baseUrl)
@@ -187,7 +206,7 @@ describe("test runner", () => {
 
   test("provider state setup fail", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const scope = nock(baseUrl)
@@ -205,7 +224,7 @@ describe("test runner", () => {
 
   test("provider state teardown fail", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const scope = nock(baseUrl)
@@ -228,7 +247,7 @@ describe("test runner", () => {
 
   test("response status mismatch", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const scope = nock(baseUrl)
@@ -251,7 +270,7 @@ describe("test runner", () => {
 
   test.skip("response header mismatch", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/no-provider-states.ts"
+      `${testExamplesBasePath}/no-provider-states.ts`
     );
 
     const scope = nock(baseUrl)
@@ -273,7 +292,7 @@ describe("test runner", () => {
 
   test("response body mismatch - missing attribute", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const scope = nock(baseUrl)
@@ -295,7 +314,7 @@ describe("test runner", () => {
 
   test("response body mismatch - attribute type mismatch", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const scope = nock(baseUrl)
@@ -318,7 +337,7 @@ describe("test runner", () => {
 
   test("response body mismatch - extra attribute", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/single-provider-state.ts"
+      `${testExamplesBasePath}/single-provider-state.ts`
     );
 
     const scope = nock(baseUrl)
@@ -342,7 +361,7 @@ describe("test runner", () => {
 
   test("request serializes query string objects using the deepObject strategy", async () => {
     const contract = parseAndCleanse(
-      "./cli/src/test-utils/test-runner-examples/object-query-param.ts"
+      `${testExamplesBasePath}/object-query-param.ts`
     );
 
     const scope = nock(baseUrl)
