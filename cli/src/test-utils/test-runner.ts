@@ -123,7 +123,7 @@ export class TestRunner {
   /**
    * Find the the response that matches the response status for a particular test.
    * If no exact response status is found, the default response is used. Otherwise
-   * an error it thrown.
+   * an error is thrown.
    *
    * @param endpoint endpoint definition
    * @param test test definition
@@ -138,7 +138,9 @@ export class TestRunner {
       ) || endpoint.defaultResponse;
     if (!correlatedResponse) {
       throw new Error(
-        `a response with status ${test.response.status} was not found and a default response has not been defined`
+        `a response with status ${
+          test.response.status
+        } was not found and a default response has not been defined`
       );
     }
     return correlatedResponse;

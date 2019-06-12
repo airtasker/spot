@@ -24,10 +24,11 @@ export function verifyTestNode(
 
   const testNode = locatableTestNode.value;
 
-  const correlatedResponse = endpointNodeContext.responses.find(
-    response =>
-      response.value.status.value === testNode.response.value.status.value
-  );
+  const correlatedResponse =
+    endpointNodeContext.responses.find(
+      response =>
+        response.value.status.value === testNode.response.value.status.value
+    ) || endpointNodeContext.defaultResponse;
 
   if (!correlatedResponse) {
     errors.push({
@@ -183,7 +184,9 @@ function verifyTestRequestOptionableNode(
       }
     } else if (!requestNode.optional) {
       errors.push({
-        message: `test request ${optionableType} ${requestNode.name.value} missing`,
+        message: `test request ${optionableType} ${
+          requestNode.name.value
+        } missing`,
         location: testRequestLocation,
         line: testRequestLine
       });
