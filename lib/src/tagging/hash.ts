@@ -2,19 +2,19 @@ import { createHash } from "crypto";
 import { ContractDefinition } from "../models/definitions";
 
 interface IOptions {
-  algorithm?: string
+  algorithm?: string;
 }
 
 export function hashContractDefinition(
   contractDefinition: ContractDefinition,
-  options: IOptions,
+  options: IOptions = { algorithm: "sha1" }
 ): string {
   const contractDefinitionString = JSON.stringify(contractDefinition).replace(
     /\s/g,
     ""
   );
 
-  const hash = createHash(options.algorithm || 'sha1')
+  const hash = createHash(options.algorithm || "sha1")
     .update(contractDefinitionString)
     .digest("hex");
 

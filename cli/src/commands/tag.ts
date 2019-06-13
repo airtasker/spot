@@ -26,7 +26,7 @@ export default class Tag extends Command {
     algorithm: flags.string({
       description: "digest algorithm used to generate the hash"
     })
-  }
+  };
 
   async run() {
     const {

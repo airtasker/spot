@@ -1,6 +1,6 @@
-import { hashContractDefinition } from "./hash";
-import { parse } from "../parsers/parser";
 import { cleanse } from "../cleansers/cleanser";
+import { parse } from "../parsers/parser";
+import { hashContractDefinition } from "./hash";
 
 describe("Hash", () => {
   describe("hashContractDefinition", () => {
@@ -15,6 +15,6 @@ describe("Hash", () => {
       const hash1 = hashContractDefinition(contractDefinition);
 
       expect(hash0).not.toEqual(hash1);
-    })
-  })
+    });
+  });
 });
