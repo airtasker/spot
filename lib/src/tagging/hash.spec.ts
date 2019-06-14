@@ -7,7 +7,7 @@ import { hashContractDefinition } from "./hash";
 describe("Hash", () => {
   describe("hashContractDefinition", () => {
     it("returns a consistent hash", () => {
-      const result = parse("./lib/src/test/examples/contract.ts");
+      const result = parse("./lib/src/parsers/__examples__/contract.ts");
       const contractDefinition = cleanse(result);
       const hash0 = hashContractDefinition(contractDefinition);
       const hash1 = hashContractDefinition(contractDefinition);
@@ -15,7 +15,7 @@ describe("Hash", () => {
     });
 
     it("returns a new hash when a new endpoint is added", () => {
-      const result = parse("./lib/src/test/examples/contract.ts");
+      const result = parse("./lib/src/parsers/__examples__/contract.ts");
       const contractDefinition = cleanse(result);
 
       const hash0 = hashContractDefinition(contractDefinition);
@@ -49,7 +49,7 @@ describe("Hash", () => {
     });
 
     it("returns a new hash when an endpoint request body gets udpated", () => {
-      const result = parse("./lib/src/test/examples/contract.ts");
+      const result = parse("./lib/src/parsers/__examples__/contract.ts");
       const contractDefinition = cleanse(result);
 
       const hash0 = hashContractDefinition(contractDefinition);
@@ -66,7 +66,7 @@ describe("Hash", () => {
     });
 
     it("returns a new hash when an endpoint response body gets udpated", () => {
-      const result = parse("./lib/src/test/examples/contract.ts");
+      const result = parse("./lib/src/parsers/__examples__/contract.ts");
       const contractDefinition = cleanse(result);
 
       const hash0 = hashContractDefinition(contractDefinition);
@@ -80,7 +80,7 @@ describe("Hash", () => {
     });
 
     it("returns a new hash when an endpoint request header gets udpated", () => {
-      const result = parse("./lib/src/test/examples/contract.ts");
+      const result = parse("./lib/src/parsers/__examples__/contract.ts");
       const contractDefinition = cleanse(result);
 
       const hash0 = hashContractDefinition(contractDefinition);
@@ -94,7 +94,7 @@ describe("Hash", () => {
     });
 
     it("returns a new hash when an endpoint request parameter gets udpated", () => {
-      const result = parse("./lib/src/test/examples/contract.ts");
+      const result = parse("./lib/src/parsers/__examples__/contract.ts");
       const contractDefinition = cleanse(result);
 
       const hash0 = hashContractDefinition(contractDefinition);
