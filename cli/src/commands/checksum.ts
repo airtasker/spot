@@ -7,7 +7,7 @@ const ARG_API = "spot_contract";
 /**
  * oclif command to generate a tag based on a Spot contract
  */
-export default class Tag extends Command {
+export default class Checksum extends Command {
   static description = "Generate a version tag based on a Spot contract";
 
   static examples = ["$ spot mock api.ts"];
@@ -32,7 +32,7 @@ export default class Tag extends Command {
     const {
       args,
       flags: { algorithm }
-    } = this.parse(Tag);
+    } = this.parse(Checksum);
     try {
       const contract = safeParse.call(this, args[ARG_API]).definition;
       const hash = hashContractDefinition(contract, { algorithm });
