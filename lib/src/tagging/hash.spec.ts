@@ -63,7 +63,8 @@ describe("Hash", () => {
 
       const hash0 = hashContractDefinition(contractDefinition);
 
-      contractDefinition.endpoints[0].responses[0].description = "test response";
+      contractDefinition.endpoints[0].responses[0].description =
+        "test response";
 
       const hash1 = hashContractDefinition(contractDefinition);
 
@@ -76,7 +77,8 @@ describe("Hash", () => {
 
       const hash0 = hashContractDefinition(contractDefinition);
 
-      contractDefinition.endpoints[0].request.headers[0].description = "test request header";
+      contractDefinition.endpoints[0].request.headers[0].description =
+        "test request header";
 
       const hash1 = hashContractDefinition(contractDefinition);
 
@@ -89,7 +91,8 @@ describe("Hash", () => {
 
       const hash0 = hashContractDefinition(contractDefinition);
 
-      contractDefinition.endpoints[0].request.pathParams[0].description = "test path parameter";
+      contractDefinition.endpoints[0].request.pathParams[0].description =
+        "test path parameter";
 
       const hash1 = hashContractDefinition(contractDefinition);
 
