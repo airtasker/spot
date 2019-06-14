@@ -10,6 +10,9 @@ describe("test runner", () => {
   const baseStateUrl = "http://localhost:9988/state";
   const baseUrl = "http://localhost:9988";
   const testRunnerConfig = {
+    printer: () => {
+      // Don't print out messages.
+    },
     baseStateUrl,
     baseUrl,
     debugMode: true

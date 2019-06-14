@@ -50,6 +50,8 @@ export default class Test extends Command {
     const { definition } = safeParse.call(this, args[ARG_API]);
 
     const testRunnerConfig = {
+      // tslint:disable-next-line: no-console
+      printer: console.log,
       baseStateUrl: baseStateUrl ? baseStateUrl : `${baseUrl}/state`,
       baseUrl,
       debugMode: debug

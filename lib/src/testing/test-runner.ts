@@ -23,7 +23,9 @@ export class TestRunner {
 
   constructor(config: TestRunnerConfig) {
     this.config = config;
-    this.logger = new TestLogger({ debugMode: config.debugMode });
+    this.logger = new TestLogger(config.printer, {
+      debugMode: config.debugMode
+    });
   }
 
   /**
@@ -473,10 +475,13 @@ export class TestRunner {
 }
 
 export interface TestRunnerConfig {
+  printer: TestPrinter;
   baseStateUrl: string;
   baseUrl: string;
   debugMode?: boolean;
 }
+
+export type TestPrinter = (message: string) => void;
 
 interface AxiosHeaders {
   [key: string]: string;
