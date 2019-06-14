@@ -1,4 +1,4 @@
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parseEndpoint } from "./endpoint-parser";
 
 describe("@endpoint parser", () => {

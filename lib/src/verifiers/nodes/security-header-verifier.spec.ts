@@ -1,6 +1,6 @@
 import { SecurityHeaderNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
-import { fakeLocatable } from "../../test/fake-locatable";
+import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { verifySecurityHeaderNode } from "./security-header-verifier";
 
 describe("security header node verifier", () => {

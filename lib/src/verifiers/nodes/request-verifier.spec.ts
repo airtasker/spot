@@ -6,7 +6,7 @@ import {
   RequestNode
 } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
-import { fakeLocatable } from "../../test/fake-locatable";
+import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { verifyRequestNode } from "./request-verifier";
 
 describe("request node verifier", () => {

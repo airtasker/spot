@@ -1,6 +1,6 @@
 import { Expression } from "ts-morph";
 import { NULL, TypeKind } from "../../models/types";
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parseExpression } from "./expression-parser";
 
 describe("type expression parser", () => {

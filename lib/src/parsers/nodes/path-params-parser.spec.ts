@@ -1,6 +1,6 @@
 import { MethodDeclaration } from "ts-morph";
 import { FLOAT, STRING } from "../../models/types";
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parsePathParams } from "./path-params-parser";
 
 describe("@pathParams parser", () => {

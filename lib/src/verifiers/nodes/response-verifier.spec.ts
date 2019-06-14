@@ -1,6 +1,6 @@
 import { BodyNode, HeaderNode, ResponseNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
-import { fakeLocatable } from "../../test/fake-locatable";
+import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { verifyResponseNode } from "./response-verifier";
 
 describe("response node verifier", () => {

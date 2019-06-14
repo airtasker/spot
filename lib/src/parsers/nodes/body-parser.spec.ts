@@ -1,6 +1,6 @@
 import { MethodDeclaration } from "ts-morph";
 import { FLOAT, STRING, TypeKind } from "../../models/types";
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parseBody } from "./body-parser";
 
 describe("@body parser", () => {
