@@ -23,19 +23,15 @@ export default class Checksum extends Command {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    algorithm: flags.string({
-      description: "digest algorithm used to generate the hash"
-    })
   };
 
   async run() {
     const {
       args,
-      flags: { algorithm }
     } = this.parse(Checksum);
     try {
       const contract = safeParse.call(this, args[ARG_API]).definition;
-      const hash = hashContractDefinition(contract, { algorithm });
+      const hash = hashContractDefinition(contract);
       this.log(hash);
     } catch (e) {
       this.error(e, { exit: 1 });
