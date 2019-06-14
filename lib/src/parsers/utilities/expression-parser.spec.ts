@@ -107,7 +107,7 @@ describe("type expression parser", () => {
 
 function createExpression(literal: string): Expression {
   const content = `const testVar = ${literal.trim()};`;
-  const sourceFile = createSourceFile({ path: "main", content: content });
+  const sourceFile = createSourceFile({ path: "main", content });
   const variable = sourceFile.getVariableDeclarationOrThrow("testVar");
   const expression = variable.getInitializerOrThrow();
 

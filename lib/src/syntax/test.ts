@@ -29,8 +29,8 @@ class GetUser {
 //...
 ```
  */
-export function test(
-  config: TestConfig,
+export function test<RequestBody = object, ResponseBody = object>(
+  config: TestConfig<RequestBody, ResponseBody>,
   options?: { allowInvalidRequest: boolean }
 ) {
   return (
@@ -39,17 +39,26 @@ export function test(
     descriptor: PropertyDescriptor
   ) => {};
 }
-interface TestConfig {
+interface TestConfig<RequestBody, ResponseBody> {
   states?: Array<{ name: string; params?: { [key: string]: any } }>;
   request?: {
     headers?: { [key: string]: any };
     pathParams?: { [key: string]: any };
     queryParams?: { [key: string]: any };
-    body?: object;
+    body?: RequestBody;
   };
   response: {
     status: number;
     headers?: { [key: string]: any };
-    body?: object;
+    body?: RecursivePartial<ResponseBody>;
   };
 }
+
+// See https://stackoverflow.com/a/51365037.
+type RecursivePartial<T> = {
+  [P in keyof T]?: T[P] extends Array<infer U>
+    ? Array<RecursivePartial<U>>
+    : T[P] extends object
+    ? RecursivePartial<T[P]>
+    : T[P];
+};
