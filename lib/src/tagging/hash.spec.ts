@@ -6,6 +6,14 @@ import { hashContractDefinition } from "./hash";
 
 describe("Hash", () => {
   describe("hashContractDefinition", () => {
+    it("returns a consistent hash", () => {
+      const result = parse("./lib/src/test/examples/contract.ts");
+      const contractDefinition = cleanse(result);
+      const hash0 = hashContractDefinition(contractDefinition);
+      const hash1 = hashContractDefinition(contractDefinition);
+      expect(hash0).toEqual(hash1);
+    });
+
     it("returns a new hash when a new endpoint is added", () => {
       const result = parse("./lib/src/test/examples/contract.ts");
       const contractDefinition = cleanse(result);

@@ -277,8 +277,7 @@ ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
 OPTIONS
-  -h, --help             show CLI help
-  --algorithm=algorithm  digest algorithm used to generate the hash
+  -h, --help show CLI help
 
 EXAMPLE
   $ spot tag api.ts

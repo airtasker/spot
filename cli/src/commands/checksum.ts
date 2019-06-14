@@ -22,13 +22,11 @@ export default class Checksum extends Command {
   ];
 
   static flags = {
-    help: flags.help({ char: "h" }),
+    help: flags.help({ char: "h" })
   };
 
   async run() {
-    const {
-      args,
-    } = this.parse(Checksum);
+    const { args } = this.parse(Checksum);
     try {
       const contract = safeParse.call(this, args[ARG_API]).definition;
       const hash = hashContractDefinition(contract);
