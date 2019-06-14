@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
+import { TestFilter } from "../../../lib/src/testing/common";
+import { TestRunner } from "../../../lib/src/testing/test-runner";
 import { safeParse } from "../common/safe-parse";
-import { TestFilter } from "../test-utils/common";
-import { TestRunner } from "../test-utils/test-runner";
 
 const ARG_API = "spot_contract";
 

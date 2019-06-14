@@ -4,15 +4,15 @@ import { stringify as qsStringify } from "qs";
 import {
   JsonSchemaType,
   jsonTypeSchema
-} from "../../../lib/src/generators/contract/json-schema";
+} from "../generators/contract/json-schema";
 import {
   ContractDefinition,
   DefaultResponseDefinition,
   EndpointDefinition,
   TestDefinition
-} from "../../../lib/src/models/definitions";
-import { TypeNode } from "../../../lib/src/models/nodes";
-import { valueFromDataExpression } from "../../../lib/src/utilities/data-expression-utils";
+} from "../models/definitions";
+import { TypeNode } from "../models/nodes";
+import { valueFromDataExpression } from "../utilities/data-expression-utils";
 import { TestConfig } from "./common";
 import { TestLogger } from "./test-logger";
 import { TestTimer } from "./test-timer";
