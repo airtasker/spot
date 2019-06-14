@@ -18,7 +18,7 @@ import {
 import { parse } from "../../parsers/parser";
 import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
 
-const EXAMPLE_PATH = __dirname + "/../../__examples__/contract.ts";
+const EXAMPLE_PATH = "./lib/src/__examples__/contract.ts";
 
 describe("JSON Schema generator", () => {
   test("produces valid code", async () => {

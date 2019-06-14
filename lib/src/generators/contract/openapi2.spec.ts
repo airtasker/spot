@@ -2,7 +2,7 @@ import { cleanse } from "../../cleansers/cleanser";
 import { parse } from "../../parsers/parser";
 import { generateOpenApiV2 } from "./openapi2";
 
-const EXAMPLE_PATH = __dirname + "/../../__examples__/contract.ts";
+const EXAMPLE_PATH = "./lib/src/__examples__/contract.ts";
 
 describe("OpenAPI 2 generator", () => {
   test("produces valid code", async () => {
