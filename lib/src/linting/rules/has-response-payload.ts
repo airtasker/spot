@@ -4,14 +4,14 @@ import {
   EndpointNode,
   ResponseNode
 } from "lib/src/models/nodes";
-import { unnest } from "ramda";
+import { flatten } from "lodash";
 import { LintingRule } from "../rule";
 
 /**
  * Checks that the response payload is always defined.
  */
 export const hasResponsePayload: LintingRule = contract => {
-  return unnest(
+  return flatten(
     contract.endpoints.map(endpoint => {
       const responses = findResponses(endpoint);
       if (responses.length === 0) {

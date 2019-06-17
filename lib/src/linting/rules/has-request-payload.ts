@@ -1,6 +1,6 @@
 import { Locatable } from "lib/src/models/locatable";
 import { EndpointNode } from "lib/src/models/nodes";
-import { complement } from "ramda";
+import { negate } from "lodash";
 import { LintingRule } from "../rule";
 
 /**
@@ -16,7 +16,7 @@ export const hasRequestPayload: LintingRule = contract => {
 const mutationEndpointsHaveRequestPayload: LintingRule = contract => {
   return contract.endpoints
     .filter(isMutationEndpoint)
-    .filter(complement(endpointHasRequestPayload))
+    .filter(negate(endpointHasRequestPayload))
     .map(endpoint => ({
       message: `${endpoint.value.name.value} should have a request payload as its method is ${endpoint.value.method.value}`,
       source: endpoint
@@ -25,7 +25,7 @@ const mutationEndpointsHaveRequestPayload: LintingRule = contract => {
 
 const nonMutationEndpointsDoNotHaveRequestPayload: LintingRule = contract => {
   return contract.endpoints
-    .filter(complement(isMutationEndpoint))
+    .filter(negate(isMutationEndpoint))
     .filter(endpointHasRequestPayload)
     .map(endpoint => ({
       message: `${endpoint.value.name.value} should not have a request payload as its method is ${endpoint.value.method.value}`,
