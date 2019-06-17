@@ -265,22 +265,22 @@ EXAMPLE
 
 _See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v0.2.13/build/cli/src/commands/validate.js)_
 
-## `spot tag SPOT_CONTRACT`
+## `spot checksum SPOT_CONTRACT`
 
-Generate a version tag based on a Spot contract
+Generate a checksum based on a Spot contract
 
 ```
 USAGE
-  $ spot tag SPOT_CONTRACT
+  $ spot checksum SPOT_CONTRACT
 
 ARGUMENTS
-  SPOT_CONTRACT  path to Spot contract
+  SPOT_CONTRACT path to Spot contract
 
 OPTIONS
   -h, --help show CLI help
 
 EXAMPLE
-  $ spot tag api.ts
+  $ spot checksum api.ts
 ```
 
 _See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v0.2.13/build/cli/src/commands/validate.js)_
