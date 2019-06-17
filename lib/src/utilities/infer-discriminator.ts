@@ -1,5 +1,5 @@
 import { TypeDefinition } from "../models/definitions";
-import { TypeKind, UnionType, ReferenceType, DataType } from "../models/types";
+import { DataType, TypeKind, UnionType } from "../models/types";
 import { resolveType } from "../verifiers/utilities/type-resolver";
 
 export interface UnionDiscriminator {
@@ -15,7 +15,6 @@ export function inferDiscriminator(
 ): UnionDiscriminator | null {
   // To infer the discriminator, we do the following:
   // - loop through each type in the union
-  // - if the type isn't a reference to an object type, then there cannot be a discriminator
   // - look for required properties that are string literals (constants)
   // - if there's such a property that is defined for every type and has a different value
   //   for each type, then this is a good discriminator.
@@ -23,7 +22,7 @@ export function inferDiscriminator(
     [propertyName: string]: Map<DiscriminatorValue, DataType>;
   } = {};
   for (const possibleType of type.types) {
-    const referencedType = resolveType(possibleType, types)
+    const referencedType = resolveType(possibleType, types);
     if (referencedType.kind !== TypeKind.OBJECT) {
       // Referenced type isn't an object type, therefore it cannot have a discriminator property.
       return null;

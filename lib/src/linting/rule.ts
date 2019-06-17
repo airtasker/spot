@@ -9,5 +9,5 @@ export type LintingRule = (contract: ContractNode) => LintingRuleViolation[];
 
 export interface LintingRuleViolation {
   message: string;
-  source?: Locatable<unknown>;
+  source: Locatable<unknown>;
 }
