@@ -1,5 +1,12 @@
 import { TypeDefinition } from "../models/definitions";
-import { DataType, objectType, referenceType, stringLiteral, TypeKind, unionType } from "../models/types";
+import {
+  DataType,
+  objectType,
+  referenceType,
+  stringLiteral,
+  TypeKind,
+  unionType
+} from "../models/types";
 import { inferDiscriminator } from "./infer-discriminator";
 
 describe("inferDiscriminator", () => {
@@ -318,7 +325,7 @@ describe("inferDiscriminator", () => {
           value: "type-1"
         }
       }
-    ])
+    ]);
     const inlineType2 = objectType([
       {
         name: "disc",
@@ -328,7 +335,7 @@ describe("inferDiscriminator", () => {
           value: "type-2"
         }
       }
-    ])
+    ]);
     const type = unionType([inlineType1, inlineType2]);
     expect(inferDiscriminator(types, type)).toEqual({
       propertyName: "disc",
