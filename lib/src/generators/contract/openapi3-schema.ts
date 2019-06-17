@@ -7,11 +7,10 @@ import {
   TypeKind,
   UnionType
 } from "../../models/types";
-import { resolveType } from "../../verifiers/utilities/type-resolver";
 import {
   inferDiscriminator,
   UnionDiscriminator
-} from "lib/src/utilities/infer-discriminator";
+} from "../../utilities/infer-discriminator";
 
 function isStringConstantUnion(type: UnionType): boolean {
   return type.types.reduce<boolean>((acc, type) => {
