@@ -733,7 +733,7 @@ Object {
             objectType([
               {
                 name: "disc",
-                optional: true,
+                optional: false,
                 type: {
                   kind: TypeKind.STRING_LITERAL,
                   value: "type-1"
@@ -743,7 +743,7 @@ Object {
             objectType([
               {
                 name: "disc",
-                optional: true,
+                optional: false,
                 type: {
                   kind: TypeKind.STRING_LITERAL,
                   value: "type-2"
