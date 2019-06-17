@@ -33,7 +33,9 @@ export default class Lint extends Command {
     const lintingErrors = lint(parsedContract);
     lintingErrors.forEach(error => {
       this.error(
-        `${error.source.location}#${error.source.line}: ${error.message}`
+        error.source
+          ? `${error.source.location}#${error.source.line}: ${error.message}`
+          : error.message
       );
     });
   }
