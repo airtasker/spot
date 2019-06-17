@@ -1,6 +1,6 @@
 import { ClassDeclaration } from "ts-morph";
 import { TypeKind } from "../../models/types";
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parseSecurityHeader } from "./security-header-parser";
 
 describe("@securityHeader parser", () => {

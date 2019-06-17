@@ -8,7 +8,7 @@ import {
   TypeKind,
   UnionType
 } from "../../models/types";
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parseInterfaceDeclaration, parseTypeNode } from "./type-parser";
 
 describe("type node parser", () => {

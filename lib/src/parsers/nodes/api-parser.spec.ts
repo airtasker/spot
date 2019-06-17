@@ -1,5 +1,5 @@
 import { TypeKind } from "../../models/types";
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parseApi } from "./api-parser";
 
 describe("@api parser", () => {

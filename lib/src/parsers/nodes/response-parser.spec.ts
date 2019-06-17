@@ -1,5 +1,5 @@
 import { ClassDeclaration } from "ts-morph";
-import { createSourceFile } from "../../test/helper";
+import { createSourceFile } from "../../spec-helpers/helper";
 import { parseResponse } from "./response-parser";
 
 describe("@response parser", () => {

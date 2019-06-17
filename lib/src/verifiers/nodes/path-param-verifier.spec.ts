@@ -1,6 +1,6 @@
 import { PathParamNode } from "../../models/nodes";
 import { TypeKind } from "../../models/types";
-import { fakeLocatable } from "../../test/fake-locatable";
+import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { verifyPathParamNode } from "./path-param-verifier";
 
 describe("path param node verifier", () => {

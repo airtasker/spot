@@ -4,15 +4,15 @@ import { stringify as qsStringify } from "qs";
 import {
   JsonSchemaType,
   jsonTypeSchema
-} from "../../../lib/src/generators/contract/json-schema";
+} from "../generators/contract/json-schema";
 import {
   ContractDefinition,
   DefaultResponseDefinition,
   EndpointDefinition,
   TestDefinition
-} from "../../../lib/src/models/definitions";
-import { TypeNode } from "../../../lib/src/models/nodes";
-import { valueFromDataExpression } from "../../../lib/src/utilities/data-expression-utils";
+} from "../models/definitions";
+import { TypeNode } from "../models/nodes";
+import { valueFromDataExpression } from "../utilities/data-expression-utils";
 import { TestConfig } from "./common";
 import { TestLogger } from "./test-logger";
 import { TestTimer } from "./test-timer";
@@ -23,7 +23,9 @@ export class TestRunner {
 
   constructor(config: TestRunnerConfig) {
     this.config = config;
-    this.logger = new TestLogger({ debugMode: config.debugMode });
+    this.logger = new TestLogger(config.printer, {
+      debugMode: config.debugMode
+    });
   }
 
   /**
@@ -473,10 +475,13 @@ export class TestRunner {
 }
 
 export interface TestRunnerConfig {
+  printer: TestPrinter;
   baseStateUrl: string;
   baseUrl: string;
   debugMode?: boolean;
 }
+
+export type TestPrinter = (message: string) => void;
 
 interface AxiosHeaders {
   [key: string]: string;

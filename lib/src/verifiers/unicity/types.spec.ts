@@ -1,6 +1,6 @@
 import { ApiNode, ContractNode } from "../../models/nodes";
 import { STRING } from "../../models/types";
-import { fakeLocatable } from "../../test/fake-locatable";
+import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { verifyUniqueTypeNames } from "./types";
 
 describe("unique type names verifier", () => {

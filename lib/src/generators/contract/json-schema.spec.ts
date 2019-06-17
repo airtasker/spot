@@ -1,4 +1,3 @@
-import path from "path";
 import { cleanse } from "../../cleansers/cleanser";
 import {
   arrayType,
@@ -19,14 +18,7 @@ import {
 import { parse } from "../../parsers/parser";
 import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
 
-const EXAMPLE_PATH = path.join(
-  __dirname,
-  "..",
-  "..",
-  "test",
-  "examples",
-  "contract.ts"
-);
+const EXAMPLE_PATH = "./lib/src/__examples__/contract.ts";
 
 describe("JSON Schema generator", () => {
   test("produces valid code", async () => {

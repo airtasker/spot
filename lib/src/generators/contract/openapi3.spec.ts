@@ -1,16 +1,8 @@
-import path from "path";
 import { cleanse } from "../../cleansers/cleanser";
 import { parse } from "../../parsers/parser";
 import { generateOpenApiV3 } from "./openapi3";
 
-const EXAMPLE_PATH = path.join(
-  __dirname,
-  "..",
-  "..",
-  "test",
-  "examples",
-  "contract.ts"
-);
+const EXAMPLE_PATH = "./lib/src/__examples__/contract.ts";
 
 describe("OpenAPI 3 generator", () => {
   test("produces valid code", async () => {

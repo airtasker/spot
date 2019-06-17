@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { TestPrinter } from "./test-runner";
 
 export class TestLogger {
   /** Prepares an object for printing */
@@ -8,33 +9,31 @@ export class TestLogger {
 
   private readonly debugMode: boolean;
 
-  constructor(opts?: LoggerOpts) {
+  constructor(private printer: TestPrinter, opts?: LoggerOpts) {
     this.debugMode = opts ? !!opts.debugMode : false;
   }
 
-  // tslint:disable:no-console
   debug(message: string, opts?: LogOpts): void {
     if (this.debugMode) {
-      console.log(chalk.magenta(this.transformMessage(message, opts)));
+      this.printer(chalk.magenta(this.transformMessage(message, opts)));
     }
   }
 
   log(message: string, opts?: LogOpts): void {
-    console.log(chalk.dim.white(this.transformMessage(message, opts)));
+    this.printer(chalk.dim.white(this.transformMessage(message, opts)));
   }
 
   success(message: string, opts?: LogOpts): void {
-    console.log(chalk.green(this.transformMessage(message, opts)));
+    this.printer(chalk.green(this.transformMessage(message, opts)));
   }
 
   warn(message: string, opts?: LogOpts): void {
-    console.log(chalk.yellow(this.transformMessage(message, opts)));
+    this.printer(chalk.yellow(this.transformMessage(message, opts)));
   }
 
   error(message: string, opts?: LogOpts): void {
-    console.log(chalk.red(this.transformMessage(message, opts)));
+    this.printer(chalk.red(this.transformMessage(message, opts)));
   }
-  // tslint:enable:no-console
 
   private transformMessage(message: string, customOpts?: LogOpts): string {
     const opts = {

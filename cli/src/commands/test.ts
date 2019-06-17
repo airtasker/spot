@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
+import { TestFilter } from "../../../lib/src/testing/common";
+import { TestRunner } from "../../../lib/src/testing/test-runner";
 import { safeParse } from "../common/safe-parse";
-import { TestFilter } from "../test-utils/common";
-import { TestRunner } from "../test-utils/test-runner";
 
 const ARG_API = "spot_contract";
 
@@ -50,6 +50,8 @@ export default class Test extends Command {
     const { definition } = safeParse.call(this, args[ARG_API]);
 
     const testRunnerConfig = {
+      // tslint:disable-next-line: no-console
+      printer: console.log,
       baseStateUrl: baseStateUrl ? baseStateUrl : `${baseUrl}/state`,
       baseUrl,
       debugMode: debug

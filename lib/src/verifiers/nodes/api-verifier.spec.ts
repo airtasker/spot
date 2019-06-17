@@ -1,5 +1,5 @@
 import { ApiNode } from "../../models/nodes";
-import { fakeLocatable } from "../../test/fake-locatable";
+import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { verifyApiNode } from "./api-verifier";
 
 describe("api node verifier", () => {

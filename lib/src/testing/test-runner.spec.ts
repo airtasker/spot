@@ -1,15 +1,18 @@
 import nock from "nock";
-import { cleanse } from "../../../lib/src/cleansers/cleanser";
-import { ContractDefinition } from "../../../lib/src/models/definitions";
-import { parse } from "../../../lib/src/parsers/parser";
-import { verify } from "../../../lib/src/verifiers/verifier";
+import { cleanse } from "../cleansers/cleanser";
+import { ContractDefinition } from "../models/definitions";
+import { parse } from "../parsers/parser";
+import { verify } from "../verifiers/verifier";
 import { TestRunner } from "./test-runner";
 
 describe("test runner", () => {
-  const testExamplesBasePath = "./cli/src/test-utils/test-runner-examples";
+  const testExamplesBasePath = "./lib/src/testing/__examples__";
   const baseStateUrl = "http://localhost:9988/state";
   const baseUrl = "http://localhost:9988";
   const testRunnerConfig = {
+    printer: () => {
+      // Don't print out messages.
+    },
     baseStateUrl,
     baseUrl,
     debugMode: true

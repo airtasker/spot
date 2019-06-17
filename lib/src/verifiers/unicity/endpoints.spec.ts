@@ -5,7 +5,7 @@ import {
   EndpointNode,
   RequestNode
 } from "../../models/nodes";
-import { fakeLocatable } from "../../test/fake-locatable";
+import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { verifyUniqueEndpointNames } from "./endpoints";
 
 describe("unique endpoint names verifier", () => {
