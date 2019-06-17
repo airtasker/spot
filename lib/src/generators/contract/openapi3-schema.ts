@@ -8,6 +8,10 @@ import {
   UnionType
 } from "../../models/types";
 import { resolveType } from "../../verifiers/utilities/type-resolver";
+import {
+  inferDiscriminator,
+  UnionDiscriminator
+} from "lib/src/utilities/infer-discriminator";
 
 function isStringConstantUnion(type: UnionType): boolean {
   return type.types.reduce<boolean>((acc, type) => {
@@ -128,7 +132,7 @@ export function openApi3TypeSchema(
       const discriminator = inferDiscriminator(types, type);
       return {
         oneOf: type.types.map(t => openApi3TypeSchema(types, t)),
-        ...(discriminator && { discriminator })
+        ...openApi3Discriminator(discriminator)
       };
     case TypeKind.TYPE_REFERENCE:
       return {
@@ -139,65 +143,25 @@ export function openApi3TypeSchema(
   }
 }
 
-function inferDiscriminator(
-  types: TypeDefinition[],
-  type: UnionType
-): OpenAPI3Discriminator | null {
-  // To infer the discriminator, we do the following:
-  // - loop through each type in the union
-  // - if the type isn't a reference to an object type, then there cannot be a discriminator
-  // - look for required properties that are string literals (constants)
-  // - if there's such a property that is defined for every type and has a different value
-  //   for each type, then this is a good discriminator.
-  const possibleDiscriminators: {
-    [propertyName: string]: {
-      [value: string]: OpenAPI3SchemaTypeRef;
-    };
-  } = {};
-  for (const possibleType of type.types) {
-    if (possibleType.kind !== TypeKind.TYPE_REFERENCE) {
-      // If any of the types in the union isn't a referenced type, then we can't discriminate
-      // since discriminators require refs to other types.
-      return null;
-    }
-    const referencedType = types.find(t => t.name === possibleType.name);
-    if (!referencedType) {
-      // Missing referenced type. This is unlikely to happen, since it means the contract
-      // itself is invalid. Bail early if that happen though.
-      return null;
-    }
-    if (referencedType.type.kind !== TypeKind.OBJECT) {
-      // Referenced type isn't an object type, therefore it cannot have a discriminator property.
-      return null;
-    }
-    for (const property of referencedType.type.properties) {
-      if (property.optional) {
-        // Optional properties cannot be discriminators, since they may not always be present.
-        continue;
-      }
-      const resolvedPropertyType = resolveType(property.type, types);
-      if (resolvedPropertyType.kind === TypeKind.STRING_LITERAL) {
-        possibleDiscriminators[property.name] =
-          possibleDiscriminators[property.name] || {};
-        possibleDiscriminators[property.name][
-          resolvedPropertyType.value
-        ] = openApi3RefForType(possibleType);
-      }
-    }
+function openApi3Discriminator(
+  discriminator: UnionDiscriminator | null
+): { discriminator: OpenAPI3Discriminator } | {} {
+  if (!discriminator) {
+    return {};
   }
-  for (const [propertyName, mapping] of Object.entries(
-    possibleDiscriminators
-  )) {
-    if (Object.keys(mapping).length === type.types.length) {
-      // We have a valid discriminator, yay!
-      return {
-        propertyName,
-        mapping
-      };
+  const mapping: OpenAPI3DiscriminatorMapping = {};
+  for (const [value, type] of discriminator.mapping.entries()) {
+    if (type.kind !== TypeKind.TYPE_REFERENCE) {
+      return {};
     }
+    mapping[value] = openApi3RefForType(type);
   }
-  // No discriminator found.
-  return null;
+  return {
+    discriminator: {
+      propertyName: discriminator.propertyName,
+      mapping
+    }
+  };
 }
 
 function openApi3RefForType(type: ReferenceType): string {
@@ -224,9 +188,11 @@ export interface OpenAPI3BaseSchemaType {
 
 export interface OpenAPI3Discriminator {
   propertyName: string;
-  mapping: {
-    [value: string]: OpenAPI3SchemaTypeRef;
-  };
+  mapping: OpenAPI3DiscriminatorMapping;
+}
+
+export interface OpenAPI3DiscriminatorMapping {
+  [value: string]: OpenAPI3SchemaTypeRef;
 }
 
 export interface OpenAPI3SchemaTypeObject extends OpenAPI3BaseSchemaType {
