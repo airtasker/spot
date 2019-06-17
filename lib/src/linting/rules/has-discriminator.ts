@@ -18,7 +18,9 @@ export const hasDiscriminator: LintingRule = contract => {
     topLevelTypes.map(t => extractNestedUnionTypes(t.type, t.name))
   );
   return unionTypes
-    .filter(namedType => inferDiscriminator(contract.types, namedType.type) === null)
+    .filter(
+      namedType => inferDiscriminator(contract.types, namedType.type) === null
+    )
     .map(namedType => ({
       message: `The type \`${namedType.name}\` doesn't have a discriminator`
     }));

@@ -1,6 +1,19 @@
 import { HttpMethod } from "../../models/http";
-import { ApiNode, BodyNode, DefaultResponseNode, EndpointNode, RequestNode, ResponseNode } from "../../models/nodes";
-import { arrayType, objectType, STRING, stringLiteral, unionType } from "../../models/types";
+import {
+  ApiNode,
+  BodyNode,
+  DefaultResponseNode,
+  EndpointNode,
+  RequestNode,
+  ResponseNode
+} from "../../models/nodes";
+import {
+  arrayType,
+  objectType,
+  STRING,
+  stringLiteral,
+  unionType
+} from "../../models/types";
 import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { hasDiscriminator } from "./has-discriminator";
 
@@ -208,8 +221,7 @@ describe("rule: has-discriminator", () => {
     });
     expect(errors).toEqual([
       {
-        message:
-          "The type `UserOrAdminList` doesn't have a discriminator"
+        message: "The type `UserOrAdminList` doesn't have a discriminator"
       }
     ]);
   });
@@ -280,7 +292,7 @@ describe("rule: has-discriminator", () => {
                   STRING
                 ])
               }
-            ]),
+            ])
           ])
         }
       ]
