@@ -1,5 +1,5 @@
 import { Command, flags } from "@oclif/command";
-import { hashContractDefinition } from "../../../lib/src/tagging/hash";
+import { hashContractDefinition } from "../../../lib/src/checksum/hash";
 import { safeParse } from "../common/safe-parse";
 
 const ARG_API = "spot_contract";
