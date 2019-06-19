@@ -66,7 +66,10 @@ describe("rule: no-nested-types-within-unions", () => {
       ]
     });
     expect(errors).toEqual([
-      "The union type `ObjectUnion` defines a nested type. Use type aliases instead."
+      {
+        message:
+          "The union type `ObjectUnion` defines a nested type. Use type aliases instead."
+      }
     ]);
   });
 });

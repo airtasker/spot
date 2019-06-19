@@ -1,7 +1,7 @@
-import { extractEndpointTypes } from "../../utilities/extract-endpoint-types";
-import { extractNestedUnionTypes } from "../../utilities/extract-union-types";
 import { flatten } from "lodash";
 import { TypeKind } from "../../models/types";
+import { extractEndpointTypes } from "../../utilities/extract-endpoint-types";
+import { extractNestedUnionTypes } from "../../utilities/extract-union-types";
 import { LintingRule } from "../rule";
 
 /**
