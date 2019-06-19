@@ -110,6 +110,13 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime@^7.4.5":
+  version "7.4.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.5.tgz#582bb531f5f9dc67d2fcb682979894f75e253f12"
+  integrity sha512-TuI4qpWZP6lGOGIuGWtp9sPluqYICmbk8T/1vpSysqJxRPkudh/ofFWyqdcMsDf2s7KvDL4/YHgKyvcS3g9CJQ==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.0.0", "@babel/template@^7.1.0", "@babel/template@^7.1.2", "@babel/template@^7.2.2":
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.2.2.tgz#005b3fdf0ed96e88041330379e0da9a708eb2907"
@@ -3895,7 +3902,7 @@ oas-linter@^3.0.0, oas-linter@^3.0.1:
     should "^13.2.1"
     yaml "^1.3.1"
 
-oas-resolver@^2.0.0, oas-resolver@^2.2.4:
+oas-resolver@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/oas-resolver/-/oas-resolver-2.2.4.tgz#54d7947c4dab15993b975e7022867b32d928ba49"
   integrity sha512-YftVXdgXPtznk26gmvZoU6BBoB6W9s9bkaCQ3UlCpNeZb8+YwIDQ7VQlPxNrDAHUf/LBuPFrOUn7Hfyhj7EeUA==
@@ -4997,10 +5004,10 @@ spdx-license-ids@^3.0.0:
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-3.0.3.tgz#81c0ce8f21474756148bbb5f3bfc0f36bf15d76e"
   integrity sha512-uBIcIl3Ih6Phe3XHK1NqboJLdGfwr1UN3k6wSD1dZpmPsIkb8AGNbZYJ1fOBk834+Gxy8rpfDxrS6XLEMZMY2g==
 
-speccy@^0.10.1:
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/speccy/-/speccy-0.10.1.tgz#7946dc905ac58fd624dad7445abc511033af2624"
-  integrity sha512-g5nX5sT8dwZYSPt25+Ct3zGX6tn8vvrDpyDP5x0owcIPG8K1tx5yMQ6uUg5IL9peOr2hlA9BgvI50x/UtLAjjQ==
+speccy@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/speccy/-/speccy-0.11.0.tgz#8edcb76d3ebc146ae39a44f5ed095bd326fb07ff"
+  integrity sha512-f9XXngfae43WR9uz8m3yk935nsJIJH1YaRNNjEYqF+uL3yNlabFgixPKncJKXT2LfiMhhszwVSgrDgUaUvGBVQ==
   dependencies:
     commander "^2.18.0"
     ejs "^2.5.2"
@@ -5011,10 +5018,10 @@ speccy@^0.10.1:
     node-fetch "^2.3.0"
     node-readfiles "^0.2.0"
     oas-linter "^3.0.0"
-    oas-resolver "^2.0.0"
+    oas-resolver "^2.2.4"
     oas-validator "^3.0.1"
     redoc v2.0.0-rc.8-1
-    yaml "^1.2.0"
+    yaml "^1.5.0"
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
@@ -5728,12 +5735,12 @@ yallist@^3.0.0, yallist@^3.0.2:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
 
-yaml@^1.2.0, yaml@^1.3.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.5.1.tgz#e8201678064fbcfef6afe4122ef802573b6cade8"
-  integrity sha512-btfJvMOgVthGZSgHBMrDkLuQu4YxOycw6kwuC67cUEOKJmmNozjIa02eKvuSq7usqqqpwwCvflGTF6JcDvSudw==
+yaml@^1.3.1, yaml@^1.5.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.6.0.tgz#d8a985cfb26086dd73f91c637f6e6bc909fddd3c"
+  integrity sha512-iZfse3lwrJRoSlfs/9KQ9iIXxs9++RvBFVzAqbbBiFT+giYtyanevreF9r61ZTbGMgWQBxAua3FzJiniiJXWWw==
   dependencies:
-    "@babel/runtime" "^7.4.4"
+    "@babel/runtime" "^7.4.5"
 
 yargs-parser@10.x:
   version "10.1.0"
