@@ -1,5 +1,4 @@
 import { flatten } from "lodash";
-import { DataType, UnionType } from "../../models/types";
 import { extractEndpointTypes } from "../../utilities/extract-endpoint-types";
 import { extractNestedUnionTypes } from "../../utilities/extract-union-types";
 import { inferDiscriminator } from "../../utilities/infer-discriminator";
