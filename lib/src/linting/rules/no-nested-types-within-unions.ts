@@ -1,5 +1,5 @@
-import { extractEndpointTypes } from "lib/src/utilities/extract-endpoint-types";
-import { extractNestedUnionTypes } from "lib/src/utilities/extract-union-types";
+import { extractEndpointTypes } from "../../utilities/extract-endpoint-types";
+import { extractNestedUnionTypes } from "../../utilities/extract-union-types";
 import { flatten } from "lodash";
 import { TypeKind } from "../../models/types";
 import { LintingRule } from "../rule";
@@ -24,6 +24,6 @@ export const noNestedTypesWithinUnions: LintingRule = contract => {
       )
     )
     .map(typeNode => ({
-      message: `The union type \`${typeNode.name}\` defines nested type. Use type aliases instead.`
+      message: `The union type \`${typeNode.name}\` defines a nested type. Use type aliases instead.`
     }));
 };
