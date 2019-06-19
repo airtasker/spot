@@ -5,6 +5,7 @@ export function isUnionOfStringLiterals(
   typeNode: TypeNode<UnionType>
 ): boolean {
   return (
-    typeNode.type.types.filter(type => type.kind !== TypeKind.STRING_LITERAL).length === 0
+    typeNode.type.types.filter(type => type.kind !== TypeKind.STRING_LITERAL)
+      .length === 0
   );
 }
