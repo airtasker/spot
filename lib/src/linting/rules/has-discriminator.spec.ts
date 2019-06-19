@@ -12,7 +12,8 @@ import {
   objectType,
   STRING,
   stringLiteral,
-  unionType
+  unionType,
+  NULL
 } from "../../models/types";
 import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { hasDiscriminator } from "./has-discriminator";
@@ -75,6 +76,61 @@ describe("rule: has-discriminator", () => {
         })
       ],
       types: []
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test("valid for string literal unions", () => {
+    const errors = hasDiscriminator({
+      api: fakeLocatable<ApiNode>({
+        name: fakeLocatable("example-api")
+      }),
+      endpoints: [],
+      types: []
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test("valid for nullable objects", () => {
+    const errors = hasDiscriminator({
+      api: fakeLocatable<ApiNode>({
+        name: fakeLocatable("example-api")
+      }),
+      endpoints: [],
+      types: [
+        {
+          name: "NullableObject",
+          type: unionType([
+            objectType([
+              {
+                name: "name",
+                optional: false,
+                type: STRING
+              }
+            ]),
+            NULL
+          ])
+        }
+      ]
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test("valid for nullable primitives", () => {
+    const errors = hasDiscriminator({
+      api: fakeLocatable<ApiNode>({
+        name: fakeLocatable("example-api")
+      }),
+      endpoints: [],
+      types: [
+        {
+          name: "NullablePrimitive",
+          type: unionType([
+            STRING,
+            NULL
+          ])
+        }
+      ]
     });
     expect(errors).toEqual([]);
   });
