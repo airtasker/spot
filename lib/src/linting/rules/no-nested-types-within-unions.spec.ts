@@ -62,7 +62,7 @@ describe("rule: no-nested-types-within-unions", () => {
         {
           name: "Type1",
           type: objectType([])
-        },
+        }
       ]
     });
     expect(errors).toEqual([
