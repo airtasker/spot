@@ -44,7 +44,7 @@ jobs:
           name: Speccy OpenAPI 2
           command: ./bin/run generate --contract lib/src/__examples__/contract.ts -l yaml --generator openapi2 -o output/ && yarn --silent swagger2openapi output/contract.yml > output/contract.json && yarn speccy lint -s openapi-tags -s parameter-description output/contract.json
 
-  prettier-check:
+  lint-check:
     <<: *job_configuration
     steps:
       - checkout
@@ -57,28 +57,7 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: Prettier
-          command: |
-            yarn prettier --list-different "**/*.js" "**/*.jsx" "**/*.ts" "**/*.tsx"
-
-  tslint-check:
-    <<: *job_configuration
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: TSLint
-          command: |
-            yarn tslint -p .
+      - run: yarn lint:check
 
   publish:
     <<: *job_configuration
