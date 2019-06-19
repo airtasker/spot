@@ -9,11 +9,11 @@ import {
 } from "../../models/nodes";
 import {
   arrayType,
+  NULL,
   objectType,
   STRING,
   stringLiteral,
-  unionType,
-  NULL
+  unionType
 } from "../../models/types";
 import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { hasDiscriminator } from "./has-discriminator";
@@ -125,10 +125,7 @@ describe("rule: has-discriminator", () => {
       types: [
         {
           name: "NullablePrimitive",
-          type: unionType([
-            STRING,
-            NULL
-          ])
+          type: unionType([STRING, NULL])
         }
       ]
     });
