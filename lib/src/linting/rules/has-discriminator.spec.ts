@@ -86,7 +86,12 @@ describe("rule: has-discriminator", () => {
         name: fakeLocatable("example-api")
       }),
       endpoints: [],
-      types: []
+      types: [
+        {
+          name: "StringLiteralsUnion",
+          type: unionType([stringLiteral("a"), stringLiteral("b")])
+        }
+      ]
     });
     expect(errors).toEqual([]);
   });
