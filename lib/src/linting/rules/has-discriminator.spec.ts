@@ -9,6 +9,7 @@ import {
 } from "../../models/nodes";
 import {
   arrayType,
+  NULL,
   objectType,
   STRING,
   stringLiteral,
@@ -75,6 +76,63 @@ describe("rule: has-discriminator", () => {
         })
       ],
       types: []
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test("valid for string literal unions", () => {
+    const errors = hasDiscriminator({
+      api: fakeLocatable<ApiNode>({
+        name: fakeLocatable("example-api")
+      }),
+      endpoints: [],
+      types: [
+        {
+          name: "StringLiteralsUnion",
+          type: unionType([stringLiteral("a"), stringLiteral("b")])
+        }
+      ]
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test("valid for nullable objects", () => {
+    const errors = hasDiscriminator({
+      api: fakeLocatable<ApiNode>({
+        name: fakeLocatable("example-api")
+      }),
+      endpoints: [],
+      types: [
+        {
+          name: "NullableObject",
+          type: unionType([
+            objectType([
+              {
+                name: "name",
+                optional: false,
+                type: STRING
+              }
+            ]),
+            NULL
+          ])
+        }
+      ]
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test("valid for nullable primitives", () => {
+    const errors = hasDiscriminator({
+      api: fakeLocatable<ApiNode>({
+        name: fakeLocatable("example-api")
+      }),
+      endpoints: [],
+      types: [
+        {
+          name: "NullablePrimitive",
+          type: unionType([STRING, NULL])
+        }
+      ]
     });
     expect(errors).toEqual([]);
   });
