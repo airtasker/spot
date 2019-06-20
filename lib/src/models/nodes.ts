@@ -8,10 +8,10 @@ export interface ContractNode {
   types: TypeNode[];
 }
 
-export interface TypeNode {
+export interface TypeNode<T extends DataType = DataType> {
   name: string;
   description?: string;
-  type: DataType;
+  type: T;
 }
 
 export interface ApiNode {
