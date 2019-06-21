@@ -1,11 +1,5 @@
 import { ApiNode } from "../../models/nodes";
-import {
-  objectType,
-  referenceType,
-  stringLiteral,
-  TypeKind,
-  unionType
-} from "../../models/types";
+import { NULL, objectType, referenceType, STRING, stringLiteral, TypeKind, unionType } from "../../models/types";
 import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { noNestedTypesWithinUnions } from "./no-nested-types-within-unions";
 
@@ -17,6 +11,10 @@ describe("rule: no-nested-types-within-unions", () => {
       }),
       endpoints: [],
       types: [
+        {
+          name: "NullableTypeUnion",
+          type: unionType([STRING, NULL])
+        },
         {
           name: "StringLiteralUnion",
           type: unionType([stringLiteral("a"), stringLiteral("b")])
