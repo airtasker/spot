@@ -1,7 +1,8 @@
-import { flatten } from "lodash";
+import { flatten, negate } from "lodash";
 import { TypeKind } from "../../models/types";
 import { extractEndpointTypes } from "../../utilities/extract-endpoint-types";
 import { extractNestedUnionTypes } from "../../utilities/extract-union-types";
+import { isUnionOfSingleTypeWithNull } from "../../utilities/nullable-type";
 import { LintingRule } from "../rule";
 
 /**
@@ -16,6 +17,7 @@ export const noNestedTypesWithinUnions: LintingRule = contract => {
     topLevelTypes.map(t => extractNestedUnionTypes(t.type, t.name))
   );
   return unionTypes
+    .filter(negate(isUnionOfSingleTypeWithNull))
     .filter(typeNode =>
       typeNode.type.types.find(
         t =>

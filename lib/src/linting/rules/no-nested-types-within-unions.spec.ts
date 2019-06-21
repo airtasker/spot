@@ -1,7 +1,9 @@
 import { ApiNode } from "../../models/nodes";
 import {
+  NULL,
   objectType,
   referenceType,
+  STRING,
   stringLiteral,
   TypeKind,
   unionType
@@ -17,6 +19,10 @@ describe("rule: no-nested-types-within-unions", () => {
       }),
       endpoints: [],
       types: [
+        {
+          name: "NullableTypeUnion",
+          type: unionType([STRING, NULL])
+        },
         {
           name: "StringLiteralUnion",
           type: unionType([stringLiteral("a"), stringLiteral("b")])
