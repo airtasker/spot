@@ -1,5 +1,13 @@
 import { ApiNode } from "../../models/nodes";
-import { NULL, objectType, referenceType, STRING, stringLiteral, TypeKind, unionType } from "../../models/types";
+import {
+  NULL,
+  objectType,
+  referenceType,
+  STRING,
+  stringLiteral,
+  TypeKind,
+  unionType
+} from "../../models/types";
 import { fakeLocatable } from "../../spec-helpers/fake-locatable";
 import { noNestedTypesWithinUnions } from "./no-nested-types-within-unions";
 

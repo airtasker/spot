@@ -1,8 +1,8 @@
-import { isUnionOfSingleTypeWithNull } from "../../utilities/nullable-type";
 import { flatten, negate } from "lodash";
 import { TypeKind } from "../../models/types";
 import { extractEndpointTypes } from "../../utilities/extract-endpoint-types";
 import { extractNestedUnionTypes } from "../../utilities/extract-union-types";
+import { isUnionOfSingleTypeWithNull } from "../../utilities/nullable-type";
 import { LintingRule } from "../rule";
 
 /**
