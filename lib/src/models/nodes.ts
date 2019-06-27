@@ -29,6 +29,7 @@ export interface SecurityHeaderNode {
 export interface EndpointNode {
   name: Locatable<string>;
   description?: Locatable<string>;
+  isDraft: boolean;
   tags?: Locatable<string[]>;
   method: Locatable<HttpMethod>;
   path: Locatable<string>;

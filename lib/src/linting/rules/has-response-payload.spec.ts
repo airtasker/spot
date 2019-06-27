@@ -22,6 +22,7 @@ describe("rule: has-response-payload", () => {
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: [],
           defaultResponse: fakeLocatable<DefaultResponseNode>({
@@ -37,6 +38,7 @@ describe("rule: has-response-payload", () => {
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: [
             fakeLocatable<ResponseNode>({
@@ -66,6 +68,7 @@ describe("rule: has-response-payload", () => {
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: [],
           defaultResponse: fakeLocatable<DefaultResponseNode>({})
@@ -91,6 +94,7 @@ describe("rule: has-response-payload", () => {
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: [
             fakeLocatable<ResponseNode>({
@@ -119,6 +123,7 @@ describe("rule: has-response-payload", () => {
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: []
         })
@@ -142,6 +147,7 @@ describe("rule: has-response-payload", () => {
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: [
             fakeLocatable<ResponseNode>({

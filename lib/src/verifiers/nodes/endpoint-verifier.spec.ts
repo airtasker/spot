@@ -11,6 +11,7 @@ describe("endpoint node verifier", () => {
       tags: fakeLocatable(["Some Tag"]),
       method: fakeLocatable<HttpMethod>("POST"),
       path: fakeLocatable("/a/:b/c"),
+      isDraft: false,
       request: fakeLocatable({
         pathParams: fakeLocatable([
           fakeLocatable<PathParamNode>({

@@ -25,6 +25,7 @@ export function parseEndpoint(
 ): Locatable<EndpointNode> {
   const decorator = klass.getDecoratorOrThrow("endpoint");
   const description = extractJsDocCommentLocatable(klass);
+  const isDraft = klass.getDecorator("draft") !== undefined;
   const configuration = extractDecoratorFactoryConfiguration(decorator);
   const tags = extractOptionalStringArrayPropertyValueLocatable(
     configuration,
@@ -71,7 +72,8 @@ export function parseEndpoint(
       request,
       responses,
       defaultResponse,
-      tests
+      tests,
+      isDraft
     },
     location,
     line

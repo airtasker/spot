@@ -18,6 +18,7 @@ describe("unique endpoint names verifier", () => {
           tags: fakeLocatable([]),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/a"),
+          isDraft: false,
           request: fakeLocatable({} as RequestNode),
           responses: [],
           tests: []
@@ -27,6 +28,7 @@ describe("unique endpoint names verifier", () => {
           tags: fakeLocatable([]),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/b"),
+          isDraft: false,
           request: fakeLocatable({} as RequestNode),
           responses: [],
           tests: []
@@ -46,6 +48,7 @@ describe("unique endpoint names verifier", () => {
           tags: fakeLocatable([]),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/a"),
+          isDraft: false,
           request: fakeLocatable({} as RequestNode),
           responses: [],
           tests: []
@@ -55,6 +58,7 @@ describe("unique endpoint names verifier", () => {
           tags: fakeLocatable([]),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/b"),
+          isDraft: false,
           request: fakeLocatable({} as RequestNode),
           responses: [],
           tests: []

@@ -10,3 +10,4 @@ export * from "./request";
 export * from "./response";
 export * from "./security-header";
 export * from "./types";
+export * from "./draft";
