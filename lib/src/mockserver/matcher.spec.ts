@@ -27,7 +27,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: "/users"
+            path: "/users",
+            isDraft: false
           }
         )
       ).toBeTruthy();
@@ -41,7 +42,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: "/users"
+            path: "/users",
+            isDraft: false
           }
         )
       ).toBeTruthy();
@@ -55,7 +57,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "POST",
-            path: "/users/:userId"
+            path: "/users/:userId",
+            isDraft: false
           }
         )
       ).toBeTruthy();
@@ -69,7 +72,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "POST",
-            path: "/users/:userId/details"
+            path: "/users/:userId/details",
+            isDraft: false
           }
         )
       ).toBeTruthy();
@@ -85,7 +89,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: "/users"
+            path: "/users",
+            isDraft: false
           }
         )
       ).toBeFalsy();
@@ -101,7 +106,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: "/users"
+            path: "/users",
+            isDraft: false
           }
         )
       ).toBeFalsy();
@@ -115,7 +121,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: "/users"
+            path: "/users",
+            isDraft: false
           }
         )
       ).toBeFalsy();
@@ -131,7 +138,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: "/users"
+            path: "/users",
+            isDraft: false
           }
         )
       ).toBeFalsy();
@@ -145,7 +153,8 @@ describe("Matcher", () => {
           {
             ...BASE_ENDPOINT,
             method: "GET",
-            path: "/users/abc"
+            path: "/users/abc",
+            isDraft: false
           }
         )
       ).toBeFalsy();

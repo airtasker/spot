@@ -11,6 +11,7 @@ export function cleanseEndpoint(
   const name = endpointNode.name.value;
   const description =
     endpointNode.description && endpointNode.description.value;
+  const isDraft = endpointNode.isDraft;
   const tags = endpointNode.tags ? endpointNode.tags.value : [];
   const method = endpointNode.method.value;
   const path = endpointNode.path.value;
@@ -28,6 +29,7 @@ export function cleanseEndpoint(
   return {
     name,
     description,
+    isDraft,
     tags,
     method,
     path,

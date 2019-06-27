@@ -29,6 +29,7 @@ describe("rule: has-discriminator", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           request: fakeLocatable<RequestNode>({
             body: fakeLocatable<BodyNode>({
               type: unionType([
@@ -147,6 +148,7 @@ describe("rule: has-discriminator", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           request: fakeLocatable<RequestNode>({
             body: fakeLocatable<BodyNode>({
               type: unionType([
@@ -185,6 +187,7 @@ describe("rule: has-discriminator", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           defaultResponse: fakeLocatable<DefaultResponseNode>({
             body: fakeLocatable<BodyNode>({
@@ -223,6 +226,7 @@ describe("rule: has-discriminator", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: [
             fakeLocatable<ResponseNode>({

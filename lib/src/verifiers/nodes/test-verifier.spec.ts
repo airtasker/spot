@@ -15,6 +15,7 @@ describe("test node verifier", () => {
     name: fakeLocatable("SomeEndpoint"),
     method: fakeLocatable<HttpMethod>("POST"),
     path: fakeLocatable("/company/:companyId/users"),
+    isDraft: false,
     request: fakeLocatable({
       headers: fakeLocatable([
         fakeLocatable<HeaderNode>({

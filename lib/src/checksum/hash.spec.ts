@@ -23,6 +23,7 @@ describe("Hash", () => {
       const endpointDefinition: EndpointDefinition = {
         name: "testEndpoint",
         description: "test endpoint",
+        isDraft: false,
         tags: ["test"],
         method: "GET",
         path: "/test",

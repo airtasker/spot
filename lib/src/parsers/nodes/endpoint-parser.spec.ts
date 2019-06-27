@@ -1,8 +1,10 @@
+import { ClassDeclaration } from "ts-morph";
 import { createSourceFile } from "../../spec-helpers/helper";
 import { parseEndpoint } from "./endpoint-parser";
 
 describe("@endpoint parser", () => {
-  const content = `
+  test("parses all information", () => {
+    const content = `
     import { endpoint, request, response, defaultResponse, pathParams, body, test } from "@airtasker/spot"
 
     /** endpoint description */
@@ -50,15 +52,11 @@ describe("@endpoint parser", () => {
     }
   `;
 
-  test("parses all information", () => {
-    const sourceFile = createSourceFile({
-      path: "main",
-      content: content.trim()
-    });
-    const klass = sourceFile.getClassOrThrow("TestEndpoint");
+    const klass = getClassDeclaration(content, "TestEndpoint");
 
     expect(parseEndpoint(klass)).toStrictEqual({
       value: {
+        isDraft: false,
         description: {
           value: "endpoint description",
           location: expect.stringMatching(/main\.ts$/),
@@ -118,4 +116,41 @@ describe("@endpoint parser", () => {
       line: 4
     });
   });
+
+  test("parses draft decorator", () => {
+    const content = `
+    import { endpoint, response, draft } from "@airtasker/spot"
+
+    @draft
+    @endpoint({
+      method: "GET",
+      path: "/users"
+    })
+    class DraftEndpoint {
+      @response({ status: 200 })
+      successResponse() {}
+    }
+  `;
+
+    const klass = getClassDeclaration(content, "DraftEndpoint");
+    const parsedEndpoint = parseEndpoint(klass);
+
+    expect(parsedEndpoint).toHaveProperty("value.isDraft");
+    expect(parsedEndpoint).toMatchObject({
+      value: {
+        isDraft: true
+      }
+    });
+  });
 });
+
+function getClassDeclaration(
+  content: string,
+  endpointClassName: string
+): ClassDeclaration {
+  const sourceFile = createSourceFile({
+    path: "main",
+    content: content.trim()
+  });
+  return sourceFile.getClassOrThrow(endpointClassName);
+}

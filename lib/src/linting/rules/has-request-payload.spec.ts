@@ -22,6 +22,7 @@ describe("rule: has-request-payload", () => {
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: []
         }),
@@ -30,6 +31,7 @@ describe("rule: has-request-payload", () => {
           name: fakeLocatable("getUser"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users/:userId"),
+          isDraft: false,
           tests: [],
           request: fakeLocatable<RequestNode>({
             pathParams: fakeLocatable([
@@ -48,6 +50,7 @@ describe("rule: has-request-payload", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           request: fakeLocatable<RequestNode>({
             body: fakeLocatable<BodyNode>({
@@ -74,6 +77,7 @@ describe("rule: has-request-payload", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("GET"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           request: fakeLocatable<RequestNode>({
             body: fakeLocatable<BodyNode>({
@@ -105,6 +109,7 @@ describe("rule: has-request-payload", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           responses: []
         })
@@ -129,6 +134,7 @@ describe("rule: has-request-payload", () => {
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
           path: fakeLocatable("/users"),
+          isDraft: false,
           tests: [],
           request: fakeLocatable<RequestNode>({}),
           responses: []
