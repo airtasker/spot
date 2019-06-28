@@ -17,7 +17,7 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
     }
   ],
   \\"paths\\": {
-    \\"/company/{companyId}/users/{userId}\\": {
+    \\"/_draft/company/{companyId}/users/{userId}\\": {
       \\"post\\": {
         \\"operationId\\": \\"GetUser\\",
         \\"description\\": \\"Retrieves a user in a company\\",
@@ -327,7 +327,7 @@ info:
 security:
   - securityHeader: []
 paths:
-  '/company/{companyId}/users/{userId}':
+  '/_draft/company/{companyId}/users/{userId}':
     post:
       operationId: GetUser
       description: Retrieves a user in a company

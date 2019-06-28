@@ -1,5 +1,6 @@
 import {
   body,
+  draft,
   endpoint,
   headers,
   pathParams,
@@ -12,6 +13,7 @@ import {
 import { ErrorBody, UserBody } from "./models";
 
 /** Retrieves a user in a company */
+@draft
 @endpoint({
   method: "POST",
   path: "/company/:companyId/users/:userId",
