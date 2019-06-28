@@ -49,7 +49,9 @@ export function openApiV2(contractDefinition: ContractDefinition): OpenApiV2 {
         [method: string]: OpenAPIV2Operation;
       };
     }>((acc, endpoint) => {
-      const openApiPath = (endpoint.isDraft ? "/_draft" : "") + endpoint.path.replace(/:(\w+)/g, "{$1}");
+      const openApiPath =
+        (endpoint.isDraft ? "/_draft" : "") +
+        endpoint.path.replace(/:(\w+)/g, "{$1}");
       acc[openApiPath] = acc[openApiPath] || {};
       acc[openApiPath][endpoint.method.toLowerCase()] = {
         operationId: endpoint.name,
