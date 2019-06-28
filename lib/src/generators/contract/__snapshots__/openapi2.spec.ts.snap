@@ -12,7 +12,7 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
     }
   },
   \\"paths\\": {
-    \\"/company/{companyId}/users/{userId}\\": {
+    \\"/_draft/company/{companyId}/users/{userId}\\": {
       \\"post\\": {
         \\"operationId\\": \\"GetUser\\",
         \\"description\\": \\"Retrieves a user in a company\\",
@@ -282,7 +282,7 @@ info:
   contact:
     name: TODO
 paths:
-  '/company/{companyId}/users/{userId}':
+  '/_draft/company/{companyId}/users/{userId}':
     post:
       operationId: GetUser
       description: Retrieves a user in a company
