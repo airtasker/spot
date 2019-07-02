@@ -147,6 +147,35 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
+  test("draft endpoint", async () => {
+    const contract = parseAndCleanse(
+      `${testExamplesBasePath}/draft-endpoint.ts`
+    );
+
+    const scopeDraft = nock(baseUrl)
+      .post("/companies", { private: true })
+      .reply(200);
+
+    const scopeNotDraft = nock(baseUrl)
+      .get("/companies")
+      .reply(200, { name: "test" });
+
+    const initializeScope = nock(baseUrl)
+      .post("/state/initialize")
+      .reply(200);
+
+    const tearDownScope = nock(baseUrl)
+      .post("/state/teardown")
+      .reply(200);
+
+    const result = await testRunner.test(contract);
+    expect(initializeScope.isDone()).toBe(true);
+    expect(tearDownScope.isDone()).toBe(true);
+    expect(scopeDraft.isDone()).toBe(false);
+    expect(scopeNotDraft.isDone()).toBe(true);
+    expect(result).toBe(true);
+  });
+
   test("test filtering", async () => {
     const contract = parseAndCleanse(
       `${testExamplesBasePath}/multiple-tests.ts`
