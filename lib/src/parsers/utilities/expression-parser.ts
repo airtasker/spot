@@ -1,4 +1,4 @@
-import { Expression, TypeGuards } from "ts-morph";
+import { Expression, SyntaxKind, TypeGuards } from "ts-morph";
 import {
   arrayExpression,
   booleanExpression,
@@ -22,6 +22,19 @@ export function parseExpression(expression: Expression): DataExpression {
     return booleanExpression(expression.getLiteralValue());
   } else if (TypeGuards.isStringLiteral(expression)) {
     return stringExpression(expression.getLiteralValue());
+  } else if (TypeGuards.isPrefixUnaryExpression(expression)) {
+    const operand = expression.getOperand();
+    if (!TypeGuards.isNumericLiteral(operand)) {
+      throw new Error("unary operators may only be used with numeric literals");
+    }
+    switch (expression.getOperatorToken()) {
+      case SyntaxKind.MinusToken:
+        return numberExpression(-operand.getLiteralValue());
+      case SyntaxKind.PlusToken:
+        return numberExpression(operand.getLiteralValue());
+      default:
+        throw new Error("unknown prefix operator token");
+    }
   } else if (TypeGuards.isNumericLiteral(expression)) {
     return numberExpression(expression.getLiteralValue());
   } else if (TypeGuards.isArrayLiteralExpression(expression)) {
@@ -52,6 +65,6 @@ export function parseExpression(expression: Expression): DataExpression {
       });
     return objectExpression(objectProperties);
   } else {
-    throw new Error("unknown expression type");
+    throw new Error(`unknown expression type: ${expression.getText()}`);
   }
 }

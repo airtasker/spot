@@ -46,6 +46,15 @@ describe("type expression parser", () => {
     });
   });
 
+  test("parses a negative number expression", () => {
+    const expression = createExpression("-5.34");
+
+    expect(parseExpression(expression)).toStrictEqual({
+      kind: TypeKind.NUMBER_LITERAL,
+      value: -5.34
+    });
+  });
+
   test("parses an array expression", () => {
     const expression = createExpression(
       `[1, "string", true, { myobject: 3 }, null]`
@@ -73,7 +82,7 @@ describe("type expression parser", () => {
 
   test("parses an object literal expression", () => {
     const expression = createExpression(`
-      { 
+      {
         title: "mytitle",
         year: 1999,
         'month': 5,
