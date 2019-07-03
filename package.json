@@ -41,7 +41,6 @@
     "@types/moxios": "^0.4.8",
     "@types/nock": "^10.0.3",
     "@types/node": "^12.0.10",
-    "globby": "^9.2.0",
     "jest": "^24.8.0",
     "nock": "^10.0.6",
     "prettier": "^1.18.2",
