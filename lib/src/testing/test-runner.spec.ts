@@ -147,7 +147,7 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
-  test("draft endpoint", async () => {
+  test("draft endpoint excluded", async () => {
     const contract = parseAndCleanse(
       `${testExamplesBasePath}/draft-and-nondraft-endpoint.ts`
     );
@@ -176,7 +176,7 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
-  test("include draft", async () => {
+  test("draft endpoint included", async () => {
     const contract = parseAndCleanse(
       `${testExamplesBasePath}/draft-endpoint.ts`
     );
@@ -193,6 +193,46 @@ describe("test runner", () => {
       includeDraft: true
     });
     expect(scopeDraft.isDone()).toBe(true);
+    expect(result).toBe(true);
+  });
+
+  test("draft endpoint included - response body mismatch", async () => {
+    const contract = parseAndCleanse(
+      `${testExamplesBasePath}/draft-endpoint.ts`
+    );
+
+    const scope = nock(baseUrl)
+      .post("/state/initialize")
+      .reply(200)
+      .post("/companies", { name: "My Company", private: true })
+      .reply(201, { notname: "My Company" })
+      .post("/state/teardown")
+      .reply(200);
+
+    const result = await testRunner.test(contract, {
+      includeDraft: true
+    });
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(false);
+  });
+
+  test("draft endpoint excluded - response body mismatch", async () => {
+    const contract = parseAndCleanse(
+      `${testExamplesBasePath}/draft-endpoint.ts`
+    );
+
+    const scope = nock(baseUrl)
+      .post("/state/initialize")
+      .reply(200)
+      .post("/companies", { name: "My Company", private: true })
+      .reply(201, { notname: "My Company" })
+      .post("/state/teardown")
+      .reply(200);
+
+    const result = await testRunner.test(contract, {
+      includeDraft: false
+    });
+    expect(scope.isDone()).toBe(false);
     expect(result).toBe(true);
   });
 
