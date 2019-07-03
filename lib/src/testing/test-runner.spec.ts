@@ -149,7 +149,7 @@ describe("test runner", () => {
 
   test("draft endpoint", async () => {
     const contract = parseAndCleanse(
-      `${testExamplesBasePath}/draft-endpoint.ts`
+      `${testExamplesBasePath}/draft-and-nondraft-endpoint.ts`
     );
 
     const scopeDraft = nock(baseUrl)
@@ -173,6 +173,26 @@ describe("test runner", () => {
     expect(tearDownScope.isDone()).toBe(true);
     expect(scopeDraft.isDone()).toBe(false);
     expect(scopeNotDraft.isDone()).toBe(true);
+    expect(result).toBe(true);
+  });
+
+  test("include draft", async () => {
+    const contract = parseAndCleanse(
+      `${testExamplesBasePath}/draft-endpoint.ts`
+    );
+
+    const scopeDraft = nock(baseUrl)
+      .post("/state/initialize")
+      .reply(200)
+      .post("/companies", { name: "My Company", private: true })
+      .reply(201, { name: "My Company" })
+      .post("/state/teardown")
+      .reply(200);
+
+    const result = await testRunner.test(contract, {
+      includeDraft: true
+    });
+    expect(scopeDraft.isDone()).toBe(true);
     expect(result).toBe(true);
   });
 
@@ -202,6 +222,7 @@ describe("test runner", () => {
       .reply(200);
 
     const result = await testRunner.test(contract, {
+      includeDraft: false,
       testFilter: { endpoint: "CreateCompany", test: "badRequestTest" }
     });
 

@@ -29,6 +29,9 @@ export default class Test extends Command {
   static flags = {
     help: flags.help({ char: "h" }),
     debug: flags.boolean({ description: "Enable debug logs" }),
+    includeDraft: flags.boolean({
+      description: "Include draft endpoint tests"
+    }),
     url: flags.string({
       required: true,
       char: "u",
@@ -46,7 +49,13 @@ export default class Test extends Command {
 
   async run() {
     const { args, flags } = this.parse(Test);
-    const { url: baseUrl, stateUrl: baseStateUrl, testFilter, debug } = flags;
+    const {
+      url: baseUrl,
+      stateUrl: baseStateUrl,
+      testFilter,
+      debug,
+      includeDraft
+    } = flags;
     const { definition } = safeParse.call(this, args[ARG_API]);
 
     const testRunnerConfig = {
@@ -57,7 +66,8 @@ export default class Test extends Command {
       debugMode: debug
     };
     const testConfig = {
-      testFilter: testFilter ? parseTestFilter(testFilter) : undefined
+      testFilter: testFilter ? parseTestFilter(testFilter) : undefined,
+      includeDraft
     };
 
     const testRunner = new TestRunner(testRunnerConfig);

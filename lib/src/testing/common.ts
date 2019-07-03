@@ -1,5 +1,6 @@
 export interface TestConfig {
   testFilter?: TestFilter;
+  includeDraft: boolean;
 }
 
 export interface TestFilter {
