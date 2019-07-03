@@ -5312,10 +5312,10 @@ ts-jest@^24.0.2:
     semver "^5.5"
     yargs-parser "10.x"
 
-ts-morph@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-3.0.0.tgz#f9e0d37d28528bdecec0b2b927e10efa8e1052a3"
-  integrity sha512-C4aAxpO9ydMSB4zi2JyeFTxD3/OAdf4F4sUCp3WIMZVo8lwcp4vXP2OqDFiE6rQHYEi2cYk8aBo1QS68VbsNIg==
+ts-morph@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-3.1.0.tgz#233a1588b910096ca70ec494ce6ffca8b356aea5"
+  integrity sha512-lowDc/6QrCsLZkjreCGXQKFoUlRj70VeC/jvsXO2EW9OrwutX5OToa1Vi9AC6wzv86XXnQjzQuDb5X62wJyJaQ==
   dependencies:
     "@dsherret/to-absolute-glob" "^2.0.2"
     code-block-writer "9.4.0"
