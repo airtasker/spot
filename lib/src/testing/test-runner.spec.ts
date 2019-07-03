@@ -147,7 +147,7 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
-  test("draft endpoint excluded", async () => {
+  test("non draft endpoints are still tested when draft not included", async () => {
     const contract = parseAndCleanse(
       `${testExamplesBasePath}/draft-and-nondraft-endpoint.ts`
     );
@@ -176,7 +176,7 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
-  test("draft endpoint included", async () => {
+  test("passing draft endpoint passes the test when included", async () => {
     const contract = parseAndCleanse(
       `${testExamplesBasePath}/draft-endpoint.ts`
     );
@@ -196,7 +196,7 @@ describe("test runner", () => {
     expect(result).toBe(true);
   });
 
-  test("draft endpoint included - response body mismatch", async () => {
+  test("failing draft endpoint fails the test when included", async () => {
     const contract = parseAndCleanse(
       `${testExamplesBasePath}/draft-endpoint.ts`
     );
@@ -205,7 +205,7 @@ describe("test runner", () => {
       .post("/state/initialize")
       .reply(200)
       .post("/companies", { name: "My Company", private: true })
-      .reply(201, { notname: "My Company" })
+      .reply(201, { THIS_IS_OBVIOUSLY_WRONG: "My Company" })
       .post("/state/teardown")
       .reply(200);
 
@@ -216,23 +216,22 @@ describe("test runner", () => {
     expect(result).toBe(false);
   });
 
-  test("draft endpoint excluded - response body mismatch", async () => {
+  test("failing draft endpoint doesn't fail the test when not included", async () => {
     const contract = parseAndCleanse(
       `${testExamplesBasePath}/draft-endpoint.ts`
     );
 
-    const scope = nock(baseUrl)
+    nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
       .post("/companies", { name: "My Company", private: true })
-      .reply(201, { notname: "My Company" })
+      .reply(201, { THIS_IS_OBVIOUSLY_WRONG: "My Company" })
       .post("/state/teardown")
       .reply(200);
 
     const result = await testRunner.test(contract, {
       includeDraft: false
     });
-    expect(scope.isDone()).toBe(false);
     expect(result).toBe(true);
   });
 
