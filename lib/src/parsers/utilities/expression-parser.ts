@@ -23,17 +23,17 @@ export function parseExpression(expression: Expression): DataExpression {
   } else if (TypeGuards.isStringLiteral(expression)) {
     return stringExpression(expression.getLiteralValue());
   } else if (TypeGuards.isPrefixUnaryExpression(expression)) {
-    if (expression.getOperatorToken() === SyntaxKind.MinusToken) {
-      const operand = expression.getOperand();
-      if (TypeGuards.isNumericLiteral(operand)) {
+    const operand = expression.getOperand();
+    if (!TypeGuards.isNumericLiteral(operand)) {
+      throw new Error("unary operators may only be used with numeric literals");
+    }
+    switch (expression.getOperatorToken()) {
+      case SyntaxKind.MinusToken:
         return numberExpression(-operand.getLiteralValue());
-      } else {
-        throw new Error(
-          "minus prefix operator may only be used with numeric literals"
-        );
-      }
-    } else {
-      throw new Error("unknown prefix operator token");
+      case SyntaxKind.PlusToken:
+        return numberExpression(operand.getLiteralValue());
+      default:
+        throw new Error("unknown prefix operator token");
     }
   } else if (TypeGuards.isNumericLiteral(expression)) {
     return numberExpression(expression.getLiteralValue());
