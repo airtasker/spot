@@ -36,7 +36,7 @@ export class TestRunner {
    */
   async test(
     definition: ContractDefinition,
-    config?: TestConfig
+    config: TestConfig = { includeDraft: false }
   ): Promise<boolean> {
     const testSuiteStartTime = TestTimer.startTime();
 
@@ -44,13 +44,13 @@ export class TestRunner {
 
     for (const endpoint of definition.endpoints) {
       for (const test of endpoint.tests) {
-        if (endpoint.isDraft) {
+        if (endpoint.isDraft && !config.includeDraft) {
           this.logger.warn(
             `Draft endpoint test ${endpoint.name}:${test.name} skipped`
           );
           continue;
         }
-        if (config && config.testFilter) {
+        if (config.testFilter) {
           if (
             config.testFilter.endpoint !== endpoint.name ||
             (config.testFilter.test && config.testFilter.test !== test.name)

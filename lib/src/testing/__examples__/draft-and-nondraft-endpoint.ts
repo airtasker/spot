@@ -39,6 +39,22 @@ class CreateCompany {
   successResponseTest() {}
 }
 
+@endpoint({
+  method: "GET",
+  path: "/companies"
+})
+class GetCompany {
+  @response({ status: 200 })
+  successResponse(@body body: CompanyBody) {}
+
+  @test({
+    response: {
+      status: 200
+    }
+  })
+  successResponseTest() {}
+}
+
 interface CreateCompanyRequestBody {
   name: String;
   private: boolean;
