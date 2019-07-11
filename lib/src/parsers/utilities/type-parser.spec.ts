@@ -393,7 +393,7 @@ function createTypeNode(...types: string[]): TypeNode {
     throw new Error("at least one type required");
   }
   const content = `
-    import { Float, Integer, Int32, Int64, String, Date, DateTime } from "@airtasker/spot"
+    import { Number, Float, Double, Integer, Int32, Int64, String, Date, DateTime } from "@airtasker/spot"
     import { TypeAlias } from "./alias"
 
     interface TestInterface {

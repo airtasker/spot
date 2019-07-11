@@ -208,7 +208,8 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
                 \\"type\\": \\"string\\"
               },
               \\"age\\": {
-                \\"type\\": \\"number\\"
+                \\"type\\": \\"number\\",
+                \\"format\\": \\"float\\"
               },
               \\"email\\": {
                 \\"$ref\\": \\"#/components/schemas/Email\\"
@@ -454,6 +455,7 @@ components:
               type: string
             age:
               type: number
+              format: float
             email:
               $ref: '#/components/schemas/Email'
             address:
