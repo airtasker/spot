@@ -3,10 +3,10 @@
  *
  * @param config configuration
  * @example
- * ```
- * @api({ name: "Company API" })
- * class CompanyApi {}
- * ```
+```
+@api({ name: "Company API" })
+class CompanyApi {}
+```
  */
 export function api(config: ApiConfig) {
   return (target: any) => {};
