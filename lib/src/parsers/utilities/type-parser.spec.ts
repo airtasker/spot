@@ -87,11 +87,27 @@ describe("type node parser", () => {
   });
 
   describe("internal custom primitive types", () => {
+    test("parses Number type", () => {
+      const typeNode = createTypeNode("Number");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.FLOAT
+      });
+    });
+
     test("parses Float type", () => {
       const typeNode = createTypeNode("Float");
 
       expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.FLOAT
+      });
+    });
+
+    test("parses Double type", () => {
+      const typeNode = createTypeNode("Double");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.DOUBLE
       });
     });
 
@@ -111,7 +127,7 @@ describe("type node parser", () => {
       });
     });
 
-    test("parses Integer type", () => {
+    test("parses Int64 type", () => {
       const typeNode = createTypeNode("Int64");
 
       expect(parseTypeNode(typeNode)).toStrictEqual({

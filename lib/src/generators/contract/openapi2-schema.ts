@@ -44,7 +44,13 @@ export function openApi2TypeSchema(type: DataType): OpenAPI2SchemaType {
       };
     case TypeKind.FLOAT:
       return {
-        type: "number"
+        type: "number",
+        format: "float"
+      };
+    case TypeKind.DOUBLE:
+      return {
+        type: "number",
+        format: "double"
       };
     case TypeKind.NUMBER_LITERAL:
       return Math.round(type.value) === type.value
