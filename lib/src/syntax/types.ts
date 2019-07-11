@@ -1,5 +1,11 @@
-/** A float */
+/** A number */
+export type Number = number;
+
+/** A floating point number */
 export type Float = number;
+
+/** A double precision floating point number  */
+export type Double = number;
 
 /** An integer */
 export type Integer = number;

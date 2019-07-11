@@ -87,11 +87,27 @@ describe("type node parser", () => {
   });
 
   describe("internal custom primitive types", () => {
+    test("parses Number type", () => {
+      const typeNode = createTypeNode("Number");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.FLOAT
+      });
+    });
+
     test("parses Float type", () => {
       const typeNode = createTypeNode("Float");
 
       expect(parseTypeNode(typeNode)).toStrictEqual({
         kind: TypeKind.FLOAT
+      });
+    });
+
+    test("parses Double type", () => {
+      const typeNode = createTypeNode("Double");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.DOUBLE
       });
     });
 
@@ -111,7 +127,7 @@ describe("type node parser", () => {
       });
     });
 
-    test("parses Integer type", () => {
+    test("parses Int64 type", () => {
       const typeNode = createTypeNode("Int64");
 
       expect(parseTypeNode(typeNode)).toStrictEqual({
@@ -377,7 +393,7 @@ function createTypeNode(...types: string[]): TypeNode {
     throw new Error("at least one type required");
   }
   const content = `
-    import { Float, Integer, Int32, Int64, String, Date, DateTime } from "@airtasker/spot"
+    import { Number, Float, Double, Integer, Int32, Int64, String, Date, DateTime } from "@airtasker/spot"
     import { TypeAlias } from "./alias"
 
     interface TestInterface {

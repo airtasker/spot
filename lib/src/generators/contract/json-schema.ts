@@ -57,6 +57,7 @@ export function jsonTypeSchema(type: DataType): JsonSchemaType {
         const: type.value
       };
     case TypeKind.FLOAT:
+    case TypeKind.DOUBLE:
       return {
         type: "number"
       };

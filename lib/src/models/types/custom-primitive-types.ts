@@ -3,6 +3,7 @@ import { TypeKind } from "./kinds";
 export type CustomPrimitiveType =
   | Int32Type
   | Int64Type
+  | DoubleType
   | DateType
   | DateTimeType;
 
@@ -36,4 +37,12 @@ export const DATETIME: DateTimeType = {
 
 export interface DateTimeType {
   kind: TypeKind.DATE_TIME;
+}
+
+export const DOUBLE: DoubleType = {
+  kind: TypeKind.DOUBLE
+};
+
+export interface DoubleType {
+  kind: TypeKind.DOUBLE;
 }

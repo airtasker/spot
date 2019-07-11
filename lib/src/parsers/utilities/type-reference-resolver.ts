@@ -1,3 +1,4 @@
+import assertNever from "assert-never";
 import { uniqBy } from "lodash";
 import { Project } from "ts-morph";
 import { Locatable } from "../../models/locatable";
@@ -170,6 +171,7 @@ function retrieveTypeReferencesFromType(
       case TypeKind.BOOLEAN:
       case TypeKind.STRING:
       case TypeKind.FLOAT:
+      case TypeKind.DOUBLE:
       case TypeKind.INT32:
       case TypeKind.INT64:
       case TypeKind.DATE:
@@ -212,9 +214,8 @@ function retrieveTypeReferencesFromType(
           "expected type reference to resolve to a type alias or an interface"
         );
       }
-      default: {
-        throw new Error("unexpected type reference");
-      }
+      default:
+        throw assertNever(dataType.referenceKind);
     }
   } else if (isObjectType(dataType)) {
     return dataType.properties.reduce<ReferenceType[]>(

@@ -11,6 +11,7 @@ export function isUrlSafe(typeKind: NotReferenceTypeKind): boolean {
     case TypeKind.BOOLEAN:
     case TypeKind.STRING:
     case TypeKind.FLOAT:
+    case TypeKind.DOUBLE:
     case TypeKind.INT32:
     case TypeKind.INT64:
     case TypeKind.DATE:

@@ -161,7 +161,8 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
               \\"type\\": \\"string\\"
             },
             \\"age\\": {
-              \\"type\\": \\"number\\"
+              \\"type\\": \\"number\\",
+              \\"format\\": \\"float\\"
             },
             \\"email\\": {
               \\"$ref\\": \\"#/definitions/Email\\"
@@ -387,6 +388,7 @@ definitions:
             type: string
           age:
             type: number
+            format: float
           email:
             $ref: '#/definitions/Email'
           address:

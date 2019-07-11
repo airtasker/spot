@@ -2,6 +2,7 @@ import {
   CustomPrimitiveType,
   DateTimeType,
   DateType,
+  DoubleType,
   Int32Type,
   Int64Type
 } from "./custom-primitive-types";
@@ -34,9 +35,10 @@ export type DataType =
 
 export type NumberLikeType =
   | FloatType
-  | NumberLiteral
+  | DoubleType
   | Int32Type
   | Int64Type
+  | NumberLiteral
   | ReferenceType;
 
 export type StringLikeType =

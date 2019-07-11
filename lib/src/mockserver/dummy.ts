@@ -19,6 +19,7 @@ export function generateData(types: TypeDefinition[], type: DataType): any {
     case TypeKind.STRING_LITERAL:
       return type.value;
     case TypeKind.FLOAT:
+    case TypeKind.DOUBLE:
       return randomDouble(100);
     case TypeKind.INT32:
       return randomInteger(100);

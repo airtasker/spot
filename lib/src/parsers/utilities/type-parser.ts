@@ -17,6 +17,7 @@ import {
   DataType,
   DATE,
   DATETIME,
+  DOUBLE,
   FLOAT,
   INT32,
   INT64,
@@ -72,6 +73,8 @@ export function parseTypeNode(typeNode: TypeNode): DataType {
 const SPOT_TYPE_ALIASES = [
   "Date",
   "DateTime",
+  "Number",
+  "Double",
   "Float",
   "Integer",
   "Int32",
@@ -108,8 +111,11 @@ function parseTypeReference(
         }
       } else if (declaration.getType().isNumber()) {
         switch (name) {
+          case "Number":
           case "Float":
             return FLOAT;
+          case "Double":
+            return DOUBLE;
           case "Integer":
           case "Int32":
             return INT32;

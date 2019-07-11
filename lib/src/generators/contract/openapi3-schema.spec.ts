@@ -26,134 +26,135 @@ describe("OpenAPI 3 generator", () => {
 
     test("boolean", () => {
       expect(openApi3TypeSchema([], BOOLEAN)).toMatchInlineSnapshot(`
-Object {
-  "type": "boolean",
-}
-`);
+        Object {
+          "type": "boolean",
+        }
+      `);
     });
 
     test("boolean literal", () => {
       expect(openApi3TypeSchema([], booleanLiteral(true)))
         .toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    true,
-  ],
-  "type": "boolean",
-}
-`);
+        Object {
+          "enum": Array [
+            true,
+          ],
+          "type": "boolean",
+        }
+      `);
       expect(openApi3TypeSchema([], booleanLiteral(false)))
         .toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    false,
-  ],
-  "type": "boolean",
-}
-`);
+        Object {
+          "enum": Array [
+            false,
+          ],
+          "type": "boolean",
+        }
+      `);
     });
 
     test("string", () => {
       expect(openApi3TypeSchema([], STRING)).toMatchInlineSnapshot(`
-Object {
-  "type": "string",
-}
-`);
+        Object {
+          "type": "string",
+        }
+      `);
     });
 
     test("string literal", () => {
       expect(openApi3TypeSchema([], stringLiteral("some literal")))
         .toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    "some literal",
-  ],
-  "type": "string",
-}
-`);
+        Object {
+          "enum": Array [
+            "some literal",
+          ],
+          "type": "string",
+        }
+      `);
     });
 
     test("float", () => {
       expect(openApi3TypeSchema([], FLOAT)).toMatchInlineSnapshot(`
-Object {
-  "type": "number",
-}
-`);
+        Object {
+          "format": "float",
+          "type": "number",
+        }
+      `);
     });
 
     test("number literal", () => {
       expect(openApi3TypeSchema([], numberLiteral(1.5))).toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    1.5,
-  ],
-  "type": "number",
-}
-`);
+        Object {
+          "enum": Array [
+            1.5,
+          ],
+          "type": "number",
+        }
+      `);
       expect(openApi3TypeSchema([], numberLiteral(-23.1)))
         .toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    -23.1,
-  ],
-  "type": "number",
-}
-`);
+        Object {
+          "enum": Array [
+            -23.1,
+          ],
+          "type": "number",
+        }
+      `);
     });
 
     test("int32", () => {
       expect(openApi3TypeSchema([], INT32)).toMatchInlineSnapshot(`
-Object {
-  "format": "int32",
-  "type": "integer",
-}
-`);
+        Object {
+          "format": "int32",
+          "type": "integer",
+        }
+      `);
     });
 
     test("int64", () => {
       expect(openApi3TypeSchema([], INT64)).toMatchInlineSnapshot(`
-Object {
-  "format": "int64",
-  "type": "integer",
-}
-`);
+        Object {
+          "format": "int64",
+          "type": "integer",
+        }
+      `);
     });
 
     test("integer literal", () => {
       expect(openApi3TypeSchema([], numberLiteral(0))).toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    0,
-  ],
-  "type": "integer",
-}
-`);
+        Object {
+          "enum": Array [
+            0,
+          ],
+          "type": "integer",
+        }
+      `);
       expect(openApi3TypeSchema([], numberLiteral(123))).toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    123,
-  ],
-  "type": "integer",
-}
-`);
+        Object {
+          "enum": Array [
+            123,
+          ],
+          "type": "integer",
+        }
+      `);
       expect(openApi3TypeSchema([], numberLiteral(-1000)))
         .toMatchInlineSnapshot(`
-Object {
-  "enum": Array [
-    -1000,
-  ],
-  "type": "integer",
-}
-`);
+        Object {
+          "enum": Array [
+            -1000,
+          ],
+          "type": "integer",
+        }
+      `);
     });
 
     test("object", () => {
       expect(openApi3TypeSchema([], objectType([]))).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {},
-  "type": "object",
-}
-`);
+        Object {
+          "properties": Object {},
+          "type": "object",
+        }
+      `);
       expect(
         openApi3TypeSchema(
           [],
@@ -166,18 +167,19 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {
-    "singleField": Object {
-      "type": "number",
-    },
-  },
-  "required": Array [
-    "singleField",
-  ],
-  "type": "object",
-}
-`);
+        Object {
+          "properties": Object {
+            "singleField": Object {
+              "format": "float",
+              "type": "number",
+            },
+          },
+          "required": Array [
+            "singleField",
+          ],
+          "type": "object",
+        }
+      `);
       expect(
         openApi3TypeSchema(
           [],
@@ -190,15 +192,16 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {
-    "singleOptionalField": Object {
-      "type": "number",
-    },
-  },
-  "type": "object",
-}
-`);
+        Object {
+          "properties": Object {
+            "singleOptionalField": Object {
+              "format": "float",
+              "type": "number",
+            },
+          },
+          "type": "object",
+        }
+      `);
       expect(
         openApi3TypeSchema(
           [],
@@ -221,82 +224,85 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "properties": Object {
-    "field1": Object {
-      "type": "number",
-    },
-    "field2": Object {
-      "type": "string",
-    },
-    "field3": Object {
-      "type": "boolean",
-    },
-  },
-  "required": Array [
-    "field1",
-    "field2",
-  ],
-  "type": "object",
-}
-`);
+        Object {
+          "properties": Object {
+            "field1": Object {
+              "format": "float",
+              "type": "number",
+            },
+            "field2": Object {
+              "type": "string",
+            },
+            "field3": Object {
+              "type": "boolean",
+            },
+          },
+          "required": Array [
+            "field1",
+            "field2",
+          ],
+          "type": "object",
+        }
+      `);
     });
 
     test("array", () => {
       expect(openApi3TypeSchema([], arrayType(STRING))).toMatchInlineSnapshot(`
-Object {
-  "items": Object {
-    "type": "string",
-  },
-  "type": "array",
-}
-`);
+        Object {
+          "items": Object {
+            "type": "string",
+          },
+          "type": "array",
+        }
+      `);
     });
 
     test("union", () => {
       expect(openApi3TypeSchema([], unionType([STRING])))
         .toMatchInlineSnapshot(`
-Object {
-  "type": "string",
-}
-`);
+        Object {
+          "type": "string",
+        }
+      `);
       expect(openApi3TypeSchema([], unionType([STRING, NULL])))
         .toMatchInlineSnapshot(`
-Object {
-  "nullable": true,
-  "type": "string",
-}
-`);
+        Object {
+          "nullable": true,
+          "type": "string",
+        }
+      `);
       expect(openApi3TypeSchema([], unionType([STRING, FLOAT, NULL])))
         .toMatchInlineSnapshot(`
-Object {
-  "nullable": true,
-  "oneOf": Array [
-    Object {
-      "type": "string",
-    },
-    Object {
-      "type": "number",
-    },
-  ],
-}
-`);
+        Object {
+          "nullable": true,
+          "oneOf": Array [
+            Object {
+              "type": "string",
+            },
+            Object {
+              "format": "float",
+              "type": "number",
+            },
+          ],
+        }
+      `);
       expect(openApi3TypeSchema([], unionType([STRING, FLOAT, BOOLEAN])))
         .toMatchInlineSnapshot(`
-Object {
-  "oneOf": Array [
-    Object {
-      "type": "string",
-    },
-    Object {
-      "type": "number",
-    },
-    Object {
-      "type": "boolean",
-    },
-  ],
-}
-`);
+        Object {
+          "oneOf": Array [
+            Object {
+              "type": "string",
+            },
+            Object {
+              "format": "float",
+              "type": "number",
+            },
+            Object {
+              "type": "boolean",
+            },
+          ],
+        }
+      `);
     });
 
     test("union of types without a discriminator", () => {
@@ -334,17 +340,17 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "oneOf": Array [
-    Object {
-      "$ref": "#/components/schemas/Type1",
-    },
-    Object {
-      "$ref": "#/components/schemas/Type2",
-    },
-  ],
-}
-`);
+        Object {
+          "oneOf": Array [
+            Object {
+              "$ref": "#/components/schemas/Type1",
+            },
+            Object {
+              "$ref": "#/components/schemas/Type2",
+            },
+          ],
+        }
+      `);
     });
 
     test("union of types with a valid discriminator", () => {
@@ -398,24 +404,24 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "discriminator": Object {
-    "mapping": Object {
-      "type-1": "#/components/schemas/Type1",
-      "type-2": "#/components/schemas/Type2",
-    },
-    "propertyName": "disc",
-  },
-  "oneOf": Array [
-    Object {
-      "$ref": "#/components/schemas/Type1",
-    },
-    Object {
-      "$ref": "#/components/schemas/Type2",
-    },
-  ],
-}
-`);
+        Object {
+          "discriminator": Object {
+            "mapping": Object {
+              "type-1": "#/components/schemas/Type1",
+              "type-2": "#/components/schemas/Type2",
+            },
+            "propertyName": "disc",
+          },
+          "oneOf": Array [
+            Object {
+              "$ref": "#/components/schemas/Type1",
+            },
+            Object {
+              "$ref": "#/components/schemas/Type2",
+            },
+          ],
+        }
+      `);
     });
 
     test("union of types with a valid discriminator which is a type alias", () => {
@@ -481,24 +487,24 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-        Object {
-          "discriminator": Object {
-            "mapping": Object {
-              "referenced-type-1": "#/components/schemas/Type1",
-              "referenced-type-2": "#/components/schemas/Type2",
-            },
-            "propertyName": "disc",
-          },
-          "oneOf": Array [
-            Object {
-              "$ref": "#/components/schemas/Type1",
-            },
-            Object {
-              "$ref": "#/components/schemas/Type2",
-            },
-          ],
-        }
-      `);
+                Object {
+                  "discriminator": Object {
+                    "mapping": Object {
+                      "referenced-type-1": "#/components/schemas/Type1",
+                      "referenced-type-2": "#/components/schemas/Type2",
+                    },
+                    "propertyName": "disc",
+                  },
+                  "oneOf": Array [
+                    Object {
+                      "$ref": "#/components/schemas/Type1",
+                    },
+                    Object {
+                      "$ref": "#/components/schemas/Type2",
+                    },
+                  ],
+                }
+            `);
     });
 
     test("union of types with several valid discriminators", () => {
@@ -568,24 +574,24 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "discriminator": Object {
-    "mapping": Object {
-      "type-1": "#/components/schemas/Type1",
-      "type-2": "#/components/schemas/Type2",
-    },
-    "propertyName": "disc1",
-  },
-  "oneOf": Array [
-    Object {
-      "$ref": "#/components/schemas/Type1",
-    },
-    Object {
-      "$ref": "#/components/schemas/Type2",
-    },
-  ],
-}
-`);
+        Object {
+          "discriminator": Object {
+            "mapping": Object {
+              "type-1": "#/components/schemas/Type1",
+              "type-2": "#/components/schemas/Type2",
+            },
+            "propertyName": "disc1",
+          },
+          "oneOf": Array [
+            Object {
+              "$ref": "#/components/schemas/Type1",
+            },
+            Object {
+              "$ref": "#/components/schemas/Type2",
+            },
+          ],
+        }
+      `);
     });
 
     test("union of types with one discriminator that has conflicting values", () => {
@@ -655,24 +661,24 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "discriminator": Object {
-    "mapping": Object {
-      "type-1": "#/components/schemas/Type1",
-      "type-2": "#/components/schemas/Type2",
-    },
-    "propertyName": "disc2",
-  },
-  "oneOf": Array [
-    Object {
-      "$ref": "#/components/schemas/Type1",
-    },
-    Object {
-      "$ref": "#/components/schemas/Type2",
-    },
-  ],
-}
-`);
+        Object {
+          "discriminator": Object {
+            "mapping": Object {
+              "type-1": "#/components/schemas/Type1",
+              "type-2": "#/components/schemas/Type2",
+            },
+            "propertyName": "disc2",
+          },
+          "oneOf": Array [
+            Object {
+              "$ref": "#/components/schemas/Type1",
+            },
+            Object {
+              "$ref": "#/components/schemas/Type2",
+            },
+          ],
+        }
+      `);
     });
 
     test("union of types with where one of the discriminators is optional", () => {
@@ -712,17 +718,17 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "oneOf": Array [
-    Object {
-      "$ref": "#/components/schemas/Type1",
-    },
-    Object {
-      "$ref": "#/components/schemas/Type2",
-    },
-  ],
-}
-`);
+        Object {
+          "oneOf": Array [
+            Object {
+              "$ref": "#/components/schemas/Type1",
+            },
+            Object {
+              "$ref": "#/components/schemas/Type2",
+            },
+          ],
+        }
+      `);
     });
 
     test("union of inline object types", () => {
@@ -753,33 +759,33 @@ Object {
           ])
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "oneOf": Array [
-    Object {
-      "properties": Object {
-        "disc": Object {
-          "enum": Array [
-            "type-1",
+        Object {
+          "oneOf": Array [
+            Object {
+              "properties": Object {
+                "disc": Object {
+                  "enum": Array [
+                    "type-1",
+                  ],
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+            Object {
+              "properties": Object {
+                "disc": Object {
+                  "enum": Array [
+                    "type-2",
+                  ],
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
           ],
-          "type": "string",
-        },
-      },
-      "type": "object",
-    },
-    Object {
-      "properties": Object {
-        "disc": Object {
-          "enum": Array [
-            "type-2",
-          ],
-          "type": "string",
-        },
-      },
-      "type": "object",
-    },
-  ],
-}
-`);
+        }
+      `);
     });
 
     test("type reference", () => {
@@ -789,10 +795,10 @@ Object {
           referenceType("OtherType", "location", TypeKind.STRING)
         )
       ).toMatchInlineSnapshot(`
-Object {
-  "$ref": "#/components/schemas/OtherType",
-}
-`);
+        Object {
+          "$ref": "#/components/schemas/OtherType",
+        }
+      `);
     });
   });
 });
