@@ -3,6 +3,7 @@ import express from "express";
 import { ContractDefinition } from "../models/definitions";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
+import { proxyRequest } from "./proxy";
 
 /**
  * Runs a mock server that returns dummy data that conforms to an API definition.
@@ -12,10 +13,12 @@ export function runMockServer(
   {
     port,
     pathPrefix,
+    proxyBaseUrl,
     logger
   }: {
     port: number;
     pathPrefix: string;
+    proxyBaseUrl?: string;
     logger: Logger;
   }
 ) {
@@ -24,6 +27,19 @@ export function runMockServer(
   app.use((req, resp) => {
     for (const endpoint of api.endpoints) {
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
+        const shouldProxy = !endpoint.isDraft;
+
+        if (shouldProxy && proxyBaseUrl) {
+          proxyRequest({
+            incomingRequest: req,
+            response: resp,
+            pathPrefix,
+            proxyBaseUrl,
+          });
+
+          return;
+        }
+
         logger.log(`Request hit for ${endpoint.name} registered.`);
         const response = endpoint.responses[0] || endpoint.defaultResponse;
         if (!response) {

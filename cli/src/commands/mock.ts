@@ -23,6 +23,10 @@ export default class Mock extends Command {
 
   static flags = {
     help: flags.help({ char: "h" }),
+    proxyBaseUrl: flags.string({
+      description:
+        "If set, the server would act as a proxy and fetch data from the given remote server instead of mocking it"
+    }),
     port: flags.integer({
       char: "p",
       description: "Port on which to run the mock server",
@@ -37,13 +41,14 @@ export default class Mock extends Command {
   async run() {
     const {
       args,
-      flags: { port, pathPrefix }
+      flags: { port, pathPrefix, proxyBaseUrl }
     } = this.parse(Mock);
     try {
       const contract = safeParse.call(this, args[ARG_API]).definition;
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix || "",
+        proxyBaseUrl,
         logger: this
       });
       this.log(`Mock server is running on port ${port}.`);
