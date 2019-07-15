@@ -35,7 +35,7 @@ export function runMockServer(
             incomingRequest: req,
             response: resp,
             pathPrefix,
-            proxyBaseUrl,
+            proxyBaseUrl
           });
 
           return;
