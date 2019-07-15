@@ -29,6 +29,7 @@ export function runMockServer(
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
         const shouldProxy = !endpoint.isDraft;
 
+        // non-draft end points get real response
         if (shouldProxy && proxyBaseUrl) {
           proxyRequest({
             incomingRequest: req,
