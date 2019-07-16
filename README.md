@@ -111,6 +111,7 @@ npx @airtasker/spot generate --contract api.ts
 
 <!-- commands -->
 * [`spot checksum SPOT_CONTRACT`](#spot-checksum-spot_contract)
+* [`spot docs SPOT_CONTRACT`](#spot-docs-spot_contract)
 * [`spot generate`](#spot-generate)
 * [`spot help [COMMAND]`](#spot-help-command)
 * [`spot init`](#spot-init)
@@ -138,6 +139,27 @@ EXAMPLE
 ```
 
 _See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v0.2.18/build/cli/src/commands/checksum.js)_
+
+## `spot docs SPOT_CONTRACT`
+
+Preview Spot contract documentation
+
+```
+USAGE
+  $ spot docs SPOT_CONTRACT
+
+ARGUMENTS
+  SPOT_CONTRACT  path to Spot contract
+
+OPTIONS
+  -h, --help       show CLI help
+  -p, --port=port  [default: 8080] Documentation server port
+
+EXAMPLE
+  $ spot docs api.ts
+```
+
+_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v0.2.18/build/cli/src/commands/docs.js)_
 
 ## `spot generate`
 
