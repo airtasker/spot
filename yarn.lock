@@ -1204,7 +1204,7 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-chai@^4.1.2, chai@^4.2.0:
+chai@^4.1.2:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"
   integrity sha512-XQU3bhBukrOsQCuwZndwGcCVQHyZi53fQ6Ys1Fym7E4olpIqqZZhhoFJoaKVvV17lWQoXYwgWN2nF5crA8J2jw==
@@ -1344,12 +1344,10 @@ co@^4.6.0:
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
   integrity sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=
 
-code-block-writer@9.4.0:
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/code-block-writer/-/code-block-writer-9.4.0.tgz#99f835317ed56b61775f64f862aa87704d27a4d4"
-  integrity sha512-EVlBZXymEGS0OgR0OaEX2mRgZmeH8T5B+wDHiLwYGZ69PjlRRiHeNy/TP80s5lZH8ztKtTrSxb90CiyYvzQ2jQ==
-  dependencies:
-    chai "^4.2.0"
+code-block-writer@9.4.1:
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/code-block-writer/-/code-block-writer-9.4.1.tgz#1448fca79dfc7a3649000f4c85be6bc770604c4c"
+  integrity sha512-LHAB+DL4YZDcwK8y/kAxZ0Lf/ncwLh/Ux4cTVWbPwIdrf1gPxXiPcwpz8r8/KqXu1aD+Raz46EOxDjFlbyO6bA==
 
 code-error-fragment@0.0.230:
   version "0.0.230"
@@ -5482,13 +5480,13 @@ ts-jest@^24.0.2:
     semver "^5.5"
     yargs-parser "10.x"
 
-ts-morph@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-3.1.1.tgz#18d02c9d53f590f942d4d148efd4a24624bc0ea6"
-  integrity sha512-rmBfJrxbjxkJWnMAzJri4bJAf9EFTFbiOYXFZJGuD/FZcb7YzPT0B8KJvaNakBKh2TPdf1r1r8SlJNoZ1VEAkw==
+ts-morph@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-3.1.2.tgz#fc4f33a51a95a79d27cb64d00825fb72be598083"
+  integrity sha512-5lCluMGhCLUTjYu9cM48m84slDMkHZV1l/znPDBPYxeZZX3a3jQsgQ3yz8vH2/yoaMTbacMF+L2g+/sdN7+ZOw==
   dependencies:
     "@dsherret/to-absolute-glob" "^2.0.2"
-    code-block-writer "9.4.0"
+    code-block-writer "9.4.1"
     fs-extra "^8.1.0"
     glob-parent "^5.0.0"
     globby "^10.0.1"
