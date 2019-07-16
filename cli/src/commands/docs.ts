@@ -7,7 +7,7 @@ import { safeParse } from "../common/safe-parse";
 const ARG_API = "spot_contract";
 
 export default class Docs extends Command {
-  static description = "Preview Spot contract documentation";
+  static description = "Preview Spot contract as OpenAPI3 documentation";
 
   static examples = ["$ spot docs api.ts"];
 
@@ -37,7 +37,12 @@ export default class Docs extends Command {
     const docsDir = path.join(__dirname, "docs", "public");
     server.use(express.static(docsDir));
 
-    server.get("/contract", (req, res) =>
+    /**
+     * This endpoint is used by the following React Component:
+     *   <RedocStandalone specUrl="/contract-openapi3" />
+     * The contract is regenerated on each invocation (browser refresh)
+     */
+    server.get("/contract-openapi3", (req, res) =>
       res.send(
         JSON.parse(
           generateOpenApiV3(
@@ -54,7 +59,7 @@ export default class Docs extends Command {
         this.log(`Open http://localhost:${port} to view documentation`);
         await server.listen(port);
       } catch (err) {
-        process.exit(1);
+        this.error(err, { exit: 1 });
       }
     };
     start();

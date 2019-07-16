@@ -5,7 +5,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <RedocStandalone specUrl="/contract" />
+        <RedocStandalone specUrl="/contract-openapi3" />
       </div>
     );
   }
