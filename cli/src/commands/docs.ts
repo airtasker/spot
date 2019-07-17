@@ -7,7 +7,8 @@ import { safeParse } from "../common/safe-parse";
 const ARG_API = "spot_contract";
 
 export default class Docs extends Command {
-  static description = "Preview Spot contract as OpenAPI3 documentation";
+  static description =
+    "Preview Spot contract as OpenAPI3 documentation. The documentation server will start on http://localhost:8080.";
 
   static examples = ["$ spot docs api.ts"];
 

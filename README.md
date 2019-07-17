@@ -142,7 +142,7 @@ _See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spo
 
 ## `spot docs SPOT_CONTRACT`
 
-Preview Spot contract as OpenAPI3 documentation
+Preview Spot contract as OpenAPI3 documentation. The documentation server will start on http://localhost:8080.
 
 ```
 USAGE
