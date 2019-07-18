@@ -1,8 +1,8 @@
 import nock from "nock";
 import request from "supertest";
 import { ContractDefinition } from "../models/definitions";
-import { runMockServer } from "./server";
 import { TypeKind } from "../models/types";
+import { runMockServer } from "./server";
 
 describe("Server", () => {
   const proxyBaseUrl = "http://localhost:9988";

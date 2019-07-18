@@ -1,5 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import { runMockServer } from "../../../lib/src/mockserver/server";
+import inferProtocol from "../common/infer-protocol";
 import { safeParse } from "../common/safe-parse";
 
 const ARG_API = "spot_contract";
@@ -38,18 +39,6 @@ export default class Mock extends Command {
     })
   };
 
-  inferProtocol(proxyBaseUrl: string): "http" | "https" {
-    const [protocol] = proxyBaseUrl && proxyBaseUrl.split("://");
-
-    if (protocol !== "http" && protocol !== "https") {
-      throw new Error(
-        'Err - could not infer protocol from proxy base url, should be either "http" or "https".'
-      );
-    }
-
-    return protocol;
-  }
-
   async run() {
     const {
       args,
@@ -61,7 +50,7 @@ export default class Mock extends Command {
         port,
         pathPrefix: pathPrefix || "",
         proxyBaseUrl,
-        protocol: this.inferProtocol(proxyBaseUrl),
+        protocol: inferProtocol(proxyBaseUrl),
         logger: this
       }).defer();
       this.log(`Mock server is running on port ${port}.`);
