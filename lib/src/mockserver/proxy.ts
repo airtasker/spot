@@ -5,26 +5,25 @@ import https from "https";
 export function proxyRequest({
   incomingRequest,
   response,
-  pathPrefix,
+  protocol,
   proxyBaseUrl
 }: {
   incomingRequest: Request;
   response: Response;
-  pathPrefix: string;
+  protocol: "http" | "https";
   proxyBaseUrl: string;
 }) {
-  const [protocol] = proxyBaseUrl.split("://");
-
   const requestHandler = protocol === "http" ? http : https;
-  const path = `${pathPrefix}${incomingRequest.path}`;
 
   const options = {
     headers: incomingRequest.headers,
     method: incomingRequest.method,
-    path
+    path: incomingRequest.path
   };
 
   const proxyRequest = requestHandler.request(proxyBaseUrl, options, res => {
+    // Forward headers
+    response.writeHead(res.statusCode || response.statusCode, res.headers);
     res.pipe(response);
   });
 

@@ -25,7 +25,7 @@ export default class Mock extends Command {
     help: flags.help({ char: "h" }),
     proxyBaseUrl: flags.string({
       description:
-        "If set, the server would act as a proxy and fetch data from the given remote server instead of mocking it"
+        "If set, the server will act as a proxy and fetch data from the given remote server instead of mocking it"
     }),
     port: flags.integer({
       char: "p",
@@ -38,10 +38,22 @@ export default class Mock extends Command {
     })
   };
 
+  inferProtocol(proxyBaseUrl: string): "http" | "https" {
+    const [protocol] = proxyBaseUrl && proxyBaseUrl.split("://");
+
+    if (protocol !== "http" && protocol !== "https") {
+      throw new Error(
+        'Err - could not infer protocol from proxy base url, should be either "http" or "https".'
+      );
+    }
+
+    return protocol;
+  }
+
   async run() {
     const {
       args,
-      flags: { port, pathPrefix, proxyBaseUrl }
+      flags: { port, pathPrefix, proxyBaseUrl = "" }
     } = this.parse(Mock);
     try {
       const contract = safeParse.call(this, args[ARG_API]).definition;
@@ -49,8 +61,9 @@ export default class Mock extends Command {
         port,
         pathPrefix: pathPrefix || "",
         proxyBaseUrl,
+        protocol: this.inferProtocol(proxyBaseUrl),
         logger: this
-      });
+      }).defer();
       this.log(`Mock server is running on port ${port}.`);
     } catch (e) {
       this.error(e, { exit: 1 });

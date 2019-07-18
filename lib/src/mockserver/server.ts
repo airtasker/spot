@@ -14,11 +14,13 @@ export function runMockServer(
     port,
     pathPrefix,
     proxyBaseUrl,
+    protocol,
     logger
   }: {
     port: number;
     pathPrefix: string;
     proxyBaseUrl?: string;
+    protocol: "http" | "https";
     logger: Logger;
   }
 ) {
@@ -27,18 +29,16 @@ export function runMockServer(
   app.use((req, resp) => {
     for (const endpoint of api.endpoints) {
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
+        // non-draft end points get real response
         const shouldProxy = !endpoint.isDraft;
 
-        // non-draft end points get real response
         if (shouldProxy && proxyBaseUrl) {
-          proxyRequest({
+          return proxyRequest({
             incomingRequest: req,
             response: resp,
-            pathPrefix,
+            protocol,
             proxyBaseUrl
           });
-
-          return;
         }
 
         logger.log(`Request hit for ${endpoint.name} registered.`);
@@ -58,7 +58,10 @@ export function runMockServer(
     }
     logger.error(`No match for request ${req.method} at ${req.path}.`);
   });
-  return new Promise(resolve => app.listen(port, resolve));
+  return {
+    app,
+    defer: () => new Promise(resolve => app.listen(port, resolve))
+  };
 }
 
 export interface Logger {
