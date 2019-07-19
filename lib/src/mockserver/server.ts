@@ -3,6 +3,12 @@ import express from "express";
 import { ContractDefinition } from "../models/definitions";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
+import { proxyRequest } from "./proxy";
+
+export interface ProxyConfig {
+  protocol: "http" | "https";
+  proxyBaseUrl: string;
+}
 
 /**
  * Runs a mock server that returns dummy data that conforms to an API definition.
@@ -12,10 +18,12 @@ export function runMockServer(
   {
     port,
     pathPrefix,
+    proxyConfig,
     logger
   }: {
     port: number;
     pathPrefix: string;
+    proxyConfig?: ProxyConfig;
     logger: Logger;
   }
 ) {
@@ -24,6 +32,17 @@ export function runMockServer(
   app.use((req, resp) => {
     for (const endpoint of api.endpoints) {
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
+        // non-draft end points get real response
+        const shouldProxy = !endpoint.isDraft;
+
+        if (shouldProxy && proxyConfig) {
+          return proxyRequest({
+            incomingRequest: req,
+            response: resp,
+            ...proxyConfig
+          });
+        }
+
         logger.log(`Request hit for ${endpoint.name} registered.`);
         const response = endpoint.responses[0] || endpoint.defaultResponse;
         if (!response) {
@@ -41,7 +60,10 @@ export function runMockServer(
     }
     logger.error(`No match for request ${req.method} at ${req.path}.`);
   });
-  return new Promise(resolve => app.listen(port, resolve));
+  return {
+    app,
+    defer: () => new Promise(resolve => app.listen(port, resolve))
+  };
 }
 
 export interface Logger {
