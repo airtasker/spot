@@ -1,15 +1,15 @@
 import { ProxyConfig } from '../../../lib/src/mockserver/server';
 
-export default function inferProxyConfig(proxyBaseUrl: string): ProxyConfig | void {
+export default function inferProxyConfig(proxyBaseUrl: string): ProxyConfig | null {
   if (!proxyBaseUrl) {
-    return undefined;
+    return null;
   }
 
   const [protocol] = proxyBaseUrl && proxyBaseUrl.split("://");
 
   if (protocol !== "http" && protocol !== "https") {
     throw new Error(
-      'Err - could not infer protocol from proxy base url, should be either "http" or "https".'
+      'Could not infer protocol from proxy base url, should be either "http" or "https".'
     );
   }
 
