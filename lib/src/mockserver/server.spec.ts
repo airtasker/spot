@@ -91,18 +91,18 @@ describe("Server", () => {
     error: (message: string) => message
   };
 
-  const { app } = runMockServer(contract, {
-    logger: mockLogger,
-    pathPrefix: "/api",
-    port: 8085,
-    proxyConfig: {
-      protocol,
-      proxyBaseUrl,
-    }
-  });
-
   describe("Run", () => {
     it("Proxy request and return real data if endpoint is not in a draft state", done => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+        proxyConfig: {
+          protocol,
+          proxyBaseUrl,
+        }
+      });
+
       request(app)
         .get("/api/companies")
         .expect(200)
@@ -113,6 +113,32 @@ describe("Server", () => {
     });
 
     it("Return mock data if endpoint is in draft state", done => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+        proxyConfig: {
+          protocol,
+          proxyBaseUrl,
+        }
+      });
+
+      request(app)
+        .post("/api/companies")
+        .expect(201)
+        .then(response => {
+          expect(response.body.name).not.toBe("This is the real response");
+          done();
+        });
+    });
+
+    it("Return mock data if no proxy config is provided", done => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+      });
+
       request(app)
         .post("/api/companies")
         .expect(201)
