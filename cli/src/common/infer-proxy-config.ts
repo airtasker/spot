@@ -1,6 +1,8 @@
-import { ProxyConfig } from '../../../lib/src/mockserver/server';
+import { ProxyConfig } from "../../../lib/src/mockserver/server";
 
-export default function inferProxyConfig(proxyBaseUrl: string): ProxyConfig | null {
+export default function inferProxyConfig(
+  proxyBaseUrl: string
+): ProxyConfig | null {
   if (!proxyBaseUrl) {
     return null;
   }
@@ -15,6 +17,6 @@ export default function inferProxyConfig(proxyBaseUrl: string): ProxyConfig | nu
 
   return {
     protocol,
-    proxyBaseUrl,
+    proxyBaseUrl
   };
 }

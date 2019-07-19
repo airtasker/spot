@@ -6,9 +6,9 @@ import { isRequestForEndpoint } from "./matcher";
 import { proxyRequest } from "./proxy";
 
 export interface ProxyConfig {
-  protocol: 'http' | 'https';
-  proxyBaseUrl: string,
-};
+  protocol: "http" | "https";
+  proxyBaseUrl: string;
+}
 
 /**
  * Runs a mock server that returns dummy data that conforms to an API definition.
@@ -19,11 +19,11 @@ export function runMockServer(
     port,
     pathPrefix,
     proxyConfig,
-    logger,
+    logger
   }: {
     port: number;
     pathPrefix: string;
-    proxyConfig?: ProxyConfig,
+    proxyConfig?: ProxyConfig;
     logger: Logger;
   }
 ) {

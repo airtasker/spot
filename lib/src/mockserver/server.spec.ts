@@ -99,7 +99,7 @@ describe("Server", () => {
         port: 8085,
         proxyConfig: {
           protocol,
-          proxyBaseUrl,
+          proxyBaseUrl
         }
       });
 
@@ -119,7 +119,7 @@ describe("Server", () => {
         port: 8085,
         proxyConfig: {
           protocol,
-          proxyBaseUrl,
+          proxyBaseUrl
         }
       });
 
@@ -136,7 +136,7 @@ describe("Server", () => {
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
-        port: 8085,
+        port: 8085
       });
 
       request(app)
