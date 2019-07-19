@@ -5,6 +5,11 @@ import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
 import { proxyRequest } from "./proxy";
 
+export interface ProxyConfig {
+  protocol: 'http' | 'https';
+  proxyBaseUrl: string,
+};
+
 /**
  * Runs a mock server that returns dummy data that conforms to an API definition.
  */
@@ -13,14 +18,12 @@ export function runMockServer(
   {
     port,
     pathPrefix,
-    proxyBaseUrl,
-    protocol,
-    logger
+    proxyConfig,
+    logger,
   }: {
     port: number;
     pathPrefix: string;
-    proxyBaseUrl?: string;
-    protocol: "http" | "https";
+    proxyConfig?: ProxyConfig,
     logger: Logger;
   }
 ) {
@@ -32,12 +35,11 @@ export function runMockServer(
         // non-draft end points get real response
         const shouldProxy = !endpoint.isDraft;
 
-        if (shouldProxy && proxyBaseUrl) {
+        if (shouldProxy && proxyConfig) {
           return proxyRequest({
             incomingRequest: req,
             response: resp,
-            protocol,
-            proxyBaseUrl
+            ...proxyConfig
           });
         }
 

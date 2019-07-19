@@ -6,6 +6,7 @@ import { runMockServer } from "./server";
 
 describe("Server", () => {
   const proxyBaseUrl = "http://localhost:9988";
+  const protocol = "http";
 
   afterEach(() => {
     nock.cleanAll();
@@ -94,8 +95,10 @@ describe("Server", () => {
     logger: mockLogger,
     pathPrefix: "/api",
     port: 8085,
-    protocol: "http",
-    proxyBaseUrl
+    proxyConfig: {
+      protocol,
+      proxyBaseUrl,
+    }
   });
 
   describe("Run", () => {

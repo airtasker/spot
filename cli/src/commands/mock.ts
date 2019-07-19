@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import { runMockServer } from "../../../lib/src/mockserver/server";
-import inferProtocol from "../common/infer-protocol";
+import inferProxyConfig from "../common/infer-proxy-config";
 import { safeParse } from "../common/safe-parse";
 
 const ARG_API = "spot_contract";
@@ -45,12 +45,12 @@ export default class Mock extends Command {
       flags: { port, pathPrefix, proxyBaseUrl = "" }
     } = this.parse(Mock);
     try {
+      const proxyConfig = inferProxyConfig(proxyBaseUrl);
       const contract = safeParse.call(this, args[ARG_API]).definition;
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix || "",
-        proxyBaseUrl,
-        protocol: inferProtocol(proxyBaseUrl),
+        ...proxyConfig,
         logger: this
       }).defer();
       this.log(`Mock server is running on port ${port}.`);
