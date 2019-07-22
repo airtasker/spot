@@ -73,41 +73,6 @@ describe("Server", () => {
           headers: []
         },
         tests: []
-      },
-      {
-        name: "UpdateCompany",
-        description: undefined,
-        isDraft: true,
-        tags: [],
-        method: "PUT",
-        path: "/_draft/companies",
-        request: {
-          queryParams: [],
-          pathParams: [],
-          headers: []
-        },
-        responses: [
-          {
-            status: 201,
-            headers: [],
-            body: {
-              type: {
-                kind: TypeKind.OBJECT,
-                properties: [
-                  {
-                    name: "name",
-                    type: { kind: TypeKind.STRING },
-                    optional: false
-                  }
-                ]
-              }
-            }
-          }
-        ],
-        defaultResponse: {
-          headers: []
-        },
-        tests: []
       }
     ],
     types: []
@@ -184,15 +149,19 @@ describe("Server", () => {
         });
     });
 
-    it("Strip draft from endpoint", done => {
+    it("Strip draft in request paths", done => {
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
-        port: 8085
+        port: 8085,
+        proxyConfig: {
+          protocol,
+          proxyBaseUrl
+        }
       });
 
       request(app)
-        .put("/api/_draft/companies")
+        .post("/api/_draft/companies")
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");

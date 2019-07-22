@@ -29,6 +29,12 @@ export function runMockServer(
 ) {
   const app = express();
   app.use(cors());
+  app.use((req, resp, next) => {
+    if (req.path.includes("/_draft")) {
+      req.url = stripDraft(req.url);
+    }
+    next();
+  });
   app.use((req, resp) => {
     for (const endpoint of api.endpoints) {
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
@@ -41,8 +47,6 @@ export function runMockServer(
             response: resp,
             ...proxyConfig
           });
-        } else if (!shouldProxy) {
-          endpoint.name = stripDraft(endpoint.name);
         }
 
         logger.log(`Request hit for ${endpoint.name} registered.`);
