@@ -41,6 +41,8 @@ export function runMockServer(
             response: resp,
             ...proxyConfig
           });
+        } else if (!shouldProxy) {
+          endpoint.name = stripDraft(endpoint.name);
         }
 
         logger.log(`Request hit for ${endpoint.name} registered.`);
@@ -64,6 +66,10 @@ export function runMockServer(
     app,
     defer: () => new Promise(resolve => app.listen(port, resolve))
   };
+}
+
+function stripDraft(endpointName: string): string {
+  return endpointName.replace("/_draft", "");
 }
 
 export interface Logger {

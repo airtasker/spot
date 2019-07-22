@@ -2,6 +2,7 @@ import nock from "nock";
 import request from "supertest";
 import { ContractDefinition } from "../models/definitions";
 import { TypeKind } from "../models/types";
+import { response } from "../syntax";
 import { runMockServer } from "./server";
 
 describe("Server", () => {
@@ -68,6 +69,41 @@ describe("Server", () => {
           headers: []
         },
         responses: [{ status: 200, headers: [] }],
+        defaultResponse: {
+          headers: []
+        },
+        tests: []
+      },
+      {
+        name: "UpdateCompany",
+        description: undefined,
+        isDraft: true,
+        tags: [],
+        method: "PUT",
+        path: "/_draft/companies",
+        request: {
+          queryParams: [],
+          pathParams: [],
+          headers: []
+        },
+        responses: [
+          {
+            status: 201,
+            headers: [],
+            body: {
+              type: {
+                kind: TypeKind.OBJECT,
+                properties: [
+                  {
+                    name: "name",
+                    type: { kind: TypeKind.STRING },
+                    optional: false
+                  }
+                ]
+              }
+            }
+          }
+        ],
         defaultResponse: {
           headers: []
         },
@@ -141,6 +177,22 @@ describe("Server", () => {
 
       request(app)
         .post("/api/companies")
+        .expect(201)
+        .then(response => {
+          expect(response.body.name).not.toBe("This is the real response");
+          done();
+        });
+    });
+
+    it("Strip draft from endpoint", done => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085
+      });
+
+      request(app)
+        .put("/api/_draft/companies")
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
