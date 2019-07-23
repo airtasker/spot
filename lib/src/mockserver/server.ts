@@ -29,6 +29,12 @@ export function runMockServer(
 ) {
   const app = express();
   app.use(cors());
+  app.use((req, resp, next) => {
+    if (req.path.includes("/_draft/")) {
+      req.url = req.url.replace("/_draft/", "/");
+    }
+    next();
+  });
   app.use((req, resp) => {
     for (const endpoint of api.endpoints) {
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
@@ -50,6 +56,7 @@ export function runMockServer(
           return;
         }
         resp.status("status" in response ? response.status : 200);
+        resp.header("content-type", "application/json");
         if (response.body) {
           resp.send(
             JSON.stringify(generateData(api.types, response.body.type))
