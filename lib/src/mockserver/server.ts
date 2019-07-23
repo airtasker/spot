@@ -56,6 +56,7 @@ export function runMockServer(
           return;
         }
         resp.status("status" in response ? response.status : 200);
+        resp.header("content-type", "application/json");
         if (response.body) {
           resp.send(
             JSON.stringify(generateData(api.types, response.body.type))

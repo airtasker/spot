@@ -129,6 +129,7 @@ describe("Server", () => {
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
+          expect(typeof response.body.name).toBe(TypeKind.STRING);
           done();
         });
     });
@@ -145,6 +146,7 @@ describe("Server", () => {
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
+          expect(typeof response.body.name).toBe(TypeKind.STRING);
           done();
         });
     });
@@ -165,6 +167,7 @@ describe("Server", () => {
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
+          expect(typeof response.body.name).toBe(TypeKind.STRING);
           done();
         });
     });
