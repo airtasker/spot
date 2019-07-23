@@ -30,7 +30,7 @@ export function runMockServer(
   const app = express();
   app.use(cors());
   app.use((req, resp, next) => {
-    if (req.path.includes("/_draft")) {
+    if (req.path.includes("/_draft/")) {
       req.url = stripDraft(req.url);
     }
     next();
@@ -72,8 +72,8 @@ export function runMockServer(
   };
 }
 
-function stripDraft(endpointName: string): string {
-  return endpointName.replace("/_draft", "");
+function stripDraft(url: string): string {
+  return url.replace("/_draft/", "/");
 }
 
 export interface Logger {
