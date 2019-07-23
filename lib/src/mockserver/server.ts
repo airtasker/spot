@@ -31,7 +31,7 @@ export function runMockServer(
   app.use(cors());
   app.use((req, resp, next) => {
     if (req.path.includes("/_draft/")) {
-      req.url = stripDraft(req.url);
+      req.url = req.url.replace("/_draft/", "/");
     }
     next();
   });
@@ -71,10 +71,6 @@ export function runMockServer(
     app,
     defer: () => new Promise(resolve => app.listen(port, resolve))
   };
-}
-
-function stripDraft(url: string): string {
-  return url.replace("/_draft/", "/");
 }
 
 export interface Logger {
