@@ -255,7 +255,8 @@ OPTIONS
   -h, --help                   show CLI help
   -p, --port=port              (required) [default: 3010] Port on which to run the mock server
   --pathPrefix=pathPrefix      Prefix to prepend to each endpoint path
-  --proxyBaseUrl=proxyBaseUrl  If set, the server would act as a proxy and fetch data from the given remote server
+
+  --proxyBaseUrl=proxyBaseUrl  If set, the server will act as a proxy and fetch data from the given remote server
                                instead of mocking it
 
 EXAMPLE
