@@ -228,6 +228,34 @@ describe("type node parser", () => {
       });
     });
 
+    test("differentiates optional from non-optional properties", () => {
+      const typeNode = createTypeNode(`
+        {
+          a: string;
+          b?: string;
+        }
+      `);
+
+      const result = parseTypeNode(typeNode) as ObjectType;
+      expect(result).toStrictEqual({
+        kind: TypeKind.OBJECT,
+        properties: [
+          {
+            description: undefined,
+            name: "a",
+            optional: false,
+            type: STRING
+          },
+          {
+            description: undefined,
+            name: "b",
+            optional: true,
+            type: STRING
+          }
+        ]
+      });
+    });
+
     test("parses object literal type", () => {
       const typeNode = createTypeNode("ObjectLiteralType");
 
@@ -337,6 +365,36 @@ describe("indexed types", () => {
 });
 
 describe("interface parser", () => {
+  test("differentiates optional from non-optional properties", () => {
+    const sourceFile = createSourceFile({
+      path: "main",
+      content: `
+        interface A {
+          a: string;
+          b?: string;
+        }
+      `
+    });
+    const interphace = sourceFile.getInterfaceOrThrow("A");
+    expect(parseInterfaceDeclaration(interphace)).toStrictEqual({
+      kind: TypeKind.OBJECT,
+      properties: [
+        {
+          description: undefined,
+          name: "a",
+          optional: false,
+          type: STRING
+        },
+        {
+          description: undefined,
+          name: "b",
+          optional: true,
+          type: STRING
+        }
+      ]
+    });
+  });
+
   test("resolves all properties from base types", () => {
     const sourceFile = createSourceFile({
       path: "main",

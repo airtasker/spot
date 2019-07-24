@@ -2,6 +2,7 @@ import nock from "nock";
 import request from "supertest";
 import { ContractDefinition } from "../models/definitions";
 import { TypeKind } from "../models/types";
+import { response } from "../syntax";
 import { runMockServer } from "./server";
 
 describe("Server", () => {
@@ -128,6 +129,7 @@ describe("Server", () => {
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
+          expect(typeof response.body.name).toBe(TypeKind.STRING);
           done();
         });
     });
@@ -144,6 +146,28 @@ describe("Server", () => {
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
+          expect(typeof response.body.name).toBe(TypeKind.STRING);
+          done();
+        });
+    });
+
+    it("Strip draft in request paths", done => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+        proxyConfig: {
+          protocol,
+          proxyBaseUrl
+        }
+      });
+
+      request(app)
+        .post("/api/_draft/companies")
+        .expect(201)
+        .then(response => {
+          expect(response.body.name).not.toBe("This is the real response");
+          expect(typeof response.body.name).toBe(TypeKind.STRING);
           done();
         });
     });
