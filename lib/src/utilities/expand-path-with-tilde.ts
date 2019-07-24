@@ -1,6 +1,6 @@
 import os from "os";
 
-export default function expandPathWithTilde(path: string) {
+export function expandPathWithTilde(path: string) {
   const homeDir = os.homedir();
 
   if (!homeDir) {

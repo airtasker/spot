@@ -1,5 +1,5 @@
 import os from "os";
-import expandPathWithTilde from "./expand-path-with-tilde";
+import { expandPathWithTilde } from "./expand-path-with-tilde";
 
 describe("Expand path with tilde", () => {
   it("expands path with tilde to home directory", () => {

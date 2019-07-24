@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
-import expandPathWithTilde from "../utilities/expand-path-with-tilde";
+import { expandPathWithTilde } from "../utilities/expand-path-with-tilde";
 
 export function outputFile(
   outDir: string,
