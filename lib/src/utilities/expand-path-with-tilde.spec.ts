@@ -6,7 +6,7 @@ describe("Expand tilde", () => {
     expect(expandPathWithTilde('~/test/dir')).toBe(`${os.homedir()}/test/dir`);
   })
 
-  it('does not expand invalid path with tilde', () => {
+  it('does not expand path with tilde if not prefixed properly', () => {
     expect(expandPathWithTilde('~test/dir')).toBe(`~test/dir`);
   })
 

@@ -1,5 +1,11 @@
 import os from 'os';
 
 export default function expandPathWithTilde(path: string) {
-  return path.replace(/^~(?=\/|\\)/, os.homedir());
+  const homeDir = os.homedir();
+
+  if (!homeDir) {
+    return path;
+  }
+
+  return path.replace(/^~(?=\/|\\)/, homeDir);
 }
