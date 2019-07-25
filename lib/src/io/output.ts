@@ -1,5 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
+import { expandPathWithTilde } from "../utilities/expand-path-with-tilde";
 
 export function outputFile(
   outDir: string,
@@ -7,7 +8,7 @@ export function outputFile(
   content: string,
   override = true
 ): boolean {
-  const destinationPath = path.join(outDir, relativePath);
+  const destinationPath = path.join(expandPathWithTilde(outDir), relativePath);
   fs.mkdirpSync(path.dirname(destinationPath));
   if (!override && fs.existsSync(destinationPath)) {
     // Skip.
