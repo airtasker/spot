@@ -2193,11 +2193,6 @@ deep-eql@^3.0.1:
   dependencies:
     type-detect "^4.0.0"
 
-deep-equal@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
-  integrity sha1-9dJgKStmDghO/0zbyfCK0yR0SLU=
-
 deep-extend@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
@@ -5022,19 +5017,17 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
-nock@11.0.0-beta.28:
-  version "11.0.0-beta.28"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-11.0.0-beta.28.tgz#ea5371dbdd9c525b11af2100c4ff7b95557dfe58"
-  integrity sha512-gEipjcIY8PnC4B2RuKQNn1wndLgWlz2yExU+z3fVOV6Nq3PBWArTdNI3m4qF0pyv1XKkJDJA0vvQui4EpyQJcg==
+nock@11.0.0-beta.30:
+  version "11.0.0-beta.30"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-11.0.0-beta.30.tgz#a4893cf7cc2e3b10dfc26baa4eef944d1a54c074"
+  integrity sha512-B07PXT0Qzch87mym1ZmFb+2zl/jY24WD+a87Uip9nXbm7M0hIovvEpzSHnTXBZ1auwTLGtxhulkMH63EJQCTCw==
   dependencies:
     chai "^4.1.2"
     debug "^4.1.0"
-    deep-equal "^1.0.0"
     json-stringify-safe "^5.0.1"
     lodash "^4.17.13"
     mkdirp "^0.5.0"
     propagate "^2.0.0"
-    qs "^6.5.1"
 
 node-fetch-h2@^2.3.0:
   version "2.3.0"
