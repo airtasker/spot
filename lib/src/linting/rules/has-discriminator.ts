@@ -1,6 +1,6 @@
 import { flatten, negate } from "lodash";
 import { extractEndpointTypes } from "../../utilities/extract-endpoint-types";
-import { extractNestedUnionTypes } from "../../utilities/extract-union-types";
+import { extractNestedUnionTypes } from "../../utilities/extract-nested-types";
 import { inferDiscriminator } from "../../utilities/infer-discriminator";
 import { isUnionOfSingleTypeWithNull } from "../../utilities/nullable-type";
 import { isUnionOfStringLiterals } from "../../utilities/string-literals-union";
@@ -14,9 +14,7 @@ export const hasDiscriminator: LintingRule = contract => {
     ...contract.types,
     ...contract.endpoints.map(extractEndpointTypes)
   ]);
-  const unionTypes = flatten(
-    topLevelTypes.map(t => extractNestedUnionTypes(t.type, t.name))
-  );
+  const unionTypes = flatten(topLevelTypes.map(extractNestedUnionTypes));
   return unionTypes
     .filter(negate(isUnionOfSingleTypeWithNull))
     .filter(negate(isUnionOfStringLiterals))

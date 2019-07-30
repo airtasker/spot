@@ -2,15 +2,10 @@ import { compact } from "lodash";
 import { Locatable } from "../models/locatable";
 import { EndpointNode, TypeNode } from "../models/nodes";
 
-export function extractEndpointTypes(
+export function extractResponseTypes(
   endpoint: Locatable<EndpointNode>
 ): TypeNode[] {
   return compact([
-    endpoint.value.request &&
-      endpoint.value.request.value.body && {
-        name: `${endpoint.value.name.value} (request body)`,
-        type: endpoint.value.request.value.body.value.type
-      },
     endpoint.value.defaultResponse &&
       endpoint.value.defaultResponse.value.body && {
         name: `${endpoint.value.name.value} (default response body)`,
@@ -24,4 +19,22 @@ export function extractEndpointTypes(
         }
     )
   ]);
+}
+
+export function extractRequestTypes(
+  endpoint: Locatable<EndpointNode>
+): TypeNode[] {
+  return compact([
+    endpoint.value.request &&
+      endpoint.value.request.value.body && {
+        name: `${endpoint.value.name.value} (request body)`,
+        type: endpoint.value.request.value.body.value.type
+      }
+  ]);
+}
+
+export function extractEndpointTypes(
+  endpoint: Locatable<EndpointNode>
+): TypeNode[] {
+  return [...extractRequestTypes(endpoint), ...extractResponseTypes(endpoint)];
 }
