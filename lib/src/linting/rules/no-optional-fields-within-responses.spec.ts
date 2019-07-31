@@ -2,7 +2,6 @@ import { HttpMethod } from "../../models/http";
 import {
   ApiNode,
   BodyNode,
-  DefaultResponseNode,
   EndpointNode,
   ResponseNode
 } from "../../models/nodes";
@@ -12,7 +11,6 @@ import {
   NULL,
   objectType,
   STRING,
-  TypeKind,
   unionType
 } from "../../models/types";
 import { fakeLocatable } from "../../spec-helpers/fake-locatable";
@@ -81,7 +79,7 @@ describe("rule: no optional fields within responses", () => {
     expect(errors).toEqual([]);
   });
 
-  test("rejects a response object when an optional field of type string is not nullable", () => {
+  test("rejects a response object when a field is optional instead of nullable", () => {
     const errors = noOptionalFieldsWithinResponses({
       api: fakeLocatable<ApiNode>({
         name: fakeLocatable("example-api")
@@ -120,7 +118,7 @@ describe("rule: no optional fields within responses", () => {
     ]);
   });
 
-  test("rejects a nested response object when an optional field of type enum is not nullable", () => {
+  test("rejects a nested response object when a field is optional instead of nullable", () => {
     const errors = noOptionalFieldsWithinResponses({
       api: fakeLocatable<ApiNode>({
         name: fakeLocatable("example-api")
@@ -164,7 +162,7 @@ describe("rule: no optional fields within responses", () => {
       },
       {
         message:
-          "The object type `listUsers (response body for status 201).data` defines an optional property that is not nullable. Use nullable instead."
+          "The object type `listUsers (response body for status 201).data` defines an optional property. Use nullable instead."
       }
     ]);
   });
