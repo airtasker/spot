@@ -12,7 +12,7 @@ const hasOptionalProperties = (typeNode: TypeNode<ObjectType>) =>
 /**
  * Checks fields at any level in optional responses are nullable
  */
-export const noOptionalFieldsWithinResponses: LintingRule = contract => {
+export const noOmittableFieldsWithinResponses: LintingRule = contract => {
   const extractObjectTypes = (t: TypeNode[]) =>
     t.map((type: TypeNode) => extractNestedObjectTypes(type, contract.types));
 

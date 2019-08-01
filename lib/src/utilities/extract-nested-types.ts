@@ -4,6 +4,9 @@ import { TypeNode } from "../models/nodes";
 import { ObjectType, TypeKind, UnionType } from "../models/types";
 import { resolveType } from "../verifiers/utilities/type-resolver";
 
+/**
+ * Recursively traverse the Types tree, find and group union types definitions into an flat array
+ */
 export function extractNestedUnionTypes({
   type,
   name = ""
@@ -64,7 +67,7 @@ export function maybeResolveRef(
     const unreferencedType = resolveType(typeNode.type, typeStore);
 
     return {
-      name,
+      name: typeNode.name,
       type: unreferencedType
     };
   } catch (e) {
@@ -73,9 +76,12 @@ export function maybeResolveRef(
   }
 }
 
+/**
+ * Recursively traverse the Types tree, find, resolve references, and group objects types definitions into an flat array
+ */
 export function extractNestedObjectTypes(
   typeNode: TypeNode,
-  typeStore: TypeNode[] = []
+  typeStore: TypeNode[]
 ): Array<TypeNode<ObjectType>> {
   const { type, name } = typeNode;
   switch (type.kind) {
@@ -104,21 +110,27 @@ export function extractNestedObjectTypes(
           type
         },
         ...type.properties.map(property =>
-          extractNestedObjectTypes({
-            type: property.type,
-            name: name + "." + property.name
-          })
+          extractNestedObjectTypes(
+            {
+              type: property.type,
+              name: name + "." + property.name
+            },
+            typeStore
+          )
         )
       ]);
     case TypeKind.ARRAY:
-      return extractNestedObjectTypes({ type: type.elements, name });
+      return extractNestedObjectTypes({ type: type.elements, name }, typeStore);
     case TypeKind.UNION:
       return flatten(
         type.types.map((possibleType, index) =>
-          extractNestedObjectTypes({
-            type: possibleType,
-            name: `${name}[${index}]`
-          })
+          extractNestedObjectTypes(
+            {
+              type: possibleType,
+              name: `${name}[${index}]`
+            },
+            typeStore
+          )
         )
       );
     default:
