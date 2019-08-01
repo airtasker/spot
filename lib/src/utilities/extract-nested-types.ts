@@ -5,7 +5,7 @@ import { ObjectType, TypeKind, UnionType } from "../models/types";
 import { resolveType } from "../verifiers/utilities/type-resolver";
 
 /**
- * Recursively traverse the Types tree, find and group union types definitions into an flat array
+ * Recursively traverse the Types tree, find and group union types definitions into a flat array.
  */
 export function extractNestedUnionTypes({
   type,
@@ -63,21 +63,18 @@ export function maybeResolveRef(
     return typeNode;
   }
 
-  try {
-    const unreferencedType = resolveType(typeNode.type, typeStore);
+  const unreferencedType = resolveType(typeNode.type, typeStore);
 
-    return {
-      name: typeNode.name,
-      type: unreferencedType
-    };
-  } catch (e) {
-    // Bubble up exception
-    throw e;
-  }
+  return {
+    name: typeNode.name,
+    type: unreferencedType
+  };
 }
 
 /**
- * Recursively traverse the Types tree, find, resolve references, and group objects types definitions into an flat array
+ * Recursively traverse the Types tree, find and group union types definitions into a flat array.
+ *
+ * Note: Type references are not traversed.
  */
 export function extractNestedObjectTypes(
   typeNode: TypeNode,

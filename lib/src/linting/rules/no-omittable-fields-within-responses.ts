@@ -22,11 +22,9 @@ export const noOmittableFieldsWithinResponses: LintingRule = contract => {
     flatten
   );
 
-  const types = flatten(contract.endpoints.map(extractTypes)) as Array<
-    TypeNode<ObjectType>
-  >;
+  const types = flatten(contract.endpoints.map(extractTypes));
 
   return types.filter(hasOptionalProperties).map(typeNode => ({
-    message: `The object type \`${typeNode.name}\` defines an optional property. Use nullable instead.`
+    message: `The object type \`${typeNode.name}\` defines an omittable property. Use nullable instead.`
   }));
 };

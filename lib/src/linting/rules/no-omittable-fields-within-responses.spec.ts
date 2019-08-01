@@ -97,7 +97,7 @@ describe("rule: no omittable fields within responses", () => {
     expect(errors).toEqual([]);
   });
 
-  test("rejects a response object when a field is optional instead of nullable", () => {
+  test("rejects a response object when a field is omittable instead of nullable", () => {
     const errors = noOmittableFieldsWithinResponses({
       api: fakeLocatable<ApiNode>({
         name: fakeLocatable("example-api")
@@ -131,12 +131,12 @@ describe("rule: no omittable fields within responses", () => {
     expect(errors).toEqual([
       {
         message:
-          "The object type `listUsers (response body for status 201)` defines an optional property. Use nullable instead."
+          "The object type `listUsers (response body for status 201)` defines an omittable property. Use nullable instead."
       }
     ]);
   });
 
-  test("rejects a nested response object when a field is optional instead of nullable", () => {
+  test("rejects a nested response object when a field is omittable instead of nullable", () => {
     const errors = noOmittableFieldsWithinResponses({
       api: fakeLocatable<ApiNode>({
         name: fakeLocatable("example-api")
@@ -176,12 +176,12 @@ describe("rule: no omittable fields within responses", () => {
     expect(errors).toEqual([
       {
         message:
-          "The object type `listUsers (response body for status 201).data` defines an optional property. Use nullable instead."
+          "The object type `listUsers (response body for status 201).data` defines an omittable property. Use nullable instead."
       }
     ]);
   });
 
-  test("rejects a response object with a reference when a field is optional instead of nullable", () => {
+  test("rejects a response object with a reference when a field is omittable instead of nullable", () => {
     const errors = noOmittableFieldsWithinResponses({
       api: fakeLocatable<ApiNode>({
         name: fakeLocatable("example-api")
@@ -220,7 +220,7 @@ describe("rule: no omittable fields within responses", () => {
     expect(errors).toEqual([
       {
         message:
-          "The object type `listUsers (response body for status 201)` defines an optional property. Use nullable instead."
+          "The object type `listUsers (response body for status 201)` defines an omittable property. Use nullable instead."
       }
     ]);
   });

@@ -23,18 +23,22 @@ export function extractResponseTypes(
 
 export function extractRequestTypes(
   endpoint: Locatable<EndpointNode>
-): TypeNode[] {
-  return compact([
-    endpoint.value.request &&
+): TypeNode | null {
+  return (
+    (endpoint.value.request &&
       endpoint.value.request.value.body && {
         name: `${endpoint.value.name.value} (request body)`,
         type: endpoint.value.request.value.body.value.type
-      }
-  ]);
+      }) ||
+    null
+  );
 }
 
 export function extractEndpointTypes(
   endpoint: Locatable<EndpointNode>
 ): TypeNode[] {
-  return [...extractRequestTypes(endpoint), ...extractResponseTypes(endpoint)];
+  return compact([
+    ...extractResponseTypes(endpoint),
+    extractRequestTypes(endpoint)
+  ]);
 }
