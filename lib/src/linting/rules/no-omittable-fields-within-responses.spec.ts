@@ -88,7 +88,7 @@ describe("rule: no omittable fields within responses", () => {
             {
               name: "slug",
               type: STRING,
-              optional: false,
+              optional: false
             }
           ])
         }
