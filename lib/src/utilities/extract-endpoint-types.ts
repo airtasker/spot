@@ -21,7 +21,7 @@ export function extractResponseTypes(
   ]);
 }
 
-export function extractRequestTypes(
+export function extractRequestType(
   endpoint: Locatable<EndpointNode>
 ): TypeNode | null {
   return (
@@ -39,6 +39,6 @@ export function extractEndpointTypes(
 ): TypeNode[] {
   return compact([
     ...extractResponseTypes(endpoint),
-    extractRequestTypes(endpoint)
+    extractRequestType(endpoint)
   ]);
 }

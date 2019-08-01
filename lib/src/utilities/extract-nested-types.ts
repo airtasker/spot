@@ -4,22 +4,6 @@ import { TypeNode } from "../models/nodes";
 import { ObjectType, TypeKind, UnionType } from "../models/types";
 import { resolveType } from "../verifiers/utilities/type-resolver";
 
-export function maybeResolveRef(
-  typeNode: TypeNode,
-  typeStore: TypeNode[]
-): TypeNode {
-  if (!typeStore.length) {
-    return typeNode;
-  }
-
-  const unreferencedType = resolveType(typeNode.type, typeStore);
-
-  return {
-    name: typeNode.name,
-    type: unreferencedType
-  };
-}
-
 /**
  * Recursively traverse the Types tree, find and group union types definitions into a flat array.
  */
@@ -42,7 +26,7 @@ export function extractNestedUnionTypes(
     case TypeKind.NUMBER_LITERAL:
     case TypeKind.TYPE_REFERENCE:
       return extractNestedUnionTypes(
-        maybeResolveRef({ type, name }, typeStore),
+        { name, type: resolveType(type, typeStore) },
         typeStore
       );
     case TypeKind.OBJECT:
@@ -104,7 +88,7 @@ export function extractNestedObjectTypes(
       return [];
     case TypeKind.TYPE_REFERENCE:
       return extractNestedObjectTypes(
-        maybeResolveRef({ type, name }, typeStore),
+        { name, type: resolveType(type, typeStore) },
         typeStore
       );
     case TypeKind.OBJECT:
