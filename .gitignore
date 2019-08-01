@@ -2,6 +2,7 @@
 *-debug.log
 *-error.log
 /.nyc_output
+/.vscode
 /build
 /dist
 /package-lock.json
