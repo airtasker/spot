@@ -9,7 +9,7 @@ export const availableRules = {
   "has-response-payload": hasResponsePayload,
   "has-discriminator": hasDiscriminator,
   "no-nested-types-within-unions": noNestedTypesWithinUnions,
-  "no-omittable-fields-within-responses": noOmittableFieldsWithinResponses,
+  "no-omittable-fields-within-responses": noOmittableFieldsWithinResponses
 };
 
 export type RuleName = keyof typeof availableRules;

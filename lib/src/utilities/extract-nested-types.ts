@@ -24,6 +24,7 @@ export function extractNestedUnionTypes(
     case TypeKind.BOOLEAN_LITERAL:
     case TypeKind.STRING_LITERAL:
     case TypeKind.NUMBER_LITERAL:
+      return [];
     case TypeKind.TYPE_REFERENCE:
       return extractNestedUnionTypes(
         { name, type: resolveType(type, typeStore) },

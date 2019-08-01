@@ -14,7 +14,9 @@ export const hasDiscriminator: LintingRule = contract => {
     ...contract.types,
     ...contract.endpoints.map(extractEndpointTypes)
   ]);
-  const unionTypes = flatten(topLevelTypes.map(extractNestedUnionTypes));
+  const unionTypes = flatten(
+    topLevelTypes.map(t => extractNestedUnionTypes(t, contract.types))
+  );
   return unionTypes
     .filter(negate(isUnionOfSingleTypeWithNull))
     .filter(negate(isUnionOfStringLiterals))
