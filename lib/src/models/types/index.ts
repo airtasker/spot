@@ -13,7 +13,12 @@ import {
   PrimitiveLiteral,
   StringLiteral
 } from "./primitive-literals";
-import { FloatType, PrimitiveType, StringType, NullType } from "./primitive-types";
+import {
+  FloatType,
+  NullType,
+  PrimitiveType,
+  StringType
+} from "./primitive-types";
 import { ReferenceType, UnionType } from "./special-types";
 
 export * from "./custom-primitive-types";
