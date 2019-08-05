@@ -3,6 +3,7 @@ import { hasRequestPayload } from "./rules/has-request-payload";
 import { hasResponsePayload } from "./rules/has-response-payload";
 import { noNestedTypesWithinUnions } from "./rules/no-nested-types-within-unions";
 import { noNullableArrays } from "./rules/no-nullable-arrays";
+import { noNullableFieldsWithinRequests } from "./rules/no-nullable-fields-within-requests";
 import { noOmittableFieldsWithinResponses } from "./rules/no-omittable-fields-within-responses";
 import { oneSuccessResponsePerEndpoint } from "./rules/one-success-response-per-endpoint";
 
@@ -13,6 +14,7 @@ export const availableRules = {
   "no-nested-types-within-unions": noNestedTypesWithinUnions,
   "no-nullable-arrays": noNullableArrays,
   "no-omittable-fields-within-responses": noOmittableFieldsWithinResponses,
+  "no-nullable-fields-within-requests": noNullableFieldsWithinRequests,
   "one-success-response-per-endpoint": oneSuccessResponsePerEndpoint
 };
 

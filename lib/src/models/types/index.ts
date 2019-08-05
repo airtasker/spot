@@ -13,7 +13,7 @@ import {
   PrimitiveLiteral,
   StringLiteral
 } from "./primitive-literals";
-import { FloatType, PrimitiveType, StringType } from "./primitive-types";
+import { FloatType, PrimitiveType, StringType, NullType } from "./primitive-types";
 import { ReferenceType, UnionType } from "./special-types";
 
 export * from "./custom-primitive-types";
@@ -62,4 +62,8 @@ export function isUnionType(type: DataType): type is UnionType {
 
 export function isReferenceType(type: DataType): type is ReferenceType {
   return type.kind === TypeKind.TYPE_REFERENCE;
+}
+
+export function isNullType(type: DataType): type is NullType {
+  return type.kind === TypeKind.NULL;
 }
