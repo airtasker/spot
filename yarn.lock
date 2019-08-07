@@ -6117,10 +6117,10 @@ redeyed@~2.1.0:
   dependencies:
     esprima "~4.0.0"
 
-redoc@^2.0.0-rc.12:
-  version "2.0.0-rc.12"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.12.tgz#6fffe046756afb93733433942262b432d4a3fa41"
-  integrity sha512-W4vZ3Xxcoy8GZsrWhhFwVFysCLziEDcu7R6rV28Z24HFl/WLCMxkC6t4a1orePY1p29BUqjFo4DIrK6v97RWpg==
+redoc@^2.0.0-rc.14:
+  version "2.0.0-rc.14"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.14.tgz#c5610d5dd2d4641f06c75df0b9a53da72dab11e0"
+  integrity sha512-hWYLI1kxwTDMx9ZbKP0GoQzQC6ffNV49lLrWxgFXAcDspWzblRNRRi5b4LUBOAsrPD0kHiY6hfZgvDqKSs13Tg==
   dependencies:
     classnames "^2.2.6"
     decko "^1.2.0"

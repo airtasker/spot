@@ -54,7 +54,7 @@
     "prettier": "^1.18.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "redoc": "^2.0.0-rc.12",
+    "redoc": "^2.0.0-rc.14",
     "speccy": "^0.11.0",
     "styled-components": "^4.3.2",
     "swagger2openapi": "^5.3.1",
