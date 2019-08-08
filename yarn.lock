@@ -1970,6 +1970,11 @@ core-js@^2.5.7:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
   integrity sha512-klh/kDpwX8hryYL14M9w/xei6vrv6sE8gTHDG7/T/+SEovB/G4ejwcfE/CBzO6Edsu+OETZMZ3wcX/EjUkrl5A==
 
+core-js@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.4.tgz#3a2837fc48e582e1ae25907afcd6cf03b0cc7a07"
+  integrity sha512-YNZN8lt82XIMLnLirj9MhKDFZHalwzzrL9YLt6eb0T5D0EDl4IQ90IGkua8mHbnxNrkj1d8hbdizMc0Qmg1WnQ==
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -6117,10 +6122,10 @@ redeyed@~2.1.0:
   dependencies:
     esprima "~4.0.0"
 
-redoc@^2.0.0-rc.12:
-  version "2.0.0-rc.12"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.12.tgz#6fffe046756afb93733433942262b432d4a3fa41"
-  integrity sha512-W4vZ3Xxcoy8GZsrWhhFwVFysCLziEDcu7R6rV28Z24HFl/WLCMxkC6t4a1orePY1p29BUqjFo4DIrK6v97RWpg==
+redoc@^2.0.0-rc.14:
+  version "2.0.0-rc.14"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.14.tgz#c5610d5dd2d4641f06c75df0b9a53da72dab11e0"
+  integrity sha512-hWYLI1kxwTDMx9ZbKP0GoQzQC6ffNV49lLrWxgFXAcDspWzblRNRRi5b4LUBOAsrPD0kHiY6hfZgvDqKSs13Tg==
   dependencies:
     classnames "^2.2.6"
     decko "^1.2.0"
