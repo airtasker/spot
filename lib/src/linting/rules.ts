@@ -8,13 +8,13 @@ import { noOmittableFieldsWithinResponses } from "./rules/no-omittable-fields-wi
 import { oneSuccessResponsePerEndpoint } from "./rules/one-success-response-per-endpoint";
 
 export const availableRules = {
+  "has-discriminator": hasDiscriminator,
   "has-request-payload": hasRequestPayload,
   "has-response-payload": hasResponsePayload,
-  "has-discriminator": hasDiscriminator,
   "no-nested-types-within-unions": noNestedTypesWithinUnions,
   "no-nullable-arrays": noNullableArrays,
-  "no-omittable-fields-within-responses": noOmittableFieldsWithinResponses,
   "no-nullable-fields-within-requests": noNullableFieldsWithinRequests,
+  "no-omittable-fields-within-responses": noOmittableFieldsWithinResponses,
   "one-success-response-per-endpoint": oneSuccessResponsePerEndpoint
 };
 

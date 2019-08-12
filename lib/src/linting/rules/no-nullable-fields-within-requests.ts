@@ -18,10 +18,10 @@ export const noNullableFieldsWithinRequests: LintingRule = contract => {
 
   const types = flatten(contract.endpoints.map(extractTypes));
 
-  const filterNullable = (t: TypeNode<UnionType>) =>
+  const nullablePredicate = (t: TypeNode<UnionType>) =>
     t.type.types.find(possibleType => isNullType(possibleType));
 
-  return types.filter(filterNullable).map(typeNode => ({
-    message: `The object type \`${typeNode.name}\` defines an nullable property. Use omittable instead.`
+  return types.filter(nullablePredicate).map(typeNode => ({
+    message: `The object type \`${typeNode.name}\` defines a nullable property. Use omittable instead.`
   }));
 };

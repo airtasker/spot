@@ -40,7 +40,7 @@ describe("rule: no nullable fields within request body", () => {
           }),
           responses: []
         }),
-        // Endpoint with reference type in response payload
+        // Endpoint with reference type in request payload
         fakeLocatable<EndpointNode>({
           name: fakeLocatable("createUser"),
           method: fakeLocatable<HttpMethod>("POST"),
@@ -52,13 +52,7 @@ describe("rule: no nullable fields within request body", () => {
               type: objectType([
                 {
                   name: "data",
-                  type: objectType([
-                    {
-                      name: "slug",
-                      type: STRING,
-                      optional: true
-                    }
-                  ]),
+                  type: referenceType("requestBody201", "", TypeKind.OBJECT),
                   optional: false
                 }
               ])
@@ -69,7 +63,7 @@ describe("rule: no nullable fields within request body", () => {
       ],
       types: [
         {
-          name: "responseBody201",
+          name: "requestBody201",
           type: objectType([
             {
               name: "slug",
@@ -89,7 +83,7 @@ describe("rule: no nullable fields within request body", () => {
         name: fakeLocatable("example-api")
       }),
       endpoints: [
-        // Endpoint with response payload
+        // Endpoint with request payload
         fakeLocatable<EndpointNode>({
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
@@ -126,7 +120,7 @@ describe("rule: no nullable fields within request body", () => {
         name: fakeLocatable("example-api")
       }),
       endpoints: [
-        // Endpoint with response payload
+        // Endpoint with request payload
         fakeLocatable<EndpointNode>({
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
@@ -169,7 +163,7 @@ describe("rule: no nullable fields within request body", () => {
         name: fakeLocatable("example-api")
       }),
       endpoints: [
-        // Endpoint with response payload
+        // Endpoint with request payload
         fakeLocatable<EndpointNode>({
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
