@@ -24,7 +24,7 @@ describe("rule: no nullable fields within request body", () => {
         name: fakeLocatable("example-api")
       }),
       endpoints: [
-        // Endpoint with response payload
+        // Endpoint with inline request payload
         fakeLocatable<EndpointNode>({
           name: fakeLocatable("listUsers"),
           method: fakeLocatable<HttpMethod>("GET"),
@@ -109,50 +109,7 @@ describe("rule: no nullable fields within request body", () => {
     expect(errors).toEqual([
       {
         message:
-          "The object type `listUsers (request body).id` defines an nullable property. Use omittable instead."
-      }
-    ]);
-  });
-
-  test("rejects a request body object when a field is nullable instead of omittable", () => {
-    const errors = noNullableFieldsWithinRequests({
-      api: fakeLocatable<ApiNode>({
-        name: fakeLocatable("example-api")
-      }),
-      endpoints: [
-        // Endpoint with request payload
-        fakeLocatable<EndpointNode>({
-          name: fakeLocatable("listUsers"),
-          method: fakeLocatable<HttpMethod>("GET"),
-          path: fakeLocatable("/users"),
-          isDraft: false,
-          tests: [],
-          request: fakeLocatable<RequestNode>({
-            body: fakeLocatable<BodyNode>({
-              type: objectType([
-                {
-                  name: "data",
-                  type: objectType([
-                    {
-                      name: "slug",
-                      type: unionType([STRING, NULL]),
-                      optional: false
-                    }
-                  ]),
-                  optional: false
-                }
-              ])
-            })
-          }),
-          responses: []
-        })
-      ],
-      types: []
-    });
-    expect(errors).toEqual([
-      {
-        message:
-          "The object type `listUsers (request body).data.slug` defines an nullable property. Use omittable instead."
+          "The object type `listUsers (request body).id` defines a nullable property. Use omittable instead."
       }
     ]);
   });
@@ -194,7 +151,7 @@ describe("rule: no nullable fields within request body", () => {
     expect(errors).toEqual([
       {
         message:
-          "The object type `listUsers (request body).slug` defines an nullable property. Use omittable instead."
+          "The object type `listUsers (request body).slug` defines a nullable property. Use omittable instead."
       }
     ]);
   });
