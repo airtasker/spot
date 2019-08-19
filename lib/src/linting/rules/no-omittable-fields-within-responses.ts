@@ -14,7 +14,9 @@ const hasOptionalProperties = (typeNode: TypeNode<ObjectType>) =>
  */
 export const noOmittableFieldsWithinResponses: LintingRule = contract => {
   const extractObjectTypes = (t: TypeNode[]) =>
-    t.map((type: TypeNode) => extractNestedObjectTypes(type, contract.types));
+    t.map(
+      (type: TypeNode) => t && extractNestedObjectTypes(type, contract.types)
+    );
 
   const extractTypes = flow(
     extractResponseTypes,

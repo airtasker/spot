@@ -12,7 +12,7 @@ import { extractNestedUnionTypes } from "../../utilities/extract-nested-types";
 export const noNullableFieldsWithinRequests: LintingRule = contract => {
   const extractTypes = flow(
     extractRequestType,
-    (t: TypeNode) => extractNestedUnionTypes(t, contract.types),
+    (t: TypeNode) => t && extractNestedUnionTypes(t, contract.types),
     flatten
   );
 
