@@ -231,7 +231,9 @@ function parseIndexedAccessType(typeNode: IndexedAccessTypeNode): TypeNode {
 
   if (TypeGuards.isIndexedAccessTypeNode(object)) {
     // FIXME: add support for nested indexed access types
-    throw new Error("indexed access type error: nested indexed access type unsupported");
+    throw new Error(
+      "indexed access type error: nested indexed access type unsupported"
+    );
   }
 
   if (!TypeGuards.isTypeReferenceNode(object)) {
@@ -254,7 +256,9 @@ function parseIndexedAccessType(typeNode: IndexedAccessTypeNode): TypeNode {
     throw new Error("indexed access type error");
   }
 
-  const valueDeclaration = declaration.getPropertyOrThrow(literal.getLiteralText());
+  const valueDeclaration = declaration.getPropertyOrThrow(
+    literal.getLiteralText()
+  );
 
   if (!TypeGuards.isPropertySignature(valueDeclaration)) {
     throw new Error("expected property signature");
