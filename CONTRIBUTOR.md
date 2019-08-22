@@ -18,9 +18,7 @@
         <pre lang="typescript">
 @api({ name: "CompanyAPI" })
 class MyCompanyAPI {
-  //...
-}
-        </pre>
+^</pre>
       </td>
     </tr>
   </tbody>
