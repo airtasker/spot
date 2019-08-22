@@ -322,6 +322,24 @@ describe("type node parser", () => {
         location: expect.stringMatching(/main\.ts$/)
       });
     });
+
+    test("parses indexed access type", () => {
+      const typeNode = createTypeNode("AliasedIndexedAccessType");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.STRING,
+        name: "AliasedIndexedAccessType",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    })
+
+    // FIXME: add support for nested indexed access types
+    test("throws on nested indexed access type", () => {
+      const typeNode = createTypeNode("AliasedNestedIndexedAccessType");
+
+      expect(() => parseTypeNode(typeNode)).toThrowError("indexed access type error: nested indexed access type unsupported");
+    })
   });
 });
 
@@ -467,6 +485,12 @@ function createTypeNode(...types: string[]): TypeNode {
       age: number;
     }
 
+    interface NestedObjectInterface {
+      a: {
+        b: string;
+      }
+    }
+
     /** Complex interface description */
     interface ComplexInterface extends ComplexInterfaceExtension {
       /** Name of person */
@@ -501,6 +525,8 @@ function createTypeNode(...types: string[]): TypeNode {
     type TrueAlias = true;
     type AliasedCustomPrimitive = Integer;
     type ChainedAlias = AliasedCustomPrimitive;
+    type AliasedIndexedAccessType = ObjectInterface['name'];
+    type AliasedNestedIndexedAccessType = NestedObjectInterface['a']['b'];
   `;
   const sourceFile = createSourceFile(
     { path: "main", content },

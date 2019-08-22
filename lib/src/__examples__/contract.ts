@@ -14,7 +14,7 @@ import {
   test
 } from "@airtasker/spot";
 import "./contract-endpoint";
-import { Address, ErrorBody, UserBody } from "./models";
+import { Address, Company, ErrorBody, UserBody } from "./models";
 
 /** This is the company API. It does cool things */
 @api({ name: "company-api" })
@@ -35,7 +35,7 @@ class CreateUser {
     @pathParams
     pathParams: {
       /** company identifier */
-      companyId: String;
+      companyId: Company['id'];
     },
     @headers
     headers: {

@@ -1,5 +1,6 @@
 import {
   ArrayTypeNode,
+  IndexedAccessTypeNode,
   InterfaceDeclaration,
   LiteralTypeNode,
   TypeGuards,
@@ -65,6 +66,8 @@ export function parseTypeNode(typeNode: TypeNode): DataType {
     return parseObjectLiteralType(typeNode);
   } else if (TypeGuards.isUnionTypeNode(typeNode)) {
     return parseUnionType(typeNode);
+  } else if (TypeGuards.isIndexedAccessTypeNode(typeNode)) {
+    return parseTypeNode(parseIndexedAccessType(typeNode));
   } else {
     throw new Error("unknown type");
   }
@@ -215,6 +218,49 @@ function parseUnionType(typeNode: UnionTypeNode): DataType {
   } else {
     throw new Error("union type error");
   }
+}
+
+/**
+ * Parse an indexed access type node.
+ *
+ * @param typeNode index access type node
+ */
+function parseIndexedAccessType(typeNode: IndexedAccessTypeNode): TypeNode {
+  const object = typeNode.getObjectTypeNode();
+  const index = typeNode.getIndexTypeNode();
+
+  if (TypeGuards.isIndexedAccessTypeNode(object)) {
+    // FIXME: add support for nested indexed access types
+    throw new Error("indexed access type error: nested indexed access type unsupported");
+  }
+
+  if (!TypeGuards.isTypeReferenceNode(object)) {
+    throw new Error("indexed access type error");
+  }
+
+  const declaration = getTargetDeclarationFromTypeReference(object);
+
+  if (!TypeGuards.isInterfaceDeclaration(declaration)) {
+    throw new Error("indexed access type error");
+  }
+
+  if (!TypeGuards.isLiteralTypeNode(index)) {
+    throw new Error("indexed access type error");
+  }
+
+  const literal = index.getLiteral();
+
+  if (!TypeGuards.isStringLiteral(literal)) {
+    throw new Error("indexed access type error");
+  }
+
+  const valueDeclaration = declaration.getPropertyOrThrow(literal.getLiteralText());
+
+  if (!TypeGuards.isPropertySignature(valueDeclaration)) {
+    throw new Error("expected property signature");
+  }
+
+  return valueDeclaration.getTypeNodeOrThrow();
 }
 
 /**
