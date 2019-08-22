@@ -21,5 +21,15 @@ class MyCompanyAPI {
 ^</pre>
       </td>
     </tr>
+    <tr>
+      <td>
+        <pre>api-decorator</pre>
+      </td>
+      <td>
+        <pre lang="typescript">
+@api({ name: "CompanyAPI" })
+^</pre>
+      </td>
+    </tr>
   </tbody>
 </table>
