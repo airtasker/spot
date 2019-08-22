@@ -25,7 +25,7 @@ class GetUser {
     @pathParams
     pathParams: {
       /** company identifier */
-      companyId: Company['id'];
+      companyId: Company["id"];
       /** user identifier */
       userId: String;
     },

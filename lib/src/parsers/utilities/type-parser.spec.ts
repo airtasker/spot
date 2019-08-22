@@ -332,14 +332,16 @@ describe("type node parser", () => {
         name: "AliasedIndexedAccessType",
         location: expect.stringMatching(/main\.ts$/)
       });
-    })
+    });
 
     // FIXME: add support for nested indexed access types
     test("throws on nested indexed access type", () => {
       const typeNode = createTypeNode("AliasedNestedIndexedAccessType");
 
-      expect(() => parseTypeNode(typeNode)).toThrowError("indexed access type error: nested indexed access type unsupported");
-    })
+      expect(() => parseTypeNode(typeNode)).toThrowError(
+        "indexed access type error: nested indexed access type unsupported"
+      );
+    });
   });
 });
 

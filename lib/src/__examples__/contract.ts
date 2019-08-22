@@ -35,7 +35,7 @@ class CreateUser {
     @pathParams
     pathParams: {
       /** company identifier */
-      companyId: Company['id'];
+      companyId: Company["id"];
     },
     @headers
     headers: {
