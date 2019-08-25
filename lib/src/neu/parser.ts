@@ -12,13 +12,14 @@ import { EndpointConfig } from "../syntax/endpoint";
 import { Contract, Endpoint } from "./definitions";
 import { LociTable } from "./locations";
 import {
-  extractDecoratorConfigOrThrow,
   findOneDecoratedClassOrThrow,
+  getDecoratorConfigOrThrow,
   getJsDoc,
   getObjLiteralProp,
   getObjLiteralPropOrThrow,
   getPropValueAsArrayOrThrow,
   getPropValueAsStringOrThrow,
+  getSelfAndLocalDependencies,
   isHttpMethod
 } from "./parser-helpers";
 
@@ -32,21 +33,18 @@ export function parse(sourcePath: string): Contract {
   // Validate that the project has no TypeScript syntax errors
   validateProject(project);
 
-  return parseRootSourceFile(sourceFile, project);
+  return parseRootSourceFile(sourceFile);
 }
 
 /**
  * Parse a root source file to return a contract.
  */
-function parseRootSourceFile(
-  file: SourceFile,
-  projectContext: Project
-): Contract {
+function parseRootSourceFile(file: SourceFile): Contract {
   const lociTable = new LociTable();
 
   const klass = findOneDecoratedClassOrThrow(file.getClasses(), "api");
   const decorator = klass.getDecoratorOrThrow("api");
-  const decoratorConfig = extractDecoratorConfigOrThrow(decorator);
+  const decoratorConfig = getDecoratorConfigOrThrow(decorator);
   const nameProp = getObjLiteralPropOrThrow<ApiConfig>(decoratorConfig, "name");
   const nameLiteral = getPropValueAsStringOrThrow(nameProp);
   const descriptionDoc = getJsDoc(klass);
@@ -59,12 +57,27 @@ function parseRootSourceFile(
     lociTable.addMorphNode(LociTable.apiDescriptionKey(), descriptionDoc);
   }
 
+  // Resolve all related files
+  const projectFiles = getSelfAndLocalDependencies(file);
+
+  // Parse all endpoints
+  const endpoints = projectFiles.reduce<Endpoint[]>(
+    (acc, currentFile) =>
+      acc.concat(
+        currentFile
+          .getClasses()
+          .filter(k => k.getDecorator("endpoint") !== undefined)
+          .map(k => parseEndpoint(k, lociTable))
+      ),
+    []
+  );
+
   return {
     name: nameLiteral.getLiteralText(),
     description: descriptionDoc && descriptionDoc.getComment(),
     types: [],
     security: {}, // TODO parse security
-    endpoints: []
+    endpoints
   };
 }
 
@@ -73,7 +86,7 @@ function parseEndpoint(
   lociTable: LociTable
 ): Endpoint {
   const decorator = klass.getDecoratorOrThrow("endpoint");
-  const decoratorConfig = extractDecoratorConfigOrThrow(decorator);
+  const decoratorConfig = getDecoratorConfigOrThrow(decorator);
   const endpointName = klass.getNameOrThrow();
   const methodProp = getObjLiteralPropOrThrow<EndpointConfig>(
     decoratorConfig,

@@ -1,16 +1,45 @@
 import {
+  ArrayLiteralExpression,
   ClassDeclaration,
   Decorator,
   JSDoc,
   JSDocableNode,
   ObjectLiteralExpression,
   PropertyAssignment,
+  SourceFile,
   StringLiteral,
   ts,
-  TypeGuards,
-  ArrayLiteralExpression
+  TypeGuards
 } from "ts-morph";
 import { HttpMethod } from "./definitions";
+
+// FILE HELPERS
+
+/**
+ * Retrieve all local dependencies of a file recursively including itself.
+ *
+ * @param file the source file
+ * @param visitedFiles
+ */
+export function getSelfAndLocalDependencies(
+  file: SourceFile,
+  visitedFiles: SourceFile[] = []
+): SourceFile[] {
+  return (
+    file
+      .getImportDeclarations()
+      // We only care about local imports.
+      .filter(id => id.getModuleSpecifierValue().startsWith("."))
+      .map(id => id.getModuleSpecifierSourceFileOrThrow())
+      .reduce<SourceFile[]>((acc, curr) => {
+        if (acc.some(f => f.getFilePath() === curr.getFilePath())) {
+          return acc;
+        } else {
+          return getSelfAndLocalDependencies(curr, acc);
+        }
+      }, visitedFiles.concat(file))
+  );
+}
 
 // CLASS HELPERS
 
@@ -20,7 +49,7 @@ export function findOneDecoratedClassOrThrow(
 ): ClassDeclaration {
   // find classes with particular decorator
   const targetKlasses = klasses.filter(
-    klass => klass.getDecorator(decorator) !== undefined
+    k => k.getDecorator(decorator) !== undefined
   );
   // expect only a single class
   if (targetKlasses.length !== 1) {
@@ -33,19 +62,14 @@ export function findOneDecoratedClassOrThrow(
 
 // DECORATOR HELPERS
 
-export function getDecoratorConfigProp<T>(
-  decorator: Decorator,
-  property: Extract<keyof T, string>
-): PropertyAssignment {
-  const config = extractDecoratorConfigOrThrow(decorator);
-  const configProperty = config.getPropertyOrThrow(property);
-  if (!TypeGuards.isPropertyAssignment(configProperty)) {
-    throw new Error("expected property assignment");
-  }
-  return configProperty;
-}
-
-export function extractDecoratorConfigOrThrow(
+/**
+ * Retrieve a decorator factory's configuration. The configuration is
+ * the first parameter of the decorator and is expected to be an object
+ * literal.
+ *
+ * @param decorator the source decorator
+ */
+export function getDecoratorConfigOrThrow(
   decorator: Decorator
 ): ObjectLiteralExpression {
   // expect a decorator factory
@@ -94,9 +118,9 @@ export function getObjLiteralProp<T>(
 }
 
 /**
- * Retrieves a property from an object literal expression. If provided,
- * the generic parameter will narrow down the available property names
- * allowed.
+ * Retrieves a property from an object literal expression or error. If
+ * provided, the generic parameter will narrow down the available
+ * property names allowed.
  *
  * @param objectLiteral a ts-morph object literal expression
  * @param propertyName name of the property
@@ -114,6 +138,11 @@ export function getObjLiteralPropOrThrow<T>(
 
 // PROPERTY HELPERS
 
+/**
+ * Retrieve a property's value as a string or error.
+ *
+ * @param property the source property
+ */
 export function getPropValueAsStringOrThrow(
   property: PropertyAssignment
 ): StringLiteral {
@@ -130,6 +159,12 @@ export function getPropValueAsArrayOrThrow(
 
 // JSDOC HELPERS
 
+/**
+ * Retrieve a JSDoc for a ts-morph node. The node is expected
+ * to have no more than one JSDoc.
+ *
+ * @param node a JSDocable ts-morph node
+ */
 export function getJsDoc(node: JSDocableNode): JSDoc | undefined {
   const jsDocs = node.getJsDocs();
   if (jsDocs.length > 1) {
@@ -137,11 +172,16 @@ export function getJsDoc(node: JSDocableNode): JSDoc | undefined {
   } else if (jsDocs.length === 1) {
     return jsDocs[0];
   }
-  return;
+  return undefined;
 }
 
 // HTTP HELPERS
 
+/**
+ * Determine if a HTTP method is a supported HttpMethod.
+ *
+ * @param method the method to check
+ */
 export function isHttpMethod(method: string): method is HttpMethod {
   switch (method) {
     case "GET":
