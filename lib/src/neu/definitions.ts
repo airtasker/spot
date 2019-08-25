@@ -21,34 +21,34 @@ export interface Endpoint {
   request?: Request;
 }
 
-interface Request {
+export interface Request {
   headers: Header[];
   pathParams: PathParam[];
   queryParams: QueryParam[];
-  body: Body;
+  body?: Body;
 }
 
-interface Header {
+export interface Header {
   name: string;
   description?: string;
-  type: BooleanType | StringType | Int32Type | Int64Type; // TODO: reference types?
+  type: Type; // BooleanType | StringType | Int32Type | Int64Type; // TODO: reference types?
   optional: boolean;
 }
 
-interface PathParam {
+export interface PathParam {
   name: string;
   description?: string;
-  type: StringType | Int32Type | Int64Type; // TODO: reference types?
+  type: Type; // StringType | Int32Type | Int64Type; // TODO: reference types?
 }
 
-interface QueryParam {
+export interface QueryParam {
   name: string;
   description?: string;
   type: Type; // TODO: narrow tpye
   optional: boolean;
 }
 
-interface Body {
+export interface Body {
   description?: string;
   type: Type;
 }

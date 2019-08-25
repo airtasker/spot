@@ -4,12 +4,16 @@ import {
   Decorator,
   JSDoc,
   JSDocableNode,
+  MethodDeclaration,
   ObjectLiteralExpression,
+  ParameterDeclaration,
   PropertyAssignment,
+  PropertySignature,
   SourceFile,
   StringLiteral,
   ts,
-  TypeGuards
+  TypeGuards,
+  TypeLiteralNode
 } from "ts-morph";
 import { HttpMethod } from "./definitions";
 
@@ -29,7 +33,9 @@ export function getSelfAndLocalDependencies(
     file
       .getImportDeclarations()
       // We only care about local imports.
-      .filter(id => id.getModuleSpecifierValue().startsWith("."))
+      .filter(id => id.isModuleSpecifierRelative())
+      // will throw on file with no import/export statements
+      // TODO: provide a warning
       .map(id => id.getModuleSpecifierSourceFileOrThrow())
       .reduce<SourceFile[]>((acc, curr) => {
         if (acc.some(f => f.getFilePath() === curr.getFilePath())) {
@@ -58,6 +64,49 @@ export function findOneDecoratedClassOrThrow(
     );
   }
   return targetKlasses[0];
+}
+
+// METHOD HELPERS
+
+/**
+ * Retrieve a parameter from a method declaration with a particular decorator.
+ *
+ * @param method method declaration
+ * @param decoratorName name of decorator to search for
+ */
+export function getParamWithDecorator(
+  method: MethodDeclaration,
+  decoratorName: string
+): ParameterDeclaration | undefined {
+  const matchingParams = method
+    .getParameters()
+    .filter(p => p.getDecorator(decoratorName) !== undefined);
+
+  if (matchingParams.length > 1) {
+    throw new Error(
+      `expected a decorator @${decoratorName} to be used only once, found ${matchingParams.length} usages`
+    );
+  }
+
+  return matchingParams.length === 1 ? matchingParams[0] : undefined;
+}
+
+// PARAMETER HELPERS
+
+/**
+ * Retrieve a parameter's type as a type literal or throw.
+ *
+ * @param parameter a parameter declaration
+ */
+export function getParameterTypeAsTypeLiteralOrThrow(
+  parameter: ParameterDeclaration
+): TypeLiteralNode {
+  // Request parameters are expected to be object literals
+  const typeNode = parameter.getTypeNodeOrThrow();
+  if (!TypeGuards.isTypeLiteralNode(typeNode)) {
+    throw new Error("expected parameter value to be an type literal object");
+  }
+  return typeNode;
 }
 
 // DECORATOR HELPERS
@@ -136,7 +185,7 @@ export function getObjLiteralPropOrThrow<T>(
   return property;
 }
 
-// PROPERTY HELPERS
+// PROPERTY SIGNATURE HELPERS
 
 /**
  * Retrieve a property's value as a string or error.
@@ -149,12 +198,31 @@ export function getPropValueAsStringOrThrow(
   return property.getInitializerIfKindOrThrow(ts.SyntaxKind.StringLiteral);
 }
 
+/**
+ * Retrieve a property's value as an array or error.
+ *
+ * @param property the source property
+ */
 export function getPropValueAsArrayOrThrow(
   property: PropertyAssignment
 ): ArrayLiteralExpression {
   return property.getInitializerIfKindOrThrow(
     ts.SyntaxKind.ArrayLiteralExpression
   );
+}
+
+// PROPERTY SIGNATURE HELPERS
+
+/**
+ * Retrieve a property's name. This will remove any quotes surrounding the name.
+ *
+ * @param property property signature
+ */
+export function getPropertyName(property: PropertySignature): string {
+  return property
+    .getNameNode()
+    .getSymbolOrThrow()
+    .getEscapedName();
 }
 
 // JSDOC HELPERS

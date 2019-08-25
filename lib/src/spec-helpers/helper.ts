@@ -60,6 +60,14 @@ export function createProject() {
   });
 }
 
+export function createExistingSourceFile(filePath: string) {
+  const project = createProject();
+  const sourceFile = project.addExistingSourceFile(filePath);
+  project.resolveSourceFileDependencies();
+  validateProject(project);
+  return sourceFile;
+}
+
 /**
  * Validate an AST project's correctness.
  *

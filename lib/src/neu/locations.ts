@@ -48,6 +48,10 @@ export class LociTable {
     return `endpoint_<${endpointName}>_description`;
   }
 
+  static typeKey(typeName: string) {
+    return `type_<${typeName}>`;
+  }
+
   private locations: { [index: string]: Locus };
 
   constructor(locations: { [index: string]: Locus } = {}) {
@@ -71,7 +75,7 @@ export class LociTable {
    * Add a locus to the loci table by inferring from a ts-morph node. If the lookup key is already present, `addMorphNode` will throw an error.
    *
    * @param key lookup key
-   * @param locus target locus
+   * @param node ts-morph node
    */
   addMorphNode(key: string, node: Node): void {
     if (this.locations[key] !== undefined) {
@@ -85,16 +89,43 @@ export class LociTable {
   }
 
   /**
+   * Retrieve a locus by lookup key.
+   *
+   * @param key lookup key
+   */
+  get(key: string): Locus | undefined {
+    return this.locations[key];
+  }
+
+  /**
    * Retrieve a locus by lookup key or error.
    *
    * @param key lookup key
    */
   getOrError(key: string): Locus {
-    const location = this.locations[key];
+    const location = this.get(key);
     if (location === undefined) {
       throw Error(`Key not present in location table: ${key}`);
     }
     return location;
+  }
+
+  /**
+   * Check if an exsiting locus matches a ts-morph node.
+   *
+   * @param key lookup key
+   * @param node ts-morph node
+   */
+  equalsMorphNode(key: string, node: Node): boolean {
+    const existingLocus = this.getOrError(key);
+    if (
+      existingLocus.file !== node.getSourceFile().getFilePath() ||
+      existingLocus.line !== node.getStartLineNumber() ||
+      existingLocus.column !== node.getStartLinePos()
+    ) {
+      return false;
+    }
+    return true;
   }
 }
 
