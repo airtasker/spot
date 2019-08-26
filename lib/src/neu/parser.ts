@@ -5,6 +5,7 @@ import {
   MethodDeclaration,
   ParameterDeclaration,
   Project,
+  PropertyDeclaration,
   SourceFile,
   ts,
   TypeGuards
@@ -18,18 +19,22 @@ import {
   Header,
   PathParam,
   QueryParam,
-  Request
+  Request,
+  Security,
+  SecurityHeader
 } from "./definitions";
 import { LociTable } from "./locations";
 import {
   findOneDecoratedClassOrThrow,
   getDecoratorConfigOrThrow,
   getJsDoc,
+  getMethodWithDecorator,
   getObjLiteralProp,
   getObjLiteralPropOrThrow,
   getParameterTypeAsTypeLiteralOrThrow,
   getParamWithDecorator,
   getPropertyName,
+  getPropertyWithDecorator,
   getPropValueAsArrayOrThrow,
   getPropValueAsStringOrThrow,
   getSelfAndLocalDependencies,
@@ -55,6 +60,7 @@ export function parse(sourcePath: string): Contract {
  */
 function parseRootSourceFile(file: SourceFile): Contract {
   const lociTable = new LociTable();
+  const typeTable = new TypeTable();
 
   const klass = findOneDecoratedClassOrThrow(file.getClasses(), "api");
   const decorator = klass.getDecoratorOrThrow("api");
@@ -62,6 +68,14 @@ function parseRootSourceFile(file: SourceFile): Contract {
   const nameProp = getObjLiteralPropOrThrow<ApiConfig>(decoratorConfig, "name");
   const nameLiteral = getPropValueAsStringOrThrow(nameProp);
   const descriptionDoc = getJsDoc(klass);
+
+  const securityHeaderProp = getPropertyWithDecorator(klass, "securityHeader");
+
+  const security: Security = {
+    header:
+      securityHeaderProp &&
+      parseSecurityHeader(securityHeaderProp, typeTable, lociTable)
+  };
 
   // Add location data
   lociTable.addMorphNode(LociTable.apiClassKey(), klass);
@@ -81,7 +95,7 @@ function parseRootSourceFile(file: SourceFile): Contract {
         currentFile
           .getClasses()
           .filter(k => k.getDecorator("endpoint") !== undefined)
-          .map(k => parseEndpoint(k, lociTable))
+          .map(k => parseEndpoint(k, typeTable, lociTable))
       ),
     []
   );
@@ -90,13 +104,30 @@ function parseRootSourceFile(file: SourceFile): Contract {
     name: nameLiteral.getLiteralText(),
     description: descriptionDoc && descriptionDoc.getComment(),
     types: [],
-    security: {}, // TODO parse security
+    security,
     endpoints
+  };
+}
+
+function parseSecurityHeader(
+  property: PropertyDeclaration,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): SecurityHeader {
+  const decorator = property.getDecoratorOrThrow("securityHeader");
+  const name = getPropertyName(property);
+  const descriptionDoc = getJsDoc(property);
+
+  return {
+    name,
+    description: descriptionDoc && descriptionDoc.getComment(),
+    type: parseType(property.getTypeNodeOrThrow(), typeTable, lociTable)
   };
 }
 
 function parseEndpoint(
   klass: ClassDeclaration,
+  typeTable: TypeTable,
   lociTable: LociTable
 ): Endpoint {
   const decorator = klass.getDecoratorOrThrow("endpoint");
@@ -108,6 +139,9 @@ function parseEndpoint(
   );
   const methodLiteral = getPropValueAsStringOrThrow(methodProp);
   const methodValue = methodLiteral.getLiteralText();
+  if (!isHttpMethod(methodValue)) {
+    throw new Error(`expected a HttpMethod, got ${methodValue}`);
+  }
   const pathProp = getObjLiteralPropOrThrow<EndpointConfig>(
     decoratorConfig,
     "path"
@@ -125,11 +159,12 @@ function parseEndpoint(
       })
     : [];
 
-  if (!isHttpMethod(methodValue)) {
-    throw new Error(`expected a HttpMethod, got ${methodValue}`);
-  }
-
   const descriptionDoc = getJsDoc(klass);
+
+  const requestMethod = getMethodWithDecorator(klass, "request");
+  const request =
+    requestMethod &&
+    parseRequest(requestMethod, typeTable, lociTable, { endpointName });
 
   // Add location data
   lociTable.addMorphNode(LociTable.endpointClassKey(endpointName), klass);
@@ -161,7 +196,7 @@ function parseEndpoint(
     tags: tagsValueLiterals.map(literal => literal.getLiteralText()),
     method: methodValue,
     path: pathLiteral.getLiteralText(),
-    request: undefined
+    request
   };
 }
 
@@ -169,7 +204,9 @@ function parseRequest(
   method: MethodDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable,
-  lociContext: string
+  lociContext: {
+    endpointName: string;
+  }
 ): Request {
   const decorator = method.getDecoratorOrThrow("request");
   const headersParam = getParamWithDecorator(method, "headers");
@@ -178,30 +215,18 @@ function parseRequest(
   const bodyParam = getParamWithDecorator(method, "body");
 
   const headers = headersParam
-    ? parseHeaders(headersParam, typeTable, lociTable, `${lociContext}-request`)
+    ? parseHeaders(headersParam, typeTable, lociTable)
     : [];
 
   const pathParams = pathParamsParam
-    ? parsePathParams(
-        pathParamsParam,
-        typeTable,
-        lociTable,
-        `${lociContext}-request`
-      )
+    ? parsePathParams(pathParamsParam, typeTable, lociTable)
     : [];
 
   const queryParams = queryParamsParam
-    ? parseQueryParams(
-        queryParamsParam,
-        typeTable,
-        lociTable,
-        `${lociContext}-request`
-      )
+    ? parseQueryParams(queryParamsParam, typeTable, lociTable)
     : [];
 
-  const body =
-    bodyParam &&
-    parseBody(bodyParam, typeTable, lociTable, `${lociContext}-request`);
+  const body = bodyParam && parseBody(bodyParam, typeTable, lociTable);
 
   // TODO: add loci information
 
@@ -216,8 +241,7 @@ function parseRequest(
 function parseHeaders(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
-  lociTable: LociTable,
-  lociContext: string
+  lociTable: LociTable
 ): Header[] {
   const decorator = parameter.getDecoratorOrThrow("headers");
   // TODO check parameter.isOptional()
@@ -241,8 +265,7 @@ function parseHeaders(
 function parsePathParams(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
-  lociTable: LociTable,
-  lociContext: string
+  lociTable: LociTable
 ): PathParam[] {
   const decorator = parameter.getDecoratorOrThrow("pathParams");
   if (parameter.hasQuestionToken()) {
@@ -267,8 +290,7 @@ function parsePathParams(
 function parseQueryParams(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
-  lociTable: LociTable,
-  lociContext: string
+  lociTable: LociTable
 ): QueryParam[] {
   const decorator = parameter.getDecoratorOrThrow("queryParams");
   if (parameter.hasQuestionToken()) {
@@ -291,8 +313,7 @@ function parseQueryParams(
 function parseBody(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
-  lociTable: LociTable,
-  lociContext: string
+  lociTable: LociTable
 ): Body {
   const decorator = parameter.getDecoratorOrThrow("body");
   if (parameter.hasQuestionToken()) {

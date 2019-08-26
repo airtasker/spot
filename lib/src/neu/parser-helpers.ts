@@ -8,6 +8,7 @@ import {
   ObjectLiteralExpression,
   ParameterDeclaration,
   PropertyAssignment,
+  PropertyDeclaration,
   PropertySignature,
   SourceFile,
   StringLiteral,
@@ -49,6 +50,53 @@ export function getSelfAndLocalDependencies(
 
 // CLASS HELPERS
 
+/**
+ * Retrieve a property from a class declaration with a particular decorator.
+ *
+ * @param klass class declaration
+ * @param decoratorName name of decorator to search for
+ */
+export function getPropertyWithDecorator(
+  klass: ClassDeclaration,
+  decoratorName: string
+): PropertyDeclaration | undefined {
+  const matchingProps = klass
+    .getProperties()
+    .filter(p => p.getDecorator(decoratorName) !== undefined);
+
+  if (matchingProps.length > 1) {
+    throw new Error(
+      `expected a decorator @${decoratorName} to be used only once, found ${matchingProps.length} usages`
+    );
+  }
+
+  return matchingProps.length === 1 ? matchingProps[0] : undefined;
+}
+
+/**
+ * Retrieve a method from a class declaration with a particular decorator.
+ *
+ * @param klass class declaration
+ * @param decoratorName  name of the decorator to search for
+ */
+export function getMethodWithDecorator(
+  klass: ClassDeclaration,
+  decoratorName: string
+): MethodDeclaration | undefined {
+  const matchingMethods = klass
+    .getMethods()
+    .filter(m => m.getDecorator(decoratorName) !== undefined);
+
+  if (matchingMethods.length > 1) {
+    throw new Error(
+      `expected a decorator @${decoratorName} to be used only once, found ${matchingMethods.length} usages`
+    );
+  }
+
+  return matchingMethods.length === 1 ? matchingMethods[0] : undefined;
+}
+
+// TODO: reconsider having this function
 export function findOneDecoratedClassOrThrow(
   klasses: ClassDeclaration[],
   decorator: string
@@ -185,7 +233,7 @@ export function getObjLiteralPropOrThrow<T>(
   return property;
 }
 
-// PROPERTY SIGNATURE HELPERS
+// PROPERTY ASSIGNMENT HELPERS
 
 /**
  * Retrieve a property's value as a string or error.
@@ -211,14 +259,16 @@ export function getPropValueAsArrayOrThrow(
   );
 }
 
-// PROPERTY SIGNATURE HELPERS
+// PROPERTY SIGNATURE/DECLARATION HELPERS
 
 /**
  * Retrieve a property's name. This will remove any quotes surrounding the name.
  *
  * @param property property signature
  */
-export function getPropertyName(property: PropertySignature): string {
+export function getPropertyName(
+  property: PropertyDeclaration | PropertySignature
+): string {
   return property
     .getNameNode()
     .getSymbolOrThrow()

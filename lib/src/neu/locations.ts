@@ -44,6 +44,10 @@ export class LociTable {
     return `endpoint_<${endpointName}>_tag_<${tag}>`;
   }
 
+  static endpointRequestKey(endpointName: string) {
+    return `endpoint_<${endpointName}>_request`;
+  }
+
   static endpointDescriptionKey(endpointName: string) {
     return `endpoint_<${endpointName}>_description`;
   }

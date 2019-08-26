@@ -8,8 +8,14 @@ export interface Contract {
   endpoints: Endpoint[];
 }
 
-interface Security {
-  header?: Header;
+export interface Security {
+  header?: SecurityHeader;
+}
+
+export interface SecurityHeader {
+  name: string;
+  description?: string;
+  type: Type;
 }
 
 export interface Endpoint {
