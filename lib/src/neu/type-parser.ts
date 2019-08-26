@@ -48,10 +48,24 @@ import {
  * Loci table is a lookup table for types.
  */
 export class TypeTable {
-  private types: { [index: string]: Type };
+  private types: Map<string, Type>;
 
-  constructor(types: { [index: string]: Type } = {}) {
+  constructor(types: Map<string, Type> = new Map<string, Type>()) {
     this.types = types;
+  }
+
+  /**
+   * Return an object representation of the type table.
+   */
+  toArray(): Array<{ name: string; type: Type }> {
+    const arr = new Array<{ name: string; type: Type }>();
+    this.types.forEach((type, key, _) => {
+      return {
+        name: key,
+        type
+      };
+    });
+    return arr.sort((a, b) => (a.name > b.name ? -1 : 1));
   }
 
   /**
@@ -61,10 +75,10 @@ export class TypeTable {
    * @param locus target locus
    */
   add(key: string, type: Type): void {
-    if (this.types[key] !== undefined) {
+    if (this.types.has(key)) {
       throw Error(`Key already present in type table: ${key}`);
     }
-    this.types[key] = type;
+    this.types.set(key, type);
   }
 
   /**
@@ -73,7 +87,7 @@ export class TypeTable {
    * @param key lookup key
    */
   exists(key: string): boolean {
-    return this.types[key] !== undefined;
+    return this.types.has(key);
   }
 }
 

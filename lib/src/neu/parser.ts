@@ -89,16 +89,23 @@ function parseRootSourceFile(file: SourceFile): Contract {
   const projectFiles = getSelfAndLocalDependencies(file);
 
   // Parse all endpoints
-  const endpoints = projectFiles.reduce<Endpoint[]>(
-    (acc, currentFile) =>
-      acc.concat(
-        currentFile
-          .getClasses()
-          .filter(k => k.getDecorator("endpoint") !== undefined)
-          .map(k => parseEndpoint(k, typeTable, lociTable))
-      ),
-    []
-  );
+  const endpoints = projectFiles
+    .reduce<Endpoint[]>(
+      (acc, currentFile) =>
+        acc.concat(
+          currentFile
+            .getClasses()
+            .filter(k => k.getDecorator("endpoint") !== undefined)
+            .map(k => parseEndpoint(k, typeTable, lociTable))
+        ),
+      []
+    )
+    .sort((a, b) => {
+      if (a.name === b.name) {
+        throw new Error(`Duplicate endpoint detected: ${a.name}`);
+      }
+      return a.name > b.name ? -1 : 1;
+    });
 
   return {
     name: nameLiteral.getLiteralText(),

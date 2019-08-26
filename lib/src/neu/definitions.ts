@@ -3,7 +3,7 @@ import { BooleanType, Int32Type, Int64Type, StringType, Type } from "./types";
 export interface Contract {
   name: string;
   description?: string;
-  types: Type[];
+  types: Array<{ name: string; type: Type }>;
   security: Security;
   endpoints: Endpoint[];
 }
