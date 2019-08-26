@@ -108,13 +108,13 @@ function parseRootSourceFile(file: SourceFile): Contract {
       if (a.name === b.name) {
         throw new Error(`Duplicate endpoint detected: ${a.name}`);
       }
-      return a.name > b.name ? -1 : 1;
+      return b.name > a.name ? -1 : 1;
     });
 
   return {
     name: nameLiteral.getLiteralText(),
     description: descriptionDoc && descriptionDoc.getComment(),
-    types: [],
+    types: typeTable.toArray(),
     security,
     endpoints
   };
@@ -125,6 +125,9 @@ function parseSecurityHeader(
   typeTable: TypeTable,
   lociTable: LociTable
 ): SecurityHeader {
+  if (property.hasQuestionToken()) {
+    throw new Error("@securityHeader property cannot be optional");
+  }
   const decorator = property.getDecoratorOrThrow("securityHeader");
   const name = getPropertyName(property);
   const descriptionDoc = getJsDoc(property);
@@ -189,7 +192,7 @@ function parseEndpoint(
           `Multiple responses found for status code ${a.status} in endpoint ${endpointName}`
         );
       }
-      return a.status > b.status ? -1 : 1;
+      return b.status > a.status ? -1 : 1;
     });
 
   const defaultResponseMethod = getMethodWithDecorator(
@@ -346,7 +349,7 @@ function parseHeaders(
         optional: p.hasQuestionToken()
       };
     })
-    .sort((a, b) => (a.name > b.name ? -1 : 1));
+    .sort((a, b) => (b.name > a.name ? -1 : 1));
   // TODO: add loci information
   return headers;
 }
@@ -374,7 +377,7 @@ function parsePathParams(
         description: pDescription && pDescription.getComment()
       };
     })
-    .sort((a, b) => (a.name > b.name ? -1 : 1));
+    .sort((a, b) => (b.name > a.name ? -1 : 1));
   // TODO: add loci information
   return pathParams;
 }
@@ -400,7 +403,7 @@ function parseQueryParams(
         optional: p.hasQuestionToken()
       };
     })
-    .sort((a, b) => (a.name > b.name ? -1 : 1));
+    .sort((a, b) => (b.name > a.name ? -1 : 1));
   // TODO: add loci information
   return queryParams;
 }

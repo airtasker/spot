@@ -60,12 +60,9 @@ export class TypeTable {
   toArray(): Array<{ name: string; type: Type }> {
     const arr = new Array<{ name: string; type: Type }>();
     this.types.forEach((type, key, _) => {
-      return {
-        name: key,
-        type
-      };
+      arr.push({ name: key, type });
     });
-    return arr.sort((a, b) => (a.name > b.name ? -1 : 1));
+    return arr.sort((a, b) => (b.name > a.name ? -1 : 1));
   }
 
   /**
@@ -196,7 +193,7 @@ function parseTypeReference(
       }
     } else {
       if (typeTable.exists(name)) {
-        if (lociTable.equalsMorphNode(LociTable.typeKey(name), decTypeNode)) {
+        if (!lociTable.equalsMorphNode(LociTable.typeKey(name), decTypeNode)) {
           throw new Error(`Type ${name} defined multiple times`);
         }
       } else {
@@ -211,7 +208,7 @@ function parseTypeReference(
       throw new Error(`Internal type ${name} must not be redefined`);
     } else {
       if (typeTable.exists(name)) {
-        if (lociTable.equalsMorphNode(LociTable.typeKey(name), declaration)) {
+        if (!lociTable.equalsMorphNode(LociTable.typeKey(name), declaration)) {
           throw new Error(`Type ${name} defined multiple times`);
         }
       } else {

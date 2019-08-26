@@ -46,11 +46,4 @@ describe("parser-helpers", () => {
       expect(() => getDecoratorConfigOrThrow(decorator)).toThrowError();
     });
   });
-
-  // describe("getObjLiteralProp", () => {});
-  // describe("getObjLiteralPropOrThrow", () => {});
-  // describe("getPropValueAsStringOrThrow", () => {});
-  // describe("getPropValueAsArrayOrThrow", () => {});
-  // describe("getJsDoc", () => {});
-  // describe("isHttpMethod", () => {});
 });
