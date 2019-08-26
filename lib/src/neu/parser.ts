@@ -28,7 +28,7 @@ import {
 } from "./definitions";
 import { LociTable } from "./locations";
 import {
-  findOneDecoratedClassOrThrow,
+  getClassWithDecoratorOrThrow,
   getDecoratorConfigOrThrow,
   getJsDoc,
   getMethodWithDecorator,
@@ -66,7 +66,7 @@ function parseRootSourceFile(file: SourceFile): Contract {
   const lociTable = new LociTable();
   const typeTable = new TypeTable();
 
-  const klass = findOneDecoratedClassOrThrow(file.getClasses(), "api");
+  const klass = getClassWithDecoratorOrThrow(file, "api");
   const decorator = klass.getDecoratorOrThrow("api");
   const decoratorConfig = getDecoratorConfigOrThrow(decorator);
   const nameProp = getObjLiteralPropOrThrow<ApiConfig>(decoratorConfig, "name");

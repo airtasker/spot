@@ -25,7 +25,7 @@ import { HttpMethod } from "./definitions";
  * Retrieve all local dependencies of a file recursively including itself.
  *
  * @param file the source file
- * @param visitedFiles
+ * @param visitedFiles visisted files
  */
 export function getSelfAndLocalDependencies(
   file: SourceFile,
@@ -47,6 +47,29 @@ export function getSelfAndLocalDependencies(
         }
       }, visitedFiles.concat(file))
   );
+}
+
+/**
+ * Retrieve a class from a file with a particular decorator or throw.
+ *
+ * @param file the source file
+ * @param decoratorName name of decorator to search for
+ */
+export function getClassWithDecoratorOrThrow(
+  file: SourceFile,
+  decoratorName: string
+): ClassDeclaration {
+  const matchingKlasses = file
+    .getClasses()
+    .filter(k => k.getDecorator(decoratorName) !== undefined);
+
+  if (matchingKlasses.length !== 1) {
+    throw new Error(
+      `expected a decorator @${decoratorName} to be used only once, found ${matchingKlasses.length} usages`
+    );
+  }
+
+  return matchingKlasses[0];
 }
 
 // CLASS HELPERS
@@ -95,24 +118,6 @@ export function getMethodWithDecorator(
   }
 
   return matchingMethods.length === 1 ? matchingMethods[0] : undefined;
-}
-
-// TODO: reconsider having this function
-export function findOneDecoratedClassOrThrow(
-  klasses: ClassDeclaration[],
-  decorator: string
-): ClassDeclaration {
-  // find classes with particular decorator
-  const targetKlasses = klasses.filter(
-    k => k.getDecorator(decorator) !== undefined
-  );
-  // expect only a single class
-  if (targetKlasses.length !== 1) {
-    throw new Error(
-      `expected class decorated with @${decorator} to be defined exactly once, found ${targetKlasses.length} usages`
-    );
-  }
-  return targetKlasses[0];
 }
 
 // METHOD HELPERS
