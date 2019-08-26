@@ -1,4 +1,4 @@
-import { BooleanType, Int32Type, Int64Type, StringType, Type } from "./types";
+import { Type } from "./types";
 
 export interface Contract {
   name: string;
@@ -25,6 +25,8 @@ export interface Endpoint {
   method: HttpMethod;
   path: string;
   request?: Request;
+  responses: Response[];
+  defaultResponse?: DefaultResponse;
 }
 
 export interface Request {
@@ -34,23 +36,32 @@ export interface Request {
   body?: Body;
 }
 
+export interface Response {
+  status: number;
+  description?: string;
+  headers: Header[];
+  body?: Body;
+}
+
+export type DefaultResponse = Omit<Response, "status">;
+
 export interface Header {
   name: string;
   description?: string;
-  type: Type; // BooleanType | StringType | Int32Type | Int64Type; // TODO: reference types?
+  type: Type;
   optional: boolean;
 }
 
 export interface PathParam {
   name: string;
   description?: string;
-  type: Type; // StringType | Int32Type | Int64Type; // TODO: reference types?
+  type: Type;
 }
 
 export interface QueryParam {
   name: string;
   description?: string;
-  type: Type; // TODO: narrow tpye
+  type: Type;
   optional: boolean;
 }
 

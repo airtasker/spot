@@ -5,6 +5,7 @@ import {
   JSDoc,
   JSDocableNode,
   MethodDeclaration,
+  NumericLiteral,
   ObjectLiteralExpression,
   ParameterDeclaration,
   PropertyAssignment,
@@ -244,6 +245,17 @@ export function getPropValueAsStringOrThrow(
   property: PropertyAssignment
 ): StringLiteral {
   return property.getInitializerIfKindOrThrow(ts.SyntaxKind.StringLiteral);
+}
+
+/**
+ * Retrieve a property's value as a number or error.
+ *
+ * @param property the source property
+ */
+export function getPropValueAsNumberOrThrow(
+  property: PropertyAssignment
+): NumericLiteral {
+  return property.getInitializerIfKindOrThrow(ts.SyntaxKind.NumericLiteral);
 }
 
 /**

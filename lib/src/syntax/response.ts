@@ -1,6 +1,6 @@
 /**
  * Decorator for describing a response. This should be used within an `@endpoint` decorated class.
- * 
+ *
  * @example
 ```
 @endpoint({
@@ -23,7 +23,7 @@ export function response(config: ResponseConfig) {
     descriptor: PropertyDescriptor
   ) => {};
 }
-interface ResponseConfig {
+export interface ResponseConfig {
   /** HTTP status code */
   status: number;
 }

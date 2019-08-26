@@ -12,14 +12,17 @@ import {
 } from "ts-morph";
 import { ApiConfig } from "../syntax/api";
 import { EndpointConfig } from "../syntax/endpoint";
+import { ResponseConfig } from "../syntax/response";
 import {
   Body,
   Contract,
+  DefaultResponse,
   Endpoint,
   Header,
   PathParam,
   QueryParam,
   Request,
+  Response,
   Security,
   SecurityHeader
 } from "./definitions";
@@ -36,6 +39,7 @@ import {
   getPropertyName,
   getPropertyWithDecorator,
   getPropValueAsArrayOrThrow,
+  getPropValueAsNumberOrThrow,
   getPropValueAsStringOrThrow,
   getSelfAndLocalDependencies,
   isHttpMethod
@@ -173,6 +177,30 @@ function parseEndpoint(
     requestMethod &&
     parseRequest(requestMethod, typeTable, lociTable, { endpointName });
 
+  const responseMethods = klass
+    .getMethods()
+    .filter(m => m.getDecorator("response") !== undefined);
+
+  const responses = responseMethods
+    .map(r => parseResponse(r, typeTable, lociTable))
+    .sort((a, b) => {
+      if (a.status === b.status) {
+        throw new Error(
+          `Multiple responses found for status code ${a.status} in endpoint ${endpointName}`
+        );
+      }
+      return a.status > b.status ? -1 : 1;
+    });
+
+  const defaultResponseMethod = getMethodWithDecorator(
+    klass,
+    "defaultResponse"
+  );
+
+  const defaultResponse =
+    defaultResponseMethod &&
+    parseDefaultResponse(defaultResponseMethod, typeTable, lociTable);
+
   // Add location data
   lociTable.addMorphNode(LociTable.endpointClassKey(endpointName), klass);
   lociTable.addMorphNode(
@@ -203,7 +231,9 @@ function parseEndpoint(
     tags: tagsValueLiterals.map(literal => literal.getLiteralText()),
     method: methodValue,
     path: pathLiteral.getLiteralText(),
-    request
+    request,
+    responses,
+    defaultResponse
   };
 }
 
@@ -245,6 +275,55 @@ function parseRequest(
   };
 }
 
+function parseResponse(
+  method: MethodDeclaration,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Response {
+  const decorator = method.getDecoratorOrThrow("response");
+  const decoratorConfig = getDecoratorConfigOrThrow(decorator);
+  const statusProp = getObjLiteralPropOrThrow<ResponseConfig>(
+    decoratorConfig,
+    "status"
+  );
+  const statusLiteral = getPropValueAsNumberOrThrow(statusProp);
+  const headersParam = getParamWithDecorator(method, "headers");
+  const headers = headersParam
+    ? parseHeaders(headersParam, typeTable, lociTable)
+    : [];
+  const bodyParam = getParamWithDecorator(method, "body");
+  const body = bodyParam && parseBody(bodyParam, typeTable, lociTable);
+  const descriptionDoc = getJsDoc(method);
+
+  return {
+    status: statusLiteral.getLiteralValue(),
+    headers,
+    description: descriptionDoc && descriptionDoc.getComment(),
+    body
+  };
+}
+
+function parseDefaultResponse(
+  method: MethodDeclaration,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): DefaultResponse {
+  const decorator = method.getDecoratorOrThrow("defaultResponse");
+  const headersParam = getParamWithDecorator(method, "headers");
+  const headers = headersParam
+    ? parseHeaders(headersParam, typeTable, lociTable)
+    : [];
+  const bodyParam = getParamWithDecorator(method, "body");
+  const body = bodyParam && parseBody(bodyParam, typeTable, lociTable);
+  const descriptionDoc = getJsDoc(method);
+
+  return {
+    headers,
+    description: descriptionDoc && descriptionDoc.getComment(),
+    body
+  };
+}
+
 function parseHeaders(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
@@ -256,15 +335,18 @@ function parseHeaders(
     throw new Error("@headers parameter cannot be optional");
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
-  const headers = type.getProperties().map(p => {
-    const pDescription = getJsDoc(p);
-    return {
-      name: getPropertyName(p),
-      type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
-      description: pDescription && pDescription.getComment(),
-      optional: p.hasQuestionToken()
-    };
-  });
+  const headers = type
+    .getProperties()
+    .map(p => {
+      const pDescription = getJsDoc(p);
+      return {
+        name: getPropertyName(p),
+        type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
+        description: pDescription && pDescription.getComment(),
+        optional: p.hasQuestionToken()
+      };
+    })
+    .sort((a, b) => (a.name > b.name ? -1 : 1));
   // TODO: add loci information
   return headers;
 }
@@ -279,17 +361,20 @@ function parsePathParams(
     throw new Error("@pathParams parameter cannot be optional");
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
-  const pathParams = type.getProperties().map(p => {
-    const pDescription = getJsDoc(p);
-    if (parameter.hasQuestionToken()) {
-      throw new Error("@pathParams properties cannot be optional");
-    }
-    return {
-      name: getPropertyName(p),
-      type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
-      description: pDescription && pDescription.getComment()
-    };
-  });
+  const pathParams = type
+    .getProperties()
+    .map(p => {
+      const pDescription = getJsDoc(p);
+      if (parameter.hasQuestionToken()) {
+        throw new Error("@pathParams properties cannot be optional");
+      }
+      return {
+        name: getPropertyName(p),
+        type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
+        description: pDescription && pDescription.getComment()
+      };
+    })
+    .sort((a, b) => (a.name > b.name ? -1 : 1));
   // TODO: add loci information
   return pathParams;
 }
@@ -304,15 +389,18 @@ function parseQueryParams(
     throw new Error("@queryParams parameter cannot be optional");
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
-  const queryParams = type.getProperties().map(p => {
-    const pDescription = getJsDoc(p);
-    return {
-      name: getPropertyName(p),
-      type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
-      description: pDescription && pDescription.getComment(),
-      optional: p.hasQuestionToken()
-    };
-  });
+  const queryParams = type
+    .getProperties()
+    .map(p => {
+      const pDescription = getJsDoc(p);
+      return {
+        name: getPropertyName(p),
+        type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
+        description: pDescription && pDescription.getComment(),
+        optional: p.hasQuestionToken()
+      };
+    })
+    .sort((a, b) => (a.name > b.name ? -1 : 1));
   // TODO: add loci information
   return queryParams;
 }

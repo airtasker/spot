@@ -56,9 +56,10 @@ export class LociTable {
     return `type_<${typeName}>`;
   }
 
-  private locations: { [index: string]: Locus };
+  // private locations: { [index: string]: Locus };
+  private locations: Map<string, Locus>;
 
-  constructor(locations: { [index: string]: Locus } = {}) {
+  constructor(locations: Map<string, Locus> = new Map<string, Locus>()) {
     this.locations = locations;
   }
 
@@ -69,10 +70,10 @@ export class LociTable {
    * @param locus target locus
    */
   add(key: string, locus: Locus): void {
-    if (this.locations[key] !== undefined) {
-      throw Error(`Key already present in location table: ${key}`);
+    if (this.locations.has(key)) {
+      throw new Error(`Key already present in type table: ${key}`);
     }
-    this.locations[key] = locus;
+    this.locations.set(key, locus);
   }
 
   /**
@@ -82,14 +83,11 @@ export class LociTable {
    * @param node ts-morph node
    */
   addMorphNode(key: string, node: Node): void {
-    if (this.locations[key] !== undefined) {
-      throw Error(`Key already present in location table: ${key}`);
-    }
-    this.locations[key] = {
+    this.add(key, {
       file: node.getSourceFile().getFilePath(),
       line: node.getStartLineNumber(),
       column: node.getStartLinePos()
-    };
+    });
   }
 
   /**
@@ -98,7 +96,7 @@ export class LociTable {
    * @param key lookup key
    */
   get(key: string): Locus | undefined {
-    return this.locations[key];
+    return this.locations.get(key);
   }
 
   /**
@@ -109,7 +107,7 @@ export class LociTable {
   getOrError(key: string): Locus {
     const location = this.get(key);
     if (location === undefined) {
-      throw Error(`Key not present in location table: ${key}`);
+      throw new Error(`Key not present in location table: ${key}`);
     }
     return location;
   }

@@ -76,7 +76,7 @@ export class TypeTable {
    */
   add(key: string, type: Type): void {
     if (this.types.has(key)) {
-      throw Error(`Key already present in type table: ${key}`);
+      throw new Error(`Key already present in type table: ${key}`);
     }
     this.types.set(key, type);
   }
