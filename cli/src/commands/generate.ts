@@ -7,6 +7,7 @@ import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
 import { outputFile } from "../../../lib/src/io/output";
 import { ContractDefinition } from "../../../lib/src/models/definitions";
+import { parse } from "../../../lib/src/neu/parsers/parser";
 import { safeParse } from "../common/safe-parse";
 
 export default class Generate extends Command {
@@ -43,7 +44,6 @@ export default class Generate extends Command {
     // tslint:disable-next-line:prefer-const
     let { contract: contractPath, language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
-    const contract = safeParse.call(this, contractPath).definition;
     if (!generator) {
       generator = (await prompt<{
         Generator: string;
@@ -99,7 +99,14 @@ export default class Generate extends Command {
       }
       this.exit(1);
     }
-    const generatedFiles = generators[generator][language](contract);
+
+    const contract = safeParse.call(this, contractPath).definition;
+
+    // TODO: unhack this
+    const generatedFiles =
+      generator === "raw"
+        ? { "*.json": JSON.stringify(parse(contractPath)) }
+        : generators[generator][language](contract);
     for (let [relativePath, content] of Object.entries(generatedFiles)) {
       if (relativePath.indexOf("*") !== -1) {
         relativePath = relativePath.replace(/\*/g, contractFilename);
@@ -130,6 +137,11 @@ const generators: {
     };
   };
 } = {
+  raw: {
+    json: contract => ({
+      "*.json": "dummy" // TODO consolidate with other generaters
+    })
+  },
   "json-schema": {
     json: contract => ({
       "*.json": generateJsonSchema(contract, "json")

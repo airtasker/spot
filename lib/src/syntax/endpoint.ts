@@ -19,7 +19,8 @@ class CreateUserEndpoint {
 export function endpoint(config: EndpointConfig) {
   return (target: any) => {};
 }
-interface EndpointConfig {
+
+export interface EndpointConfig {
   /** HTTP method */
   method: HttpMethod;
   /** URL path */
