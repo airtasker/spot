@@ -271,6 +271,9 @@ function parseInterfaceDeclaration(
   typeTable: TypeTable,
   lociTable: LociTable
 ): ObjectType {
+  if (interfaceDeclaration.getIndexSignatures().length > 0) {
+    throw new Error("indexed types are not supported");
+  }
   const objectProperties = interfaceDeclaration
     .getType()
     .getProperties()
@@ -358,36 +361,6 @@ function getTargetDeclarationFromTypeReference(
     // TODO: same for other internal custom types e.g. Number
   }
   const targetDeclaration = declarations[0];
-
-  // Indexed interfaces, which allow for any key, are not supported:
-  // interface SomeInterface {
-  //   [key: string]: Integer
-  // }
-  //
-  // See https://www.typescriptlang.org/docs/handbook/interfaces.html#indexable-types for details.
-  if (
-    TypeGuards.isInterfaceDeclaration(targetDeclaration) &&
-    targetDeclaration.getIndexSignatures().length > 0
-  ) {
-    throw new Error(
-      `indexed types are not supported (offending type: ${targetDeclaration.getName()})`
-    );
-  }
-  // Indexed type aliases are also not supported:
-  // type SomeType = {
-  //   [key: string]: Integer
-  // }
-  if (TypeGuards.isTypeAliasDeclaration(targetDeclaration)) {
-    const typeNode = targetDeclaration.getTypeNodeOrThrow();
-    if (
-      TypeGuards.isTypeLiteralNode(typeNode) &&
-      typeNode.getIndexSignatures().length > 0
-    ) {
-      throw new Error(
-        `indexed types are not supported (offending type: ${targetDeclaration.getName()})`
-      );
-    }
-  }
 
   // Enums are not supported:
   // enum SomeEnum { A, B, C }
