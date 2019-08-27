@@ -8,7 +8,7 @@ describe("parser-helpers", () => {
   describe("getSelfAndLocalDependencies", () => {
     test("resolves all local imports recursively", () => {
       const sourceFile = createExistingSourceFile(
-        "./lib/src/neu/__spec-examples__/recursive-imports/source.ts"
+        `${__dirname}/__spec-examples__/recursive-imports/source.ts`
       );
       const allFiles = getSelfAndLocalDependencies(sourceFile);
       const allFileNames = allFiles.map(f => f.getBaseNameWithoutExtension());
@@ -25,7 +25,7 @@ describe("parser-helpers", () => {
 
   describe("getDecoratorConfigOrThrow", () => {
     const sourceFile = createExistingSourceFile(
-      "./lib/src/neu/__spec-examples__/decorators.ts"
+      `${__dirname}/__spec-examples__/decorators.ts`
     );
 
     test("returns the first argument of a decorator factory that conforms to configuration", () => {

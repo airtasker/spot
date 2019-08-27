@@ -7,7 +7,9 @@ import { TypeKind, TypeTable } from "../types";
 import { parseType } from "./type-parser";
 
 describe("type parser", () => {
-  const exampleFile = createExistingSourceFile(`${EXAMPLES_DIR}/types.ts`);
+  const exampleFile = createExistingSourceFile(
+    `${__dirname}/__spec-examples__/types.ts`
+  );
 
   let typeTable: TypeTable;
   let lociTable: LociTable;
@@ -354,7 +356,7 @@ describe("type parser", () => {
     );
   });
 
-  test("fails to parse index signatures", () => {
+  test("fails to parse object with index signatures", () => {
     const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("indexSignature")
