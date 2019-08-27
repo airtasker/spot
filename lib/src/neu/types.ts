@@ -234,3 +234,47 @@ export function referenceType(name: string): ReferenceType {
     name
   };
 }
+
+/**
+ * Loci table is a lookup table for types.
+ */
+export class TypeTable {
+  private types: Map<string, Type>;
+
+  constructor(types: Map<string, Type> = new Map<string, Type>()) {
+    this.types = types;
+  }
+
+  /**
+   * Return an object representation of the type table.
+   */
+  toArray(): Array<{ name: string; type: Type }> {
+    const arr = new Array<{ name: string; type: Type }>();
+    this.types.forEach((type, key, _) => {
+      arr.push({ name: key, type });
+    });
+    return arr.sort((a, b) => (b.name > a.name ? -1 : 1));
+  }
+
+  /**
+   * Add a type to the type table. If the type key is already present, `add` will throw an error.
+   *
+   * @param key lookup key
+   * @param locus target locus
+   */
+  add(key: string, type: Type): void {
+    if (this.types.has(key)) {
+      throw new Error(`Key already present in type table: ${key}`);
+    }
+    this.types.set(key, type);
+  }
+
+  /**
+   * Check if a type exists in the table.
+   *
+   * @param key lookup key
+   */
+  exists(key: string): boolean {
+    return this.types.has(key);
+  }
+}

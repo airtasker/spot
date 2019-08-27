@@ -56,7 +56,6 @@ export class LociTable {
     return `type_<${typeName}>`;
   }
 
-  // private locations: { [index: string]: Locus };
   private locations: Map<string, Locus>;
 
   constructor(locations: Map<string, Locus> = new Map<string, Locus>()) {
