@@ -30,6 +30,8 @@ import {
   Int32Type,
   int64Type,
   Int64Type,
+  intLiteralType,
+  IntLiteralType,
   nullType,
   ObjectType,
   objectType,
@@ -189,15 +191,17 @@ function parseTypeReference(
  */
 function parseLiteralType(
   typeNode: LiteralTypeNode
-): BooleanLiteralType | StringLiteralType | FloatLiteralType {
+): BooleanLiteralType | StringLiteralType | FloatLiteralType | IntLiteralType {
   const literal = typeNode.getLiteral();
   if (TypeGuards.isBooleanLiteral(literal)) {
     return booleanLiteralType(literal.getLiteralValue());
   } else if (TypeGuards.isStringLiteral(literal)) {
     return stringLiteralType(literal.getLiteralText());
   } else if (TypeGuards.isNumericLiteral(literal)) {
-    // TODO: differentiate between float/int
-    return floatLiteralType(literal.getLiteralValue());
+    const numericValue = literal.getLiteralValue();
+    return Number.isInteger(numericValue)
+      ? intLiteralType(numericValue)
+      : floatLiteralType(numericValue);
   } else {
     throw new Error("unexpected literal type");
   }
@@ -239,6 +243,9 @@ function parseObjectLiteralType(
   typeTable: TypeTable,
   lociTable: LociTable
 ): ObjectType {
+  if (typeNode.getIndexSignatures().length > 0) {
+    throw new Error("indexed types are not supported");
+  }
   const objectProperties = typeNode.getProperties().map(ps => {
     const psDescription = getJsDoc(ps);
     return {
@@ -348,6 +355,7 @@ function getTargetDeclarationFromTypeReference(
     } else {
       throw new Error(errorMsg);
     }
+    // TODO: same for other internal custom types e.g. Number
   }
   const targetDeclaration = declarations[0];
 
