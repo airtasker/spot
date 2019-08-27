@@ -1,7 +1,4 @@
-import {
-  createExistingSourceFile,
-  EXAMPLES_DIR
-} from "../../spec-helpers/helper";
+import { createExistingSourceFile } from "../../spec-helpers/helper";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseType } from "./type-parser";
@@ -10,6 +7,7 @@ describe("type parser", () => {
   const exampleFile = createExistingSourceFile(
     `${__dirname}/__spec-examples__/types.ts`
   );
+  const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
 
   let typeTable: TypeTable;
   let lociTable: LociTable;
@@ -20,7 +18,6 @@ describe("type parser", () => {
   });
 
   test("parses null", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("null").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -29,7 +26,6 @@ describe("type parser", () => {
   });
 
   test("parses boolean", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("boolean").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -38,7 +34,6 @@ describe("type parser", () => {
   });
 
   test("parses true", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("true").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -48,7 +43,6 @@ describe("type parser", () => {
   });
 
   test("parses false", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("false").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -58,7 +52,6 @@ describe("type parser", () => {
   });
 
   test("parses string", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("string").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -67,7 +60,6 @@ describe("type parser", () => {
   });
 
   test("parses String", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("String").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -76,7 +68,6 @@ describe("type parser", () => {
   });
 
   test("parses literal string", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("literalString")
       .getTypeNodeOrThrow();
@@ -88,7 +79,6 @@ describe("type parser", () => {
   });
 
   test("parses number", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("number").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -97,7 +87,6 @@ describe("type parser", () => {
   });
 
   test("parses Number", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("Number").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -106,7 +95,6 @@ describe("type parser", () => {
   });
 
   test("parses Float", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("Float").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -115,7 +103,6 @@ describe("type parser", () => {
   });
 
   test("parses Double", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("Double").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -124,7 +111,6 @@ describe("type parser", () => {
   });
 
   test("parses literal float", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("literalFloat")
       .getTypeNodeOrThrow();
@@ -136,7 +122,6 @@ describe("type parser", () => {
   });
 
   test("parses Integer", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("Integer").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -145,7 +130,6 @@ describe("type parser", () => {
   });
 
   test("parses Int32", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("Int32").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -154,7 +138,6 @@ describe("type parser", () => {
   });
 
   test("parses Int64", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("Int64").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -163,7 +146,6 @@ describe("type parser", () => {
   });
 
   test("parses literal integer", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("literalInteger")
       .getTypeNodeOrThrow();
@@ -175,7 +157,6 @@ describe("type parser", () => {
   });
 
   test("parses Date", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("Date").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -184,7 +165,6 @@ describe("type parser", () => {
   });
 
   test("parses DateTime", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("DateTime").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -193,7 +173,6 @@ describe("type parser", () => {
   });
 
   test("parses literal object", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("literalObject")
       .getTypeNodeOrThrow();
@@ -222,7 +201,6 @@ describe("type parser", () => {
   });
 
   test("parses arrays", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("array").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -234,7 +212,6 @@ describe("type parser", () => {
   });
 
   test("parses unions", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("union").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -254,7 +231,6 @@ describe("type parser", () => {
   });
 
   test("parses type aliases", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("alias").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable)).toStrictEqual({
@@ -268,7 +244,6 @@ describe("type parser", () => {
   });
 
   test("parses interfaces", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("interface")
       .getTypeNodeOrThrow();
@@ -294,7 +269,6 @@ describe("type parser", () => {
   });
 
   test("parses interfaces extending other interfaces", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("interfaceExtends")
       .getTypeNodeOrThrow();
@@ -328,7 +302,6 @@ describe("type parser", () => {
   });
 
   test("fails to parse enums", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("enum").getTypeNodeOrThrow();
 
     expect(() => parseType(type, typeTable, lociTable)).toThrowError(
@@ -337,7 +310,6 @@ describe("type parser", () => {
   });
 
   test("fails to parse enum constants", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("enumConstant")
       .getTypeNodeOrThrow();
@@ -348,7 +320,6 @@ describe("type parser", () => {
   });
 
   test("fails to parse Maps", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace.getPropertyOrThrow("map").getTypeNodeOrThrow();
 
     expect(() => parseType(type, typeTable, lociTable)).toThrowError(
@@ -357,7 +328,6 @@ describe("type parser", () => {
   });
 
   test("fails to parse object with index signatures", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("indexSignature")
       .getTypeNodeOrThrow();
@@ -368,7 +338,6 @@ describe("type parser", () => {
   });
 
   test("fails to parse interface with index signatures", () => {
-    const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
     const type = interphace
       .getPropertyOrThrow("interfaceWithIndexSignature")
       .getTypeNodeOrThrow();
