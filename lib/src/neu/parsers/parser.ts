@@ -10,9 +10,9 @@ import {
   ts,
   TypeGuards
 } from "ts-morph";
-import { ApiConfig } from "../syntax/api";
-import { EndpointConfig } from "../syntax/endpoint";
-import { ResponseConfig } from "../syntax/response";
+import { ApiConfig } from "../../syntax/api";
+import { EndpointConfig } from "../../syntax/endpoint";
+import { ResponseConfig } from "../../syntax/response";
 import {
   Body,
   Contract,
@@ -25,8 +25,8 @@ import {
   Response,
   Security,
   SecurityHeader
-} from "./definitions";
-import { LociTable } from "./locations";
+} from "../definitions";
+import { LociTable } from "../locations";
 import {
   getClassWithDecoratorOrThrow,
   getDecoratorConfigOrThrow,
@@ -43,8 +43,8 @@ import {
   getPropValueAsStringOrThrow,
   getSelfAndLocalDependencies,
   isHttpMethod
-} from "./parser-helpers";
-import { parseType, TypeTable } from "./type-parser";
+} from "../parser-helpers";
+import { parseType, TypeTable } from "../type-parser";
 
 export function parse(sourcePath: string): Contract {
   const project = createProject();
