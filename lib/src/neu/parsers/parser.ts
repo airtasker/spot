@@ -3,6 +3,8 @@ import { CompilerOptions, Project, SourceFile, ts } from "ts-morph";
 import { ApiConfig } from "../../syntax/api";
 import { Contract, Endpoint, Security } from "../definitions";
 import { LociTable } from "../locations";
+import { TypeTable } from "../types";
+import { parseEndpoint } from "./endpoint-parser";
 import {
   getClassWithDecoratorOrThrow,
   getDecoratorConfigOrThrow,
@@ -11,9 +13,7 @@ import {
   getPropertyWithDecorator,
   getPropValueAsStringOrThrow,
   getSelfAndLocalDependencies
-} from "../parser-helpers";
-import { TypeTable } from "../types";
-import { parseEndpoint } from "./endpoint-parser";
+} from "./parser-helpers";
 import { parseSecurityHeader } from "./security-header-parser";
 
 export function parse(sourcePath: string): Contract {

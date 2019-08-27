@@ -10,7 +10,6 @@ import {
   UnionTypeNode
 } from "ts-morph";
 import { LociTable } from "../locations";
-import { getJsDoc, getPropertyName } from "../parser-helpers";
 import {
   ArrayType,
   arrayType,
@@ -44,6 +43,7 @@ import {
   TypeTable,
   unionType
 } from "../types";
+import { getJsDoc, getPropertyName } from "./parser-helpers";
 
 export function parseType(
   typeNode: TypeNode,

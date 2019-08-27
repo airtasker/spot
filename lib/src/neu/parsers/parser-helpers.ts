@@ -17,7 +17,7 @@ import {
   TypeGuards,
   TypeLiteralNode
 } from "ts-morph";
-import { HttpMethod } from "./definitions";
+import { HttpMethod } from "../definitions";
 
 // FILE HELPERS
 

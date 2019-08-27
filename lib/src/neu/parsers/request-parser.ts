@@ -1,10 +1,10 @@
 import { MethodDeclaration } from "ts-morph";
 import { Request } from "../definitions";
 import { LociTable } from "../locations";
-import { getParamWithDecorator } from "../parser-helpers";
 import { TypeTable } from "../types";
 import { parseBody } from "./body-parser";
 import { parseHeaders } from "./headers-parser";
+import { getParamWithDecorator } from "./parser-helpers";
 import { parsePathParams } from "./path-params-parser";
 import { parseQueryParams } from "./query-params-parser";
 

@@ -1,12 +1,12 @@
 import { ParameterDeclaration } from "ts-morph";
 import { Header } from "../definitions";
 import { LociTable } from "../locations";
+import { TypeTable } from "../types";
 import {
   getJsDoc,
   getParameterTypeAsTypeLiteralOrThrow,
   getPropertyName
-} from "../parser-helpers";
-import { TypeTable } from "../types";
+} from "./parser-helpers";
 import { parseType } from "./type-parser";
 
 export function parseHeaders(

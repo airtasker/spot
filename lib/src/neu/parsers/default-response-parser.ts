@@ -1,10 +1,10 @@
 import { MethodDeclaration } from "ts-morph";
 import { DefaultResponse } from "../definitions";
 import { LociTable } from "../locations";
-import { getJsDoc, getParamWithDecorator } from "../parser-helpers";
 import { TypeTable } from "../types";
 import { parseBody } from "./body-parser";
 import { parseHeaders } from "./headers-parser";
+import { getJsDoc, getParamWithDecorator } from "./parser-helpers";
 
 export function parseDefaultResponse(
   method: MethodDeclaration,

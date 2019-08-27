@@ -2,16 +2,16 @@ import { MethodDeclaration } from "ts-morph";
 import { ResponseConfig } from "../../syntax/response";
 import { Response } from "../definitions";
 import { LociTable } from "../locations";
+import { TypeTable } from "../types";
+import { parseBody } from "./body-parser";
+import { parseHeaders } from "./headers-parser";
 import {
   getDecoratorConfigOrThrow,
   getJsDoc,
   getObjLiteralPropOrThrow,
   getParamWithDecorator,
   getPropValueAsNumberOrThrow
-} from "../parser-helpers";
-import { TypeTable } from "../types";
-import { parseBody } from "./body-parser";
-import { parseHeaders } from "./headers-parser";
+} from "./parser-helpers";
 
 export function parseResponse(
   method: MethodDeclaration,

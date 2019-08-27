@@ -2,6 +2,8 @@ import { ClassDeclaration, TypeGuards } from "ts-morph";
 import { EndpointConfig } from "../../syntax/endpoint";
 import { Endpoint } from "../definitions";
 import { LociTable } from "../locations";
+import { TypeTable } from "../types";
+import { parseDefaultResponse } from "./default-response-parser";
 import {
   getDecoratorConfigOrThrow,
   getJsDoc,
@@ -11,9 +13,7 @@ import {
   getPropValueAsArrayOrThrow,
   getPropValueAsStringOrThrow,
   isHttpMethod
-} from "../parser-helpers";
-import { TypeTable } from "../types";
-import { parseDefaultResponse } from "./default-response-parser";
+} from "./parser-helpers";
 import { parseRequest } from "./request-parser";
 import { parseResponse } from "./response-parser";
 

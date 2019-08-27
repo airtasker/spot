@@ -1,4 +1,4 @@
-import { createExistingSourceFile } from "../spec-helpers/helper";
+import { createExistingSourceFile } from "../../spec-helpers/helper";
 import {
   getDecoratorConfigOrThrow,
   getSelfAndLocalDependencies

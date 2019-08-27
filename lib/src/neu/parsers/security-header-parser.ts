@@ -1,8 +1,8 @@
 import { PropertyDeclaration } from "ts-morph";
 import { SecurityHeader } from "../definitions";
 import { LociTable } from "../locations";
-import { getJsDoc, getPropertyName } from "../parser-helpers";
 import { TypeTable } from "../types";
+import { getJsDoc, getPropertyName } from "./parser-helpers";
 import { parseType } from "./type-parser";
 
 export function parseSecurityHeader(
