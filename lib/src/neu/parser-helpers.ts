@@ -210,7 +210,7 @@ export function getObjLiteralProp<T>(
   objectLiteral: ObjectLiteralExpression,
   propertyName: Extract<keyof T, string>
 ): PropertyAssignment | undefined {
-  const property = objectLiteral.getPropertyOrThrow(propertyName);
+  const property = objectLiteral.getProperty(propertyName);
   if (!property) {
     return undefined;
   }
