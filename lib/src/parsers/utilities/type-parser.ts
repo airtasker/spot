@@ -237,23 +237,23 @@ function parseIndexedAccessType(typeNode: IndexedAccessTypeNode): TypeNode {
   }
 
   if (!TypeGuards.isTypeReferenceNode(object)) {
-    throw new Error("indexed access type error");
+    throw new Error("indexed access type error: not a type reference node");
   }
 
   const declaration = getTargetDeclarationFromTypeReference(object);
 
   if (!TypeGuards.isInterfaceDeclaration(declaration)) {
-    throw new Error("indexed access type error");
+    throw new Error("indexed access type error: not an interface declaration");
   }
 
   if (!TypeGuards.isLiteralTypeNode(index)) {
-    throw new Error("indexed access type error");
+    throw new Error("indexed access type error: not a literal type node");
   }
 
   const literal = index.getLiteral();
 
   if (!TypeGuards.isStringLiteral(literal)) {
-    throw new Error("indexed access type error");
+    throw new Error("indexed access type error: not a string literal");
   }
 
   const valueDeclaration = declaration.getPropertyOrThrow(
@@ -261,7 +261,7 @@ function parseIndexedAccessType(typeNode: IndexedAccessTypeNode): TypeNode {
   );
 
   if (!TypeGuards.isPropertySignature(valueDeclaration)) {
-    throw new Error("expected property signature");
+    throw new Error("indexed access type error: expected property signature");
   }
 
   return valueDeclaration.getTypeNodeOrThrow();
