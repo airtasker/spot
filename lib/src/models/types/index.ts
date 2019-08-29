@@ -28,6 +28,7 @@ export * from "./object-types";
 export * from "./primitive-literals";
 export * from "./primitive-types";
 export * from "./special-types";
+export * from "./parameter-serialization-strategies";
 
 export type DataType =
   | PrimitiveType

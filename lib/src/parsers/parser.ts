@@ -1,8 +1,15 @@
 import path from "path";
-import { CompilerOptions, Project, SourceFile, ts } from "ts-morph";
+import {
+  ClassDeclaration,
+  CompilerOptions,
+  Project,
+  SourceFile,
+  ts
+} from "ts-morph";
 import { Locatable } from "../models/locatable";
 import { ContractNode, EndpointNode } from "../models/nodes";
 import { parseApi } from "./nodes/api-parser";
+import { parseConfig } from "./nodes/config-parser";
 import { parseEndpoint } from "./nodes/endpoint-parser";
 import { extractJsDocComment } from "./utilities/parser-utility";
 import {
@@ -49,12 +56,15 @@ export function parse(sourcePath: string): ContractNode {
 }
 
 /**
- * Parse a root source file to return a contract.
+ * Find the class decorated with `@api` in a `SourceFile`
+ * throw an error if the number of `@api` instances on the file
+ * is different from 1
+ *
+ * @param file - the source file
+ *
+ * @returns The class declaration
  */
-function parseRootSourceFile(
-  file: SourceFile,
-  projectContext: Project
-): ContractNode {
+function getApiClassFromFile(file: SourceFile): ClassDeclaration {
   const apiClasses = file
     .getClasses()
     .filter(klass => klass.getDecorator("api") !== undefined);
@@ -64,7 +74,23 @@ function parseRootSourceFile(
       `expected class decorated with @api to be defined exactly once in root source file, found ${apiClasses.length} usages`
     );
   }
-  const api = parseApi(apiClasses[0]);
+
+  return apiClasses[0];
+}
+
+/**
+ * Parse a root source file to return a contract.
+ */
+function parseRootSourceFile(
+  file: SourceFile,
+  projectContext: Project
+): ContractNode {
+  const apiClass = getApiClassFromFile(file);
+
+  const api = parseApi(apiClass);
+  const config = apiClass.getDecorator("config")
+    ? parseConfig(apiClass)
+    : undefined;
 
   const endpoints = parseRecursively(file);
 
@@ -95,7 +121,7 @@ function parseRootSourceFile(
     throw new Error("unexpected type reference");
   });
 
-  return { api, endpoints, types };
+  return { api, config, endpoints, types };
 }
 
 /**

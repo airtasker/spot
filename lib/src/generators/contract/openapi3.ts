@@ -8,7 +8,11 @@ import {
   EndpointDefinition,
   TypeDefinition
 } from "../../models/definitions";
-import { TypeKind } from "../../models/types";
+import {
+  makeParamSerializationRulesForArray,
+  ParamSerializationStrategy,
+  TypeKind
+} from "../../models/types";
 import { resolveType } from "../../verifiers/utilities/type-resolver";
 import { OpenAPI3SchemaType, openApi3TypeSchema } from "./openapi3-schema";
 
@@ -64,7 +68,13 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
         operationId: endpoint.name,
         description: endpoint.description,
         tags: endpoint.tags,
-        parameters: getParameters(contractDefinition.types, endpoint),
+        parameters: getParameters(
+          contractDefinition.types,
+          endpoint,
+          contractDefinition.config
+            ? contractDefinition.config.paramSerializationStrategy
+            : undefined
+        ),
         ...(endpoint.request.body && {
           requestBody: {
             content: {
@@ -136,7 +146,8 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
 
 function getParameters(
   types: TypeDefinition[],
-  endpoint: EndpointDefinition
+  endpoint: EndpointDefinition,
+  serializationStrategy?: ParamSerializationStrategy
 ): OpenAPIV3Parameter[] {
   const parameters = endpoint.request.pathParams
     .map(
@@ -166,13 +177,26 @@ function getParameters(
     .concat(
       endpoint.request.queryParams.map(
         (queryParam): OpenAPIV3Parameter => {
+          const resolvedType = resolveType(queryParam.type, types);
           const schemaType = openApi3TypeSchema(types, queryParam.type);
+
+          const queryParamSerializationRules =
+            resolvedType.kind === TypeKind.ARRAY &&
+            serializationStrategy &&
+            serializationStrategy.query &&
+            serializationStrategy.query.array
+              ? makeParamSerializationRulesForArray(
+                  serializationStrategy.query.array
+                )
+              : {};
+
           return {
             in: "query",
             name: queryParam.name,
             description: queryParam.description,
             schema: schemaType,
-            required: !queryParam.optional
+            required: !queryParam.optional,
+            ...queryParamSerializationRules
           };
         }
       )

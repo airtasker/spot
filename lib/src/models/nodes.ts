@@ -1,9 +1,10 @@
 import { HttpMethod } from "./http";
 import { Locatable } from "./locatable";
-import { DataExpression, DataType } from "./types";
+import { DataExpression, DataType, ParamSerializationStrategy } from "./types";
 
 export interface ContractNode {
   api: Locatable<ApiNode>;
+  config?: Locatable<ConfigNode>;
   endpoints: Array<Locatable<EndpointNode>>;
   types: TypeNode[];
 }
@@ -18,6 +19,10 @@ export interface ApiNode {
   name: Locatable<string>;
   description?: Locatable<string>;
   securityHeader?: Locatable<SecurityHeaderNode>;
+}
+
+export interface ConfigNode {
+  paramSerializationStrategy?: ParamSerializationStrategy;
 }
 
 export interface SecurityHeaderNode {
