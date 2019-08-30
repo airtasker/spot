@@ -20,6 +20,6 @@ export function config(config: ConfigConfig) {
   return (target: any) => {};
 }
 interface ConfigConfig {
-  /** The global configurations for parameter serialization strategy */
+  /** The global configuration for parameter serialization strategy */
   paramSerializationStrategy: ParamSerializationStrategy;
 }
