@@ -1,6 +1,7 @@
 import { ParamSerializationStrategy } from "../models/types";
 /**
- * Class decorator factory for describing an API configuration.
+ * Class decorator factory for describing a configuration.
+ * Should be used in conjunction with @api.
  *
  * @param config configuration
  * @example
