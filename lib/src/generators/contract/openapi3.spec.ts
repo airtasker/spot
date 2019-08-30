@@ -21,15 +21,6 @@ describe("OpenAPI 3 generator", () => {
       "./lib/src/__examples__/contract-with-config.ts"
     );
     const contractDefinition = cleanse(contractNode);
-
-    expect(contractDefinition.config).toBeDefined();
-
-    const seri = contractDefinition.config
-      ? contractDefinition.config.paramSerializationStrategy
-      : undefined;
-
-    expect(seri).toBeDefined();
-
     expect(generateOpenApiV3(contractDefinition, "json")).toMatchSnapshot(
       "json"
     );

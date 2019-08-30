@@ -2,9 +2,11 @@ import { ClassDeclaration } from "ts-morph";
 import { Locatable } from "../../models/locatable";
 import { ConfigNode } from "../../models/nodes";
 
+import { QueryParamArrayStrategy } from "lib/src/models/types";
 import {
   extractDecoratorFactoryConfiguration,
-  extractOptionalObjectProperty
+  extractOptionalObjectProperty,
+  extractStringProperty
 } from "../utilities/parser-utility";
 
 /**
@@ -16,13 +18,27 @@ export function parseConfig(klass: ClassDeclaration): Locatable<ConfigNode> {
   const decorator = klass.getDecoratorOrThrow("config");
 
   const configuration = extractDecoratorFactoryConfiguration(decorator);
-  const paramSerializationStrategy = extractOptionalObjectProperty(
+  const paramSerializationStrategyProperty = extractOptionalObjectProperty(
     configuration,
     "paramSerializationStrategy"
   );
 
-  const value = paramSerializationStrategy
-    ? paramSerializationStrategy.value
+  const queryProperty = paramSerializationStrategyProperty
+    ? extractOptionalObjectProperty(
+        paramSerializationStrategyProperty.value,
+        "query"
+      )
+    : undefined;
+
+  const array = queryProperty
+    ? (extractStringProperty(
+        queryProperty.value,
+        "array"
+      ) as QueryParamArrayStrategy)
+    : undefined;
+
+  const value = array
+    ? { paramSerializationStrategy: { query: { array } } }
     : {};
 
   const location = decorator.getSourceFile().getFilePath();

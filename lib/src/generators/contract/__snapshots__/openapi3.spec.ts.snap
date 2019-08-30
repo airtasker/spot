@@ -135,7 +135,7 @@ exports[`OpenAPI 3 generator produces valid code when parameter serialization st
             },
             \\"required\\": true,
             \\"explode\\": false,
-            \\"style\\": \\"pipeDelimited\\"
+            \\"style\\": \\"form\\"
           },
           {
             \\"in\\": \\"header\\",
@@ -421,7 +421,7 @@ paths:
               type: string
           required: true
           explode: false
-          style: pipeDelimited
+          style: form
         - in: header
           name: x-auth-token
           description: Auth Header
