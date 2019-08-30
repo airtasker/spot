@@ -1,6 +1,6 @@
 /**
  * Decorator for describing the body of requests and responses. This is used to decorate a parameter object in `@request` and `@response` decorated methods.
- * 
+ *
  * @example
 ```
 @endpoint({

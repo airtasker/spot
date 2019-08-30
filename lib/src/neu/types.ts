@@ -1,4 +1,4 @@
-enum TypeKind {
+export enum TypeKind {
   NULL = "null",
   BOOLEAN = "boolean",
   BOOLEAN_LITERAL = "boolean-literal",
@@ -246,6 +246,13 @@ export class TypeTable {
   }
 
   /**
+   * Retrieve the number of entries in the type table.
+   */
+  get size(): number {
+    return this.types.size;
+  }
+
+  /**
    * Return an object representation of the type table.
    */
   toArray(): Array<{ name: string; type: Type }> {
@@ -267,6 +274,28 @@ export class TypeTable {
       throw new Error(`Key already present in type table: ${key}`);
     }
     this.types.set(key, type);
+  }
+
+  /**
+   * Retrieve a type by lookup key.
+   *
+   * @param key lookup key
+   */
+  get(key: string): Type | undefined {
+    return this.types.get(key);
+  }
+
+  /**
+   * Retrieve a type by lookup key.
+   *
+   * @param key lookup key
+   */
+  getOrError(key: string): Type {
+    const type = this.get(key);
+    if (type === undefined) {
+      throw new Error(`Key not present in type table: ${key}`);
+    }
+    return type;
   }
 
   /**
