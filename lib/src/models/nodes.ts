@@ -22,7 +22,7 @@ export interface ApiNode {
 }
 
 export interface ConfigNode {
-  paramSerializationStrategy?: ParamSerializationStrategy;
+  paramSerializationStrategy: ParamSerializationStrategy;
 }
 
 export interface SecurityHeaderNode {

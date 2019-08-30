@@ -1,8 +1,8 @@
 import { ClassDeclaration } from "ts-morph";
+import { defaultConfigDefinition } from "../../models/definitions";
 import { Locatable } from "../../models/locatable";
 import { ConfigNode } from "../../models/nodes";
-
-import { QueryParamArrayStrategy } from "lib/src/models/types";
+import { QueryParamArrayStrategy } from "../../models/types";
 import {
   extractDecoratorFactoryConfiguration,
   extractOptionalObjectProperty,
@@ -39,7 +39,7 @@ export function parseConfig(klass: ClassDeclaration): Locatable<ConfigNode> {
 
   const value = array
     ? { paramSerializationStrategy: { query: { array } } }
-    : {};
+    : defaultConfigDefinition;
 
   const location = decorator.getSourceFile().getFilePath();
   const line = decorator.getStartLineNumber();

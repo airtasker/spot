@@ -71,9 +71,7 @@ export function openApiV3(contractDefinition: ContractDefinition): OpenApiV3 {
         parameters: getParameters(
           contractDefinition.types,
           endpoint,
-          contractDefinition.config
-            ? contractDefinition.config.paramSerializationStrategy
-            : undefined
+          contractDefinition.config.paramSerializationStrategy
         ),
         ...(endpoint.request.body && {
           requestBody: {

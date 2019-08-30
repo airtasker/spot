@@ -1,8 +1,10 @@
 import nock from "nock";
 import request from "supertest";
-import { ContractDefinition } from "../models/definitions";
+import {
+  ContractDefinition,
+  defaultConfigDefinition
+} from "../models/definitions";
 import { TypeKind } from "../models/types";
-import { response } from "../syntax";
 import { runMockServer } from "./server";
 
 describe("Server", () => {
@@ -20,6 +22,7 @@ describe("Server", () => {
       description: undefined,
       securityHeader: undefined
     },
+    config: defaultConfigDefinition,
     endpoints: [
       {
         name: "CreateCompany",

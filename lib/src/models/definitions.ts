@@ -3,7 +3,7 @@ import { DataExpression, DataType, ParamSerializationStrategy } from "./types";
 
 export interface ContractDefinition {
   api: ApiDefinition;
-  config?: ConfigDefinition;
+  config: ConfigDefinition;
   endpoints: EndpointDefinition[];
   types: TypeDefinition[];
 }
@@ -20,8 +20,9 @@ export interface ApiDefinition {
   securityHeader?: SecurityHeaderDefinition;
 }
 
+export const defaultConfigDefinition = { paramSerializationStrategy: {} };
 export interface ConfigDefinition {
-  paramSerializationStrategy?: ParamSerializationStrategy;
+  paramSerializationStrategy: ParamSerializationStrategy;
 }
 
 export interface SecurityHeaderDefinition {

@@ -1,4 +1,7 @@
-import { ContractDefinition } from "../models/definitions";
+import {
+  ContractDefinition,
+  defaultConfigDefinition
+} from "../models/definitions";
 import { ContractNode } from "../models/nodes";
 import { cleanseApi } from "./nodes/api-cleanser";
 import { cleanseConfig } from "./nodes/config-cleanser";
@@ -13,7 +16,7 @@ export function cleanse(contractNode: ContractNode): ContractDefinition {
   const api = cleanseApi(contractNode.api.value);
   const config = contractNode.config
     ? cleanseConfig(contractNode.config.value)
-    : undefined;
+    : defaultConfigDefinition;
   const endpoints = contractNode.endpoints.map(endpoint =>
     cleanseEndpoint(endpoint.value)
   );
