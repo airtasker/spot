@@ -334,13 +334,30 @@ describe("type node parser", () => {
       });
     });
 
-    // FIXME: add support for nested indexed access types
-    test("throws on nested indexed access type", () => {
-      const typeNode = createTypeNode("AliasedNestedIndexedAccessType");
-
-      expect(() => parseTypeNode(typeNode)).toThrowError(
-        "indexed access type error: nested indexed access type unsupported"
+    test("parses nested interface indexed access type", () => {
+      const typeNode = createTypeNode(
+        "AliasedNestedInterfaceIndexedAccessType"
       );
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.STRING,
+        name: "AliasedNestedInterfaceIndexedAccessType",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    });
+
+    test("parses nested type literal indexed access type", () => {
+      const typeNode = createTypeNode(
+        "AliasedNestedTypeLiteralIndexedAccessType"
+      );
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.BOOLEAN,
+        name: "AliasedNestedTypeLiteralIndexedAccessType",
+        location: expect.stringMatching(/main\.ts$/)
+      });
     });
   });
 });
@@ -487,9 +504,14 @@ function createTypeNode(...types: string[]): TypeNode {
       age: number;
     }
 
+    interface NestedNestedObjectInterface {
+      b: string;
+    }
+
     interface NestedObjectInterface {
-      a: {
-        b: string;
+      a: NestedNestedObjectInterface;
+      b: {
+        c: boolean;
       }
     }
 
@@ -528,7 +550,8 @@ function createTypeNode(...types: string[]): TypeNode {
     type AliasedCustomPrimitive = Integer;
     type ChainedAlias = AliasedCustomPrimitive;
     type AliasedIndexedAccessType = ObjectInterface['name'];
-    type AliasedNestedIndexedAccessType = NestedObjectInterface['a']['b'];
+    type AliasedNestedInterfaceIndexedAccessType = NestedObjectInterface['a']['b'];
+    type AliasedNestedTypeLiteralIndexedAccessType = NestedObjectInterface['b']['c'];
   `;
   const sourceFile = createSourceFile(
     { path: "main", content },
