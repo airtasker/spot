@@ -65,7 +65,7 @@ export function getClassWithDecoratorOrThrow(
 
   if (matchingKlasses.length !== 1) {
     throw new Error(
-      `expected a decorator @${decoratorName} to be used only once, found ${matchingKlasses.length} usages`
+      `expected a decorator @${decoratorName} to be used once, found ${matchingKlasses.length} usages`
     );
   }
 
