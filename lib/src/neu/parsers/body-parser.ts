@@ -9,15 +9,11 @@ export function parseBody(
   typeTable: TypeTable,
   lociTable: LociTable
 ): Body {
-  const decorator = parameter.getDecoratorOrThrow("body");
+  parameter.getDecoratorOrThrow("body");
   if (parameter.hasQuestionToken()) {
     throw new Error("@body parameter cannot be optional");
   }
   const type = parseType(parameter.getTypeNodeOrThrow(), typeTable, lociTable);
   // TODO: add loci information
-  return {
-    // TODO: how to extract description from parameter declaration?
-    description: undefined,
-    type
-  };
+  return { type };
 }

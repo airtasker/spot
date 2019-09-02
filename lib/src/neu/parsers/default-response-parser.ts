@@ -11,7 +11,7 @@ export function parseDefaultResponse(
   typeTable: TypeTable,
   lociTable: LociTable
 ): DefaultResponse {
-  const decorator = method.getDecoratorOrThrow("defaultResponse");
+  method.getDecoratorOrThrow("defaultResponse");
   const headersParam = getParamWithDecorator(method, "headers");
   const headers = headersParam
     ? parseHeaders(headersParam, typeTable, lociTable)

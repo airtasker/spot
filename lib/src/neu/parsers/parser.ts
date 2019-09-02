@@ -1,7 +1,7 @@
 import * as path from "path";
 import { CompilerOptions, Project, SourceFile, ts } from "ts-morph";
 import { ApiConfig } from "../../syntax/api";
-import { Contract, Endpoint, Security } from "../definitions";
+import { Contract, Endpoint, SecurityHeader } from "../definitions";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
 import { parseEndpoint } from "./endpoint-parser";
@@ -45,11 +45,9 @@ function parseRootSourceFile(file: SourceFile): Contract {
 
   const securityHeaderProp = getPropertyWithDecorator(klass, "securityHeader");
 
-  const security: Security = {
-    header:
-      securityHeaderProp &&
-      parseSecurityHeader(securityHeaderProp, typeTable, lociTable)
-  };
+  const security =
+    securityHeaderProp &&
+    parseSecurityHeader(securityHeaderProp, typeTable, lociTable);
 
   // Add location data
   lociTable.addMorphNode(LociTable.apiClassKey(), klass);

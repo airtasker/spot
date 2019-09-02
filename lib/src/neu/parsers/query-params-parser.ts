@@ -14,7 +14,7 @@ export function parseQueryParams(
   typeTable: TypeTable,
   lociTable: LociTable
 ): QueryParam[] {
-  const decorator = parameter.getDecoratorOrThrow("queryParams");
+  parameter.getDecoratorOrThrow("queryParams");
   if (parameter.hasQuestionToken()) {
     throw new Error("@queryParams parameter cannot be optional");
   }

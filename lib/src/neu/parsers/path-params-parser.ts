@@ -14,7 +14,7 @@ export function parsePathParams(
   typeTable: TypeTable,
   lociTable: LociTable
 ): PathParam[] {
-  const decorator = parameter.getDecoratorOrThrow("pathParams");
+  parameter.getDecoratorOrThrow("pathParams");
   if (parameter.hasQuestionToken()) {
     throw new Error("@pathParams parameter cannot be optional");
   }
@@ -23,7 +23,7 @@ export function parsePathParams(
     .getProperties()
     .map(p => {
       const pDescription = getJsDoc(p);
-      if (parameter.hasQuestionToken()) {
+      if (p.hasQuestionToken()) {
         throw new Error("@pathParams properties cannot be optional");
       }
       return {

@@ -10,10 +10,10 @@ export function parseSecurityHeader(
   typeTable: TypeTable,
   lociTable: LociTable
 ): SecurityHeader {
+  property.getDecoratorOrThrow("securityHeader");
   if (property.hasQuestionToken()) {
     throw new Error("@securityHeader property cannot be optional");
   }
-  const decorator = property.getDecoratorOrThrow("securityHeader");
   const name = getPropertyName(property);
   const descriptionDoc = getJsDoc(property);
   return {

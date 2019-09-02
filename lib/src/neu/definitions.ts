@@ -4,12 +4,8 @@ export interface Contract {
   name: string;
   description?: string;
   types: Array<{ name: string; type: Type }>;
-  security: Security;
+  security?: SecurityHeader;
   endpoints: Endpoint[];
-}
-
-export interface Security {
-  header?: SecurityHeader;
 }
 
 export interface SecurityHeader {
@@ -66,7 +62,6 @@ export interface QueryParam {
 }
 
 export interface Body {
-  description?: string;
   type: Type;
 }
 
