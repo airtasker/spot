@@ -1,7 +1,7 @@
 import * as path from "path";
 import { CompilerOptions, Project, ts } from "ts-morph";
-import { Contract } from "../definitions";
-import { parseContract } from "./contract-parser";
+import { Contract } from "./definitions";
+import { parseContract } from "./parsers/contract-parser";
 
 export function parse(sourcePath: string): Contract {
   const project = createProject();
