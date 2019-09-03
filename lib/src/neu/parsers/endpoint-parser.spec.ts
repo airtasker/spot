@@ -1,12 +1,12 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseEndpoint } from "./endpoint-parser";
 
 describe("endpoint parser", () => {
-  const exampleFile = createExistingSourceFile(
+  const exampleFile = createProjectFromExistingSourceFile(
     `${__dirname}/__spec-examples__/endpoint.ts`
-  );
+  ).file;
 
   let typeTable: TypeTable;
   let lociTable: LociTable;

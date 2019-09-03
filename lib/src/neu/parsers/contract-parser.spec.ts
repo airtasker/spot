@@ -1,13 +1,13 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import { parseContract } from "./contract-parser";
 
 describe("contract parser", () => {
   test("parses file containing @api decorated class", () => {
-    const file = createExistingSourceFile(
+    const file = createProjectFromExistingSourceFile(
       `${__dirname}/__spec-examples__/contracts/contract.ts`
-    );
+    ).file;
 
-    const { contract, lociTable } = parseContract(file);
+    const { contract } = parseContract(file);
 
     expect(contract.name).toEqual("contract");
     expect(contract.description).toEqual("contract description");
@@ -34,11 +34,11 @@ describe("contract parser", () => {
   });
 
   test("parses minimal file containing @api decorated class", () => {
-    const file = createExistingSourceFile(
+    const file = createProjectFromExistingSourceFile(
       `${__dirname}/__spec-examples__/contracts/minimal-contract.ts`
-    );
+    ).file;
 
-    const { contract, lociTable } = parseContract(file);
+    const { contract } = parseContract(file);
 
     expect(contract).toStrictEqual({
       description: undefined,
@@ -50,9 +50,9 @@ describe("contract parser", () => {
   });
 
   test("fails to parse file that does not contain @api decorated class", () => {
-    const file = createExistingSourceFile(
+    const file = createProjectFromExistingSourceFile(
       `${__dirname}/__spec-examples__/contracts/not-contract.ts`
-    );
+    ).file;
 
     expect(() => parseContract(file)).toThrowError(
       "expected a decorator @api to be used once, found 0 usages"

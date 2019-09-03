@@ -1,12 +1,13 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { OptionalNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseHeaders } from "./headers-parser";
 
 describe("headers parser", () => {
-  const exampleFile = createExistingSourceFile(
+  const exampleFile = createProjectFromExistingSourceFile(
     `${__dirname}/__spec-examples__/headers.ts`
-  );
+  ).file;
   const method = exampleFile
     .getClassOrThrow("HeadersClass")
     .getMethodOrThrow("headersMethod");
@@ -69,7 +70,7 @@ describe("headers parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("@headers parameter cannot be optional");
+    ).toThrowError(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@headers decorated parameter", () => {

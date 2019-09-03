@@ -1,12 +1,13 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { OptionalNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseSecurityHeader } from "./security-header-parser";
 
 describe("security header parser", () => {
-  const exampleFile = createExistingSourceFile(
+  const exampleFile = createProjectFromExistingSourceFile(
     `${__dirname}/__spec-examples__/security-header.ts`
-  );
+  ).file;
 
   const klass = exampleFile.getClassOrThrow("SecurityHeaderClass");
 
@@ -41,7 +42,7 @@ describe("security header parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("@securityHeader property cannot be optional");
+    ).toThrowError(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@securityHeader decorated property", () => {

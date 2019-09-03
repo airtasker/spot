@@ -24,7 +24,7 @@ export function parseContract(
   const typeTable = new TypeTable();
   const lociTable = new LociTable();
 
-  const klass = getClassWithDecoratorOrThrow(file, "api");
+  const klass = getClassWithDecoratorOrThrow(file, "api"); // TODO: throw a custom error
   const decorator = klass.getDecoratorOrThrow("api");
   const decoratorConfig = getDecoratorConfigOrThrow(decorator);
   const nameProp = getObjLiteralPropOrThrow<ApiConfig>(decoratorConfig, "name");

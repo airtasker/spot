@@ -75,6 +75,7 @@ export function parseEndpoint(
   const defaultResponse =
     defaultResponseMethod &&
     parseDefaultResponse(defaultResponseMethod, typeTable, lociTable);
+
   // Add location data
   lociTable.addMorphNode(LociTable.endpointClassKey(endpointName), klass);
   lociTable.addMorphNode(

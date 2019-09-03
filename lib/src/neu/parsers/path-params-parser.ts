@@ -1,5 +1,6 @@
 import { ParameterDeclaration } from "ts-morph";
 import { PathParam } from "../definitions";
+import { OptionalNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
 import {
@@ -16,7 +17,13 @@ export function parsePathParams(
 ): PathParam[] {
   parameter.getDecoratorOrThrow("pathParams");
   if (parameter.hasQuestionToken()) {
-    throw new Error("@pathParams parameter cannot be optional");
+    throw new OptionalNotAllowedError(
+      "@pathParams parameter cannot be optional",
+      {
+        file: parameter.getSourceFile().getFilePath(),
+        position: parameter.getQuestionTokenNodeOrThrow().getPos()
+      }
+    );
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
   const pathParams = type
@@ -24,7 +31,13 @@ export function parsePathParams(
     .map(p => {
       const pDescription = getJsDoc(p);
       if (p.hasQuestionToken()) {
-        throw new Error("@pathParams properties cannot be optional");
+        throw new OptionalNotAllowedError(
+          "@pathParams properties cannot be optional",
+          {
+            file: p.getSourceFile().getFilePath(),
+            position: p.getQuestionTokenNodeOrThrow().getPos()
+          }
+        );
       }
       return {
         name: getPropertyName(p),

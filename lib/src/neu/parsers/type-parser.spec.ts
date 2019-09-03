@@ -1,12 +1,12 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseType } from "./type-parser";
 
 describe("type parser", () => {
-  const exampleFile = createExistingSourceFile(
+  const exampleFile = createProjectFromExistingSourceFile(
     `${__dirname}/__spec-examples__/types.ts`
-  );
+  ).file;
   const interphace = exampleFile.getInterfaceOrThrow("TypeInterface");
 
   let typeTable: TypeTable;

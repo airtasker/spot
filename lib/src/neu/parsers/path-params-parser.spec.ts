@@ -1,12 +1,13 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { OptionalNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parsePathParams } from "./path-params-parser";
 
 describe("path params parser", () => {
-  const exampleFile = createExistingSourceFile(
+  const exampleFile = createProjectFromExistingSourceFile(
     `${__dirname}/__spec-examples__/path-params.ts`
-  );
+  ).file;
   const method = exampleFile
     .getClassOrThrow("PathParamsClass")
     .getMethodOrThrow("pathParamsMethod");
@@ -49,7 +50,7 @@ describe("path params parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("@pathParams properties cannot be optional");
+    ).toThrowError(OptionalNotAllowedError);
   });
 
   test("fails to parse @pathParams decorated non-object parameter", () => {
@@ -69,7 +70,7 @@ describe("path params parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("@pathParams parameter cannot be optional");
+    ).toThrowError(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@pathParams decorated parameter", () => {

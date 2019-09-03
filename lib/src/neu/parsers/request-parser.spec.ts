@@ -1,12 +1,12 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseRequest } from "./request-parser";
 
 describe("request parser", () => {
-  const exampleFile = createExistingSourceFile(
+  const exampleFile = createProjectFromExistingSourceFile(
     `${__dirname}/__spec-examples__/request.ts`
-  );
+  ).file;
   const klass = exampleFile.getClassOrThrow("RequestClass");
 
   let typeTable: TypeTable;
