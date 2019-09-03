@@ -17,6 +17,7 @@ export class ParserError extends Error {
   }
 }
 
+// WIP
 export class OptionalNotAllowedError extends ParserError {
   private file: string;
   private position: number;
@@ -50,15 +51,15 @@ export class OptionalNotAllowedError extends ParserError {
       line + opts.surroundingLines <= totalLines
         ? line + opts.surroundingLines
         : totalLines;
-    const padding = upperBound.toString().length;
+    const lineNumberPadding = upperBound.toString().length;
 
     return (
       `${this.file}\n\n` +
       splittedSource
         .map((e, i) =>
           i + 1 === line
-            ? `${(i + 1).toString().padStart(padding)} --> ${e}`
-            : `${(i + 1).toString().padStart(padding)}     ${e}`
+            ? `${(i + 1).toString().padStart(lineNumberPadding)} --> ${e}`
+            : `${(i + 1).toString().padStart(lineNumberPadding)}     ${e}`
         )
         .slice(lowerBound - 1, upperBound)
         .join("\n")
