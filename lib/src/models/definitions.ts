@@ -1,8 +1,9 @@
 import { HttpMethod } from "./http";
-import { DataExpression, DataType } from "./types";
+import { DataExpression, DataType, ParamSerializationStrategy } from "./types";
 
 export interface ContractDefinition {
   api: ApiDefinition;
+  config: ConfigDefinition;
   endpoints: EndpointDefinition[];
   types: TypeDefinition[];
 }
@@ -17,6 +18,11 @@ export interface ApiDefinition {
   name: string;
   description?: string;
   securityHeader?: SecurityHeaderDefinition;
+}
+
+export const defaultConfigDefinition = { paramSerializationStrategy: {} };
+export interface ConfigDefinition {
+  paramSerializationStrategy: ParamSerializationStrategy;
 }
 
 export interface SecurityHeaderDefinition {

@@ -15,4 +15,17 @@ describe("OpenAPI 3 generator", () => {
       "yaml"
     );
   });
+
+  test("produces valid code when parameter serialization strategy is specified", async () => {
+    const contractNode = await parse(
+      "./lib/src/__examples__/contract-with-config.ts"
+    );
+    const contractDefinition = cleanse(contractNode);
+    expect(generateOpenApiV3(contractDefinition, "json")).toMatchSnapshot(
+      "json"
+    );
+    expect(generateOpenApiV3(contractDefinition, "yaml")).toMatchSnapshot(
+      "yaml"
+    );
+  });
 });
