@@ -42,7 +42,7 @@
     "@types/lodash": "^4.14.138",
     "@types/moxios": "^0.4.8",
     "@types/nock": "^10.0.3",
-    "@types/node": "^12.7.3",
+    "@types/node": "^12.7.4",
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "core-js": "^3.2.1",
