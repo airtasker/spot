@@ -3,13 +3,13 @@ import {
   IndexedAccessTypeNode,
   InterfaceDeclaration,
   LiteralTypeNode,
+  StringLiteral,
+  TypeAliasDeclaration,
   TypeGuards,
   TypeLiteralNode,
   TypeNode,
   TypeReferenceNode,
-  UnionTypeNode,
-  TypeAliasDeclaration,
-  StringLiteral
+  UnionTypeNode
 } from "ts-morph";
 import {
   arrayType,
