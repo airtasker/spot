@@ -660,13 +660,6 @@
   dependencies:
     axios "^0.16.1"
 
-"@types/nock@^10.0.3":
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/@types/nock/-/nock-10.0.3.tgz#dab1d18ffbccfbf2db811dab9584304eeb6e1c4c"
-  integrity sha512-OthuN+2FuzfZO3yONJ/QVjKmLEuRagS9TV9lEId+WHL9KhftYG+/2z+pxlr0UgVVXSpVD8woie/3fzQn8ft/Ow==
-  dependencies:
-    "@types/node" "*"
-
 "@types/node@*", "@types/node@^12.7.4":
   version "12.7.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.4.tgz#64db61e0359eb5a8d99b55e05c729f130a678b04"
@@ -5110,10 +5103,10 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
-nock@11.0.0:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-11.0.0.tgz#ad13e1bcea890d8942cfacc5d0aff5e0ef9a6331"
-  integrity sha512-lrlqTP3Ii8pT/j86F6tR2kRPUPA/aMWQ8TADzvLLDsZtqXlPdasKbg4G86bsnXUfM5yMlDIs9gIe/i7ZtPmCoA==
+nock@11.3.2:
+  version "11.3.2"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-11.3.2.tgz#8f14e690a6cc839c6c585ba22acd0277d128766a"
+  integrity sha512-Bb00vTmuXyucMT9gcnMSiE2n6P5yrRoAyej0eF6ik6VUxG0FKp4RcSx1TzFusEDtY3hMNpsd7ZYUSIvwtNpTrw==
   dependencies:
     chai "^4.1.2"
     debug "^4.1.0"

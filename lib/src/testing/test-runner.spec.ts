@@ -32,7 +32,10 @@ describe("test runner", () => {
     const scope = nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { name: "My Company", private: true })
+      .post(
+        "/companies",
+        JSON.parse(JSON.stringify({ name: "My Company", private: true }))
+      )
       .reply(
         201,
         { name: "My Company" },
@@ -106,7 +109,10 @@ describe("test runner", () => {
     const scopeA = nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { name: "My Company", private: true })
+      .post(
+        "/companies",
+        JSON.parse(JSON.stringify({ name: "My Company", private: true }))
+      )
       .reply(
         201,
         { name: "My Company" },
@@ -118,7 +124,7 @@ describe("test runner", () => {
     const scopeB = nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { name: 5 })
+      .post("/companies", JSON.parse(JSON.stringify({ name: 5 })))
       .reply(400, { message: "error" })
       .post("/state/teardown")
       .reply(200);
@@ -137,7 +143,7 @@ describe("test runner", () => {
     const scope = nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { private: true })
+      .post("/companies", JSON.parse(JSON.stringify({ private: true })))
       .reply(400, { error: "Some Error" })
       .post("/state/teardown")
       .reply(200);
@@ -153,7 +159,7 @@ describe("test runner", () => {
     );
 
     const scopeDraft = nock(baseUrl)
-      .post("/companies", { private: true })
+      .post("/companies", JSON.parse(JSON.stringify({ private: true })))
       .reply(200);
 
     const scopeNotDraft = nock(baseUrl)
@@ -184,7 +190,10 @@ describe("test runner", () => {
     const scopeDraft = nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { name: "My Company", private: true })
+      .post(
+        "/companies",
+        JSON.parse(JSON.stringify({ name: "My Company", private: true }))
+      )
       .reply(201, { name: "My Company" })
       .post("/state/teardown")
       .reply(200);
@@ -204,7 +213,10 @@ describe("test runner", () => {
     const scope = nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { name: "My Company", private: true })
+      .post(
+        "/companies",
+        JSON.parse(JSON.stringify({ name: "My Company", private: true }))
+      )
       .reply(201, { THIS_IS_OBVIOUSLY_WRONG: "My Company" })
       .post("/state/teardown")
       .reply(200);
@@ -224,7 +236,10 @@ describe("test runner", () => {
     nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { name: "My Company", private: true })
+      .post(
+        "/companies",
+        JSON.parse(JSON.stringify({ name: "My Company", private: true }))
+      )
       .reply(201, { THIS_IS_OBVIOUSLY_WRONG: "My Company" })
       .post("/state/teardown")
       .reply(200);
@@ -241,7 +256,10 @@ describe("test runner", () => {
     );
 
     const scopeA = nock(baseUrl)
-      .post("/companies", { name: "My Company", private: true })
+      .post(
+        "/companies",
+        JSON.parse(JSON.stringify({ name: "My Company", private: true }))
+      )
       .reply(
         201,
         { name: "My Company" },
@@ -249,7 +267,7 @@ describe("test runner", () => {
       );
 
     const scopeB = nock(baseUrl)
-      .post("/companies", { name: 5 })
+      .post("/companies", JSON.parse(JSON.stringify({ name: 5 })))
       .reply(400, { message: "error" });
 
     const initializeScope = nock(baseUrl)
@@ -368,7 +386,10 @@ describe("test runner", () => {
     const scope = nock(baseUrl)
       .post("/state/initialize")
       .reply(200)
-      .post("/companies", { name: "My Company", private: true })
+      .post(
+        "/companies",
+        JSON.parse(JSON.stringify({ name: "My Company", private: true }))
+      )
       .reply(
         201,
         { name: "My Company" },
