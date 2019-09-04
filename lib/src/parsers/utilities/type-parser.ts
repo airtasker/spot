@@ -1,7 +1,10 @@
 import {
   ArrayTypeNode,
+  IndexedAccessTypeNode,
   InterfaceDeclaration,
   LiteralTypeNode,
+  StringLiteral,
+  TypeAliasDeclaration,
   TypeGuards,
   TypeLiteralNode,
   TypeNode,
@@ -65,6 +68,8 @@ export function parseTypeNode(typeNode: TypeNode): DataType {
     return parseObjectLiteralType(typeNode);
   } else if (TypeGuards.isUnionTypeNode(typeNode)) {
     return parseUnionType(typeNode);
+  } else if (TypeGuards.isIndexedAccessTypeNode(typeNode)) {
+    return parseTypeNode(parseIndexedAccessType(typeNode));
   } else {
     throw new Error("unknown type");
   }
@@ -215,6 +220,120 @@ function parseUnionType(typeNode: UnionTypeNode): DataType {
   } else {
     throw new Error("union type error");
   }
+}
+
+function resolveFirstTypeReferenceInIndexedAccessType(
+  typeNode: IndexedAccessTypeNode
+): TypeReferenceNode {
+  const object = typeNode.getObjectTypeNode();
+
+  if (TypeGuards.isIndexedAccessTypeNode(object)) {
+    return resolveFirstTypeReferenceInIndexedAccessType(object);
+  }
+
+  if (!TypeGuards.isTypeReferenceNode(object)) {
+    throw new Error("indexed access type error: not a type reference node");
+  }
+
+  return object;
+}
+
+function resolveLiteralTypesInIndexedAccessType(
+  typeNode: IndexedAccessTypeNode
+): LiteralTypeNode[] {
+  const object = typeNode.getObjectTypeNode();
+  const index = typeNode.getIndexTypeNode();
+
+  if (!TypeGuards.isLiteralTypeNode(index)) {
+    throw new Error("indexed access type error: not a literal type node");
+  }
+
+  if (TypeGuards.isIndexedAccessTypeNode(object)) {
+    return [...resolveLiteralTypesInIndexedAccessType(object), index];
+  }
+
+  return [index];
+}
+
+function resolvePropertiesFromTypeAliasOrInterfaceDeclaration(
+  declaration: TypeAliasDeclaration | InterfaceDeclaration
+): TypeLiteralNode | InterfaceDeclaration {
+  if (TypeGuards.isInterfaceDeclaration(declaration)) {
+    return declaration;
+  } else if (TypeGuards.isTypeAliasDeclaration(declaration)) {
+    const literalTypeNode = declaration.getTypeNodeOrThrow();
+
+    if (TypeGuards.isTypeLiteralNode(literalTypeNode)) {
+      return literalTypeNode;
+    }
+
+    throw new Error("indexed access type error: not a type literal node");
+  }
+
+  throw new Error(
+    "indexed access type error: not an type alias or interface declaration"
+  );
+}
+
+function resolveIndexedAccessTypeReference(
+  declaration: TypeAliasDeclaration | InterfaceDeclaration | TypeLiteralNode,
+  literalChain: StringLiteral[]
+): TypeNode {
+  if (!literalChain[0]) {
+    throw new Error("indexed access type error: no literal in chain");
+  }
+
+  const propertiesParentDeclaration = TypeGuards.isTypeLiteralNode(declaration)
+    ? declaration
+    : resolvePropertiesFromTypeAliasOrInterfaceDeclaration(declaration);
+
+  const propertyType = propertiesParentDeclaration
+    .getPropertyOrThrow(literalChain[0].getLiteralText())
+    .getTypeNodeOrThrow();
+
+  if (TypeGuards.isTypeLiteralNode(propertyType)) {
+    return resolveIndexedAccessTypeReference(
+      propertyType,
+      literalChain.slice(1)
+    );
+  }
+
+  if (TypeGuards.isExpression(propertyType)) {
+    return propertyType;
+  }
+
+  if (!TypeGuards.isTypeReferenceNode(propertyType)) {
+    throw new Error("indexed access type error: expected type reference node");
+  }
+
+  return resolveIndexedAccessTypeReference(
+    getTargetDeclarationFromTypeReference(propertyType),
+    literalChain.slice(1)
+  );
+}
+
+/**
+ * Parse an indexed access type node.
+ *
+ * @param typeNode index access type node
+ */
+function parseIndexedAccessType(typeNode: IndexedAccessTypeNode): TypeNode {
+  const typeReference = resolveFirstTypeReferenceInIndexedAccessType(typeNode);
+
+  const declaration = getTargetDeclarationFromTypeReference(typeReference);
+
+  const literalChain = resolveLiteralTypesInIndexedAccessType(typeNode).map(
+    literalNode => literalNode.getLiteral()
+  );
+
+  if (literalChain.some(literal => !TypeGuards.isStringLiteral(literal))) {
+    throw new Error("indexed access type error: not a string literal");
+  }
+
+  return resolveIndexedAccessTypeReference(
+    declaration,
+    literalChain as StringLiteral[]
+  );
 }
 
 /**

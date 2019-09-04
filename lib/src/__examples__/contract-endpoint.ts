@@ -10,7 +10,7 @@ import {
   String,
   test
 } from "@airtasker/spot";
-import { ErrorBody, UserBody } from "./models";
+import { Company, ErrorBody, UserBody } from "./models";
 
 /** Retrieves a user in a company */
 @draft
@@ -25,7 +25,7 @@ class GetUser {
     @pathParams
     pathParams: {
       /** company identifier */
-      companyId: String;
+      companyId: Company["id"];
       /** user identifier */
       userId: String;
     },

@@ -1,3 +1,8 @@
+export interface Company {
+  /** company id */
+  id: string;
+}
+
 /** User response body */
 export interface UserBody {
   /** data wrapper */

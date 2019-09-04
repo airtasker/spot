@@ -322,6 +322,43 @@ describe("type node parser", () => {
         location: expect.stringMatching(/main\.ts$/)
       });
     });
+
+    test("parses indexed access type", () => {
+      const typeNode = createTypeNode("AliasedIndexedAccessType");
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.STRING,
+        name: "AliasedIndexedAccessType",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    });
+
+    test("parses nested interface indexed access type", () => {
+      const typeNode = createTypeNode(
+        "AliasedNestedInterfaceIndexedAccessType"
+      );
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.STRING,
+        name: "AliasedNestedInterfaceIndexedAccessType",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    });
+
+    test("parses nested type literal indexed access type", () => {
+      const typeNode = createTypeNode(
+        "AliasedNestedTypeLiteralIndexedAccessType"
+      );
+
+      expect(parseTypeNode(typeNode)).toStrictEqual({
+        kind: TypeKind.TYPE_REFERENCE,
+        referenceKind: TypeKind.BOOLEAN,
+        name: "AliasedNestedTypeLiteralIndexedAccessType",
+        location: expect.stringMatching(/main\.ts$/)
+      });
+    });
   });
 });
 
@@ -467,6 +504,17 @@ function createTypeNode(...types: string[]): TypeNode {
       age: number;
     }
 
+    interface NestedNestedObjectInterface {
+      b: string;
+    }
+
+    interface NestedObjectInterface {
+      a: NestedNestedObjectInterface;
+      b: {
+        c: boolean;
+      }
+    }
+
     /** Complex interface description */
     interface ComplexInterface extends ComplexInterfaceExtension {
       /** Name of person */
@@ -501,6 +549,9 @@ function createTypeNode(...types: string[]): TypeNode {
     type TrueAlias = true;
     type AliasedCustomPrimitive = Integer;
     type ChainedAlias = AliasedCustomPrimitive;
+    type AliasedIndexedAccessType = ObjectInterface['name'];
+    type AliasedNestedInterfaceIndexedAccessType = NestedObjectInterface['a']['b'];
+    type AliasedNestedTypeLiteralIndexedAccessType = NestedObjectInterface['b']['c'];
   `;
   const sourceFile = createSourceFile(
     { path: "main", content },
