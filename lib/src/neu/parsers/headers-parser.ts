@@ -1,5 +1,6 @@
 import { ParameterDeclaration } from "ts-morph";
 import { Header } from "../definitions";
+import { OptionalNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
 import {
@@ -14,10 +15,13 @@ export function parseHeaders(
   typeTable: TypeTable,
   lociTable: LociTable
 ): Header[] {
-  const decorator = parameter.getDecoratorOrThrow("headers");
+  parameter.getDecoratorOrThrow("headers");
   // TODO check parameter.isOptional()
   if (parameter.hasQuestionToken()) {
-    throw new Error("@headers parameter cannot be optional");
+    throw new OptionalNotAllowedError("@headers parameter cannot be optional", {
+      file: parameter.getSourceFile().getFilePath(),
+      position: parameter.getQuestionTokenNodeOrThrow().getPos()
+    });
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
   const headers = type

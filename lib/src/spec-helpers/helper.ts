@@ -63,12 +63,12 @@ export function createProject() {
   });
 }
 
-export function createExistingSourceFile(filePath: string) {
+export function createProjectFromExistingSourceFile(filePath: string) {
   const project = createProject();
-  const sourceFile = project.addExistingSourceFile(filePath);
+  const file = project.addExistingSourceFile(filePath);
   project.resolveSourceFileDependencies();
   validateProject(project);
-  return sourceFile;
+  return { project, file };
 }
 
 /**

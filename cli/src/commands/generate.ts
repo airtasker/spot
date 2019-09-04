@@ -7,7 +7,7 @@ import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2
 import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
 import { outputFile } from "../../../lib/src/io/output";
 import { ContractDefinition } from "../../../lib/src/models/definitions";
-import { parse } from "../../../lib/src/neu/parsers/parser";
+import { parse } from "../../../lib/src/neu/parser";
 import { safeParse } from "../common/safe-parse";
 
 export default class Generate extends Command {

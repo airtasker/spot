@@ -1,4 +1,4 @@
-import { createExistingSourceFile } from "../../spec-helpers/helper";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import {
   getDecoratorConfigOrThrow,
   getSelfAndLocalDependencies
@@ -7,9 +7,9 @@ import {
 describe("parser-helpers", () => {
   describe("getSelfAndLocalDependencies", () => {
     test("resolves all local imports recursively", () => {
-      const sourceFile = createExistingSourceFile(
+      const sourceFile = createProjectFromExistingSourceFile(
         `${__dirname}/__spec-examples__/recursive-imports/source.ts`
-      );
+      ).file;
       const allFiles = getSelfAndLocalDependencies(sourceFile);
       const allFileNames = allFiles.map(f => f.getBaseNameWithoutExtension());
 
@@ -24,9 +24,9 @@ describe("parser-helpers", () => {
   });
 
   describe("getDecoratorConfigOrThrow", () => {
-    const sourceFile = createExistingSourceFile(
+    const sourceFile = createProjectFromExistingSourceFile(
       `${__dirname}/__spec-examples__/decorators.ts`
-    );
+    ).file;
 
     test("returns the first argument of a decorator factory that conforms to configuration", () => {
       const klass = sourceFile.getClassOrThrow("DecoratorFactoryConfig");

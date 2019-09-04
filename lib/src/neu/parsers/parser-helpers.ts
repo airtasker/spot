@@ -65,7 +65,7 @@ export function getClassWithDecoratorOrThrow(
 
   if (matchingKlasses.length !== 1) {
     throw new Error(
-      `expected a decorator @${decoratorName} to be used only once, found ${matchingKlasses.length} usages`
+      `expected a decorator @${decoratorName} to be used once, found ${matchingKlasses.length} usages`
     );
   }
 
@@ -155,7 +155,6 @@ export function getParamWithDecorator(
 export function getParameterTypeAsTypeLiteralOrThrow(
   parameter: ParameterDeclaration
 ): TypeLiteralNode {
-  // Request parameters are expected to be object literals
   const typeNode = parameter.getTypeNodeOrThrow();
   if (!TypeGuards.isTypeLiteralNode(typeNode)) {
     throw new Error("expected parameter value to be an type literal object");

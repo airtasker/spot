@@ -1,5 +1,6 @@
 import { ParameterDeclaration } from "ts-morph";
 import { QueryParam } from "../definitions";
+import { OptionalNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
 import {
@@ -14,9 +15,15 @@ export function parseQueryParams(
   typeTable: TypeTable,
   lociTable: LociTable
 ): QueryParam[] {
-  const decorator = parameter.getDecoratorOrThrow("queryParams");
+  parameter.getDecoratorOrThrow("queryParams");
   if (parameter.hasQuestionToken()) {
-    throw new Error("@queryParams parameter cannot be optional");
+    throw new OptionalNotAllowedError(
+      "@queryParams parameter cannot be optional",
+      {
+        file: parameter.getSourceFile().getFilePath(),
+        position: parameter.getQuestionTokenNodeOrThrow().getPos()
+      }
+    );
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
   const queryParams = type

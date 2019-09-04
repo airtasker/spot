@@ -16,7 +16,7 @@ export function parseRequest(
     endpointName: string;
   }
 ): Request {
-  const decorator = method.getDecoratorOrThrow("request");
+  method.getDecoratorOrThrow("request");
   const headersParam = getParamWithDecorator(method, "headers");
   const pathParamsParam = getParamWithDecorator(method, "pathParams");
   const queryParamsParam = getParamWithDecorator(method, "queryParams");
