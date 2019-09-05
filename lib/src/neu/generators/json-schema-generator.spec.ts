@@ -15,7 +15,7 @@ import {
   stringType,
   unionType
 } from "../types";
-import { generateJsonSchema, jsonTypeSchema } from "./json-schema";
+import { generateJsonSchema, jsonTypeSchema } from "./json-schema-generator";
 
 const EXAMPLE_PATH = "./lib/src/__examples__/contract.ts";
 
