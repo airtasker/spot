@@ -64,7 +64,7 @@
     "tslint": "^5.19.0",
     "tslint-config-prettier": "^1.18.0",
     "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.8"
   },
   "engines": {
     "node": ">=8.0.0"
