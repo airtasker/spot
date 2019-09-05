@@ -105,13 +105,8 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
         $ref: `#/definitions/${type.name}`
       };
     default:
-      throw assertUnreachable(type);
+      throw assertNever(type);
   }
-}
-
-function assertUnreachable(x: never): never;
-function assertUnreachable(type: Type) {
-  throw new Error("Unknown type kind: ${type}");
 }
 
 export interface JsonSchema {
