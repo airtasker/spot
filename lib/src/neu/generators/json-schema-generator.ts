@@ -12,7 +12,7 @@ export function generateJsonSchema(
   contractDefinition: Contract,
   format: "json" | "yaml"
 ) {
-  const contract = jsonSchema(contractDefinition);
+  const contract = jsonSchemaOfSpotContract(contractDefinition);
   switch (format) {
     case "json":
       return JSON.stringify(contract, null, 2);
@@ -23,19 +23,19 @@ export function generateJsonSchema(
   }
 }
 
-export function jsonSchema(contract: Contract): JsonSchema {
+function jsonSchemaOfSpotContract(contract: Contract): JsonSchema {
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
     definitions: contract.types.reduce<{
       [typeName: string]: JsonSchemaType;
     }>((acc, typeNode) => {
-      acc[typeNode.name] = jsonTypeSchema(typeNode.type);
+      acc[typeNode.name] = generateJsonSchemaType(typeNode.type);
       return acc;
     }, {})
   };
 }
 
-export function jsonTypeSchema(type: Type): JsonSchemaType {
+export function generateJsonSchemaType(type: Type): JsonSchemaType {
   switch (type.kind) {
     case TypeKind.NULL:
       return {
@@ -87,7 +87,7 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
           if (!property.optional) {
             acc.required.push(property.name);
           }
-          acc.properties[property.name] = jsonTypeSchema(property.type);
+          acc.properties[property.name] = generateJsonSchemaType(property.type);
           return acc;
         },
         {
@@ -99,11 +99,11 @@ export function jsonTypeSchema(type: Type): JsonSchemaType {
     case TypeKind.ARRAY:
       return {
         type: "array",
-        items: jsonTypeSchema(type.elementType)
+        items: generateJsonSchemaType(type.elementType)
       };
     case TypeKind.UNION:
       return {
-        oneOf: type.types.map(jsonTypeSchema)
+        oneOf: type.types.map(generateJsonSchemaType)
       };
     case TypeKind.REFERENCE:
       return {
