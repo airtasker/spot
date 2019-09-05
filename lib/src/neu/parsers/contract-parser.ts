@@ -3,6 +3,7 @@ import { ApiConfig } from "../../syntax/api";
 import { Contract, Endpoint } from "../definitions";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
+import { ok, Result } from "../util";
 import { parseEndpoint } from "./endpoint-parser";
 import {
   getClassWithDecoratorOrThrow,
@@ -20,7 +21,7 @@ import { parseSecurityHeader } from "./security-header-parser";
  */
 export function parseContract(
   file: SourceFile
-): { contract: Contract; lociTable: LociTable } {
+): Result<{ contract: Contract; lociTable: LociTable }, Error> {
   const typeTable = new TypeTable();
   const lociTable = new LociTable();
 
@@ -36,6 +37,8 @@ export function parseContract(
   const security =
     securityHeaderProp &&
     parseSecurityHeader(securityHeaderProp, typeTable, lociTable);
+
+  if (security && security.isErr()) return security;
 
   // Add location data
   lociTable.addMorphNode(LociTable.apiClassKey(), klass);
@@ -71,9 +74,9 @@ export function parseContract(
     name: nameLiteral.getLiteralText(),
     description: descriptionDoc && descriptionDoc.getComment(),
     types: typeTable.toArray(),
-    security,
+    security: security && security.unwrap(),
     endpoints
   };
 
-  return { contract, lociTable };
+  return ok({ contract, lociTable });
 }

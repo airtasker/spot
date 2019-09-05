@@ -24,7 +24,7 @@ describe("security header parser", () => {
       klass.getPropertyOrThrow(`\"security-header\"`),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
       description: "security header description",
@@ -36,13 +36,13 @@ describe("security header parser", () => {
   });
 
   test("fails to parse optional @securityHeader decorated property", () => {
-    expect(() =>
-      parseSecurityHeader(
-        klass.getPropertyOrThrow(`\"optional-security-header\"`),
-        typeTable,
-        lociTable
-      )
-    ).toThrowError(OptionalNotAllowedError);
+    const err = parseSecurityHeader(
+      klass.getPropertyOrThrow(`\"optional-security-header\"`),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@securityHeader decorated property", () => {

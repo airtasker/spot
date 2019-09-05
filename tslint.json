@@ -4,6 +4,7 @@
   "jsRules": {},
   "rules": {
     "ban-types": false,
+    "curly": [true, "ignore-same-line"],
     "interface-name": false,
     "jsdoc-format": false,
     "max-classes-per-file": false,
