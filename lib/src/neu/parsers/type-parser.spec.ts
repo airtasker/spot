@@ -1,4 +1,5 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { TypeNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseType } from "./type-parser";
@@ -20,51 +21,63 @@ describe("type parser", () => {
   test("parses null", () => {
     const type = interphace.getPropertyOrThrow("null").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.NULL
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.NULL
+      }
+    );
   });
 
   test("parses boolean", () => {
     const type = interphace.getPropertyOrThrow("boolean").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.BOOLEAN
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.BOOLEAN
+      }
+    );
   });
 
   test("parses true", () => {
     const type = interphace.getPropertyOrThrow("true").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.BOOLEAN_LITERAL,
-      value: true
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.BOOLEAN_LITERAL,
+        value: true
+      }
+    );
   });
 
   test("parses false", () => {
     const type = interphace.getPropertyOrThrow("false").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.BOOLEAN_LITERAL,
-      value: false
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.BOOLEAN_LITERAL,
+        value: false
+      }
+    );
   });
 
   test("parses string", () => {
     const type = interphace.getPropertyOrThrow("string").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.STRING
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.STRING
+      }
+    );
   });
 
   test("parses String", () => {
     const type = interphace.getPropertyOrThrow("String").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.STRING
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.STRING
+      }
+    );
   });
 
   test("parses literal string", () => {
@@ -72,42 +85,52 @@ describe("type parser", () => {
       .getPropertyOrThrow("literalString")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.STRING_LITERAL,
-      value: "literalString"
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.STRING_LITERAL,
+        value: "literalString"
+      }
+    );
   });
 
   test("parses number", () => {
     const type = interphace.getPropertyOrThrow("number").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.FLOAT
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.FLOAT
+      }
+    );
   });
 
   test("parses Number", () => {
     const type = interphace.getPropertyOrThrow("Number").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.FLOAT
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.FLOAT
+      }
+    );
   });
 
   test("parses Float", () => {
     const type = interphace.getPropertyOrThrow("Float").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.FLOAT
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.FLOAT
+      }
+    );
   });
 
   test("parses Double", () => {
     const type = interphace.getPropertyOrThrow("Double").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.DOUBLE
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.DOUBLE
+      }
+    );
   });
 
   test("parses literal float", () => {
@@ -115,34 +138,42 @@ describe("type parser", () => {
       .getPropertyOrThrow("literalFloat")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.FLOAT_LITERAL,
-      value: 1.02
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.FLOAT_LITERAL,
+        value: 1.02
+      }
+    );
   });
 
   test("parses Integer", () => {
     const type = interphace.getPropertyOrThrow("Integer").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.INT32
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.INT32
+      }
+    );
   });
 
   test("parses Int32", () => {
     const type = interphace.getPropertyOrThrow("Int32").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.INT32
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.INT32
+      }
+    );
   });
 
   test("parses Int64", () => {
     const type = interphace.getPropertyOrThrow("Int64").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.INT64
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.INT64
+      }
+    );
   });
 
   test("parses literal integer", () => {
@@ -150,26 +181,32 @@ describe("type parser", () => {
       .getPropertyOrThrow("literalInteger")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.INT_LITERAL,
-      value: 2
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.INT_LITERAL,
+        value: 2
+      }
+    );
   });
 
   test("parses Date", () => {
     const type = interphace.getPropertyOrThrow("Date").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.DATE
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.DATE
+      }
+    );
   });
 
   test("parses DateTime", () => {
     const type = interphace.getPropertyOrThrow("DateTime").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.DATE_TIME
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.DATE_TIME
+      }
+    );
   });
 
   test("parses literal object", () => {
@@ -177,66 +214,74 @@ describe("type parser", () => {
       .getPropertyOrThrow("literalObject")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.OBJECT,
-      properties: [
-        {
-          description: undefined,
-          name: "propertyA",
-          optional: false,
-          type: {
-            kind: TypeKind.STRING
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.OBJECT,
+        properties: [
+          {
+            description: undefined,
+            name: "propertyA",
+            optional: false,
+            type: {
+              kind: TypeKind.STRING
+            }
+          },
+          {
+            description: undefined,
+            name: "propertyB",
+            optional: true,
+            type: {
+              kind: TypeKind.BOOLEAN
+            }
           }
-        },
-        {
-          description: undefined,
-          name: "propertyB",
-          optional: true,
-          type: {
-            kind: TypeKind.BOOLEAN
-          }
-        }
-      ]
-    });
+        ]
+      }
+    );
   });
 
   test("parses arrays", () => {
     const type = interphace.getPropertyOrThrow("array").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.ARRAY,
-      elementType: {
-        kind: TypeKind.BOOLEAN
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.ARRAY,
+        elementType: {
+          kind: TypeKind.BOOLEAN
+        }
       }
-    });
+    );
   });
 
   test("parses unions", () => {
     const type = interphace.getPropertyOrThrow("union").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.UNION,
-      types: [
-        {
-          kind: TypeKind.BOOLEAN
-        },
-        {
-          kind: TypeKind.DATE
-        },
-        {
-          kind: TypeKind.NULL
-        }
-      ]
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.UNION,
+        types: [
+          {
+            kind: TypeKind.BOOLEAN
+          },
+          {
+            kind: TypeKind.DATE
+          },
+          {
+            kind: TypeKind.NULL
+          }
+        ]
+      }
+    );
   });
 
   test("parses type aliases", () => {
     const type = interphace.getPropertyOrThrow("alias").getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.REFERENCE,
-      name: "Alias"
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.REFERENCE,
+        name: "Alias"
+      }
+    );
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("Alias")).toStrictEqual({
       kind: TypeKind.STRING
@@ -248,10 +293,12 @@ describe("type parser", () => {
       .getPropertyOrThrow("interface")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.REFERENCE,
-      name: "Interface"
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.REFERENCE,
+        name: "Interface"
+      }
+    );
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("Interface")).toStrictEqual({
       kind: TypeKind.OBJECT,
@@ -273,10 +320,12 @@ describe("type parser", () => {
       .getPropertyOrThrow("interfaceExtends")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable)).toStrictEqual({
-      kind: TypeKind.REFERENCE,
-      name: "InterfaceExtends"
-    });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.REFERENCE,
+        name: "InterfaceExtends"
+      }
+    );
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("InterfaceExtends")).toStrictEqual({
       kind: TypeKind.OBJECT,
@@ -304,9 +353,9 @@ describe("type parser", () => {
   test("fails to parse enums", () => {
     const type = interphace.getPropertyOrThrow("enum").getTypeNodeOrThrow();
 
-    expect(() => parseType(type, typeTable, lociTable)).toThrowError(
-      "enums are not supported (offending type: Enum)"
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapErrOrThrow()
+    ).toBeInstanceOf(TypeNotAllowedError);
   });
 
   test("fails to parse enum constants", () => {
@@ -314,17 +363,17 @@ describe("type parser", () => {
       .getPropertyOrThrow("enumConstant")
       .getTypeNodeOrThrow();
 
-    expect(() => parseType(type, typeTable, lociTable)).toThrowError(
-      "enums are not supported (offending type: Enum)"
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapErrOrThrow()
+    ).toBeInstanceOf(TypeNotAllowedError);
   });
 
   test("fails to parse Maps", () => {
     const type = interphace.getPropertyOrThrow("map").getTypeNodeOrThrow();
 
-    expect(() => parseType(type, typeTable, lociTable)).toThrowError(
-      "Map is not supported"
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapErrOrThrow()
+    ).toBeInstanceOf(TypeNotAllowedError);
   });
 
   test("fails to parse object with index signatures", () => {
@@ -332,9 +381,9 @@ describe("type parser", () => {
       .getPropertyOrThrow("indexSignature")
       .getTypeNodeOrThrow();
 
-    expect(() => parseType(type, typeTable, lociTable)).toThrowError(
-      "indexed types are not supported"
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapErrOrThrow()
+    ).toBeInstanceOf(TypeNotAllowedError);
   });
 
   test("fails to parse interface with index signatures", () => {
@@ -342,8 +391,8 @@ describe("type parser", () => {
       .getPropertyOrThrow("interfaceWithIndexSignature")
       .getTypeNodeOrThrow();
 
-    expect(() => parseType(type, typeTable, lociTable)).toThrowError(
-      "indexed types are not supported"
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapErrOrThrow()
+    ).toBeInstanceOf(TypeNotAllowedError);
   });
 });

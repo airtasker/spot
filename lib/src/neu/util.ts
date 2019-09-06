@@ -1,4 +1,35 @@
 export type Result<T, E extends Error> = Ok<T> | Err<E>;
+type NotError<T> = T extends Error ? never : T;
+
+export function isOk<T, E extends Error>(
+  result: Result<T, E>
+): result is Ok<T> {
+  return result.isOk();
+}
+
+export function isErr<T, E extends Error>(
+  result: Result<T, E>
+): result is Err<E> {
+  return result.isErr();
+}
+
+export function ok<T>(value: NotError<T>): Ok<T> {
+  return new Ok(value);
+}
+
+export function err<E extends Error>(error: E): Err<E> {
+  return new Err(error);
+}
+
+export function tryCatch<T, E extends Error>(
+  op: () => NotError<T>
+): Result<T, E> {
+  try {
+    return ok(op());
+  } catch (e) {
+    return err(e);
+  }
+}
 
 class Ok<T> {
   private value: T;
@@ -57,7 +88,7 @@ class Err<E extends Error> {
    * Used mostly with tests
    */
   unwrapOrThrow(): never {
-    throw new Error();
+    throw this.value;
   }
 
   /**
@@ -67,38 +98,6 @@ class Err<E extends Error> {
     return this.value;
   }
 }
-
-export function isOk<T, E extends Error>(
-  result: Result<T, E>
-): result is Ok<T> {
-  return result.isOk();
-}
-
-export function isErr<T, E extends Error>(
-  result: Result<T, E>
-): result is Err<E> {
-  return result.isErr();
-}
-
-export function ok<T>(value: NotError<T>): Ok<T> {
-  return new Ok(value);
-}
-
-export function err<E extends Error>(error: E): Err<E> {
-  return new Err(error);
-}
-
-export function tryCatch<T, E extends Error>(
-  op: () => NotError<T>
-): Result<T, E> {
-  try {
-    return ok(op());
-  } catch (e) {
-    return err(e);
-  }
-}
-
-type NotError<T> = T extends Error ? never : T;
 
 // tryCatch(() => unsafeHead(as), e => (e instanceof Error ? e : new Error('unknown error')
 

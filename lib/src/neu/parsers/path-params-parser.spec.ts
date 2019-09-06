@@ -25,7 +25,7 @@ describe("path params parser", () => {
       method.getParameterOrThrow("pathParams"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
     expect(result).toHaveLength(2);
     expect(result[0]).toStrictEqual({
       description: undefined,
@@ -44,13 +44,13 @@ describe("path params parser", () => {
   });
 
   test("fails to parse @pathParams decorated object parameter with optional param", () => {
-    expect(() =>
+    expect(
       parsePathParams(
         method.getParameterOrThrow("pathParamsWithOptionalProperty"),
         typeTable,
         lociTable
-      )
-    ).toThrowError(OptionalNotAllowedError);
+      ).unwrapErrOrThrow()
+    ).toBeInstanceOf(OptionalNotAllowedError);
   });
 
   test("fails to parse @pathParams decorated non-object parameter", () => {
@@ -64,13 +64,13 @@ describe("path params parser", () => {
   });
 
   test("fails to parse optional @pathParams decorated parameter", () => {
-    expect(() =>
+    expect(
       parsePathParams(
         method.getParameterOrThrow("optionalPathParams"),
         typeTable,
         lociTable
-      )
-    ).toThrowError(OptionalNotAllowedError);
+      ).unwrapErrOrThrow()
+    ).toBeInstanceOf(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@pathParams decorated parameter", () => {

@@ -25,7 +25,8 @@ describe("body parser", () => {
       method.getParameterOrThrow("body"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
+
     expect(result).toStrictEqual({
       type: {
         kind: TypeKind.STRING
@@ -34,13 +35,13 @@ describe("body parser", () => {
   });
 
   test("fails to parse optional @body decorated parameter", () => {
-    expect(() => {
+    expect(
       parseBody(
         method.getParameterOrThrow("optionalBody"),
         typeTable,
         lociTable
-      );
-    }).toThrowError(OptionalNotAllowedError);
+      ).unwrapErrOrThrow()
+    ).toBeInstanceOf(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@body decorated parameter", () => {

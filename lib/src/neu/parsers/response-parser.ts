@@ -1,8 +1,10 @@
 import { MethodDeclaration } from "ts-morph";
 import { ResponseConfig } from "../../syntax/response";
 import { Response } from "../definitions";
+import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
+import { ok, Result } from "../util";
 import { parseBody } from "./body-parser";
 import { parseHeaders } from "./headers-parser";
 import {
@@ -17,7 +19,7 @@ export function parseResponse(
   method: MethodDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
-): Response {
+): Result<Response, ParserError> {
   const decorator = method.getDecoratorOrThrow("response");
   const decoratorConfig = getDecoratorConfigOrThrow(decorator);
   const statusProp = getObjLiteralPropOrThrow<ResponseConfig>(
@@ -26,16 +28,27 @@ export function parseResponse(
   );
   const statusLiteral = getPropValueAsNumberOrThrow(statusProp);
   const headersParam = getParamWithDecorator(method, "headers");
-  const headers = headersParam
-    ? parseHeaders(headersParam, typeTable, lociTable)
-    : [];
   const bodyParam = getParamWithDecorator(method, "body");
-  const body = bodyParam && parseBody(bodyParam, typeTable, lociTable);
   const descriptionDoc = getJsDoc(method);
-  return {
+
+  const headers = [];
+  if (headersParam) {
+    const headersResult = parseHeaders(headersParam, typeTable, lociTable);
+    if (headersResult.isErr()) return headersResult;
+    headers.push(...headersResult.unwrap());
+  }
+
+  let body;
+  if (bodyParam) {
+    const bodyResult = parseBody(bodyParam, typeTable, lociTable);
+    if (bodyResult.isErr()) return bodyResult;
+    body = bodyResult.unwrap();
+  }
+
+  return ok({
     status: statusLiteral.getLiteralValue(),
     headers,
     description: descriptionDoc && descriptionDoc.getComment(),
     body
-  };
+  });
 }

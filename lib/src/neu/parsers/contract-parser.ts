@@ -1,6 +1,6 @@
-import { SourceFile } from "ts-morph";
+import { ClassDeclaration, SourceFile } from "ts-morph";
 import { ApiConfig } from "../../syntax/api";
-import { Contract, Endpoint } from "../definitions";
+import { Contract } from "../definitions";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
 import { ok, Result } from "../util";
@@ -52,30 +52,28 @@ export function parseContract(
   const projectFiles = getSelfAndLocalDependencies(file);
 
   // Parse all endpoints
-  const endpoints = projectFiles
-    .reduce<Endpoint[]>(
-      (acc, currentFile) =>
-        acc.concat(
-          currentFile
-            .getClasses()
-            .filter(k => k.getDecorator("endpoint") !== undefined)
-            .map(k => parseEndpoint(k, typeTable, lociTable))
-        ),
-      []
-    )
-    .sort((a, b) => {
-      if (a.name === b.name) {
-        throw new Error(`Duplicate endpoint detected: ${a.name}`);
-      }
-      return b.name > a.name ? -1 : 1;
-    });
+  const endpointClasses = projectFiles.reduce<ClassDeclaration[]>(
+    (acc, currentFile) =>
+      acc.concat(
+        currentFile
+          .getClasses()
+          .filter(k => k.getDecorator("endpoint") !== undefined)
+      ),
+    []
+  );
+  const endpoints = [];
+  for (const k of endpointClasses) {
+    const endpointResult = parseEndpoint(k, typeTable, lociTable);
+    if (endpointResult.isErr()) return endpointResult;
+    endpoints.push(endpointResult.unwrap());
+  }
 
   const contract = {
     name: nameLiteral.getLiteralText(),
     description: descriptionDoc && descriptionDoc.getComment(),
     types: typeTable.toArray(),
     security: security && security.unwrap(),
-    endpoints
+    endpoints: endpoints.sort((a, b) => (b.name > a.name ? -1 : 1))
   };
 
   return ok({ contract, lociTable });

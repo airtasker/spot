@@ -21,7 +21,7 @@ describe("endpoint parser", () => {
       exampleFile.getClassOrThrow("EndpointClass"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
       defaultResponse: {
@@ -96,7 +96,7 @@ describe("endpoint parser", () => {
       exampleFile.getClassOrThrow("MinimalEndpointClass"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
       defaultResponse: undefined,

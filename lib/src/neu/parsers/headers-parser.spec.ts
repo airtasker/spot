@@ -25,7 +25,7 @@ describe("headers parser", () => {
       method.getParameterOrThrow("headers"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
     expect(result).toHaveLength(3);
     expect(result[0]).toStrictEqual({
       description: undefined,
@@ -64,13 +64,13 @@ describe("headers parser", () => {
   });
 
   test("fails to parse optional @headers decorated parameter", () => {
-    expect(() =>
+    expect(
       parseHeaders(
         method.getParameterOrThrow("optionalHeaders"),
         typeTable,
         lociTable
-      )
-    ).toThrowError(OptionalNotAllowedError);
+      ).unwrapErrOrThrow()
+    ).toBeInstanceOf(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@headers decorated parameter", () => {

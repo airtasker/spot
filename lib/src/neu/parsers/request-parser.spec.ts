@@ -23,7 +23,7 @@ describe("request parser", () => {
       typeTable,
       lociTable,
       { endpointName: "endpoint" }
-    );
+    ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
       body: {
@@ -61,7 +61,7 @@ describe("request parser", () => {
       typeTable,
       lociTable,
       { endpointName: "endpoint" }
-    );
+    ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
       body: undefined,

@@ -1,6 +1,6 @@
 import { PropertyDeclaration } from "ts-morph";
 import { SecurityHeader } from "../definitions";
-import { OptionalNotAllowedError } from "../errors";
+import { OptionalNotAllowedError, ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
 import { err, ok, Result } from "../util";
@@ -11,7 +11,7 @@ export function parseSecurityHeader(
   property: PropertyDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
-): Result<SecurityHeader, OptionalNotAllowedError> {
+): Result<SecurityHeader, ParserError> {
   property.getDecoratorOrThrow("securityHeader");
 
   if (property.hasQuestionToken()) {
@@ -27,10 +27,17 @@ export function parseSecurityHeader(
   }
   const name = getPropertyName(property);
   const descriptionDoc = getJsDoc(property);
+  const typeResult = parseType(
+    property.getTypeNodeOrThrow(),
+    typeTable,
+    lociTable
+  );
+
+  if (typeResult.isErr()) return typeResult;
 
   return ok({
     name,
     description: descriptionDoc && descriptionDoc.getComment(),
-    type: parseType(property.getTypeNodeOrThrow(), typeTable, lociTable)
+    type: typeResult.unwrap()
   });
 }

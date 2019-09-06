@@ -1,8 +1,9 @@
 import { ParameterDeclaration } from "ts-morph";
 import { Header } from "../definitions";
-import { OptionalNotAllowedError } from "../errors";
+import { OptionalNotAllowedError, ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
+import { err, ok, Result } from "../util";
 import {
   getJsDoc,
   getParameterTypeAsTypeLiteralOrThrow,
@@ -14,28 +15,33 @@ export function parseHeaders(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
-): Header[] {
+): Result<Header[], ParserError> {
   parameter.getDecoratorOrThrow("headers");
-  // TODO check parameter.isOptional()
   if (parameter.hasQuestionToken()) {
-    throw new OptionalNotAllowedError("@headers parameter cannot be optional", {
-      file: parameter.getSourceFile().getFilePath(),
-      position: parameter.getQuestionTokenNodeOrThrow().getPos()
-    });
+    return err(
+      new OptionalNotAllowedError("@headers parameter cannot be optional", {
+        file: parameter.getSourceFile().getFilePath(),
+        position: parameter.getQuestionTokenNodeOrThrow().getPos()
+      })
+    );
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
-  const headers = type
-    .getProperties()
-    .map(p => {
-      const pDescription = getJsDoc(p);
-      return {
-        name: getPropertyName(p),
-        type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
-        description: pDescription && pDescription.getComment(),
-        optional: p.hasQuestionToken()
-      };
-    })
-    .sort((a, b) => (b.name > a.name ? -1 : 1));
+
+  const headers = [];
+  for (const ps of type.getProperties()) {
+    const typeResult = parseType(ps.getTypeNodeOrThrow(), typeTable, lociTable);
+    if (typeResult.isErr()) return typeResult;
+    const pDescription = getJsDoc(ps);
+
+    const header = {
+      name: getPropertyName(ps),
+      type: typeResult.unwrap(),
+      description: pDescription && pDescription.getComment(),
+      optional: ps.hasQuestionToken()
+    };
+    headers.push(header);
+  }
+
   // TODO: add loci information
-  return headers;
+  return ok(headers.sort((a, b) => (b.name > a.name ? -1 : 1)));
 }
