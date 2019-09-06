@@ -4,17 +4,31 @@ import { Contract, Response } from "../definitions";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
 import { TypeTable } from "../types";
+import { err, ok, Result } from "../util";
 import { Options } from "./options";
-import { VerificationLogger } from "./verification-logger";
 
 export class ContractVerifier {
-  private readonly logger: VerificationLogger;
+  private readonly config: ContractVerifierConfig;
   constructor(config: ContractVerifierConfig) {
-    this.logger = new VerificationLogger(config.printer, {
-      debugMode: config.debugMode
-    });
+    this.config = config;
   }
-  verifyContract(contract: Contract, options: Options) {}
+
+  /**
+   * Check if an axios response status code matches the expected status code of an expected response definition.
+   * @param expectedStatus
+   * @param response
+   */
+  private verifyStatus(
+    expectedStatus: number,
+    response: AxiosResponse
+  ): Result<void, VerificationError> {
+    if (expectedStatus === response.status) {
+      return ok(undefined);
+    } else {
+      const errMessage = `Expected status ${expectedStatus}, got ${response.status}`;
+      return err(new VerificationError(errMessage));
+    }
+  }
 
   /**
    * Check if an exios response body matches the expected body of an expected response definition.
@@ -27,9 +41,9 @@ export class ContractVerifier {
     expectedResponse: Response,
     response: AxiosResponse<any>,
     typeTable: TypeTable
-  ): boolean {
+  ): Result<void, VerificationError> {
     if (!expectedResponse || !expectedResponse.body) {
-      return true;
+      return ok(undefined);
     }
 
     const jsv = new JsonSchemaValidator();
@@ -47,21 +61,27 @@ export class ContractVerifier {
     const validateFn = jsv.compile(schema);
     const valid = validateFn(response.data);
     if (valid) {
-      this.logger.success("Body compliant", { indent: 2 });
-      return true;
+      return ok(undefined);
     }
-    this.logger.error(
-      `Body is not compliant: ${jsv.errorsText(
-        validateFn.errors
-      )}\nReceived:\n${VerificationLogger.formatObject(response.data)}`,
-      { indent: 2 }
-    );
-    return false;
+    const errMessage = `Body is not compliant: ${jsv.errorsText(
+      validateFn.errors
+    )}\nReceived:\n${this.formatObject(response.data)}`;
+    return err(new VerificationError(errMessage));
+  }
+
+  private formatObject(obj: any): string {
+    return JSON.stringify(obj, undefined, 2);
+  }
+}
+
+export class VerificationError extends Error {
+  constructor(readonly message: string) {
+    super(message);
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 
 export interface ContractVerifierConfig {
-  printer: (message: string) => void;
   baseStateUrl: string;
   baseUrl: string;
   debugMode?: boolean;
