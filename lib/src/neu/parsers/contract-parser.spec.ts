@@ -7,7 +7,7 @@ describe("contract parser", () => {
       `${__dirname}/__spec-examples__/contracts/contract.ts`
     ).file;
 
-    const { contract } = parseContract(file);
+    const { contract } = parseContract(file).unwrapOrThrow();
 
     expect(contract.name).toEqual("contract");
     expect(contract.description).toEqual("contract description");
@@ -38,7 +38,7 @@ describe("contract parser", () => {
       `${__dirname}/__spec-examples__/contracts/minimal-contract.ts`
     ).file;
 
-    const { contract } = parseContract(file);
+    const { contract } = parseContract(file).unwrapOrThrow();
 
     expect(contract).toStrictEqual({
       description: undefined,

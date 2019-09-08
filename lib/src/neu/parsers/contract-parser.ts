@@ -1,8 +1,9 @@
-import { SourceFile } from "ts-morph";
+import { ClassDeclaration, SourceFile } from "ts-morph";
 import { ApiConfig } from "../../syntax/api";
-import { Contract, Endpoint } from "../definitions";
+import { Contract } from "../definitions";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
+import { ok, Result } from "../util";
 import { parseEndpoint } from "./endpoint-parser";
 import {
   getClassWithDecoratorOrThrow,
@@ -20,7 +21,7 @@ import { parseSecurityHeader } from "./security-header-parser";
  */
 export function parseContract(
   file: SourceFile
-): { contract: Contract; lociTable: LociTable } {
+): Result<{ contract: Contract; lociTable: LociTable }, Error> {
   const typeTable = new TypeTable();
   const lociTable = new LociTable();
 
@@ -37,6 +38,8 @@ export function parseContract(
     securityHeaderProp &&
     parseSecurityHeader(securityHeaderProp, typeTable, lociTable);
 
+  if (security && security.isErr()) return security;
+
   // Add location data
   lociTable.addMorphNode(LociTable.apiClassKey(), klass);
   lociTable.addMorphNode(LociTable.apiDecoratorKey(), decorator);
@@ -49,31 +52,29 @@ export function parseContract(
   const projectFiles = getSelfAndLocalDependencies(file);
 
   // Parse all endpoints
-  const endpoints = projectFiles
-    .reduce<Endpoint[]>(
-      (acc, currentFile) =>
-        acc.concat(
-          currentFile
-            .getClasses()
-            .filter(k => k.getDecorator("endpoint") !== undefined)
-            .map(k => parseEndpoint(k, typeTable, lociTable))
-        ),
-      []
-    )
-    .sort((a, b) => {
-      if (a.name === b.name) {
-        throw new Error(`Duplicate endpoint detected: ${a.name}`);
-      }
-      return b.name > a.name ? -1 : 1;
-    });
+  const endpointClasses = projectFiles.reduce<ClassDeclaration[]>(
+    (acc, currentFile) =>
+      acc.concat(
+        currentFile
+          .getClasses()
+          .filter(k => k.getDecorator("endpoint") !== undefined)
+      ),
+    []
+  );
+  const endpoints = [];
+  for (const k of endpointClasses) {
+    const endpointResult = parseEndpoint(k, typeTable, lociTable);
+    if (endpointResult.isErr()) return endpointResult;
+    endpoints.push(endpointResult.unwrap());
+  }
 
   const contract = {
     name: nameLiteral.getLiteralText(),
     description: descriptionDoc && descriptionDoc.getComment(),
     types: typeTable.toArray(),
-    security,
-    endpoints
+    security: security && security.unwrap(),
+    endpoints: endpoints.sort((a, b) => (b.name > a.name ? -1 : 1))
   };
 
-  return { contract, lociTable };
+  return ok({ contract, lociTable });
 }

@@ -9,6 +9,7 @@ import {
   TypeReferenceNode,
   UnionTypeNode
 } from "ts-morph";
+import { ParserError, TypeNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import {
   ArrayType,
@@ -45,27 +46,28 @@ import {
   TypeTable,
   unionType
 } from "../types";
+import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
 
 export function parseType(
   typeNode: TypeNode,
   typeTable: TypeTable,
   lociTable: LociTable
-): Type {
+): Result<Type, ParserError> {
   // Type references must be parsed first to ensure internal type aliases are handled
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
     return parseTypeReference(typeNode, typeTable, lociTable);
   } else if (TypeGuards.isNullLiteral(typeNode)) {
-    return nullType();
+    return ok(nullType());
     // TODO: discourage native boolean keyword?
   } else if (TypeGuards.isBooleanKeyword(typeNode)) {
-    return booleanType();
+    return ok(booleanType());
     // TODO: discourage native string keyword?
   } else if (TypeGuards.isStringKeyword(typeNode)) {
-    return stringType();
+    return ok(stringType());
     // TODO: discourage native number keyword?
   } else if (TypeGuards.isNumberKeyword(typeNode)) {
-    return floatType();
+    return ok(floatType());
   } else if (TypeGuards.isLiteralTypeNode(typeNode)) {
     return parseLiteralType(typeNode);
   } else if (TypeGuards.isArrayTypeNode(typeNode)) {
@@ -75,7 +77,10 @@ export function parseType(
   } else if (TypeGuards.isUnionTypeNode(typeNode)) {
     return parseUnionType(typeNode, typeTable, lociTable);
   } else {
-    throw new Error("unknown type");
+    throw new TypeNotAllowedError("unknown type", {
+      file: typeNode.getSourceFile().getFilePath(),
+      position: typeNode.getPos()
+    });
   }
 }
 
@@ -103,7 +108,7 @@ function parseTypeReference(
   typeNode: TypeReferenceNode,
   typeTable: TypeTable,
   lociTable: LociTable
-):
+): Result<
   | ReferenceType
   | StringType
   | DateType
@@ -111,8 +116,13 @@ function parseTypeReference(
   | FloatType
   | DoubleType
   | Int32Type
-  | Int64Type {
-  const declaration = getTargetDeclarationFromTypeReference(typeNode);
+  | Int64Type,
+  ParserError
+> {
+  const declarationResult = getTargetDeclarationFromTypeReference(typeNode);
+  if (declarationResult.isErr()) return declarationResult;
+
+  const declaration = declarationResult.unwrap();
   const name = declaration.getName();
   if (TypeGuards.isTypeAliasDeclaration(declaration)) {
     const decTypeNode = declaration.getTypeNodeOrThrow();
@@ -124,11 +134,11 @@ function parseTypeReference(
       } else if (declaration.getType().isString()) {
         switch (name) {
           case "String":
-            return stringType();
+            return ok(stringType());
           case "Date":
-            return dateType();
+            return ok(dateType());
           case "DateTime":
-            return dateTimeType();
+            return ok(dateTimeType());
           default:
             throw new Error(`Internal type ${name} must not be redefined`);
         }
@@ -136,14 +146,14 @@ function parseTypeReference(
         switch (name) {
           case "Number":
           case "Float":
-            return floatType();
+            return ok(floatType());
           case "Double":
-            return doubleType();
+            return ok(doubleType());
           case "Integer":
           case "Int32":
-            return int32Type();
+            return ok(int32Type());
           case "Int64":
-            return int64Type();
+            return ok(int64Type());
           default:
             throw new Error(`Internal type ${name} must not be redefined`);
         }
@@ -156,11 +166,12 @@ function parseTypeReference(
           throw new Error(`Type ${name} defined multiple times`);
         }
       } else {
-        const targetType = parseType(decTypeNode, typeTable, lociTable);
-        typeTable.add(name, targetType);
+        const targetTypeResult = parseType(decTypeNode, typeTable, lociTable);
+        if (targetTypeResult.isErr()) return targetTypeResult;
+        typeTable.add(name, targetTypeResult.unwrap());
         lociTable.addMorphNode(LociTable.typeKey(name), decTypeNode);
       }
-      return referenceType(name);
+      return ok(referenceType(name));
     }
   } else {
     if (SPOT_TYPE_ALIASES.includes(name)) {
@@ -171,15 +182,16 @@ function parseTypeReference(
           throw new Error(`Type ${name} defined multiple times`);
         }
       } else {
-        const targetType = parseInterfaceDeclaration(
+        const targetTypeResult = parseInterfaceDeclaration(
           declaration,
           typeTable,
           lociTable
         );
-        typeTable.add(name, targetType);
+        if (targetTypeResult.isErr()) return targetTypeResult;
+        typeTable.add(name, targetTypeResult.unwrap());
         lociTable.addMorphNode(LociTable.typeKey(name), declaration);
       }
-      return referenceType(name);
+      return ok(referenceType(name));
     }
   }
 }
@@ -191,19 +203,29 @@ function parseTypeReference(
  */
 function parseLiteralType(
   typeNode: LiteralTypeNode
-): BooleanLiteralType | StringLiteralType | FloatLiteralType | IntLiteralType {
+): Result<
+  BooleanLiteralType | StringLiteralType | FloatLiteralType | IntLiteralType,
+  ParserError
+> {
   const literal = typeNode.getLiteral();
   if (TypeGuards.isBooleanLiteral(literal)) {
-    return booleanLiteralType(literal.getLiteralValue());
+    return ok(booleanLiteralType(literal.getLiteralValue()));
   } else if (TypeGuards.isStringLiteral(literal)) {
-    return stringLiteralType(literal.getLiteralText());
+    return ok(stringLiteralType(literal.getLiteralText()));
   } else if (TypeGuards.isNumericLiteral(literal)) {
     const numericValue = literal.getLiteralValue();
-    return Number.isInteger(numericValue)
-      ? intLiteralType(numericValue)
-      : floatLiteralType(numericValue);
+    return ok(
+      Number.isInteger(numericValue)
+        ? intLiteralType(numericValue)
+        : floatLiteralType(numericValue)
+    );
   } else {
-    throw new Error("unexpected literal type");
+    return err(
+      new TypeNotAllowedError("unexpected literal type", {
+        file: typeNode.getSourceFile().getFilePath(),
+        position: typeNode.getPos()
+      })
+    );
   }
 }
 
@@ -218,13 +240,16 @@ function parseArrayType(
   typeNode: ArrayTypeNode,
   typeTable: TypeTable,
   lociTable: LociTable
-): ArrayType {
-  const elementDataType = parseType(
+): Result<ArrayType, ParserError> {
+  const elementDataTypeResult = parseType(
     typeNode.getElementTypeNode(),
     typeTable,
     lociTable
   );
-  return arrayType(elementDataType);
+
+  if (elementDataTypeResult.isErr()) return elementDataTypeResult;
+
+  return ok(arrayType(elementDataTypeResult.unwrap()));
 }
 
 /**
@@ -242,20 +267,40 @@ function parseObjectLiteralType(
   typeNode: TypeLiteralNode,
   typeTable: TypeTable,
   lociTable: LociTable
-): ObjectType {
-  if (typeNode.getIndexSignatures().length > 0) {
-    throw new Error("indexed types are not supported");
+): Result<ObjectType, ParserError> {
+  const indexSignatures = typeNode.getIndexSignatures();
+  if (indexSignatures.length > 0) {
+    return err(
+      new TypeNotAllowedError("indexed types are not supported", {
+        file: indexSignatures[0].getSourceFile().getFilePath(),
+        position: indexSignatures[0].getPos()
+      })
+    );
   }
-  const objectProperties = typeNode.getProperties().map(ps => {
+
+  const objectProperties = [];
+  for (const ps of typeNode.getProperties()) {
+    const propTypeResult = parseType(
+      ps.getTypeNodeOrThrow(),
+      typeTable,
+      lociTable
+    );
+
+    if (propTypeResult.isErr()) return propTypeResult;
+
     const psDescription = getJsDoc(ps);
-    return {
+
+    const prop = {
       name: getPropertyName(ps),
       description: psDescription && psDescription.getComment(),
-      type: parseType(ps.getTypeNodeOrThrow(), typeTable, lociTable),
+      type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };
-  });
-  return objectType(objectProperties);
+
+    objectProperties.push(prop);
+  }
+
+  return ok(objectType(objectProperties));
 }
 
 /**
@@ -270,11 +315,18 @@ function parseInterfaceDeclaration(
   interfaceDeclaration: InterfaceDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
-): ObjectType {
-  if (interfaceDeclaration.getIndexSignatures().length > 0) {
-    throw new Error("indexed types are not supported");
+): Result<ObjectType, ParserError> {
+  const indexSignatures = interfaceDeclaration.getIndexSignatures();
+  if (indexSignatures.length > 0) {
+    return err(
+      new TypeNotAllowedError("indexed types are not supported", {
+        file: indexSignatures[0].getSourceFile().getFilePath(),
+        position: indexSignatures[0].getPos()
+      })
+    );
   }
-  const objectProperties = interfaceDeclaration
+
+  const propertySignatures = interfaceDeclaration
     .getType()
     .getProperties()
     .map(propertySymbol => {
@@ -283,17 +335,31 @@ function parseInterfaceDeclaration(
         throw new Error("expected property signature");
       }
       return vd;
-    })
-    .map(ps => {
-      const psDescription = getJsDoc(ps);
-      return {
-        name: getPropertyName(ps),
-        description: psDescription && psDescription.getComment(),
-        type: parseType(ps.getTypeNodeOrThrow(), typeTable, lociTable),
-        optional: ps.hasQuestionToken()
-      };
     });
-  return objectType(objectProperties);
+
+  const objectProperties = [];
+  for (const ps of propertySignatures) {
+    const propTypeResult = parseType(
+      ps.getTypeNodeOrThrow(),
+      typeTable,
+      lociTable
+    );
+
+    if (propTypeResult.isErr()) return propTypeResult;
+
+    const psDescription = getJsDoc(ps);
+
+    const prop = {
+      name: getPropertyName(ps),
+      description: psDescription && psDescription.getComment(),
+      type: propTypeResult.unwrap(),
+      optional: ps.hasQuestionToken()
+    };
+
+    objectProperties.push(prop);
+  }
+
+  return ok(objectType(objectProperties));
 }
 
 /**
@@ -307,7 +373,7 @@ function parseUnionType(
   typeNode: UnionTypeNode,
   typeTable: TypeTable,
   lociTable: LociTable
-): Type {
+): Result<Type, ParserError> {
   const allowedTargetTypes = typeNode
     .getTypeNodes()
     .filter(type => !type.getType().isUndefined());
@@ -315,11 +381,20 @@ function parseUnionType(
     // not a union
     return parseType(allowedTargetTypes[0], typeTable, lociTable);
   } else if (allowedTargetTypes.length > 1) {
-    return unionType(
-      allowedTargetTypes.map(type => parseType(type, typeTable, lociTable))
-    );
+    const types = [];
+    for (const tn of allowedTargetTypes) {
+      const typeResult = parseType(tn, typeTable, lociTable);
+      if (typeResult.isErr()) return typeResult;
+      types.push(typeResult.unwrap());
+    }
+    return ok(unionType(types));
   } else {
-    throw new Error("union type error");
+    return err(
+      new TypeNotAllowedError("malformed union type", {
+        file: typeNode.getSourceFile().getFilePath(),
+        position: typeNode.getPos()
+      })
+    );
   }
 }
 
@@ -331,7 +406,7 @@ function parseUnionType(
  */
 function getTargetDeclarationFromTypeReference(
   typeReference: TypeReferenceNode
-): TypeAliasDeclaration | InterfaceDeclaration {
+): Result<TypeAliasDeclaration | InterfaceDeclaration, ParserError> {
   // TODO: check logic
   const symbol = typeReference.getTypeName().getSymbolOrThrow();
   // if the symbol is an alias, it means it the reference is declared from an import
@@ -344,8 +419,12 @@ function getTargetDeclarationFromTypeReference(
   const typeName = symbol.getName();
 
   if (typeName === "Map") {
-    const errorMsg = `${location}#${line}: Map is not supported`;
-    throw new Error(errorMsg);
+    return err(
+      new TypeNotAllowedError("Map type is not supported", {
+        file: location,
+        position: typeReference.getPos()
+      })
+    );
   }
 
   if (declarations.length !== 1) {
@@ -365,17 +444,21 @@ function getTargetDeclarationFromTypeReference(
   // Enums are not supported:
   // enum SomeEnum { A, B, C }
   if (TypeGuards.isEnumDeclaration(targetDeclaration)) {
-    throw new Error(
-      `enums are not supported (offending type: ${targetDeclaration.getName()})`
+    return err(
+      new TypeNotAllowedError("Enums are not supported", {
+        file: targetDeclaration.getSourceFile().getFilePath(),
+        position: targetDeclaration.getPos()
+      })
     );
   }
 
   // References to enum constants (e.g SomeEnum.A) are not supported either.
   if (TypeGuards.isEnumMember(targetDeclaration)) {
-    throw new Error(
-      `enums are not supported (offending type: ${targetDeclaration
-        .getParent()
-        .getName()})`
+    return err(
+      new TypeNotAllowedError("Enums are not supported", {
+        file: targetDeclaration.getSourceFile().getFilePath(),
+        position: targetDeclaration.getPos()
+      })
     );
   }
 
@@ -383,7 +466,7 @@ function getTargetDeclarationFromTypeReference(
     TypeGuards.isInterfaceDeclaration(targetDeclaration) ||
     TypeGuards.isTypeAliasDeclaration(targetDeclaration)
   ) {
-    return targetDeclaration;
+    return ok(targetDeclaration);
   }
 
   throw new Error("expected a type alias or interface declaration");

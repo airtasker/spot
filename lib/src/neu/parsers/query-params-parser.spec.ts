@@ -1,5 +1,5 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
-import { OptionalNotAllowedError } from "../errors";
+import { OptionalNotAllowedError, TypeNotAllowedError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseQueryParams } from "./query-params-parser";
@@ -25,7 +25,7 @@ describe("query params parser", () => {
       method.getParameterOrThrow("queryParams"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
     expect(result).toHaveLength(3);
     expect(result[0]).toStrictEqual({
       description: undefined,
@@ -59,18 +59,18 @@ describe("query params parser", () => {
         method.getParameterOrThrow("nonObjectQueryParams"),
         typeTable,
         lociTable
-      )
+      ).unwrapErrOrThrow()
     ).toThrowError("expected parameter value to be an type literal object");
   });
 
   test("fails to parse optional @queryParams decorated parameter", () => {
-    expect(() =>
+    expect(
       parseQueryParams(
         method.getParameterOrThrow("optionalQueryParams"),
         typeTable,
         lociTable
-      )
-    ).toThrowError(OptionalNotAllowedError);
+      ).unwrapErrOrThrow()
+    ).toBeInstanceOf(OptionalNotAllowedError);
   });
 
   test("fails to parse non-@queryParams decorated parameter", () => {

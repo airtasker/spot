@@ -1,8 +1,9 @@
 import { ParameterDeclaration } from "ts-morph";
 import { PathParam } from "../definitions";
-import { OptionalNotAllowedError } from "../errors";
+import { OptionalNotAllowedError, ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
+import { err, ok, Result } from "../util";
 import {
   getJsDoc,
   getParameterTypeAsTypeLiteralOrThrow,
@@ -14,38 +15,49 @@ export function parsePathParams(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
-): PathParam[] {
+): Result<PathParam[], ParserError> {
   parameter.getDecoratorOrThrow("pathParams");
   if (parameter.hasQuestionToken()) {
-    throw new OptionalNotAllowedError(
-      "@pathParams parameter cannot be optional",
-      {
+    return err(
+      new OptionalNotAllowedError("@pathParams parameter cannot be optional", {
         file: parameter.getSourceFile().getFilePath(),
         position: parameter.getQuestionTokenNodeOrThrow().getPos()
-      }
+      })
     );
   }
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
-  const pathParams = type
-    .getProperties()
-    .map(p => {
-      const pDescription = getJsDoc(p);
-      if (p.hasQuestionToken()) {
-        throw new OptionalNotAllowedError(
+
+  const pathParams = [];
+  for (const propertySignature of type.getProperties()) {
+    if (propertySignature.hasQuestionToken()) {
+      return err(
+        new OptionalNotAllowedError(
           "@pathParams properties cannot be optional",
           {
-            file: p.getSourceFile().getFilePath(),
-            position: p.getQuestionTokenNodeOrThrow().getPos()
+            file: propertySignature.getSourceFile().getFilePath(),
+            position: propertySignature.getQuestionTokenNodeOrThrow().getPos()
           }
-        );
-      }
-      return {
-        name: getPropertyName(p),
-        type: parseType(p.getTypeNodeOrThrow(), typeTable, lociTable),
-        description: pDescription && pDescription.getComment()
-      };
-    })
-    .sort((a, b) => (b.name > a.name ? -1 : 1));
+        )
+      );
+    }
+
+    const typeResult = parseType(
+      propertySignature.getTypeNodeOrThrow(),
+      typeTable,
+      lociTable
+    );
+    if (typeResult.isErr()) return typeResult;
+    const pDescription = getJsDoc(propertySignature);
+
+    const pathParam = {
+      name: getPropertyName(propertySignature),
+      type: typeResult.unwrap(),
+      description: pDescription && pDescription.getComment()
+    };
+
+    pathParams.push(pathParam);
+  }
+
   // TODO: add loci information
-  return pathParams;
+  return ok(pathParams.sort((a, b) => (b.name > a.name ? -1 : 1)));
 }

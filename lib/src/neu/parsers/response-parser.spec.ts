@@ -22,7 +22,7 @@ describe("response parser", () => {
       klass.getMethodOrThrow("response"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
       body: {
@@ -46,7 +46,7 @@ describe("response parser", () => {
       klass.getMethodOrThrow("parameterlessResponse"),
       typeTable,
       lociTable
-    );
+    ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
       body: undefined,

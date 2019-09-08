@@ -13,9 +13,11 @@ export function parse(sourcePath: string): Contract {
   // Validate that the project has no TypeScript syntax errors
   validateProject(project);
 
-  const { contract, lociTable } = parseContract(sourceFile);
+  const result = parseContract(sourceFile);
 
-  return contract;
+  if (result.isErr()) throw result.unwrapErr();
+
+  return result.unwrap().contract;
 }
 
 /**
