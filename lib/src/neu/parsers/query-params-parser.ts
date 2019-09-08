@@ -28,16 +28,20 @@ export function parseQueryParams(
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
 
   const queryParams = [];
-  for (const ps of type.getProperties()) {
-    const typeResult = parseType(ps.getTypeNodeOrThrow(), typeTable, lociTable);
+  for (const propertySignature of type.getProperties()) {
+    const typeResult = parseType(
+      propertySignature.getTypeNodeOrThrow(),
+      typeTable,
+      lociTable
+    );
     if (typeResult.isErr()) return typeResult;
-    const pDescription = getJsDoc(ps);
+    const pDescription = getJsDoc(propertySignature);
 
     const queryParam = {
-      name: getPropertyName(ps),
+      name: getPropertyName(propertySignature),
       type: typeResult.unwrap(),
       description: pDescription && pDescription.getComment(),
-      optional: ps.hasQuestionToken()
+      optional: propertySignature.hasQuestionToken()
     };
     queryParams.push(queryParam);
   }

@@ -86,8 +86,8 @@ export function parseEndpoint(
     .getMethods()
     .filter(m => m.getDecorator("response") !== undefined);
   const responses = [];
-  for (const rm of responseMethods) {
-    const responseResult = parseResponse(rm, typeTable, lociTable);
+  for (const method of responseMethods) {
+    const responseResult = parseResponse(method, typeTable, lociTable);
     if (responseResult.isErr()) return responseResult;
     responses.push(responseResult.unwrap());
   }

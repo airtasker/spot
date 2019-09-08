@@ -28,25 +28,29 @@ export function parsePathParams(
   const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
 
   const pathParams = [];
-  for (const ps of type.getProperties()) {
-    if (ps.hasQuestionToken()) {
+  for (const propertySignature of type.getProperties()) {
+    if (propertySignature.hasQuestionToken()) {
       return err(
         new OptionalNotAllowedError(
           "@pathParams properties cannot be optional",
           {
-            file: ps.getSourceFile().getFilePath(),
-            position: ps.getQuestionTokenNodeOrThrow().getPos()
+            file: propertySignature.getSourceFile().getFilePath(),
+            position: propertySignature.getQuestionTokenNodeOrThrow().getPos()
           }
         )
       );
     }
 
-    const typeResult = parseType(ps.getTypeNodeOrThrow(), typeTable, lociTable);
+    const typeResult = parseType(
+      propertySignature.getTypeNodeOrThrow(),
+      typeTable,
+      lociTable
+    );
     if (typeResult.isErr()) return typeResult;
-    const pDescription = getJsDoc(ps);
+    const pDescription = getJsDoc(propertySignature);
 
     const pathParam = {
-      name: getPropertyName(ps),
+      name: getPropertyName(propertySignature),
       type: typeResult.unwrap(),
       description: pDescription && pDescription.getComment()
     };
