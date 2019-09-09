@@ -11,6 +11,13 @@ describe("contract parser", () => {
 
     expect(contract.name).toEqual("contract");
     expect(contract.description).toEqual("contract description");
+    expect(contract.config).toStrictEqual({
+      paramSerializationStrategy: {
+        query: {
+          array: "comma"
+        }
+      }
+    });
     expect(contract.security).toStrictEqual(
       expect.objectContaining({ name: "security-header" })
     );
@@ -42,6 +49,13 @@ describe("contract parser", () => {
 
     expect(contract).toStrictEqual({
       description: undefined,
+      config: {
+        paramSerializationStrategy: {
+          query: {
+            array: "ampersand"
+          }
+        }
+      },
       endpoints: [],
       name: "contract",
       security: undefined,

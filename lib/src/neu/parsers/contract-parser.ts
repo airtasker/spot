@@ -1,9 +1,11 @@
 import { ClassDeclaration, SourceFile } from "ts-morph";
 import { ApiConfig } from "../../syntax/api";
-import { Contract } from "../definitions";
+import { Config, Contract } from "../definitions";
+import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
 import { ok, Result } from "../util";
+import { defaultConfig, parseConfig } from "./config-parser";
 import { parseEndpoint } from "./endpoint-parser";
 import {
   getClassWithDecoratorOrThrow,
@@ -32,12 +34,15 @@ export function parseContract(
   const nameLiteral = getPropValueAsStringOrThrow(nameProp);
   const descriptionDoc = getJsDoc(klass);
 
-  const securityHeaderProp = getPropertyWithDecorator(klass, "securityHeader");
+  // Handle config
+  const configResult = resolveConfig(klass);
+  if (configResult.isErr()) return configResult;
 
+  // Handle security
+  const securityHeaderProp = getPropertyWithDecorator(klass, "securityHeader");
   const security =
     securityHeaderProp &&
     parseSecurityHeader(securityHeaderProp, typeTable, lociTable);
-
   if (security && security.isErr()) return security;
 
   // Add location data
@@ -72,9 +77,19 @@ export function parseContract(
     name: nameLiteral.getLiteralText(),
     description: descriptionDoc && descriptionDoc.getComment(),
     types: typeTable.toArray(),
+    config: configResult.unwrap(),
     security: security && security.unwrap(),
     endpoints: endpoints.sort((a, b) => (b.name > a.name ? -1 : 1))
   };
 
   return ok({ contract, lociTable });
+}
+
+function resolveConfig(klass: ClassDeclaration): Result<Config, ParserError> {
+  const hasConfigDecorator = klass.getDecorator("config") !== undefined;
+  if (hasConfigDecorator) {
+    return parseConfig(klass);
+  } else {
+    return ok(defaultConfig());
+  }
 }

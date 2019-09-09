@@ -17,7 +17,7 @@ import {
   TypeGuards,
   TypeLiteralNode
 } from "ts-morph";
-import { HttpMethod } from "../definitions";
+import { HttpMethod, QueryParamArrayStrategy } from "../definitions";
 
 // FILE HELPERS
 
@@ -275,6 +275,19 @@ export function getPropValueAsArrayOrThrow(
   );
 }
 
+/**
+ * Retrieve a property's value as an object or error.
+ *
+ * @param property the source property
+ */
+export function getPropValueAsObjectOrThrow(
+  property: PropertyAssignment
+): ObjectLiteralExpression {
+  return property.getInitializerIfKindOrThrow(
+    ts.SyntaxKind.ObjectLiteralExpression
+  );
+}
+
 // PROPERTY SIGNATURE/DECLARATION HELPERS
 
 /**
@@ -309,7 +322,7 @@ export function getJsDoc(node: JSDocableNode): JSDoc | undefined {
   return undefined;
 }
 
-// HTTP HELPERS
+// TYPE GUARDS
 
 /**
  * Determine if a HTTP method is a supported HttpMethod.
@@ -323,6 +336,25 @@ export function isHttpMethod(method: string): method is HttpMethod {
     case "PUT":
     case "PATCH":
     case "DELETE":
+      return true;
+    default:
+      return false;
+  }
+}
+
+/**
+ * Determine if a query param array strategy is a supported QueryParamArrayStrategy.
+ *
+ * @param strategy the strategy to check
+ */
+export function isQueryParamArrayStrategy(
+  strategy: string
+): strategy is QueryParamArrayStrategy {
+  switch (strategy) {
+    case "ampersand":
+    case "ampersandEscaped":
+    case "comma":
+    case "pipe":
       return true;
     default:
       return false;

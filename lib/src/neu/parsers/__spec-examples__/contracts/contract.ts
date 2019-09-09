@@ -1,6 +1,7 @@
 import {
   api,
   body,
+  config,
   defaultResponse,
   endpoint,
   headers,
@@ -15,6 +16,13 @@ import "./contract-dependency";
 
 /** contract description */
 @api({ name: "contract" })
+@config({
+  paramSerializationStrategy: {
+    query: {
+      array: "comma"
+    }
+  }
+})
 class Contract {
   @securityHeader
   "security-header": String;
