@@ -38,6 +38,9 @@ interface TypeInterface {
   alias: Alias;
   interface: Interface;
   interfaceExtends: InterfaceExtends;
+  indexedAccess: IndexedAccess["root"];
+  indexedAccessNested: IndexedAccess["child"]["nested"]["secondNest"];
+  indexedIndexedAccess: IndexedAccess["indexed"]["root"];
   enum: Enum;
   enumConstant: Enum.A;
   map: Map<string, boolean>;
@@ -57,6 +60,20 @@ interface InterfaceExtends extends Interface {
 
 interface InterfaceWithIndexSignature {
   [index: string]: boolean;
+}
+
+interface IndexedAccess {
+  root: boolean;
+  child: {
+    nested: {
+      secondNest: boolean;
+    };
+  };
+  indexed: IndexedIndexedAccess;
+}
+
+interface IndexedIndexedAccess {
+  root: boolean;
 }
 
 enum Enum {

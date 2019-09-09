@@ -350,6 +350,36 @@ describe("type parser", () => {
     });
   });
 
+  test("parses indexed accessing", () => {
+    const type = interphace
+      .getPropertyOrThrow("indexedAccess")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      { kind: "boolean" }
+    );
+  });
+
+  test("parses nested indexed accessing", () => {
+    const type = interphace
+      .getPropertyOrThrow("indexedAccessNested")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      { kind: "boolean" }
+    );
+  });
+
+  test("parses indexed indexed accessing", () => {
+    const type = interphace
+      .getPropertyOrThrow("indexedIndexedAccess")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      { kind: "boolean" }
+    );
+  });
+
   test("fails to parse enums", () => {
     const type = interphace.getPropertyOrThrow("enum").getTypeNodeOrThrow();
 

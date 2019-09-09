@@ -1,5 +1,6 @@
 import {
   ArrayTypeNode,
+  IndexedAccessTypeNode,
   InterfaceDeclaration,
   LiteralTypeNode,
   TypeAliasDeclaration,
@@ -43,6 +44,7 @@ import {
   stringType,
   StringType,
   Type,
+  TypeKind,
   TypeTable,
   unionType
 } from "../types";
@@ -76,6 +78,8 @@ export function parseType(
     return parseObjectLiteralType(typeNode, typeTable, lociTable);
   } else if (TypeGuards.isUnionTypeNode(typeNode)) {
     return parseUnionType(typeNode, typeTable, lociTable);
+  } else if (TypeGuards.isIndexedAccessTypeNode(typeNode)) {
+    return parseIndexedAccessType(typeNode, typeTable, lociTable);
   } else {
     throw new TypeNotAllowedError("unknown type", {
       file: typeNode.getSourceFile().getFilePath(),
@@ -396,6 +400,141 @@ function parseUnionType(
       })
     );
   }
+}
+
+/**
+ * Parse a indexed access type node.
+ *
+ * @param typeNode AST type node
+ * @param typeTable a TypeTable
+ * @param lociTable a LociTable
+ */
+function parseIndexedAccessType(
+  typeNode: IndexedAccessTypeNode,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<Type, ParserError> {
+  const propertyAccessChainResult = resolveIndexAccessPropertyAccessChain(
+    typeNode
+  );
+  if (propertyAccessChainResult.isErr()) return propertyAccessChainResult;
+
+  const rootReferenceResult = resolveIndexedAccessRootReference(typeNode);
+  if (rootReferenceResult.isErr()) return rootReferenceResult;
+
+  const refTypeResult = parseTypeReference(
+    rootReferenceResult.unwrap(),
+    typeTable,
+    lociTable
+  );
+  if (refTypeResult.isErr()) return refTypeResult;
+  const refType = refTypeResult.unwrap();
+  if (refType.kind !== TypeKind.REFERENCE) {
+    return err(
+      new TypeNotAllowedError("Indexed access type must be reference", {
+        file: typeNode.getSourceFile().getFilePath(),
+        position: typeNode.getPos()
+      })
+    );
+  }
+  const resolvedType = resolveIndexedAccessType(
+    propertyAccessChainResult.unwrap(),
+    refType,
+    typeTable
+  );
+
+  return ok(resolvedType);
+}
+
+/**
+ * Resolve the target type for an indexed access type.
+ *
+ * @param propertyChain properties to traverse
+ * @param currentType type to inspect
+ * @param typeTable a TypeTable
+ */
+function resolveIndexedAccessType(
+  propertyChain: string[],
+  currentType: Type,
+  typeTable: TypeTable
+): Type {
+  if (propertyChain.length === 0) return currentType;
+  if (currentType.kind === TypeKind.OBJECT) {
+    const property = currentType.properties.find(
+      p => p.name === propertyChain[0]
+    );
+    if (property === undefined) {
+      throw new Error("Indexed type property not found");
+    }
+    return resolveIndexedAccessType(
+      propertyChain.slice(1),
+      property.type,
+      typeTable
+    );
+  }
+  if (currentType.kind === TypeKind.REFERENCE) {
+    const referencedType = typeTable.getOrError(currentType.name);
+    return resolveIndexedAccessType(propertyChain, referencedType, typeTable);
+  }
+  throw new Error("Indexed type error");
+}
+
+/**
+ * Resolve the root reference type of an indexed access type.
+ *
+ * @param typeNode an indexed access type node
+ */
+function resolveIndexedAccessRootReference(
+  typeNode: IndexedAccessTypeNode
+): Result<TypeReferenceNode, ParserError> {
+  const objectType = typeNode.getObjectTypeNode();
+  if (TypeGuards.isIndexedAccessTypeNode(objectType)) {
+    return resolveIndexedAccessRootReference(objectType);
+  }
+  if (!TypeGuards.isTypeReferenceNode(objectType)) {
+    return err(
+      new TypeNotAllowedError("Indexed access type must be reference", {
+        file: objectType.getSourceFile().getFilePath(),
+        position: objectType.getPos()
+      })
+    );
+  }
+  return ok(objectType);
+}
+
+/**
+ * Resolve the property access chain of an indexed access type.
+ *
+ * @param typeNode an indexed access type node
+ * @param accResult property chain result accumulator
+ */
+function resolveIndexAccessPropertyAccessChain(
+  typeNode: IndexedAccessTypeNode,
+  accResult: Result<string[], ParserError> = ok([])
+): Result<string[], ParserError> {
+  if (accResult.isErr()) return accResult;
+  const acc = accResult.unwrap();
+
+  const literalTypeNode = typeNode.getIndexTypeNode();
+  if (!TypeGuards.isLiteralTypeNode(literalTypeNode)) {
+    throw new Error("expected type literal");
+  }
+  const literalTypeResult = parseLiteralType(literalTypeNode);
+  if (literalTypeResult.isErr()) return literalTypeResult;
+  const literalType = literalTypeResult.unwrap();
+  if (literalType.kind !== TypeKind.STRING_LITERAL) {
+    throw new Error("expected string literal");
+  }
+
+  const chainParent = typeNode.getObjectTypeNode();
+  if (TypeGuards.isIndexedAccessTypeNode(chainParent)) {
+    return resolveIndexAccessPropertyAccessChain(
+      chainParent,
+      ok(acc.concat(literalType.value))
+    );
+  }
+
+  return ok(acc.concat(literalType.value).reverse());
 }
 
 /**
