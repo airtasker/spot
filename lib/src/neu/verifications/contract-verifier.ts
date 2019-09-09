@@ -7,15 +7,9 @@ import { err, ok, Result } from "../util";
 import { Options, UserInputBody } from "./options";
 
 export class ContractVerifier {
-  private readonly config: ContractVerifierConfig;
   private readonly options: Options;
   private readonly contract: Contract;
-  constructor(
-    config: ContractVerifierConfig,
-    options: Options,
-    contract: Contract
-  ) {
-    this.config = config;
+  constructor(options: Options, contract: Contract) {
     this.options = options;
     this.contract = contract;
   }
@@ -128,10 +122,4 @@ export class VerificationError extends Error {
     super(message);
     Object.setPrototypeOf(this, new.target.prototype);
   }
-}
-
-export interface ContractVerifierConfig {
-  baseStateUrl: string;
-  baseUrl: string;
-  debugMode?: boolean;
 }
