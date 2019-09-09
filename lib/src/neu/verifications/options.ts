@@ -1,20 +1,15 @@
-enum HttpMethod {
-  GET = "get",
-  POST = "post",
-  PUT = "put",
-  DELETE = "DELETE",
-  PATCH = "patch",
-  HEAD = "head",
-  CONNECT = "connect",
-  OPTIONS = "options",
-  TRACE = "trace"
-}
+import { HttpMethod } from "../definitions";
+import { Type } from "../types";
 
 export interface Options {
-  url: string;
+  path: string;
   method: HttpMethod;
-  status: string;
-  body: string;
+  statusCode: number;
+  body: UserInputBody;
   requestParameters: string;
   headers: string;
+}
+
+export interface UserInputBody {
+  type: Type;
 }
