@@ -380,6 +380,16 @@ describe("type parser", () => {
     );
   });
 
+  test("fails to parse inlined indexed accessing", () => {
+    const type = interphace
+      .getPropertyOrThrow("indexedAccessInline")
+      .getTypeNodeOrThrow();
+
+    expect(
+      parseType(type, typeTable, lociTable).unwrapErrOrThrow()
+    ).toBeInstanceOf(TypeNotAllowedError);
+  });
+
   test("fails to parse enums", () => {
     const type = interphace.getPropertyOrThrow("enum").getTypeNodeOrThrow();
 

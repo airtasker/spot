@@ -41,6 +41,7 @@ interface TypeInterface {
   indexedAccess: IndexedAccess["root"];
   indexedAccessNested: IndexedAccess["child"]["nested"]["secondNest"];
   indexedIndexedAccess: IndexedAccess["indexed"]["root"];
+  indexedAccessInline: { root: boolean }["root"];
   enum: Enum;
   enumConstant: Enum.A;
   map: Map<string, boolean>;
