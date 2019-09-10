@@ -109,7 +109,7 @@ describe("rule: no objects in query parameters", () => {
     expect(errors).toEqual([
       {
         message:
-          "The type `somequeryparam` is of type object. Objects are not recommended in query parameters."
+          "The type `somequeryparam` in endpoint listUsers is of type object. Objects are not recommended in query parameters."
       }
     ]);
   });
@@ -155,7 +155,7 @@ describe("rule: no objects in query parameters", () => {
     expect(errors).toEqual([
       {
         message:
-          "The type `somequeryparam` is of type object. Objects are not recommended in query parameters."
+          "The type `somequeryparam` in endpoint listUsers is of type object. Objects are not recommended in query parameters."
       }
     ]);
   });
