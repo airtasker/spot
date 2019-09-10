@@ -1,5 +1,4 @@
 import { HttpMethod } from "../definitions";
-import { Type } from "../types";
 
 export interface UserInputRequest {
   path: string;
@@ -12,10 +11,10 @@ export interface UserInputRequest {
 
 export interface UserInputResponse {
   headers: string;
-  statusCode: string;
+  statusCode: number;
   body: UserInputBody;
 }
 
-export interface UserInputBody {
-  type: Type;
-}
+export type UserInput = UserInputRequest | UserInputResponse;
+
+export type UserInputBody = unknown;

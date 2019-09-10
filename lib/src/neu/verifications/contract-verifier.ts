@@ -1,83 +1,104 @@
 import JsonSchemaValidator from "ajv";
-import { Contract, Endpoint } from "../definitions";
+import { Contract, Endpoint, HttpMethod } from "../definitions";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
 import { Type } from "../types";
 import { err, ok, Result } from "../util";
 import {
+  UserInput,
   UserInputBody,
   UserInputRequest,
   UserInputResponse
 } from "./user-input-models";
 
 export class ContractVerifier {
-  private readonly userInputRequest: UserInputRequest;
-  private readonly userInputResponse: UserInputResponse;
-  private readonly contract: Contract;
-  constructor(
-    contract: Contract,
+  constructor(private readonly contract: Contract) {}
+
+  verify(
     userInputRequest: UserInputRequest,
     userInputResponse: UserInputResponse
-  ) {
-    this.userInputRequest = userInputRequest;
-    this.userInputResponse = userInputResponse;
-    this.contract = contract;
-  }
-
-  verify(): Array<Result<void, VerificationError>> {
+  ): Array<Result<void, VerificationError>> {
     let results: Array<Result<void, VerificationError>> = [];
     const expectedEndpoint = this.getEndpointByRequest(
-      this.userInputRequest,
+      userInputRequest,
       this.contract
     );
+    // Return error if endpoint does not exist on the contract.
     if (expectedEndpoint.isErr()) {
       results = results.concat(expectedEndpoint);
     } else {
+      // Body verifications.
       results = results.concat(
-        this.verifyStatus(
-          this.userInputResponse.statusCode,
-          expectedEndpoint.unwrap()
+        this.verifyRequestResponseBodies(
+          expectedEndpoint.unwrap(),
+          userInputRequest,
+          userInputResponse,
+          this.contract.types
         )
-      );
-      results = results.concat(
-        this.verifyBody(this.userInputRequest.body, this.contract.types)
-      );
-      results = results.concat(
-        this.verifyBody(this.userInputResponse.body, this.contract.types)
       );
     }
     return results;
   }
 
-  private verifyStatus(
-    responseStatusCode: string,
-    endpoint: Endpoint
+  private verifyRequestResponseBodies(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest,
+    userInputResponse: UserInputResponse,
+    typeArray: Array<{ name: string; type: Type }>
+  ): Array<Result<void, VerificationError>> {
+    let results: Array<Result<void, VerificationError>> = [];
+
+    results = results.concat(
+      this.verifyRequestBody(endpoint, userInputRequest, typeArray)
+    );
+    results = results.concat(
+      this.verifyResponseBody(endpoint, userInputResponse, typeArray)
+    );
+
+    return results;
+  }
+
+  private verifyRequestBody(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest,
+    typeArray: Array<{ name: string; type: Type }>
   ): Result<void, VerificationError> {
-    if (responseStatusCode === "default") {
-      if (!endpoint.defaultResponse) {
-        return err(
-          new VerificationError(
-            `default response on path ${endpoint.path} does not exist when trying to verify it.`
-          )
-        );
-      }
-      return ok(undefined);
+    const requestBodyTypeOnContract = this.getRequestBodyTypeOnContractEndpoint(
+      endpoint
+    );
+    if (requestBodyTypeOnContract.isErr()) {
+      return requestBodyTypeOnContract;
     }
-    for (const expectedResponse of endpoint.responses) {
-      const expectedStatusCode = expectedResponse.status.toString();
-      if (expectedStatusCode === responseStatusCode) {
-        return ok(undefined);
-      }
+    return this.verifyBody(
+      userInputRequest.body,
+      requestBodyTypeOnContract.unwrap(),
+      typeArray
+    );
+  }
+
+  private verifyResponseBody(
+    endpoint: Endpoint,
+    userInputResponse: UserInputResponse,
+    typeArray: Array<{ name: string; type: Type }>
+  ): Result<void, VerificationError> {
+    const responseBodyTypeOncontract = this.getResponseBodyTypeOnContractEndpoint(
+      endpoint,
+      userInputResponse.statusCode
+    );
+
+    if (responseBodyTypeOncontract.isErr()) {
+      return responseBodyTypeOncontract;
     }
-    return err(
-      new VerificationError(
-        `Expected status ${responseStatusCode}, does not exist on contract path ${endpoint.path}`
-      )
+    return this.verifyBody(
+      userInputResponse.body,
+      responseBodyTypeOncontract.unwrap(),
+      typeArray
     );
   }
 
   private verifyBody(
     body: UserInputBody,
+    contractBodyTypeToVerifyWith: Type,
     typeArray: Array<{ name: string; type: Type }>
   ): Result<void, VerificationError> {
     if (!body) {
@@ -86,7 +107,7 @@ export class ContractVerifier {
 
     const jsv = new JsonSchemaValidator();
     const schema = {
-      ...generateJsonSchemaType(body.type),
+      ...generateJsonSchemaType(contractBodyTypeToVerifyWith),
       definitions: typeArray.reduce<{ [key: string]: JsonSchemaType }>(
         (defAcc, typeNode) => {
           return {
@@ -102,11 +123,69 @@ export class ContractVerifier {
     if (valid) {
       return ok(undefined);
     } else {
-      const errMessage = `Body is not compliant to JSON schema standard: ${jsv.errorsText(
+      const errMessage = `Type does not exist in contract: ${jsv.errorsText(
         validateFn.errors
       )}\nReceived:\n${this.formatObject(body)}`;
       return err(new VerificationError(errMessage));
     }
+  }
+
+  private getRequestBodyTypeOnContractEndpoint(
+    endpoint: Endpoint
+  ): Result<Type, VerificationError> {
+    if (!endpoint.request || !endpoint.request.body) {
+      return err(
+        new VerificationError(
+          `Request body on endpoint path ${endpoint.path}:${endpoint.method} does not exist.`
+        )
+      );
+    } else {
+      return ok(endpoint.request.body.type);
+    }
+  }
+
+  private getResponseBodyTypeOnContractEndpoint(
+    endpoint: Endpoint,
+    userInputStatusCode: number
+  ): Result<Type, VerificationError> {
+    if (endpoint.responses.length === 0) {
+      return err(
+        new VerificationError(
+          `There is no response defined on endpoint path ${endpoint.path}:${endpoint.method}.`
+        )
+      );
+    }
+    for (const response of endpoint.responses) {
+      if (response.status === userInputStatusCode) {
+        if (!response.body) {
+          return err(
+            new VerificationError(
+              `There is no response body defined on path ${endpoint.path}:${endpoint.method} with status code ${userInputStatusCode}.`
+            )
+          );
+        }
+        return ok(response.body.type);
+      }
+      return this.getDefaultResponseBodyTypeOnContractEndpoint(endpoint);
+    }
+    return err(
+      new VerificationError(
+        `Unexpected error in getting response body type on verifying ${endpoint.path}:${endpoint.method} with status code ${userInputStatusCode}`
+      )
+    );
+  }
+
+  private getDefaultResponseBodyTypeOnContractEndpoint(
+    endpoint: Endpoint
+  ): Result<Type, VerificationError> {
+    if (!endpoint.defaultResponse || !endpoint.defaultResponse.body) {
+      return err(
+        new VerificationError(
+          `Default response does not exist on ${endpoint.path}:${endpoint.method}.`
+        )
+      );
+    }
+    return ok(endpoint.defaultResponse.body.type);
   }
 
   private getEndpointByRequest(
