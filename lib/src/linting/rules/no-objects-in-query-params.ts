@@ -1,10 +1,9 @@
-import { flatten } from "lodash";
-import { LintingRule } from "../rule";
-
 import { Locatable } from "lib/src/models/locatable";
+import { flatten } from "lodash";
 import { EndpointNode, TypeNode } from "../../models/nodes";
 import { extractQueryParams } from "../../utilities/extract-endpoint-types";
 import { extractNestedObjectTypes } from "../../utilities/extract-nested-types";
+import { LintingRule } from "../rule";
 
 /**
  * Ensure query parameters are not objects
