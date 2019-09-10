@@ -42,3 +42,16 @@ export function extractEndpointTypes(
     extractRequestType(endpoint)
   ]);
 }
+
+export function extractQueryParams(
+  endpoint: Locatable<EndpointNode>
+): TypeNode[] {
+  return compact(
+    endpoint.value.request &&
+      endpoint.value.request.value.queryParams &&
+      endpoint.value.request.value.queryParams.value.map(queryParam => ({
+        name: queryParam.value.name.value,
+        type: queryParam.value.type
+      }))
+  );
+}
