@@ -1,8 +1,8 @@
 import { HttpMethod } from "../../models/http";
 import {
   ApiNode,
-  QueryParamNode,
   EndpointNode,
+  QueryParamNode,
   RequestNode
 } from "../../models/nodes";
 import {
