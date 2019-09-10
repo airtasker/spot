@@ -4,44 +4,67 @@ import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
 import { Type } from "../types";
 import { err, ok, Result } from "../util";
-import { Options, UserInputBody } from "./options";
+import {
+  UserInputBody,
+  UserInputRequest,
+  UserInputResponse
+} from "./user-input-models";
 
 export class ContractVerifier {
-  private readonly options: Options;
+  private readonly userInputRequest: UserInputRequest;
+  private readonly userInputResponse: UserInputResponse;
   private readonly contract: Contract;
-  constructor(options: Options, contract: Contract) {
-    this.options = options;
+  constructor(
+    contract: Contract,
+    userInputRequest: UserInputRequest,
+    userInputResponse: UserInputResponse
+  ) {
+    this.userInputRequest = userInputRequest;
+    this.userInputResponse = userInputResponse;
     this.contract = contract;
   }
 
   verify(): Array<Result<void, VerificationError>> {
-    const results: Array<Result<void, VerificationError>> = [];
-    const expectedEndpoint = this.getEndpointByOptions(
-      this.options,
+    let results: Array<Result<void, VerificationError>> = [];
+    const expectedEndpoint = this.getEndpointByRequest(
+      this.userInputRequest,
       this.contract
     );
     if (expectedEndpoint.isErr()) {
-      results.concat(expectedEndpoint);
+      results = results.concat(expectedEndpoint);
     } else {
-      results.concat(
-        this.verifyStatus(this.options.statusCode, expectedEndpoint.unwrap())
+      results = results.concat(
+        this.verifyStatus(
+          this.userInputResponse.statusCode,
+          expectedEndpoint.unwrap()
+        )
       );
-      results.concat(this.verifyBody(this.options.body, this.contract.types));
+      results = results.concat(
+        this.verifyBody(this.userInputRequest.body, this.contract.types)
+      );
+      results = results.concat(
+        this.verifyBody(this.userInputResponse.body, this.contract.types)
+      );
     }
     return results;
   }
 
-  /**
-   * Check if an axios response status code matches the expected status code of an expected response definition.
-   * @param expectedStatus
-   * @param response
-   */
   private verifyStatus(
-    responseStatusCode: number,
+    responseStatusCode: string,
     endpoint: Endpoint
   ): Result<void, VerificationError> {
+    if (responseStatusCode === "default") {
+      if (!endpoint.defaultResponse) {
+        return err(
+          new VerificationError(
+            `default response on path ${endpoint.path} does not exist when trying to verify it.`
+          )
+        );
+      }
+      return ok(undefined);
+    }
     for (const expectedResponse of endpoint.responses) {
-      const expectedStatusCode = expectedResponse.status;
+      const expectedStatusCode = expectedResponse.status.toString();
       if (expectedStatusCode === responseStatusCode) {
         return ok(undefined);
       }
@@ -53,13 +76,6 @@ export class ContractVerifier {
     );
   }
 
-  /**
-   * Check if an exios response body matches the expected body of an expected response definition.
-   *
-   * @param expectedResponse expected response
-   * @param response axios response
-   * @param typeStore reference type definitions
-   */
   private verifyBody(
     body: UserInputBody,
     typeArray: Array<{ name: string; type: Type }>
@@ -93,21 +109,21 @@ export class ContractVerifier {
     }
   }
 
-  private getEndpointByOptions(
-    options: Options,
+  private getEndpointByRequest(
+    userInputRequest: UserInputRequest,
     contract: Contract
   ): Result<Endpoint, VerificationError> {
     for (const endpoint of contract.endpoints) {
       if (
-        endpoint.path === options.path &&
-        endpoint.method === options.method
+        endpoint.path === userInputRequest.path &&
+        endpoint.method === userInputRequest.method
       ) {
         return ok(endpoint);
       }
     }
     return err(
       new VerificationError(
-        `Endpoint ${options.path} with Http Method of ${options.method} does not exist under the specified contract.`
+        `Endpoint ${userInputRequest.path} with Http Method of ${userInputRequest.method} does not exist under the specified contract.`
       )
     );
   }

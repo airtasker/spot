@@ -1,13 +1,19 @@
 import { HttpMethod } from "../definitions";
 import { Type } from "../types";
 
-export interface Options {
+export interface UserInputRequest {
   path: string;
   method: HttpMethod;
-  statusCode: number;
-  body: UserInputBody;
-  requestParameters: string;
   headers: string;
+  body: UserInputBody;
+  pathParams: string;
+  queryParams: string;
+}
+
+export interface UserInputResponse {
+  headers: string;
+  statusCode: string;
+  body: UserInputBody;
 }
 
 export interface UserInputBody {
