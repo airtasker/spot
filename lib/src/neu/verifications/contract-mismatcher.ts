@@ -22,7 +22,7 @@ export class ContractMismatcher {
     if (expectedEndpoint.isErr()) {
       return expectedEndpoint;
     } else {
-      let mismatches: Mismatch[] = [];
+      const mismatches: Mismatch[] = [];
 
       // Body verifications.
       const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
@@ -43,8 +43,8 @@ export class ContractMismatcher {
         return mismatchesOnResponseBody;
       }
 
-      mismatches = mismatches.concat(mismatchesOnRequestBody.unwrap());
-      mismatches = mismatches.concat(mismatchesOnResponseBody.unwrap());
+      mismatches.push(...mismatchesOnRequestBody.unwrap());
+      mismatches.push(...mismatchesOnResponseBody.unwrap());
       return ok(mismatches);
     }
   }
@@ -56,12 +56,12 @@ export class ContractMismatcher {
     const requestBodyTypeOnContract = this.getRequestBodyTypeOnContractEndpoint(
       endpoint
     );
-    let mismatches: Mismatch[] = [];
+    const mismatches: Mismatch[] = [];
     if (requestBodyTypeOnContract.isErr()) {
       const mismatch = new Mismatch(
         requestBodyTypeOnContract.unwrapErr().message
       );
-      mismatches = mismatches.concat(mismatch);
+      mismatches.push(mismatch);
       return ok(mismatches);
     }
     return this.findMismatchOnBody(

@@ -20,7 +20,7 @@ describe("contract mismatch finder", () => {
           lastName: "Syrup",
           age: 1.0,
           email: "maple.syrup@airtasker.com",
-          address: "Where mum is"
+          address: "Doggo bed"
         }
       },
       pathParams: "5",
@@ -51,7 +51,7 @@ describe("contract mismatch finder", () => {
           firstName: "Maple",
           lastName: "Syrup",
           email: "maple.syrup@airtasker.com",
-          address: "Where mum is"
+          address: "Doggo bed"
         }
       },
       pathParams: "5",
