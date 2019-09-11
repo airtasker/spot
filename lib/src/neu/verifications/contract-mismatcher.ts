@@ -212,7 +212,7 @@ export class ContractMismatcher {
     userInputPath: string,
     contractPath: string
   ): boolean {
-    const replacedContractPathPattern = contractPath.replace(/:.*\//g, ".*/");
+    const replacedContractPathPattern = contractPath.replace(/:[^\/]*/g, ".+");
     const regexp = new RegExp(replacedContractPathPattern);
     return regexp.test(userInputPath);
   }
