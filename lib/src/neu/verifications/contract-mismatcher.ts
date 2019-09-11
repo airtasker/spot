@@ -16,25 +16,40 @@ export class ContractMismatcher {
   findMismatch(
     userInputRequest: UserInputRequest,
     userInputResponse: UserInputResponse
-  ): Array<Result<Mismatch[], Error>> {
-    let results: Array<Result<Mismatch[], Error>> = [];
+  ): Result<Mismatch[], Error> {
     const expectedEndpoint = this.getEndpointByRequest(userInputRequest);
     // Return error if endpoint does not exist on the contract.
     if (expectedEndpoint.isErr()) {
-      results = results.concat(expectedEndpoint);
+      return expectedEndpoint;
     } else {
+      let mismatches: Mismatch[] = [];
+
       // Body verifications.
-      results = results.concat(
-        this.verifyRequestBody(expectedEndpoint.unwrap(), userInputRequest)
+      const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
+        expectedEndpoint.unwrap(),
+        userInputRequest
       );
-      results = results.concat(
-        this.verifyResponseBody(expectedEndpoint.unwrap(), userInputResponse)
+
+      const mismatchesOnResponseBody = this.findMismatchOnResponseBody(
+        expectedEndpoint.unwrap(),
+        userInputResponse
       );
+
+      if (mismatchesOnRequestBody.isErr()) {
+        return mismatchesOnRequestBody;
+      }
+
+      if (mismatchesOnResponseBody.isErr()) {
+        return mismatchesOnResponseBody;
+      }
+
+      mismatches = mismatches.concat(mismatchesOnRequestBody.unwrap());
+      mismatches = mismatches.concat(mismatchesOnResponseBody.unwrap());
+      return ok(mismatches);
     }
-    return results;
   }
 
-  private verifyRequestBody(
+  private findMismatchOnRequestBody(
     endpoint: Endpoint,
     userInputRequest: UserInputRequest
   ): Result<Mismatch[], Error> {
@@ -49,13 +64,13 @@ export class ContractMismatcher {
       mismatches = mismatches.concat(mismatch);
       return ok(mismatches);
     }
-    return this.verifyBody(
+    return this.findMismatchOnBody(
       userInputRequest.body,
       requestBodyTypeOnContract.unwrap()
     );
   }
 
-  private verifyResponseBody(
+  private findMismatchOnResponseBody(
     endpoint: Endpoint,
     userInputResponse: UserInputResponse
   ): Result<Mismatch[], Error> {
@@ -73,10 +88,13 @@ export class ContractMismatcher {
     if (!contractResponseBodyType) {
       return ok([]);
     }
-    return this.verifyBody(userInputResponse.body, contractResponseBodyType);
+    return this.findMismatchOnBody(
+      userInputResponse.body,
+      contractResponseBodyType
+    );
   }
 
-  private verifyBody(
+  private findMismatchOnBody(
     body: UserInputBody,
     contractBodyTypeToVerifyWith: Type
   ): Result<Mismatch[], Error> {
@@ -114,7 +132,10 @@ export class ContractMismatcher {
 
   private errorObjectMapper(array: ErrorObject[]): Mismatch[] {
     return array.map(e => {
-      return new Mismatch(e.message || "Unexpected error message.");
+      return new Mismatch(
+        e.message ||
+          `JsonSchemaValidator encountered an unexpected error for ${e.data}.`
+      );
     });
   }
 
@@ -184,10 +205,6 @@ export class ContractMismatcher {
         `Endpoint ${userInputRequest.path} with Http Method of ${userInputRequest.method} does not exist under the specified contract.`
       )
     );
-  }
-
-  private formatObject(obj: any): string {
-    return JSON.stringify(obj, undefined, 2);
   }
 }
 
