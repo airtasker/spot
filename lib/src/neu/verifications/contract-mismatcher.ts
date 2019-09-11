@@ -114,6 +114,7 @@ export class ContractMismatcher {
         };
       }, {})
     };
+
     const validateFn = jsv.compile(schema);
     const valid = validateFn(body);
     if (valid) {
@@ -122,7 +123,7 @@ export class ContractMismatcher {
       if (!validateFn.errors) {
         return err(
           new Error(
-            `Body Validation reaches unexpected error for ${body} with contract ${contractBodyTypeToVerifyWith}`
+            `Body Validation reaches unexpected error for ${body} with contract body ${contractBodyTypeToVerifyWith}`
           )
         );
       }
@@ -131,6 +132,7 @@ export class ContractMismatcher {
   }
 
   private errorObjectMapper(array: ErrorObject[]): Mismatch[] {
+    console.log(array);
     return array.map(e => {
       return new Mismatch(
         e.message ||

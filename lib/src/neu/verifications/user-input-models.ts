@@ -1,20 +1,19 @@
-import { HttpMethod } from "../definitions";
-
 export interface UserInputRequest {
   path: string;
-  method: HttpMethod;
-  headers: string;
+  method: string;
+  headers: UserInputHeader;
   body: UserInputBody;
   pathParams: string;
   queryParams: string;
 }
 
 export interface UserInputResponse {
-  headers: string;
+  headers: UserInputHeader;
   statusCode: number;
   body: UserInputBody;
 }
 
 export type UserInput = UserInputRequest | UserInputResponse;
 
+export type UserInputHeader = unknown;
 export type UserInputBody = unknown;
