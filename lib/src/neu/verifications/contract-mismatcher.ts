@@ -18,9 +18,9 @@ export class ContractMismatcher {
     userInputResponse: UserInputResponse
   ): Result<Mismatch[], Error> {
     const expectedEndpoint = this.getEndpointByRequest(userInputRequest);
-    // Return error if endpoint does not exist on the contract.
+    // Return mismatch if endpoint does not exist on the contract.
     if (expectedEndpoint.isErr()) {
-      return expectedEndpoint;
+      return ok([new Mismatch(expectedEndpoint.unwrapErr().message)]);
     } else {
       const mismatches: Mismatch[] = [];
 
@@ -132,7 +132,6 @@ export class ContractMismatcher {
   }
 
   private errorObjectMapper(array: ErrorObject[]): Mismatch[] {
-    console.log(array);
     return array.map(e => {
       return new Mismatch(
         e.message ||
@@ -196,7 +195,7 @@ export class ContractMismatcher {
   ): Result<Endpoint, Error> {
     for (const endpoint of this.contract.endpoints) {
       if (
-        endpoint.path === userInputRequest.path &&
+        this.isMatchedToContractPath(userInputRequest.path, endpoint.path) &&
         endpoint.method === userInputRequest.method
       ) {
         return ok(endpoint);
@@ -207,6 +206,15 @@ export class ContractMismatcher {
         `Endpoint ${userInputRequest.path} with Http Method of ${userInputRequest.method} does not exist under the specified contract.`
       )
     );
+  }
+
+  private isMatchedToContractPath(
+    userInputPath: string,
+    contractPath: string
+  ): boolean {
+    const replacedContractPathPattern = contractPath.replace(/:.*\//g, ".*/");
+    const regexp = new RegExp(replacedContractPathPattern);
+    return regexp.test(userInputPath);
   }
 }
 
