@@ -2,7 +2,7 @@
  * Class decorator factory for describing an API.
  *
  * ```ts
- * `@`api({ name: "Company API" })
+ * @api({ name: "Company API" })
  * class CompanyApi {}
  * ```
  *

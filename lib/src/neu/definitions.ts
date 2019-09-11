@@ -3,9 +3,18 @@ import { Type } from "./types";
 export interface Contract {
   name: string;
   description?: string;
+  config: Config;
   types: Array<{ name: string; type: Type }>;
   security?: SecurityHeader;
   endpoints: Endpoint[];
+}
+
+export interface Config {
+  paramSerializationStrategy: {
+    query: {
+      array: QueryParamArrayStrategy;
+    };
+  };
 }
 
 export interface SecurityHeader {
@@ -65,4 +74,19 @@ export interface Body {
   type: Type;
 }
 
+/**
+ * Supported serialization strategies for arrays in query parameters
+ *
+ *    "ampersand": ?id=3&id=4&id=5
+ *    "ampersandEscaped": ?id=3%204%205
+ *    "comma": ?id=3,4,5
+ *    "pipe": ?id=3|4|5
+ */
+export type QueryParamArrayStrategy =
+  | "ampersand"
+  | "ampersandEscaped"
+  | "comma"
+  | "pipe";
+
+/** Supported HTTP methods */
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

@@ -20,7 +20,7 @@ class CompanyApi {}
 export function config(config: ConfigConfig) {
   return (target: any) => {};
 }
-interface ConfigConfig {
+export interface ConfigConfig {
   /** The global configuration for parameter serialization strategy */
   paramSerializationStrategy: ParamSerializationStrategy;
 }
