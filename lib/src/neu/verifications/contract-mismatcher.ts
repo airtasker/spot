@@ -1,4 +1,5 @@
 import JsonSchemaValidator, { ErrorObject } from "ajv";
+import { element } from "prop-types";
 import { Contract, Endpoint } from "../definitions";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
@@ -11,6 +12,7 @@ import {
 } from "./user-input-models";
 
 export class ContractMismatcher {
+  private readonly PATH_PARAM_REGEX = /:[^\/]*/g;
   constructor(private readonly contract: Contract) {}
 
   findMismatch(
@@ -45,8 +47,29 @@ export class ContractMismatcher {
 
       mismatches.push(...mismatchesOnRequestBody.unwrap());
       mismatches.push(...mismatchesOnResponseBody.unwrap());
+      this.findMismatchOnRequestPathParam(
+        expectedEndpoint.unwrap(),
+        userInputRequest
+      );
       return ok(mismatches);
     }
+  }
+
+  private findMismatchOnRequestPathParam(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest
+  ): void {
+    const contractPathArray = endpoint.path.split("/");
+    const userPathArray = this.getSeparatedPathFromQueries(
+      userInputRequest.path
+    )[0].split("/");
+    const result: any[] = [];
+    contractPathArray.forEach((p, i) => {
+      if (p.startsWith(":")) {
+        result.push({ [p.substr(1)]: userPathArray[i] });
+      }
+    });
+    console.log(result);
   }
 
   private findMismatchOnRequestBody(
@@ -212,9 +235,16 @@ export class ContractMismatcher {
     userInputPath: string,
     contractPath: string
   ): boolean {
-    const replacedContractPathPattern = contractPath.replace(/:[^\/]*/g, ".+");
+    const replacedContractPathPattern = contractPath.replace(
+      this.PATH_PARAM_REGEX,
+      ".+"
+    );
     const regexp = new RegExp(replacedContractPathPattern);
     return regexp.test(userInputPath);
+  }
+
+  private getSeparatedPathFromQueries(path: string): string[] {
+    return path.split("?");
   }
 }
 

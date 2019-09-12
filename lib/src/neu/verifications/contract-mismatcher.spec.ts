@@ -23,7 +23,6 @@ describe("contract mismatch finder", () => {
           address: "Doggo bed"
         }
       },
-      pathParams: "5",
       queryParams: ""
     };
     const response = {
@@ -54,7 +53,6 @@ describe("contract mismatch finder", () => {
           address: "Doggo bed"
         }
       },
-      pathParams: "5",
       queryParams: ""
     };
     const response = {
@@ -85,7 +83,6 @@ describe("contract mismatch finder", () => {
           address: "Doggo bed"
         }
       },
-      pathParams: "5",
       queryParams: ""
     };
     const response = {

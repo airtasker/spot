@@ -3,7 +3,6 @@ export interface UserInputRequest {
   method: string;
   headers: UserInputHeader;
   body: UserInputBody;
-  pathParams: string;
   queryParams: string;
 }
 
