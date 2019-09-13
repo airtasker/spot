@@ -16,3 +16,8 @@ export type UserInput = UserInputRequest | UserInputResponse;
 
 export type UserInputHeader = unknown;
 export type UserInputBody = unknown;
+export interface UserInputPathParam {
+  [key: string]: string;
+}
+
+export type UserContent = UserInputBody | UserInputHeader | UserInputPathParam;

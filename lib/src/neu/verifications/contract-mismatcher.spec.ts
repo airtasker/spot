@@ -102,4 +102,37 @@ describe("contract mismatch finder", () => {
       "Endpoint /compan/5/users with Http Method of POST does not exist under the specified contract."
     );
   });
+
+  test("a mismatch is found, path params do not conform to contract", () => {
+    const request = {
+      path: "/company/shouldbenumber/users",
+      method: "POST",
+      headers: {},
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed"
+        }
+      },
+      queryParams: ""
+    };
+    const response = {
+      headers: { Location: "testLocation" },
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
+    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()[0].message).toBe(
+      '{"data":{"firstName":"Maple","lastName":"Syrup","email":"maple.syrup@airtasker.com","address":"Doggo bed"}} should have required property \'age\''
+    );
+  });
 });
