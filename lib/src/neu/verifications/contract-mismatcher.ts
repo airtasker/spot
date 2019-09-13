@@ -87,9 +87,15 @@ export class ContractMismatcher {
     const mismatches: Mismatch[] = [];
     for (let i = 0; i < contractPathArray.length; i++) {
       if (contractPathArray[i].startsWith(":")) {
-        const contractPathParamType = endpoint.request!!.pathParams.find(
-          x => x.name === contractPathArray[i].substr(1)
-        )!!.type;
+        const contractPathParam = endpoint.request!!.pathParams.find(
+          param => param.name === contractPathArray[i].substr(1)
+        )
+
+        if (!contractPathParam) {
+          return err(new Error("Unexpected error when trying to find path param key on contract."))
+        }
+
+        const contractPathParamType = contractPathParam.type;
 
         const result = this.findMismatchOnContent(
           userPathArray[i],
@@ -179,7 +185,7 @@ export class ContractMismatcher {
     } else {
       if (!validateFn.errors) {
         return err(
-          new Error(
+    o      new Error(
             `Body Validation reaches unexpected error for ${content} with contract body ${contractContentTypeToCheckWith}`
           )
         );
