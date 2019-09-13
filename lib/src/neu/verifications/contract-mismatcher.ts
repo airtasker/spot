@@ -5,12 +5,13 @@ import { JsonSchemaType } from "../schemas/json-schema";
 import { Type } from "../types";
 import { err, ok, Result } from "../util";
 import {
-  UserInputBody,
+  UserContent,
   UserInputRequest,
   UserInputResponse
 } from "./user-input-models";
 
 export class ContractMismatcher {
+  private readonly PATH_PARAM_REGEX = /:[^\/]*/g;
   constructor(private readonly contract: Contract) {}
 
   findMismatch(
@@ -24,7 +25,7 @@ export class ContractMismatcher {
     } else {
       const mismatches: Mismatch[] = [];
 
-      // Body verifications.
+      // Body mismatch finding..
       const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
         expectedEndpoint.unwrap(),
         userInputRequest
@@ -45,8 +46,74 @@ export class ContractMismatcher {
 
       mismatches.push(...mismatchesOnRequestBody.unwrap());
       mismatches.push(...mismatchesOnResponseBody.unwrap());
+
+      // Path params mismatch finding
+      const pathParamMismatches = this.findMismatchOnRequestPathParam(
+        expectedEndpoint.unwrap(),
+        userInputRequest
+      );
+      if (pathParamMismatches.isErr()) {
+        return pathParamMismatches;
+      }
+      mismatches.push(...pathParamMismatches.unwrap());
       return ok(mismatches);
     }
+  }
+
+  private findMismatchOnRequestPathParam(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest
+  ): Result<Mismatch[], Error> {
+    if (!endpoint.request) {
+      return ok([
+        new Mismatch(
+          `There is no request defined in the contract under path: ${endpoint.path}`
+        )
+      ]);
+    }
+
+    const contractPathArray = endpoint.path.split("/");
+    const userPathArray = this.getSeparatedPathFromQueries(
+      userInputRequest.path
+    )[0].split("/");
+
+    if (contractPathArray.length !== userPathArray.length) {
+      return ok([
+        new Mismatch(
+          `Path parameters passed (${userInputRequest.path}) does not conform to the contract path (${endpoint.path}).`
+        )
+      ]);
+    }
+    const mismatches: Mismatch[] = [];
+    for (let i = 0; i < contractPathArray.length; i++) {
+      if (contractPathArray[i].startsWith(":")) {
+        const contractPathParam = endpoint.request!!.pathParams.find(
+          param => param.name === contractPathArray[i].substr(1)
+        );
+
+        if (!contractPathParam) {
+          return err(
+            new Error(
+              "Unexpected error when trying to find path param key on contract."
+            )
+          );
+        }
+
+        const contractPathParamType = contractPathParam.type;
+
+        const result = this.findMismatchOnContent(
+          userPathArray[i],
+          contractPathParamType
+        );
+
+        if (result.isErr()) {
+          return result;
+        } else {
+          mismatches.push(...result.unwrap());
+        }
+      }
+    }
+    return ok(mismatches);
   }
 
   private findMismatchOnRequestBody(
@@ -64,7 +131,7 @@ export class ContractMismatcher {
       mismatches.push(mismatch);
       return ok(mismatches);
     }
-    return this.findMismatchOnBody(
+    return this.findMismatchOnContent(
       userInputRequest.body,
       requestBodyTypeOnContract.unwrap()
     );
@@ -88,23 +155,23 @@ export class ContractMismatcher {
     if (!contractResponseBodyType) {
       return ok([]);
     }
-    return this.findMismatchOnBody(
+    return this.findMismatchOnContent(
       userInputResponse.body,
       contractResponseBodyType
     );
   }
 
-  private findMismatchOnBody(
-    body: UserInputBody,
-    contractBodyTypeToVerifyWith: Type
+  private findMismatchOnContent(
+    content: UserContent,
+    contractContentTypeToCheckWith: Type
   ): Result<Mismatch[], Error> {
-    if (!body) {
+    if (!content) {
       return ok([]);
     }
 
     const jsv = new JsonSchemaValidator();
     const schema = {
-      ...generateJsonSchemaType(contractBodyTypeToVerifyWith),
+      ...generateJsonSchemaType(contractContentTypeToCheckWith),
       definitions: this.contract.types.reduce<{
         [key: string]: JsonSchemaType;
       }>((defAcc, typeNode) => {
@@ -116,27 +183,30 @@ export class ContractMismatcher {
     };
 
     const validateFn = jsv.compile(schema);
-    const valid = validateFn(body);
+    const valid = validateFn(content);
     if (valid) {
       return ok([]);
     } else {
       if (!validateFn.errors) {
         return err(
           new Error(
-            `Body Validation reaches unexpected error for ${body} with contract body ${contractBodyTypeToVerifyWith}`
+            `Body Validation reaches unexpected error for ${content} with contract body ${contractContentTypeToCheckWith}`
           )
         );
       }
-      return ok(this.errorObjectMapper(validateFn.errors));
+      return ok(this.errorObjectMapper(validateFn.errors, content));
     }
   }
 
-  private errorObjectMapper(array: ErrorObject[]): Mismatch[] {
+  private errorObjectMapper(
+    array: ErrorObject[],
+    content: UserContent
+  ): Mismatch[] {
     return array.map(e => {
-      return new Mismatch(
-        e.message ||
-          `JsonSchemaValidator encountered an unexpected error for ${e.data}.`
-      );
+      const message = e.message
+        ? `${JSON.stringify(content)} ${e.message}`
+        : `JsonSchemaValidator encountered an unexpected error for ${e.data}.`;
+      return new Mismatch(message);
     });
   }
 
@@ -212,9 +282,16 @@ export class ContractMismatcher {
     userInputPath: string,
     contractPath: string
   ): boolean {
-    const replacedContractPathPattern = contractPath.replace(/:[^\/]*/g, ".+");
+    const replacedContractPathPattern = contractPath.replace(
+      this.PATH_PARAM_REGEX,
+      ".+"
+    );
     const regexp = new RegExp(replacedContractPathPattern);
     return regexp.test(userInputPath);
+  }
+
+  private getSeparatedPathFromQueries(path: string): string[] {
+    return path.split("?");
   }
 }
 
