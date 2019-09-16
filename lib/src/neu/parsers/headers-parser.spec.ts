@@ -1,5 +1,5 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
-import { OptionalNotAllowedError } from "../errors";
+import { OptionalNotAllowedError, ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseHeaders } from "./headers-parser";
@@ -31,7 +31,7 @@ describe("headers parser", () => {
       description: undefined,
       name: "optionalProperty",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.INT64
       },
       optional: true
     });
@@ -71,6 +71,36 @@ describe("headers parser", () => {
         lociTable
       ).unwrapErrOrThrow()
     ).toBeInstanceOf(OptionalNotAllowedError);
+  });
+
+  test("fails to parse @headers with param containing illegal characters", () => {
+    const err = parseHeaders(
+      method.getParameterOrThrow("headersWithIllegalPropertyName"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @headers with an empty param name", () => {
+    const err = parseHeaders(
+      method.getParameterOrThrow("headersWithEmptyPropertyName"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @headers with an illegal param type", () => {
+    const err = parseHeaders(
+      method.getParameterOrThrow("headersWithIllegalType"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
   });
 
   test("fails to parse non-@headers decorated parameter", () => {

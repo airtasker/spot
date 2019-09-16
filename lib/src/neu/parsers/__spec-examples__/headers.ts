@@ -1,4 +1,4 @@
-import { headers } from "@airtasker/spot";
+import { headers, Int64 } from "@airtasker/spot";
 
 class HeadersClass {
   headersMethod(
@@ -10,10 +10,22 @@ class HeadersClass {
       property: string;
       /** property description */
       "property-with-description": string;
-      optionalProperty?: string;
+      optionalProperty?: Int64;
     },
     @headers
     nonObjectHeaders: string,
+    @headers
+    headersWithIllegalPropertyName: {
+      "illegal-field-name-header%$": string;
+    },
+    @headers
+    headersWithEmptyPropertyName: {
+      "": string;
+    },
+    @headers
+    headersWithIllegalType: {
+      property: boolean;
+    },
     @headers
     optionalHeaders?: {
       property: string;

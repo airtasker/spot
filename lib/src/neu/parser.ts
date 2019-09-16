@@ -15,6 +15,7 @@ export function parse(sourcePath: string): Contract {
 
   const result = parseContract(sourceFile);
 
+  // TODO: print human readable errors
   if (result.isErr()) throw result.unwrapErr();
 
   return result.unwrap().contract;

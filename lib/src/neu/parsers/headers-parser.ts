@@ -1,8 +1,9 @@
-import { ParameterDeclaration } from "ts-morph";
+import { ParameterDeclaration, PropertySignature } from "ts-morph";
 import { Header } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
+import { isHeaderTypeSafe } from "../http";
 import { LociTable } from "../locations";
-import { TypeTable } from "../types";
+import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
@@ -17,6 +18,7 @@ export function parseHeaders(
   lociTable: LociTable
 ): Result<Header[], ParserError> {
   parameter.getDecoratorOrThrow("headers");
+
   if (parameter.hasQuestionToken()) {
     return err(
       new OptionalNotAllowedError("@headers parameter cannot be optional", {
@@ -25,27 +27,82 @@ export function parseHeaders(
       })
     );
   }
-  const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
+  const headerTypeLiteral = getParameterTypeAsTypeLiteralOrThrow(parameter);
 
   const headers = [];
-  for (const propertySignature of type.getProperties()) {
-    const typeResult = parseType(
-      propertySignature.getTypeNodeOrThrow(),
+  for (const propertySignature of headerTypeLiteral.getProperties()) {
+    const nameResult = extractHeaderName(propertySignature);
+    if (nameResult.isErr()) return nameResult;
+    const name = nameResult.unwrap();
+
+    const typeResult = extractHeaderType(
+      propertySignature,
       typeTable,
       lociTable
     );
     if (typeResult.isErr()) return typeResult;
-    const pDescription = getJsDoc(propertySignature);
+    const type = typeResult.unwrap();
 
-    const header = {
-      name: getPropertyName(propertySignature),
-      type: typeResult.unwrap(),
-      description: pDescription && pDescription.getComment(),
-      optional: propertySignature.hasQuestionToken()
-    };
-    headers.push(header);
+    const pDescription = getJsDoc(propertySignature);
+    const description = pDescription && pDescription.getComment();
+
+    const optional = propertySignature.hasQuestionToken();
+
+    headers.push({ name, type, description, optional });
   }
 
-  // TODO: add loci information
   return ok(headers.sort((a, b) => (b.name > a.name ? -1 : 1)));
+}
+
+function extractHeaderName(
+  propertySignature: PropertySignature
+): Result<string, ParserError> {
+  const name = getPropertyName(propertySignature);
+  if (!/^[\w-]*$/.test(name)) {
+    return err(
+      new ParserError(
+        "@headers field name may only contain alphanumeric, underscore and hyphen characters",
+        {
+          file: propertySignature.getSourceFile().getFilePath(),
+          position: propertySignature.getPos()
+        }
+      )
+    );
+  }
+  if (name.length === 0) {
+    return err(
+      new ParserError("@headers field name must not be empty", {
+        file: propertySignature.getSourceFile().getFilePath(),
+        position: propertySignature.getPos()
+      })
+    );
+  }
+  return ok(name);
+}
+
+function extractHeaderType(
+  propertySignature: PropertySignature,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<Type, ParserError> {
+  const typeResult = parseType(
+    propertySignature.getTypeNodeOrThrow(),
+    typeTable,
+    lociTable
+  );
+  if (typeResult.isErr()) return typeResult;
+
+  if (!isHeaderTypeSafe(typeResult.unwrap(), typeTable)) {
+    return err(
+      new ParserError(
+        "header type may only derive from string or number types",
+        {
+          file: propertySignature.getSourceFile().getFilePath(),
+          position: propertySignature.getPos()
+        }
+      )
+    );
+  }
+
+  return typeResult;
 }

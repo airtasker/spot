@@ -1,5 +1,5 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
-import { OptionalNotAllowedError, TypeNotAllowedError } from "../errors";
+import { OptionalNotAllowedError, ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseQueryParams } from "./query-params-parser";
@@ -26,8 +26,37 @@ describe("query params parser", () => {
       typeTable,
       lociTable
     ).unwrapOrThrow();
-    expect(result).toHaveLength(3);
+    expect(result).toHaveLength(5);
     expect(result[0]).toStrictEqual({
+      description: undefined,
+      name: "arrayProperty",
+      type: {
+        kind: TypeKind.ARRAY,
+        elementType: {
+          kind: TypeKind.STRING
+        }
+      },
+      optional: false
+    });
+    expect(result[1]).toStrictEqual({
+      description: undefined,
+      name: "objectProperty",
+      type: {
+        kind: TypeKind.OBJECT,
+        properties: [
+          {
+            description: undefined,
+            name: "objectProp",
+            optional: false,
+            type: {
+              kind: TypeKind.STRING
+            }
+          }
+        ]
+      },
+      optional: false
+    });
+    expect(result[2]).toStrictEqual({
       description: undefined,
       name: "optionalProperty",
       type: {
@@ -35,7 +64,7 @@ describe("query params parser", () => {
       },
       optional: true
     });
-    expect(result[1]).toStrictEqual({
+    expect(result[3]).toStrictEqual({
       description: undefined,
       name: "property",
       type: {
@@ -43,7 +72,7 @@ describe("query params parser", () => {
       },
       optional: false
     });
-    expect(result[2]).toStrictEqual({
+    expect(result[4]).toStrictEqual({
       description: "property description",
       name: "property-with-description",
       type: {
@@ -71,6 +100,56 @@ describe("query params parser", () => {
         lociTable
       ).unwrapErrOrThrow()
     ).toBeInstanceOf(OptionalNotAllowedError);
+  });
+
+  test("fails to parse @queryParams with param name containing illegal characters", () => {
+    const err = parseQueryParams(
+      method.getParameterOrThrow("queryParamsWithIllegalPropertyName"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @queryParams with empty param name", () => {
+    const err = parseQueryParams(
+      method.getParameterOrThrow("queryParamsWithEmptyPropertyName"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @queryParams with an illegal param type", () => {
+    const err = parseQueryParams(
+      method.getParameterOrThrow("queryParamsWithIllegalPropertyType"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @queryParams with an illegal array param type", () => {
+    const err = parseQueryParams(
+      method.getParameterOrThrow("queryParamsWithIllegalPropertyArrayType"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @queryParams with an illegal object param type", () => {
+    const err = parseQueryParams(
+      method.getParameterOrThrow("queryParamsWithIllegalPropertyObjectType"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
   });
 
   test("fails to parse non-@queryParams decorated parameter", () => {

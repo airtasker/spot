@@ -13,10 +13,7 @@ import { parseQueryParams } from "./query-params-parser";
 export function parseRequest(
   method: MethodDeclaration,
   typeTable: TypeTable,
-  lociTable: LociTable,
-  lociContext: {
-    endpointName: string;
-  }
+  lociTable: LociTable
 ): Result<Request, ParserError> {
   method.getDecoratorOrThrow("request");
   const headersParam = getParamWithDecorator(method, "headers");

@@ -37,6 +37,8 @@ export type Type =
   | UnionType
   | ReferenceType;
 
+export type ConcreteRootType = Exclude<Type, UnionType | ReferenceType>;
+
 export interface NullType {
   kind: TypeKind.NULL;
 }
@@ -117,6 +119,8 @@ export interface ReferenceType {
   kind: TypeKind.REFERENCE;
   name: string;
 }
+
+// Type builders
 
 export function nullType(): NullType {
   return {
@@ -233,6 +237,104 @@ export function referenceType(name: string): ReferenceType {
     kind: TypeKind.REFERENCE,
     name
   };
+}
+
+// Type guards
+
+export function isNullType(type: Type): type is NullType {
+  return type.kind === TypeKind.NULL;
+}
+
+export function isBooleanType(type: Type): type is BooleanType {
+  return type.kind === TypeKind.BOOLEAN;
+}
+
+export function isBooleanLiteralType(type: Type): type is BooleanLiteralType {
+  return type.kind === TypeKind.BOOLEAN_LITERAL;
+}
+
+export function isStringType(type: Type): type is StringType {
+  return type.kind === TypeKind.STRING;
+}
+
+export function isStringLiteralType(type: Type): type is StringLiteralType {
+  return type.kind === TypeKind.STRING_LITERAL;
+}
+
+export function isFloatType(type: Type): type is FloatType {
+  return type.kind === TypeKind.FLOAT;
+}
+
+export function isDoubleType(type: Type): type is DoubleType {
+  return type.kind === TypeKind.DOUBLE;
+}
+
+export function isFloatLiteralType(type: Type): type is FloatLiteralType {
+  return type.kind === TypeKind.FLOAT_LITERAL;
+}
+
+export function isInt32Type(type: Type): type is Int32Type {
+  return type.kind === TypeKind.INT32;
+}
+
+export function isInt64Type(type: Type): type is Int64Type {
+  return type.kind === TypeKind.INT64;
+}
+
+export function isIntLiteralType(type: Type): type is IntLiteralType {
+  return type.kind === TypeKind.INT_LITERAL;
+}
+
+export function isDateType(type: Type): type is DateType {
+  return type.kind === TypeKind.DATE;
+}
+
+export function isDateTimeType(type: Type): type is DateTimeType {
+  return type.kind === TypeKind.DATE_TIME;
+}
+
+export function isObjectType(type: Type): type is ObjectType {
+  return type.kind === TypeKind.OBJECT;
+}
+
+export function isArrayType(type: Type): type is ArrayType {
+  return type.kind === TypeKind.ARRAY;
+}
+
+export function isUnionType(type: Type): type is UnionType {
+  return type.kind === TypeKind.UNION;
+}
+
+export function isReferenceType(type: Type): type is ReferenceType {
+  return type.kind === TypeKind.REFERENCE;
+}
+
+// Type helpers
+
+export function possibleRootTypes(
+  type: Type,
+  typeTable: TypeTable
+): ConcreteRootType[] {
+  if (isReferenceType(type)) {
+    return possibleRootTypes(typeTable.getOrError(type.name), typeTable);
+  }
+  if (isUnionType(type)) {
+    return type.types.reduce<ConcreteRootType[]>(
+      (acc, curr) => acc.concat(possibleRootTypes(curr, typeTable)),
+      []
+    );
+  }
+  return [type];
+}
+
+export function dereferenceType(
+  type: Type,
+  typeTable: TypeTable
+): Exclude<Type, ReferenceType> {
+  if (isReferenceType(type)) {
+    return dereferenceType(typeTable.getOrError(type.name), typeTable);
+  }
+  return type;
 }
 
 /**

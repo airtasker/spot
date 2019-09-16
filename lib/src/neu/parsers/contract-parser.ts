@@ -1,10 +1,10 @@
 import { ClassDeclaration, SourceFile } from "ts-morph";
 import { ApiConfig } from "../../syntax/api";
-import { Config, Contract } from "../definitions";
+import { Config, Contract, Endpoint } from "../definitions";
 import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
-import { ok, Result } from "../util";
+import { err, ok, Result } from "../util";
 import { defaultConfig, parseConfig } from "./config-parser";
 import { parseEndpoint } from "./endpoint-parser";
 import {
@@ -23,27 +23,54 @@ import { parseSecurityHeader } from "./security-header-parser";
  */
 export function parseContract(
   file: SourceFile
-): Result<{ contract: Contract; lociTable: LociTable }, Error> {
+): Result<{ contract: Contract; lociTable: LociTable }, ParserError> {
   const typeTable = new TypeTable();
   const lociTable = new LociTable();
 
-  const klass = getClassWithDecoratorOrThrow(file, "api"); // TODO: throw a custom error
+  const klass = getClassWithDecoratorOrThrow(file, "api");
   const decorator = klass.getDecoratorOrThrow("api");
   const decoratorConfig = getDecoratorConfigOrThrow(decorator);
+
+  // Handle name
   const nameProp = getObjLiteralPropOrThrow<ApiConfig>(decoratorConfig, "name");
   const nameLiteral = getPropValueAsStringOrThrow(nameProp);
+  const name = nameLiteral.getLiteralText().trim();
+  if (name.length === 0) {
+    return err(
+      new ParserError("api name cannot be empty", {
+        file: nameLiteral.getSourceFile().getFilePath(),
+        position: nameLiteral.getPos()
+      })
+    );
+  }
+  if (!/^[\w\s-]*$/.test(name)) {
+    return err(
+      new ParserError(
+        "api name may only contain alphanumeric, space, underscore and hyphen characters",
+        {
+          file: nameLiteral.getSourceFile().getFilePath(),
+          position: nameLiteral.getPos()
+        }
+      )
+    );
+  }
+
+  // Handle description
   const descriptionDoc = getJsDoc(klass);
+  const description = descriptionDoc && descriptionDoc.getComment();
 
   // Handle config
   const configResult = resolveConfig(klass);
   if (configResult.isErr()) return configResult;
+  const config = configResult.unwrap();
 
   // Handle security
   const securityHeaderProp = getPropertyWithDecorator(klass, "securityHeader");
-  const security =
+  const securityResult =
     securityHeaderProp &&
     parseSecurityHeader(securityHeaderProp, typeTable, lociTable);
-  if (security && security.isErr()) return security;
+  if (securityResult && securityResult.isErr()) return securityResult;
+  const security = securityResult && securityResult.unwrap();
 
   // Add location data
   lociTable.addMorphNode(LociTable.apiClassKey(), klass);
@@ -66,22 +93,18 @@ export function parseContract(
       ),
     []
   );
-  const endpoints = [];
-  for (const k of endpointClasses) {
-    const endpointResult = parseEndpoint(k, typeTable, lociTable);
-    if (endpointResult.isErr()) return endpointResult;
-    endpoints.push(endpointResult.unwrap());
-  }
+  const endpointsResult = extractEndpoints(
+    endpointClasses,
+    typeTable,
+    lociTable
+  );
+  if (endpointsResult.isErr()) return endpointsResult;
+  const endpoints = endpointsResult.unwrap();
 
-  const contract = {
-    name: nameLiteral.getLiteralText(),
-    description: descriptionDoc && descriptionDoc.getComment(),
-    types: typeTable.toArray(),
-    config: configResult.unwrap(),
-    security: security && security.unwrap(),
-    endpoints: endpoints.sort((a, b) => (b.name > a.name ? -1 : 1))
-  };
+  // Handle Types
+  const types = typeTable.toArray();
 
+  const contract = { name, description, types, config, security, endpoints };
   return ok({ contract, lociTable });
 }
 
@@ -92,4 +115,46 @@ function resolveConfig(klass: ClassDeclaration): Result<Config, ParserError> {
   } else {
     return ok(defaultConfig());
   }
+}
+
+function extractEndpoints(
+  endpointClasses: ClassDeclaration[],
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<Endpoint[], ParserError> {
+  const endpointNames = endpointClasses.map(k => k.getNameOrThrow());
+  const duplicateEndpointNames = [
+    ...new Set(
+      endpointNames.filter(
+        (name, index) => endpointNames.indexOf(name) !== index
+      )
+    )
+  ];
+  if (duplicateEndpointNames.length !== 0) {
+    const locations = duplicateEndpointNames.reduce<
+      Array<{ file: string; position: number }>
+    >((acc, name) => {
+      const nameLocations = endpointClasses
+        .filter(k => k.getNameOrThrow() === name)
+        .map(k => {
+          return {
+            file: k.getSourceFile().getFilePath(),
+            position: k.getPos()
+          };
+        });
+      return acc.concat(nameLocations);
+    }, []);
+
+    return err(
+      new ParserError("endpoints must have unique names", ...locations)
+    );
+  }
+
+  const endpoints = [];
+  for (const k of endpointClasses) {
+    const endpointResult = parseEndpoint(k, typeTable, lociTable);
+    if (endpointResult.isErr()) return endpointResult;
+    endpoints.push(endpointResult.unwrap());
+  }
+  return ok(endpoints.sort((a, b) => (b.name > a.name ? -1 : 1)));
 }

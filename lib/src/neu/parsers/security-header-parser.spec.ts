@@ -1,5 +1,5 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
-import { OptionalNotAllowedError } from "../errors";
+import { OptionalNotAllowedError, ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseSecurityHeader } from "./security-header-parser";
@@ -53,5 +53,35 @@ describe("security header parser", () => {
         lociTable
       )
     ).toThrowError("Expected to find decorator named 'securityHeader'");
+  });
+
+  test("fails to parse @securityHeader decorated property with a field name containing illegal characters", () => {
+    const err = parseSecurityHeader(
+      klass.getPropertyOrThrow(`\"illegal-field-name-security-header%$\"`),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @securityHeader decorated property with an empty field name", () => {
+    const err = parseSecurityHeader(
+      klass.getPropertyOrThrow(`\"\"`),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @securityHeader decorated property with a non-string type", () => {
+    const err = parseSecurityHeader(
+      klass.getPropertyOrThrow(`\"not-string-security-header\"`),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
   });
 });
