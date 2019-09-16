@@ -58,7 +58,7 @@
     "speccy": "^0.11.0",
     "styled-components": "^4.3.2",
     "swagger2openapi": "^5.3.1",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "^24.1.0",
     "ts-loader": "^6.1.0",
     "ts-node": "^8.3.0",
     "tslint": "^5.20.0",
