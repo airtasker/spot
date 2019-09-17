@@ -135,4 +135,73 @@ describe("contract mismatch finder", () => {
       '{"data":{"firstName":"Maple","lastName":"Syrup","email":"maple.syrup@airtasker.com","address":"Doggo bed"}} should have required property \'age\''
     );
   });
+
+  test("a request header mismatch found, missing required header", () => {
+    const request = {
+      path: "/company/5/users",
+      method: "POST",
+      headers: {},
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          age: 1.0,
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed"
+        }
+      },
+      queryParams: ""
+    };
+    const response = {
+      headers: { Location: "testLocation" },
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
+    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()[0].message).toBe(
+      "{} does not conform to the request contract headers on path: /company/:companyId/users:POST"
+    );
+  });
+
+  test("a request header mismatch found, wrong header value type", () => {
+    const request = {
+      path: "/company/5/users",
+      method: "POST",
+      headers: { "x-auth-token": 1 },
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          age: "1.0",
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed"
+        }
+      },
+      queryParams: ""
+    };
+    const response = {
+      headers: { Location: "testLocation" },
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
+    console.log(result);
+    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()[0].message).toBe(
+      "{} does not conform to the request contract headers on path: /company/:companyId/users:POST"
+    );
+  });
 });

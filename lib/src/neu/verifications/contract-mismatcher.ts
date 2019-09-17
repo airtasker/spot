@@ -44,6 +44,9 @@ export class ContractMismatcher {
         return mismatchesOnResponseHeader;
       }
 
+      mismatches.push(...mismatchesOnRequestHeader.unwrap());
+      mismatches.push(...mismatchesOnResponseHeader.unwrap());
+
       // Body mismatch finding.
       const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
         expectedEndpoint.unwrap(),
@@ -86,7 +89,22 @@ export class ContractMismatcher {
     if (!endpoint.request) {
       return ok([
         new Mismatch(
-          `There is no request defined in the contract under path: ${endpoint.path}`
+          `There is no request defined in the contract under path: ${endpoint.path}:${endpoint.method}`
+        )
+      ]);
+    }
+
+    if (
+      Object.keys(userInputRequest.headers).length <
+      endpoint.request!!.headers.length
+    ) {
+      return ok([
+        new Mismatch(
+          `${JSON.stringify(
+            userInputRequest.headers
+          )} does not conform to the request contract headers on path: ${
+            endpoint.path
+          }:${endpoint.method}`
         )
       ]);
     }
@@ -353,7 +371,7 @@ export class ContractMismatcher {
   ): Mismatch[] {
     return array.map(e => {
       const message = e.message
-        ? `${JSON.stringify(content)} ${e.message}`
+        ? `${JSON.stringify(content)}: ${e.schemaPath} ${e.message}`
         : `JsonSchemaValidator encountered an unexpected error for ${e.data}.`;
       return new Mismatch(message);
     });
