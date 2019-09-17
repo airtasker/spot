@@ -1,8 +1,8 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseEndpoint } from "./endpoint-parser";
-import { ParserError } from "../errors";
 
 describe("endpoint parser", () => {
   const exampleFile = createProjectFromExistingSourceFile(
