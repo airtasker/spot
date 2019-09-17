@@ -1,11 +1,12 @@
 import JsonSchemaValidator, { ErrorObject } from "ajv";
-import { Contract, Endpoint } from "../definitions";
+import { Contract, Endpoint, Header } from "../definitions";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
 import { Type } from "../types";
 import { err, ok, Result } from "../util";
 import {
   UserContent,
+  UserInputHeader,
   UserInputRequest,
   UserInputResponse
 } from "./user-input-models";
@@ -25,7 +26,25 @@ export class ContractMismatcher {
     } else {
       const mismatches: Mismatch[] = [];
 
-      // Body mismatch finding..
+      // Header mismatch finding.
+      const mismatchesOnRequestHeader = this.findMismatchOnRequestHeader(
+        expectedEndpoint.unwrap(),
+        userInputRequest
+      );
+      const mismatchesOnResponseHeader = this.findMismatchOnResponseHeader(
+        expectedEndpoint.unwrap(),
+        userInputResponse
+      );
+
+      if (mismatchesOnRequestHeader.isErr()) {
+        return mismatchesOnRequestHeader;
+      }
+
+      if (mismatchesOnResponseHeader.isErr()) {
+        return mismatchesOnResponseHeader;
+      }
+
+      // Body mismatch finding.
       const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
         expectedEndpoint.unwrap(),
         userInputRequest
@@ -58,6 +77,136 @@ export class ContractMismatcher {
       mismatches.push(...pathParamMismatches.unwrap());
       return ok(mismatches);
     }
+  }
+
+  private findMismatchOnRequestHeader(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest
+  ): Result<Mismatch[], Error> {
+    if (!endpoint.request) {
+      return ok([
+        new Mismatch(
+          `There is no request defined in the contract under path: ${endpoint.path}`
+        )
+      ]);
+    }
+
+    const mismatches: Mismatch[] = Object.keys(userInputRequest.headers).reduce(
+      (accumulator: Mismatch[], userInputHeaderKey: string) => {
+        const contractHeaderType = this.getHeaderTypeOnContractEndpoint(
+          endpoint.request!!.headers,
+          userInputHeaderKey,
+          endpoint.path,
+          endpoint.method
+        );
+        if (contractHeaderType.isErr()) {
+          accumulator.push(
+            new Mismatch(contractHeaderType.unwrapErr().message)
+          );
+
+          return accumulator;
+        }
+
+        this.findMismatchOnContent(
+          userInputRequest.headers[userInputHeaderKey],
+          contractHeaderType.unwrap()
+        );
+        return accumulator;
+      },
+      []
+    );
+    return ok(mismatches);
+  }
+
+  private findMismatchOnResponseHeader(
+    endpoint: Endpoint,
+    userInputResponse: UserInputResponse
+  ): Result<Mismatch[], Error> {
+    if (endpoint.responses.length === 0 && !endpoint.defaultResponse) {
+      return ok([
+        new Mismatch(
+          `There is no response or default defined in the contract under path: ${endpoint.path}`
+        )
+      ]);
+    }
+    const contractHeaders = this.getResponseHeadersOnContractEndpoint(
+      endpoint,
+      userInputResponse
+    );
+
+    if (contractHeaders.isErr()) {
+      return err(
+        new Error(
+          `Unexpected error when trying to find mismatches on ${endpoint.path}:${endpoint.method} response headers.`
+        )
+      );
+    }
+    const unwrappedContractHeaders = contractHeaders.unwrap();
+    if (!unwrappedContractHeaders) {
+      // There is no defined headers for the response in the contract. No mismatch to be found.
+      return ok([]);
+    }
+
+    const mismatches: Mismatch[] = Object.keys(unwrappedContractHeaders).reduce(
+      (accumulator: Mismatch[], userInputHeaderKey: string) => {
+        const contractHeaderType = this.getHeaderTypeOnContractEndpoint(
+          endpoint.request!!.headers,
+          userInputHeaderKey,
+          endpoint.path,
+          endpoint.method
+        );
+        if (contractHeaderType.isErr()) {
+          // skip this check if header is not found as response headers can be more than what on the contract.
+          return accumulator;
+        }
+
+        this.findMismatchOnContent(
+          userInputResponse.headers[userInputHeaderKey],
+          contractHeaderType.unwrap()
+        );
+        return accumulator;
+      },
+      []
+    );
+    return ok(mismatches);
+  }
+
+  private getResponseHeadersOnContractEndpoint(
+    endpoint: Endpoint,
+    userInputResponse: UserInputResponse
+  ): Result<Header[] | undefined, Error> {
+    if (endpoint.responses.length > 0) {
+      for (const contractResponse of endpoint.responses) {
+        if (contractResponse.status === userInputResponse.statusCode) {
+          return ok(contractResponse.headers);
+        }
+      }
+    }
+
+    if (endpoint.defaultResponse) {
+      return ok(endpoint.defaultResponse.headers);
+    }
+
+    // No response headers defined on the contract. This is ok for responses.
+    return ok(undefined);
+  }
+
+  private getHeaderTypeOnContractEndpoint(
+    headers: Header[],
+    key: string,
+    contractEndpointPath: string,
+    contractEndpointMethod: string
+  ): Result<Type, Error> {
+    for (const header of headers) {
+      if (header.name.toLowerCase() === key.toLowerCase()) {
+        return ok(header.type);
+      }
+    }
+    return err(
+      new Error(
+        `No ${key} as header is found on ${contractEndpointPath}:${contractEndpointMethod}`
+      )
+    );
   }
 
   private findMismatchOnRequestPathParam(

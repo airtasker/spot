@@ -26,7 +26,7 @@ describe("contract mismatch finder", () => {
       queryParams: ""
     };
     const response = {
-      headers: '{"Location":"testLocation"}',
+      headers: { Location: "testLocation" },
       statusCode: 201,
       body: {
         data: {
