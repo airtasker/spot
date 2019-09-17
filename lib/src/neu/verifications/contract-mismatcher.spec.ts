@@ -13,7 +13,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: {},
+      headers: { "x-auth-token": "token" },
       body: {
         data: {
           firstName: "Maple",
@@ -44,7 +44,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: {},
+      headers: { "x-auth-token": "token" },
       body: {
         data: {
           firstName: "Maple",
@@ -74,7 +74,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/compan/5/users",
       method: "POST",
-      headers: {},
+      headers: { "x-auth-token": "token" },
       body: {
         data: {
           firstName: "Maple",
@@ -107,7 +107,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/shouldbenumber/users",
       method: "POST",
-      headers: {},
+      headers: { "x-auth-token": "token" },
       body: {
         data: {
           firstName: "Maple",
