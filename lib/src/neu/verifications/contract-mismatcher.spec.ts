@@ -271,4 +271,35 @@ describe("contract mismatch finder", () => {
       "123: #/type should be string"
     );
   });
+
+  test("having an extra response header that's not defined in the contract is not a mismatch", () => {
+    const request = {
+      path: "/company/5/users",
+      method: "POST",
+      headers: { "x-auth-token": "token" },
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          age: 1.0,
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed"
+        }
+      },
+      queryParams: ""
+    };
+    const response = {
+      headers: { Location: "testLocation", ExtraHeader: "testExtraHeader" },
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
+    expect(result.unwrapOrThrow().length).toBe(0);
+  });
 });
