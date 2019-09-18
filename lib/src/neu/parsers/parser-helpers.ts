@@ -352,7 +352,7 @@ export function isQueryParamArrayStrategy(
 ): strategy is QueryParamArrayStrategy {
   switch (strategy) {
     case "ampersand":
-    case "ampersandEscaped":
+    case "space":
     case "comma":
     case "pipe":
       return true;
