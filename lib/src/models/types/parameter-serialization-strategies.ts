@@ -7,11 +7,7 @@ export interface QueryParamSerializationStrategy {
 }
 
 /** Supported serialization strategies for arrays in query parameters */
-export type QueryParamArrayStrategy =
-  | "ampersand"
-  | "ampersandEscaped"
-  | "comma"
-  | "pipe";
+export type QueryParamArrayStrategy = "ampersand" | "space" | "comma" | "pipe";
 
 /**
  * Transform a parameter serialization strategy for array into
@@ -31,7 +27,7 @@ export function makeParamSerializationRulesForArray(
         style: "form"
       };
     }
-    case "ampersandEscaped": {
+    case "space": {
       return {
         explode: false,
         style: "spaceDelimited"
