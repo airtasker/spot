@@ -125,10 +125,16 @@ export class ContractMismatcher {
           return accumulator;
         }
 
-        this.findMismatchOnContent(
+        const result = this.findMismatchOnContent(
           userInputRequest.headers[userInputHeaderKey],
           contractHeaderType.unwrap()
         );
+
+        if (result.isErr()) {
+          accumulator.push(new Mismatch(result.unwrapErr().message));
+        } else {
+          accumulator.push(...result.unwrap());
+        }
         return accumulator;
       },
       []
@@ -153,17 +159,9 @@ export class ContractMismatcher {
     );
 
     if (contractHeaders.isErr()) {
-      return err(
-        new Error(
-          `Unexpected error when trying to find mismatches on ${endpoint.path}:${endpoint.method} response headers.`
-        )
-      );
+      return contractHeaders;
     }
     const unwrappedContractHeaders = contractHeaders.unwrap();
-    if (!unwrappedContractHeaders) {
-      // There is no defined headers for the response in the contract. No mismatch to be found.
-      return ok([]);
-    }
 
     const mismatches: Mismatch[] = Object.keys(unwrappedContractHeaders).reduce(
       (accumulator: Mismatch[], userInputHeaderKey: string) => {
@@ -174,14 +172,21 @@ export class ContractMismatcher {
           endpoint.method
         );
         if (contractHeaderType.isErr()) {
-          // skip this check if header is not found as response headers can be more than what on the contract.
+          // Unexpected error.
+          // TODO: break and return error on this function.
           return accumulator;
         }
 
-        this.findMismatchOnContent(
+        const result = this.findMismatchOnContent(
           userInputResponse.headers[userInputHeaderKey],
           contractHeaderType.unwrap()
         );
+
+        if (result.isErr()) {
+          accumulator.push(new Mismatch(result.unwrapErr().message));
+        } else {
+          accumulator.push(...result.unwrap());
+        }
         return accumulator;
       },
       []
@@ -192,7 +197,7 @@ export class ContractMismatcher {
   private getResponseHeadersOnContractEndpoint(
     endpoint: Endpoint,
     userInputResponse: UserInputResponse
-  ): Result<Header[] | undefined, Error> {
+  ): Result<Header[], Error> {
     if (endpoint.responses.length > 0) {
       for (const contractResponse of endpoint.responses) {
         if (contractResponse.status === userInputResponse.statusCode) {
@@ -206,7 +211,11 @@ export class ContractMismatcher {
     }
 
     // No response headers defined on the contract. This is ok for responses.
-    return ok(undefined);
+    return err(
+      new Error(
+        `There is no response or default response defined on ${endpoint.path}:${endpoint.method}`
+      )
+    );
   }
 
   private getHeaderTypeOnContractEndpoint(

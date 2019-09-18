@@ -105,7 +105,7 @@ describe("contract mismatch finder", () => {
 
   test("a mismatch is found, path params do not conform to contract", () => {
     const request = {
-      path: "/company/shouldbenumber/users",
+      path: "/company/true/users",
       method: "POST",
       headers: { "x-auth-token": "token" },
       body: {
@@ -132,7 +132,7 @@ describe("contract mismatch finder", () => {
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow().length).toBe(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      '{"data":{"firstName":"Maple","lastName":"Syrup","email":"maple.syrup@airtasker.com","address":"Doggo bed"}} should have required property \'age\''
+      '{"data":{"firstName":"Maple","lastName":"Syrup","email":"maple.syrup@airtasker.com","address":"Doggo bed"}}: #/properties/data/required should have required property \'age\''
     );
   });
 
@@ -179,7 +179,7 @@ describe("contract mismatch finder", () => {
         data: {
           firstName: "Maple",
           lastName: "Syrup",
-          age: "1.0",
+          age: 1.0,
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed"
         }
@@ -198,10 +198,79 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
+    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()[0].message).toBe(
+      "1: #/type should be string"
+    );
+  });
+
+  test("a response header mismatch found, missing required header", () => {
+    const request = {
+      path: "/company/5/users",
+      method: "POST",
+      headers: { "x-auth-token": "test-correct" },
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          age: 1.0,
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed"
+        }
+      },
+      queryParams: ""
+    };
+    const response = {
+      headers: {},
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
     console.log(result);
     expect(result.unwrapOrThrow().length).toBe(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
       "{} does not conform to the request contract headers on path: /company/:companyId/users:POST"
+    );
+  });
+
+  test("a response header mismatch found, wrong header value type", () => {
+    const request = {
+      path: "/company/5/users",
+      method: "POST",
+      headers: { "x-auth-token": "test-correct" },
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          age: 1.0,
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed"
+        }
+      },
+      queryParams: ""
+    };
+    const response = {
+      headers: { Location: 123 },
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
+    console.log(result);
+    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()[0].message).toBe(
+      "123: #/type should be string"
     );
   });
 });
