@@ -232,10 +232,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    console.log(result);
     expect(result.unwrapOrThrow().length).toBe(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "{} does not conform to the request contract headers on path: /company/:companyId/users:POST"
+      "Missing response header of Location on /company/:companyId/users:POST"
     );
   });
 
@@ -267,7 +266,6 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    console.log(result);
     expect(result.unwrapOrThrow().length).toBe(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
       "123: #/type should be string"

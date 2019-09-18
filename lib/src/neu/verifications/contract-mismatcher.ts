@@ -163,34 +163,39 @@ export class ContractMismatcher {
     }
     const unwrappedContractHeaders = contractHeaders.unwrap();
 
-    const mismatches: Mismatch[] = Object.keys(unwrappedContractHeaders).reduce(
-      (accumulator: Mismatch[], userInputHeaderKey: string) => {
-        const contractHeaderType = this.getHeaderTypeOnContractEndpoint(
-          endpoint.request!!.headers,
-          userInputHeaderKey,
-          endpoint.path,
-          endpoint.method
-        );
-        if (contractHeaderType.isErr()) {
-          // Unexpected error.
-          // TODO: break and return error on this function.
-          return accumulator;
-        }
+    const mismatches: Mismatch[] = Object.values(
+      unwrappedContractHeaders
+    ).reduce((accumulator: Mismatch[], contractHeader: Header) => {
+      const contractHeaderType = contractHeader.type;
 
-        const result = this.findMismatchOnContent(
-          userInputResponse.headers[userInputHeaderKey],
-          contractHeaderType.unwrap()
-        );
+      const matchingHeaderNameOnUserInput = Object.keys(
+        userInputResponse.headers
+      ).find(
+        headerName =>
+          headerName.toLowerCase() === contractHeader.name.toLowerCase()
+      );
 
-        if (result.isErr()) {
-          accumulator.push(new Mismatch(result.unwrapErr().message));
-        } else {
-          accumulator.push(...result.unwrap());
-        }
+      if (!matchingHeaderNameOnUserInput) {
+        accumulator.push(
+          new Mismatch(
+            `Missing response header of ${contractHeader.name} on ${endpoint.path}:${endpoint.method}`
+          )
+        );
         return accumulator;
-      },
-      []
-    );
+      }
+
+      const result = this.findMismatchOnContent(
+        userInputResponse.headers[matchingHeaderNameOnUserInput],
+        contractHeaderType
+      );
+
+      if (result.isErr()) {
+        accumulator.push(new Mismatch(result.unwrapErr().message));
+      } else {
+        accumulator.push(...result.unwrap());
+      }
+      return accumulator;
+    }, []);
     return ok(mismatches);
   }
 
