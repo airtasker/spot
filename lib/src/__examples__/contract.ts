@@ -14,7 +14,7 @@ import {
   test
 } from "@airtasker/spot";
 import "./contract-endpoint";
-import { Address, Company, ErrorBody, UserBody } from "./models";
+import { Address, Company, ErrorBody, UserBody, UserQuery} from "./models";
 
 /** This is the company API. It does cool things */
 @api({ name: "company-api" })
@@ -46,6 +46,7 @@ class CreateUser {
     queryParams: {
       /** a demo query param */
       "sample-query"?: String;
+      "user"?: UserQuery;
     },
     /** request body */
     @body body: CreateUserRequestBody

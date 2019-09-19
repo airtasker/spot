@@ -6,6 +6,8 @@ import {
   Header,
   Response
 } from "../definitions";
+import qs from "qs";
+import * as url from "url";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
 import { Type } from "../types";
@@ -85,6 +87,16 @@ export class ContractMismatcher {
         return pathParamMismatches;
       }
       mismatches.push(...pathParamMismatches.unwrap());
+
+      const queryParamsMismatches = this.findMismatchOnRequestQueryParams(
+        expectedEndpoint.unwrap(),
+        userInputRequest
+      );
+      if (queryParamsMismatches.isErr()) {
+        return pathParamMismatches;
+      }
+      mismatches.push(...queryParamsMismatches.unwrap());
+
       return ok(mismatches);
     }
   }
@@ -326,6 +338,83 @@ export class ContractMismatcher {
       userInputResponse.body,
       contractResponseBodyType
     );
+  }
+
+  private getArraySerializationStrategy(): { comma: boolean } {
+    const comma =
+      this.contract.config.paramSerializationStrategy.query.array === "comma";
+
+    return { comma };
+  }
+
+  private findMismatchOnRequestQueryParams(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest
+  ): Result<Mismatch[], Error> {
+    const queryParamsString = url.parse(userInputRequest.path).query || "";
+    const contractQueryParams = endpoint.request!!.queryParams;
+
+    let queryParams = qs.parse(
+      queryParamsString,
+      // @ts-ignore
+      { ...this.getArraySerializationStrategy() },
+    );
+
+    let result;
+    let mismatches: Mismatch[] = []
+    for (const {
+      name: queryParamName,
+      optional,
+      type: contractQueryParamType
+    } of contractQueryParams) {
+      const requestQueryParam = queryParams[queryParamName];
+
+      // Query parameter is mandatory and hasn't been provided
+      if (typeof requestQueryParam === "undefined" && !optional) {
+        mismatches.push(
+          new Mismatch(
+            `Query parameter "${queryParamName}" is required but hasn't been provided.`
+          )
+        );
+      }
+
+      if (typeof requestQueryParam === "undefined") {
+        continue;
+      }
+
+     // Validate current request query param against contract
+      result = this.findMismatchOnContent
+      (
+        requestQueryParam,
+        contractQueryParamType
+      );
+
+      // Mark query param as checked
+      queryParams = {
+        ...queryParams,
+        [queryParamName]: null,
+      };
+
+      if (result.isErr()) {
+        return result;
+      }
+
+      mismatches.push(...result.unwrap());
+    }
+
+    const checkForNonExistingParams = () =>
+      Object.entries(queryParams)
+        .filter(([_, value]) => value !== null)
+        .map(
+          ([key, _]) =>
+            new Mismatch(
+              `Query parameter "${key}" does not exist under the specified endpoint.`
+            )
+        );
+
+    mismatches = [...mismatches, ...checkForNonExistingParams()];
+
+    return ok(mismatches);
   }
 
   private findMismatchOnContent(

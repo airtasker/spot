@@ -302,4 +302,79 @@ describe("contract mismatch finder", () => {
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow().length).toBe(0);
   });
+
+  describe("a mismatch is found, query params do not conform to contract", () => {
+    test("query param does not exist under endpoint", () => {
+      const request = {
+        path: "/company/0/users?id=query+param+array+pipe",
+        method: "POST",
+        headers: {},
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            age: 1.0,
+            email: "maple.syrup@airtasker.com",
+            address: "Doggo bed"
+          }
+        },
+        queryParams: ""
+      };
+
+      const response = {
+        headers: { Location: "testLocation" },
+        statusCode: 201,
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            profile: { private: false, messageOptions: { newsletter: false } }
+          }
+        }
+      };
+
+      const result = mismatcher.findMismatch(request, response);
+      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()[0].message).toBe(
+        'Query parameter "id" does not exist under the specified endpoint.'
+      );
+    });
+
+    test("query param type is incorrect (object)", () => {
+      const request = {
+        // path: "/company/shouldbenumber/users?id=1&id=2&id=3&lastName='Syrup'",
+        path: "/company/0/users?user[id]=0&user",
+        method: "POST",
+        headers: {},
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            age: 1.0,
+            email: "maple.syrup@airtasker.com",
+            address: "Doggo bed"
+          }
+        },
+        queryParams: ""
+      };
+
+      const response = {
+        headers: { Location: "testLocation" },
+        statusCode: 201,
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            profile: { private: false, messageOptions: { newsletter: false } }
+          }
+        }
+      };
+
+      const result = mismatcher.findMismatch(request, response);
+      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()[0].message).toBe(
+        '{"id":"0"} should have required property \'slug\''
+      );
+    });
+  });
 });
