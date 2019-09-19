@@ -78,11 +78,9 @@ export interface Body {
  * Supported serialization strategies for arrays in query parameters
  *
  *    "ampersand": ?id=3&id=4&id=5
- *    "space": ?id=3%204%205
  *    "comma": ?id=3,4,5
- *    "pipe": ?id=3|4|5
  */
-export type QueryParamArrayStrategy = "ampersand" | "space" | "comma" | "pipe";
+export type QueryParamArrayStrategy = "ampersand" | "comma";
 
 /** Supported HTTP methods */
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
