@@ -1,11 +1,18 @@
 import JsonSchemaValidator, { ErrorObject } from "ajv";
-import { Contract, Endpoint } from "../definitions";
+import {
+  Contract,
+  DefaultResponse,
+  Endpoint,
+  Header,
+  Response
+} from "../definitions";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
 import { Type } from "../types";
 import { err, ok, Result } from "../util";
 import {
   UserContent,
+  UserInputHeader,
   UserInputRequest,
   UserInputResponse
 } from "./user-input-models";
@@ -25,20 +32,42 @@ export class ContractMismatcher {
     } else {
       const mismatches: Mismatch[] = [];
 
-      // Body mismatch finding..
+      // Header mismatch finding.
+      const mismatchesOnRequestHeader = this.findMismatchOnRequestHeader(
+        expectedEndpoint.unwrap(),
+        userInputRequest
+      );
+
+      if (mismatchesOnRequestHeader.isErr()) {
+        return mismatchesOnRequestHeader;
+      }
+
+      const mismatchesOnResponseHeader = this.findMismatchOnResponseHeader(
+        expectedEndpoint.unwrap(),
+        userInputResponse
+      );
+
+      if (mismatchesOnResponseHeader.isErr()) {
+        return mismatchesOnResponseHeader;
+      }
+
+      mismatches.push(...mismatchesOnRequestHeader.unwrap());
+      mismatches.push(...mismatchesOnResponseHeader.unwrap());
+
+      // Body mismatch finding.
       const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
         expectedEndpoint.unwrap(),
         userInputRequest
       );
 
+      if (mismatchesOnRequestBody.isErr()) {
+        return mismatchesOnRequestBody;
+      }
+
       const mismatchesOnResponseBody = this.findMismatchOnResponseBody(
         expectedEndpoint.unwrap(),
         userInputResponse
       );
-
-      if (mismatchesOnRequestBody.isErr()) {
-        return mismatchesOnRequestBody;
-      }
 
       if (mismatchesOnResponseBody.isErr()) {
         return mismatchesOnResponseBody;
@@ -58,6 +87,144 @@ export class ContractMismatcher {
       mismatches.push(...pathParamMismatches.unwrap());
       return ok(mismatches);
     }
+  }
+
+  private findMismatchOnRequestHeader(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest
+  ): Result<Mismatch[], Error> {
+    if (userInputRequest && !endpoint.request) {
+      return ok([
+        new Mismatch(
+          `A request header was provided but there is no request defined in the contract under path: ${endpoint.path}:${endpoint.method}`
+        )
+      ]);
+    }
+
+    if (
+      Object.keys(userInputRequest.headers).length <
+      endpoint.request!!.headers.length
+    ) {
+      return ok([
+        new Mismatch(
+          `${JSON.stringify(
+            userInputRequest.headers
+          )} does not conform to the request contract headers on path: ${
+            endpoint.path
+          }:${endpoint.method}`
+        )
+      ]);
+    }
+
+    const mismatches: Mismatch[] = Object.keys(userInputRequest.headers).reduce(
+      (accumulator: Mismatch[], userInputHeaderKey: string) => {
+        const contractHeaderType = this.getTypeOnContractRequestHeaders(
+          endpoint,
+          userInputHeaderKey
+        );
+        if (contractHeaderType.isErr()) {
+          accumulator.push(
+            new Mismatch(contractHeaderType.unwrapErr().message)
+          );
+
+          return accumulator;
+        }
+
+        const result = this.findMismatchOnContent(
+          userInputRequest.headers[userInputHeaderKey],
+          contractHeaderType.unwrap()
+        );
+
+        if (result.isErr()) {
+          accumulator.push(new Mismatch(result.unwrapErr().message));
+        } else {
+          accumulator.push(...result.unwrap());
+        }
+        return accumulator;
+      },
+      []
+    );
+    return ok(mismatches);
+  }
+
+  private findMismatchOnResponseHeader(
+    endpoint: Endpoint,
+    userInputResponse: UserInputResponse
+  ): Result<Mismatch[], Error> {
+    if (endpoint.responses.length === 0 && !endpoint.defaultResponse) {
+      return err(
+        new Error(
+          `There is no response or default defined in the contract under path: ${endpoint.path}`
+        )
+      );
+    }
+    const contractHeaders = this.getResponseHeadersOnContractEndpoint(
+      endpoint,
+      userInputResponse.statusCode
+    );
+
+    if (contractHeaders.isErr()) {
+      return contractHeaders;
+    }
+    const unwrappedContractHeaders = contractHeaders.unwrap();
+
+    const mismatches: Mismatch[] = Object.values(
+      unwrappedContractHeaders
+    ).reduce((accumulator: Mismatch[], contractHeader: Header) => {
+      const contractHeaderType = contractHeader.type;
+
+      const matchingHeaderNameOnUserInput = Object.keys(
+        userInputResponse.headers
+      ).find(
+        headerName =>
+          headerName.toLowerCase() === contractHeader.name.toLowerCase()
+      );
+
+      if (!matchingHeaderNameOnUserInput) {
+        accumulator.push(
+          new Mismatch(
+            `Missing response header of ${contractHeader.name} on ${endpoint.path}:${endpoint.method}`
+          )
+        );
+        return accumulator;
+      }
+
+      const result = this.findMismatchOnContent(
+        userInputResponse.headers[matchingHeaderNameOnUserInput],
+        contractHeaderType
+      );
+
+      if (result.isErr()) {
+        accumulator.push(new Mismatch(result.unwrapErr().message));
+      } else {
+        accumulator.push(...result.unwrap());
+      }
+      return accumulator;
+    }, []);
+    return ok(mismatches);
+  }
+
+  private getTypeOnContractRequestHeaders(
+    endpoint: Endpoint,
+    userInputHeaderKey: string
+  ): Result<Type, Error> {
+    if (!endpoint.request) {
+      return err(
+        new Error(
+          `There is no request defined on ${endpoint.path}:${endpoint.method}`
+        )
+      );
+    }
+    for (const header of endpoint.request.headers) {
+      if (header.name.toLowerCase() === userInputHeaderKey.toLowerCase()) {
+        return ok(header.type);
+      }
+    }
+    return err(
+      new Error(
+        `No ${userInputHeaderKey} as header is found on ${endpoint.path}:${endpoint.method}`
+      )
+    );
   }
 
   private findMismatchOnRequestPathParam(
@@ -204,7 +371,7 @@ export class ContractMismatcher {
   ): Mismatch[] {
     return array.map(e => {
       const message = e.message
-        ? `${JSON.stringify(content)} ${e.message}`
+        ? `${JSON.stringify(content)}: ${e.schemaPath} ${e.message}`
         : `JsonSchemaValidator encountered an unexpected error for ${e.data}.`;
       return new Mismatch(message);
     });
@@ -224,27 +391,69 @@ export class ContractMismatcher {
     }
   }
 
+  private getResponseHeadersOnContractEndpoint(
+    endpoint: Endpoint,
+    userInputStatusCode: number
+  ): Result<Header[], Error> {
+    const relevantResponse = this.getRelevantResponse(
+      endpoint,
+      userInputStatusCode
+    );
+
+    if (relevantResponse.isErr()) {
+      return relevantResponse;
+    }
+
+    return ok(relevantResponse.unwrap().headers);
+  }
+
   private getResponseBodyTypeOnContractEndpoint(
     endpoint: Endpoint,
     userInputStatusCode: number
-  ): Result<Type | undefined, Error> {
-    if (endpoint.responses.length === 0) {
+  ): Result<Type, Error> {
+    const relevantResponse = this.getRelevantResponse(
+      endpoint,
+      userInputStatusCode
+    );
+
+    if (relevantResponse.isErr()) {
+      return relevantResponse;
+    }
+
+    const responseBody = relevantResponse.unwrap().body;
+
+    if (!responseBody) {
       return err(
         new Error(
-          `There is no response defined on endpoint path ${endpoint.path}:${endpoint.method}.`
+          `There is no defined body on response body on ${endpoint.path}:${endpoint.method} with status code ${userInputStatusCode}`
         )
       );
     }
-    for (const response of endpoint.responses) {
-      if (response.status === userInputStatusCode) {
-        if (!response.body) {
-          // If contract response body does not have a type, then there is no mismatch.
-          return ok(undefined);
+    return ok(responseBody.type);
+  }
+
+  private getRelevantResponse(
+    endpoint: Endpoint,
+    userInputStatusCode: number
+  ): Result<Response | DefaultResponse, Error> {
+    if (endpoint.responses.length > 0) {
+      for (const contractResponse of endpoint.responses) {
+        if (contractResponse.status === userInputStatusCode) {
+          return ok(contractResponse);
         }
-        return ok(response.body.type);
       }
     }
-    return this.getDefaultResponseBodyTypeOnContractEndpoint(endpoint);
+
+    if (endpoint.defaultResponse) {
+      return ok(endpoint.defaultResponse);
+    }
+
+    // No response headers defined on the contract. This is ok for responses.
+    return err(
+      new Error(
+        `There is no response or default response defined on ${endpoint.path}:${endpoint.method}`
+      )
+    );
   }
 
   private getDefaultResponseBodyTypeOnContractEndpoint(
