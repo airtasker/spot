@@ -1,4 +1,5 @@
 import { Command, flags } from "@oclif/command";
+import { startValidationServer } from "../../../lib/src/validation-server/server";
 
 const ARG_API = "spot_contract";
 
@@ -21,9 +22,9 @@ export default class Serve extends Command {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    port: flags.string({
+    port: flags.integer({
       char: "p",
-      default: "5907",
+      default: 5907,
       description: "The port where application will be available"
     })
   };
@@ -31,6 +32,8 @@ export default class Serve extends Command {
   async run() {
     const { args, flags } = this.parse(Serve);
     const { port } = flags;
+    // Generate raw contract
+    startValidationServer(port);
     this.log("Running spot serve " + args[ARG_API] + " -p " + port);
   }
 }
