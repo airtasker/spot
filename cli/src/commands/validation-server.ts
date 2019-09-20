@@ -7,10 +7,10 @@ const ARG_API = "spot_contract";
 /**
  * oclif command to start the spot contract validation server
  */
-export default class Serve extends Command {
+export default class ValidationServer extends Command {
   static description = "Start the spot contract validation server";
 
-  static examples = ["$ spot serve api.ts"];
+  static examples = ["$ spot validation-server api.ts"];
 
   static args = [
     {
@@ -31,7 +31,7 @@ export default class Serve extends Command {
   };
 
   async run() {
-    const { args, flags } = this.parse(Serve);
+    const { args, flags } = this.parse(ValidationServer);
     const contractPath = args[ARG_API];
     const { port } = flags;
 

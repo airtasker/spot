@@ -1,5 +1,6 @@
 import express from "express";
 import { Contract } from "../neu/definitions";
+import { Logger } from "../utilities/logger";
 
 export function runValidationServer(
   port: number,
@@ -16,8 +17,4 @@ export function runValidationServer(
     app,
     defer: () => new Promise(resolve => app.listen(port, resolve))
   };
-}
-
-export interface Logger {
-  log(message: string): void;
 }
