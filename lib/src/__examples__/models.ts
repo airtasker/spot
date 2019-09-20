@@ -4,7 +4,7 @@ export interface Company {
 }
 
 export interface UserQuery {
-  id: string,
+  id: number,
   slug: string,
 }
 
