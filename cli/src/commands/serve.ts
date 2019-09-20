@@ -1,5 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import { startValidationServer } from "../../../lib/src/validation-server/server";
+import { parse } from "../../../lib/src/neu/parser";
+import { outputFile } from "../../../lib/src/io/output";
 
 const ARG_API = "spot_contract";
 
@@ -31,9 +33,17 @@ export default class Serve extends Command {
 
   async run() {
     const { args, flags } = this.parse(Serve);
+    const contractPath = args[ARG_API];
     const { port } = flags;
-    // Generate raw contract
+
+    this.log("Generating raw contract...");
+    const rawContract = JSON.stringify(parse(contractPath));
+    this.debug("Outputing raw contract to ./spot");
+    outputFile(".spot", "raw.json", rawContract, true);
+
+    this.log("Starting spot validation server...");
     startValidationServer(port);
-    this.log("Running spot serve " + args[ARG_API] + " -p " + port);
+
+    this.log("Running spot serve " + contractPath + " -p " + port);
   }
 }
