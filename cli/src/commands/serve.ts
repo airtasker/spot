@@ -36,12 +36,17 @@ export default class Serve extends Command {
     const contractPath = args[ARG_API];
     const { port } = flags;
 
-    this.log("Generating raw contract...");
-    const rawContract = JSON.stringify(parse(contractPath));
-    this.debug("Outputing raw contract to ./spot");
-    outputFile(".spot", "raw.json", rawContract, true);
+    try {
+      this.log("Generating raw contract...");
+      const rawContract = JSON.stringify(parse(contractPath));
+      this.debug("Outputing raw contract to ./spot");
+      outputFile(".spot", "raw.json", rawContract, true);
 
-    this.log("Starting spot validation server...");
-    runValidationServer(port, this);
+      this.log("Starting validation server...");
+      await runValidationServer(port, this).defer();
+      this.log(`Validation server running on port ${port}`);
+    } catch (e) {
+      this.error(e, { exit: 1 });
+    }
   }
 }

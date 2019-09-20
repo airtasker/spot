@@ -7,9 +7,10 @@ export function runValidationServer(port: number, logger: Logger) {
     res.status(200).end();
   });
 
-  app.listen(port, () => {
-    logger.log(`Spot validation server started at http://localhost:${port}`);
-  });
+  return {
+    app,
+    defer: () => new Promise(resolve => app.listen(port, resolve))
+  };
 }
 
 export interface Logger {
