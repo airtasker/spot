@@ -43,7 +43,5 @@ export default class Serve extends Command {
 
     this.log("Starting spot validation server...");
     startValidationServer(port);
-
-    this.log("Running spot serve " + contractPath + " -p " + port);
   }
 }
