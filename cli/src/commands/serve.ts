@@ -6,10 +6,10 @@ import { outputFile } from "../../../lib/src/io/output";
 const ARG_API = "spot_contract";
 
 /**
- * oclif command to start the validation server for spot contracts
+ * oclif command to start the spot contract validation server
  */
 export default class Serve extends Command {
-  static description = "Validate a Spot contract";
+  static description = "Start the spot contract validation server";
 
   static examples = ["$ spot serve api.ts"];
 
