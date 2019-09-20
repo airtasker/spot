@@ -1,6 +1,11 @@
 import express from "express";
+import { Contract } from "../neu/definitions";
 
-export function runValidationServer(port: number, logger: Logger) {
+export function runValidationServer(
+  port: number,
+  contract: Contract,
+  logger: Logger
+) {
   const app = express();
 
   app.get("/health", (req, res) => {

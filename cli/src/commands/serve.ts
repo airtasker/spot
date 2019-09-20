@@ -1,5 +1,4 @@
 import { Command, flags } from "@oclif/command";
-import { outputFile } from "../../../lib/src/io/output";
 import { parse } from "../../../lib/src/neu/parser";
 import { runValidationServer } from "../../../lib/src/validation-server/server";
 
@@ -38,12 +37,10 @@ export default class Serve extends Command {
 
     try {
       this.log("Generating raw contract...");
-      const rawContract = JSON.stringify(parse(contractPath));
-      this.debug("Outputing raw contract to ./spot");
-      outputFile(".spot", "raw.json", rawContract, true);
+      const contract = parse(contractPath);
 
       this.log("Starting validation server...");
-      await runValidationServer(port, this).defer();
+      await runValidationServer(port, contract, this).defer();
       this.log(`Validation server running on port ${port}`);
     } catch (e) {
       this.error(e, { exit: 1 });
