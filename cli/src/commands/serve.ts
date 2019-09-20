@@ -36,7 +36,7 @@ export default class Serve extends Command {
     const { port } = flags;
 
     try {
-      this.log("Generating raw contract...");
+      this.log("Parsing contract...");
       const contract = parse(contractPath);
 
       this.log("Starting validation server...");
