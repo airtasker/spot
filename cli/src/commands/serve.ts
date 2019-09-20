@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
-import { startValidationServer } from "../../../lib/src/validation-server/server";
-import { parse } from "../../../lib/src/neu/parser";
 import { outputFile } from "../../../lib/src/io/output";
+import { parse } from "../../../lib/src/neu/parser";
+import { runValidationServer } from "../../../lib/src/validation-server/server";
 
 const ARG_API = "spot_contract";
 
@@ -42,6 +42,6 @@ export default class Serve extends Command {
     outputFile(".spot", "raw.json", rawContract, true);
 
     this.log("Starting spot validation server...");
-    startValidationServer(port);
+    runValidationServer(port, this);
   }
 }

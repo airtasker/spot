@@ -1,6 +1,6 @@
 import express from "express";
 
-export function startValidationServer(port: number) {
+export function runValidationServer(port: number, logger: Logger) {
   const app = express();
 
   app.get("/health", (req, res) => {
@@ -8,6 +8,10 @@ export function startValidationServer(port: number) {
   });
 
   app.listen(port, () => {
-    console.log(`Spot validation server started at http://localhost:${port}`);
+    logger.log(`Spot validation server started at http://localhost:${port}`);
   });
+}
+
+export interface Logger {
+  log(message: string): void;
 }
