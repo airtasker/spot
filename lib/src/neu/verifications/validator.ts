@@ -22,16 +22,14 @@ const {
 
 interface Input {
   name: string;
-  value: string | { [key: string]: unknown } | [];
+  value: string | { [key: string]: unknown } | unknown[];
 }
 
 export class Validator {
-  static getErrorMessage(input: string, type: string): string {
-    return `"${input}" should be ${type}`;
-  }
-
   // @ts-ignore
-  validatorsMapping: { [key in TypeKind]: any } = {
+  static validatorsMapping: {
+    [key in TypeKind]: (str: string, options?: {}) => boolean;
+  } = {
     [NULL]: validators.isEmpty,
     [BOOLEAN]: validators.isBoolean,
     [DATE]: validators.isISO8601,
@@ -40,49 +38,71 @@ export class Validator {
     [INT32]: validators.isInt,
     [INT64]: validators.isInt,
     [DOUBLE]: validators.isFloat,
-    [INT_LITERAL]: validators.isInt,
-    [OBJECT]: this.validateObject,
-    [ARRAY]: this.validateArray
+    [INT_LITERAL]: validators.isInt
   };
 
-  messages: string[] = []
-  typesStore: Type[] = []
+  static getErrorMessage(input: string, type: string): string {
+    return `"${input}" should be ${type}`;
+  }
+
+  messages: string[] = [];
+  typesStore: Type[] = [];
 
   constructor(typesStore: Type[] = []) {
     this.typesStore = typesStore;
   }
 
-  validateObject(input: { [key: string]: unknown }, type: ObjectType): boolean {
-    return !type.properties
-      .map(p =>
-        this.run(
-          { name: p.name, value: `${input[p.name]}` },
-          p.type,
-          !p.optional
+  validateObject(input: Input, type: ObjectType): boolean {
+    return (
+      input &&
+      typeof input === "object" &&
+      !type.properties
+        .map(p =>
+          this.run(
+            {
+              name: p.name,
+              value: `${(input.value as { [key: string]: unknown })[p.name]}`
+            },
+            p.type,
+            !p.optional
+          )
         )
-      )
-      .some(v => !v);
+        .some(v => !v)
+    );
   }
 
-  validateArray(input: string[], type: ArrayType): boolean {
-    return !input
-      .map(v => this.run({ name: "", value: `${v}` }, type.elementType))
-      .some(v => !v);
+  validateArray(input: Input, type: ArrayType): boolean {
+    return (
+      Array.isArray(input.value) &&
+      !input.value
+        .map((v, index) =>
+          this.run(
+            { name: `${input.name}[${index}]`, value: `${v}` },
+            type.elementType
+          )
+        )
+        .some(v => !v)
+    );
   }
 
-  run(
-    input: Input,
-    type: Type,
-    isMandatory: boolean = true
-  ): boolean | void {
-    const validator = this.validatorsMapping[type.kind];
-    // console.log(validator);
+  run(input: Input, type: Type, isMandatory: boolean = true): boolean | void {
+    if (type.kind === OBJECT) {
+      return this.validateObject(input, type);
+    }
+
+    if (type.kind === ARRAY) {
+      return this.validateArray(input, type);
+    }
+
+    const validator = Validator.validatorsMapping[type.kind];
 
     if (typeof validator !== "function") {
       return;
     }
 
-    const isValid = !isMandatory || validator(input.value);
+    const isOptional = !input.value && !isMandatory;
+
+    const isValid = isOptional || validator(`${input.value}`);
 
     if (!isValid) {
       this.messages.push(Validator.getErrorMessage(input.name, type.kind));
