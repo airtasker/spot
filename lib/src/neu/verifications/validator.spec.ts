@@ -1,4 +1,11 @@
-import { arrayType, booleanType, floatType, Type, int64Type } from "../types";
+import {
+  arrayType,
+  booleanType,
+  floatType,
+  int64Type,
+  objectType,
+  stringType
+} from "../types";
 import { Validator } from "./validator";
 
 describe("validators", () => {
@@ -35,6 +42,18 @@ describe("validators", () => {
       );
       expect(result).toBe(false);
       expect(validator.messages[0]).toEqual('"param[1]" should be int64');
+    });
+
+    test("should return an error when an object is invalid", () => {
+      const result = validator.run(
+        { name: "param", value: { id: "false", name: "" } },
+        objectType([
+          { name: "id", type: int64Type(), optional: false },
+          { name: "name", type: stringType(), optional: false }
+        ])
+      );
+      expect(result).toBe(false);
+      expect(validator.messages[0]).toEqual('".param.id" should be int64');
     });
   });
 });

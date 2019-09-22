@@ -60,7 +60,7 @@ export class Validator {
         .map(p =>
           this.run(
             {
-              name: p.name,
+              name: `.${input.name}.${p.name}`,
               value: `${(input.value as { [key: string]: unknown })[p.name]}`
             },
             p.type,
