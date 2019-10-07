@@ -1,8 +1,9 @@
-import { ParameterDeclaration } from "ts-morph";
+import { ParameterDeclaration, PropertySignature } from "ts-morph";
 import { QueryParam } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
+import { isQueryParamTypeSafe } from "../http";
 import { LociTable } from "../locations";
-import { TypeTable } from "../types";
+import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
@@ -25,27 +26,82 @@ export function parseQueryParams(
       })
     );
   }
-  const type = getParameterTypeAsTypeLiteralOrThrow(parameter);
+  const queryParamTypeLiteral = getParameterTypeAsTypeLiteralOrThrow(parameter);
 
   const queryParams = [];
-  for (const propertySignature of type.getProperties()) {
-    const typeResult = parseType(
-      propertySignature.getTypeNodeOrThrow(),
+  for (const propertySignature of queryParamTypeLiteral.getProperties()) {
+    const nameResult = extractQueryParamName(propertySignature);
+    if (nameResult.isErr()) return nameResult;
+    const name = nameResult.unwrap();
+
+    const typeResult = extractQueryParamType(
+      propertySignature,
       typeTable,
       lociTable
     );
     if (typeResult.isErr()) return typeResult;
-    const pDescription = getJsDoc(propertySignature);
+    const type = typeResult.unwrap();
 
-    const queryParam = {
-      name: getPropertyName(propertySignature),
-      type: typeResult.unwrap(),
-      description: pDescription && pDescription.getComment(),
-      optional: propertySignature.hasQuestionToken()
-    };
-    queryParams.push(queryParam);
+    const pDescription = getJsDoc(propertySignature);
+    const description = pDescription && pDescription.getComment();
+
+    const optional = propertySignature.hasQuestionToken();
+
+    queryParams.push({ name, type, description, optional });
   }
 
   // TODO: add loci information
   return ok(queryParams.sort((a, b) => (b.name > a.name ? -1 : 1)));
+}
+
+function extractQueryParamName(
+  propertySignature: PropertySignature
+): Result<string, ParserError> {
+  const name = getPropertyName(propertySignature);
+  if (!/^[\w-]*$/.test(name)) {
+    return err(
+      new ParserError(
+        "@queryParams property name may only contain alphanumeric, underscore and hyphen characters",
+        {
+          file: propertySignature.getSourceFile().getFilePath(),
+          position: propertySignature.getPos()
+        }
+      )
+    );
+  }
+  if (name.length === 0) {
+    return err(
+      new ParserError("@queryParams property name must not be empty", {
+        file: propertySignature.getSourceFile().getFilePath(),
+        position: propertySignature.getPos()
+      })
+    );
+  }
+  return ok(name);
+}
+
+function extractQueryParamType(
+  propertySignature: PropertySignature,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<Type, ParserError> {
+  const typeResult = parseType(
+    propertySignature.getTypeNodeOrThrow(),
+    typeTable,
+    lociTable
+  );
+  if (typeResult.isErr()) return typeResult;
+
+  if (!isQueryParamTypeSafe(typeResult.unwrap(), typeTable)) {
+    return err(
+      new ParserError(
+        "query parameter type may only be a URL-safe type, a single depth object of URL-safe types or an array of URL-safe types",
+        {
+          file: propertySignature.getSourceFile().getFilePath(),
+          position: propertySignature.getPos()
+        }
+      )
+    );
+  }
+  return typeResult;
 }

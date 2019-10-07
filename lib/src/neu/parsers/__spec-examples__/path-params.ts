@@ -10,6 +10,7 @@ class PathParamsClass {
       property: string;
       /** property description */
       "property-with-description": string;
+      arrayProperty: string[];
     },
     @pathParams
     pathParamsWithOptionalProperty: {
@@ -17,6 +18,22 @@ class PathParamsClass {
     },
     @pathParams
     nonObjectPathParams: string,
+    @pathParams
+    pathParamsWithIllegalPropertyName: {
+      "illegal-property-name-%$": string;
+    },
+    @pathParams
+    pathParamsWithEmptyPropertyName: {
+      "": string;
+    },
+    @pathParams
+    pathParamsWithIllegalPropertyType: {
+      property: { prop: string };
+    },
+    @pathParams
+    pathParamsWithIllegalPropertyArrayType: {
+      property: null[];
+    },
     @pathParams
     optionalPathParams?: {
       property: string;

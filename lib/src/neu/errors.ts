@@ -1,5 +1,3 @@
-import { Project } from "ts-morph";
-
 export class ParserError extends Error {
   readonly locations: Array<{ file: string; position: number }>;
 
@@ -15,7 +13,3 @@ export class ParserError extends Error {
 
 export class OptionalNotAllowedError extends ParserError {}
 export class TypeNotAllowedError extends ParserError {}
-
-interface PrintOpts {
-  surroundingLines: number;
-}

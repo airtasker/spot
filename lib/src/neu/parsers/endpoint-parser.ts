@@ -1,6 +1,10 @@
-import { ClassDeclaration, TypeGuards } from "ts-morph";
+import {
+  ClassDeclaration,
+  ObjectLiteralExpression,
+  TypeGuards
+} from "ts-morph";
 import { EndpointConfig } from "../../syntax/endpoint";
-import { Endpoint } from "../definitions";
+import { Endpoint, Request, Response } from "../definitions";
 import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
@@ -28,7 +32,7 @@ export function parseEndpoint(
   const decoratorConfig = getDecoratorConfigOrThrow(decorator);
 
   // Handle name
-  const endpointName = klass.getNameOrThrow();
+  const name = klass.getNameOrThrow();
 
   // Handle method
   const methodProp = getObjLiteralPropOrThrow<EndpointConfig>(
@@ -36,110 +40,238 @@ export function parseEndpoint(
     "method"
   );
   const methodLiteral = getPropValueAsStringOrThrow(methodProp);
-  const methodValue = methodLiteral.getLiteralText();
-  if (!isHttpMethod(methodValue)) {
-    throw new Error(`expected a HttpMethod, got ${methodValue}`);
+  const method = methodLiteral.getLiteralText();
+  if (!isHttpMethod(method)) {
+    throw new Error(`expected a HttpMethod, got ${method}`);
   }
-
-  // Handle path
-  const pathProp = getObjLiteralPropOrThrow<EndpointConfig>(
-    decoratorConfig,
-    "path"
-  );
-  const pathLiteral = getPropValueAsStringOrThrow(pathProp);
 
   // Handle tags
-  const tagsProp = getObjLiteralProp<EndpointConfig>(decoratorConfig, "tags");
-  const tagsLiteral = tagsProp && getPropValueAsArrayOrThrow(tagsProp);
-  const tagsValueLiterals = [];
-  if (tagsLiteral) {
-    for (const elementExpr of tagsLiteral.getElements()) {
-      if (TypeGuards.isStringLiteral(elementExpr)) {
-        tagsValueLiterals.push(elementExpr);
-      } else {
-        return err(
-          new ParserError("tag must be a string", {
-            file: elementExpr.getSourceFile().getFilePath(),
-            position: elementExpr.getPos()
-          })
-        );
-      }
-    }
-  }
+  const tagsResult = extractEndpointTags(decoratorConfig);
+  if (tagsResult.isErr()) return tagsResult;
+  const tags = tagsResult.unwrap();
 
   // Handle jsdoc
   const descriptionDoc = getJsDoc(klass);
+  const description = descriptionDoc && descriptionDoc.getComment();
 
   // Handle request
   const requestMethod = getMethodWithDecorator(klass, "request");
-  let request;
-  if (requestMethod) {
-    const requestResult = parseRequest(requestMethod, typeTable, lociTable, {
-      endpointName
-    });
-    if (requestResult.isErr()) return requestResult;
-    request = requestResult.unwrap();
-  }
+  const requestResult = requestMethod
+    ? parseRequest(requestMethod, typeTable, lociTable)
+    : ok(undefined);
+  if (requestResult.isErr()) return requestResult;
+  const request = requestResult.unwrap();
 
   // Handle responses
-  const responseMethods = klass
-    .getMethods()
-    .filter(m => m.getDecorator("response") !== undefined);
-  const responses = [];
-  for (const method of responseMethods) {
-    const responseResult = parseResponse(method, typeTable, lociTable);
-    if (responseResult.isErr()) return responseResult;
-    responses.push(responseResult.unwrap());
-  }
-  // TODO: find duplicate response statuses
+  const responsesResult = extractEndpointResponses(klass, typeTable, lociTable);
+  if (responsesResult.isErr()) return responsesResult;
+  const responses = responsesResult.unwrap();
 
   // Handle default response
   const defaultResponseMethod = getMethodWithDecorator(
     klass,
     "defaultResponse"
   );
-  let defaultResponse;
-  if (defaultResponseMethod) {
-    const defaultResponseResult = parseDefaultResponse(
-      defaultResponseMethod,
-      typeTable,
-      lociTable
+  const defaultResponseResult = defaultResponseMethod
+    ? parseDefaultResponse(defaultResponseMethod, typeTable, lociTable)
+    : ok(undefined);
+  if (defaultResponseResult.isErr()) return defaultResponseResult;
+  const defaultResponse = defaultResponseResult.unwrap();
+
+  // Handle path
+  const pathResult = extractEndpointPath(decoratorConfig);
+  if (pathResult.isErr()) return pathResult;
+  const path = pathResult.unwrap();
+
+  // Check request path params cover the path dynamic components
+  const pathParamsInPath = getDynamicPathComponents(path);
+  const pathParamsInRequest = request
+    ? request.pathParams.map(pathParam => pathParam.name)
+    : [];
+
+  const exclusivePathParamsInPath = pathParamsInPath.filter(
+    pathParam => !pathParamsInRequest.includes(pathParam)
+  );
+  const exclusivePathParamsInRequest = pathParamsInRequest.filter(
+    pathParam => !pathParamsInPath.includes(pathParam)
+  );
+  if (exclusivePathParamsInPath.length !== 0) {
+    return err(
+      new ParserError(
+        `endpoint path dynamic components must have a corresponding path param defined in @request. Violating path components: ${exclusivePathParamsInPath.join(
+          ", "
+        )}`,
+        {
+          file: klass.getSourceFile().getFilePath(),
+          position: klass.getPos()
+        }
+      )
     );
-    if (defaultResponseResult.isErr()) return defaultResponseResult;
-    defaultResponse = defaultResponseResult.unwrap();
+  }
+  if (exclusivePathParamsInRequest.length !== 0) {
+    return err(
+      new ParserError(
+        `endpoint request path params must have a corresponding dynamic path component defined in @endpoint. Violating path params: ${exclusivePathParamsInRequest.join(
+          ", "
+        )}`,
+        {
+          file: klass.getSourceFile().getFilePath(),
+          position: klass.getPos()
+        }
+      )
+    );
   }
 
   // Add location data
-  lociTable.addMorphNode(LociTable.endpointClassKey(endpointName), klass);
-  lociTable.addMorphNode(
-    LociTable.endpointDecoratorKey(endpointName),
-    decorator
-  );
-  lociTable.addMorphNode(LociTable.endpointMethodKey(endpointName), methodProp);
-  lociTable.addMorphNode(LociTable.endpointPathKey(endpointName), pathProp);
-  if (descriptionDoc) {
-    lociTable.addMorphNode(
-      LociTable.endpointDescriptionKey(endpointName),
-      descriptionDoc
-    );
-  }
-  if (tagsProp) {
-    lociTable.addMorphNode(LociTable.endpointTagsKey(endpointName), tagsProp);
-    tagsValueLiterals.forEach(tagLiteral => {
-      lociTable.addMorphNode(
-        LociTable.endpointTagKey(endpointName, tagLiteral.getLiteralText()),
-        tagLiteral
-      );
-    });
-  }
+  lociTable.addMorphNode(LociTable.endpointClassKey(name), klass);
+  lociTable.addMorphNode(LociTable.endpointDecoratorKey(name), decorator);
+  lociTable.addMorphNode(LociTable.endpointMethodKey(name), methodProp);
+
   return ok({
-    name: endpointName,
-    description: descriptionDoc && descriptionDoc.getComment(),
-    tags: tagsValueLiterals.map(tvl => tvl.getLiteralText()), // TODO: sort tags
-    method: methodValue,
-    path: pathLiteral.getLiteralText(),
+    name,
+    description,
+    tags,
+    method,
+    path,
     request,
-    responses: responses.sort((a, b) => (b.status > a.status ? -1 : 1)),
+    responses,
     defaultResponse
   });
+}
+
+function extractEndpointTags(
+  decoratorConfig: ObjectLiteralExpression
+): Result<string[], ParserError> {
+  const tagsProp = getObjLiteralProp<EndpointConfig>(decoratorConfig, "tags");
+  if (tagsProp === undefined) return ok([]);
+
+  const tagsLiteral = getPropValueAsArrayOrThrow(tagsProp);
+  const tags: string[] = [];
+
+  for (const elementExpr of tagsLiteral.getElements()) {
+    // Sanity check, typesafety should prevent any non-string tags
+    if (!TypeGuards.isStringLiteral(elementExpr)) {
+      return err(
+        new ParserError("endpoint tag must be a string", {
+          file: elementExpr.getSourceFile().getFilePath(),
+          position: elementExpr.getPos()
+        })
+      );
+    }
+    const tag = elementExpr.getLiteralText().trim();
+    if (tag.length === 0) {
+      return err(
+        new ParserError("endpoint tag cannot be blank", {
+          file: elementExpr.getSourceFile().getFilePath(),
+          position: elementExpr.getPos()
+        })
+      );
+    }
+    if (!/^[\w\s-]*$/.test(tag)) {
+      return err(
+        new ParserError(
+          "endpoint tag may only contain alphanumeric, space, underscore and hyphen characters",
+          {
+            file: elementExpr.getSourceFile().getFilePath(),
+            position: elementExpr.getPos()
+          }
+        )
+      );
+    }
+    tags.push(tag);
+  }
+
+  const duplicateTags = [
+    ...new Set(tags.filter((tag, index) => tags.indexOf(tag) !== index))
+  ];
+  if (duplicateTags.length !== 0) {
+    return err(
+      new ParserError(
+        `endpoint tags may not contain duplicates: ${duplicateTags.join(", ")}`,
+        {
+          file: tagsProp.getSourceFile().getFilePath(),
+          position: tagsProp.getPos()
+        }
+      )
+    );
+  }
+
+  return ok(tags.sort((a, b) => (b > a ? -1 : 1)));
+}
+
+function extractEndpointPath(
+  decoratorConfig: ObjectLiteralExpression
+): Result<string, ParserError> {
+  const pathProp = getObjLiteralPropOrThrow<EndpointConfig>(
+    decoratorConfig,
+    "path"
+  );
+  const pathLiteral = getPropValueAsStringOrThrow(pathProp);
+  const path = pathLiteral.getLiteralText();
+  const dynamicComponents = getDynamicPathComponents(path);
+
+  const duplicateDynamicComponents = [
+    ...new Set(
+      dynamicComponents.filter(
+        (component, index) => dynamicComponents.indexOf(component) !== index
+      )
+    )
+  ];
+  if (duplicateDynamicComponents.length !== 0) {
+    return err(
+      new ParserError(
+        "endpoint path dynamic components must have unique names",
+        {
+          file: pathProp.getSourceFile().getFilePath(),
+          position: pathProp.getPos()
+        }
+      )
+    );
+  }
+
+  return ok(path);
+}
+
+function extractEndpointResponses(
+  klass: ClassDeclaration,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<Response[], ParserError> {
+  const responseMethods = klass
+    .getMethods()
+    .filter(m => m.getDecorator("response") !== undefined);
+
+  const responses: Response[] = [];
+  for (const method of responseMethods) {
+    const responseResult = parseResponse(method, typeTable, lociTable);
+    if (responseResult.isErr()) return responseResult;
+    responses.push(responseResult.unwrap());
+  }
+
+  // ensure unique response statsues
+  const statuses = responses.map(r => r.status);
+  const duplicateStatuses = [
+    ...new Set(
+      statuses.filter((status, index) => statuses.indexOf(status) !== index)
+    )
+  ];
+  if (duplicateStatuses.length !== 0) {
+    return err(
+      new ParserError(
+        `endpoint responses must have unique statuses. Duplicates found: ${duplicateStatuses.join(
+          ", "
+        )}`,
+        { file: klass.getSourceFile().getFilePath(), position: klass.getPos() }
+      )
+    );
+  }
+
+  return ok(responses.sort((a, b) => (b.status > a.status ? -1 : 1)));
+}
+
+function getDynamicPathComponents(path: string): string[] {
+  return path
+    .split("/")
+    .filter(component => component.startsWith(":"))
+    .map(component => component.substr(1));
 }

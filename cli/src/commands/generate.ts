@@ -100,13 +100,12 @@ export default class Generate extends Command {
       this.exit(1);
     }
 
-    const contract = safeParse.call(this, contractPath).definition;
-
-    // TODO: unhack this
     const generatedFiles =
       generator === "raw"
         ? { "*.json": JSON.stringify(parse(contractPath)) }
-        : generators[generator][language](contract);
+        : generators[generator][language](
+            safeParse.call(this, contractPath).definition
+          );
     for (let [relativePath, content] of Object.entries(generatedFiles)) {
       if (relativePath.indexOf("*") !== -1) {
         relativePath = relativePath.replace(/\*/g, contractFilename);

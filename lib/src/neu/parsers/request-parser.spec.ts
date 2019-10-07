@@ -21,8 +21,7 @@ describe("request parser", () => {
     const result = parseRequest(
       klass.getMethodOrThrow("request"),
       typeTable,
-      lociTable,
-      { endpointName: "endpoint" }
+      lociTable
     ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
@@ -59,8 +58,7 @@ describe("request parser", () => {
     const result = parseRequest(
       klass.getMethodOrThrow("parameterlessRequest"),
       typeTable,
-      lociTable,
-      { endpointName: "endpoint" }
+      lociTable
     ).unwrapOrThrow();
 
     expect(result).toStrictEqual({
@@ -73,9 +71,7 @@ describe("request parser", () => {
 
   test("fails to parse non-@request decorated method", () => {
     expect(() =>
-      parseRequest(klass.getMethodOrThrow("notRequest"), typeTable, lociTable, {
-        endpointName: "endpoint"
-      })
+      parseRequest(klass.getMethodOrThrow("notRequest"), typeTable, lociTable)
     ).toThrowError("Expected to find decorator named 'request'");
   });
 });

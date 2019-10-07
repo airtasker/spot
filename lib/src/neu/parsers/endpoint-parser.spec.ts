@@ -1,4 +1,5 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeKind, TypeTable } from "../types";
 import { parseEndpoint } from "./endpoint-parser";
@@ -108,6 +109,66 @@ describe("endpoint parser", () => {
       responses: [],
       tags: []
     });
+  });
+
+  test("fails to parse endpoint with empty tag", () => {
+    const err = parseEndpoint(
+      exampleFile.getClassOrThrow("EndpointWithEmptyTag"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse endpoint with duplicate tag", () => {
+    const err = parseEndpoint(
+      exampleFile.getClassOrThrow("EndpointWithDuplicateTag"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse endpoint with duplicate dynamic path component", () => {
+    const err = parseEndpoint(
+      exampleFile.getClassOrThrow("EndpointWithDuplicateDynamicPathComponent"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse endpoint with missing path param", () => {
+    const err = parseEndpoint(
+      exampleFile.getClassOrThrow("EndpointWithMissingPathParam"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse endpoint with extra path param", () => {
+    const err = parseEndpoint(
+      exampleFile.getClassOrThrow("EndpointWithExtraPathParam"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse endpoint with duplicate response status", () => {
+    const err = parseEndpoint(
+      exampleFile.getClassOrThrow("EndpointWithDuplicateResponseStatus"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
   });
 
   test("fails to parse non-@endpoint decorated class", () => {

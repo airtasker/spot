@@ -9,4 +9,13 @@ class SecurityHeaderClass {
 
   @securityHeader
   "optional-security-header"?: string;
+
+  @securityHeader
+  "illegal-field-name-security-header%$": string;
+
+  @securityHeader
+  "": string;
+
+  @securityHeader
+  "not-string-security-header": number;
 }

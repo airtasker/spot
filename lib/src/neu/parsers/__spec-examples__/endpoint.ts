@@ -60,3 +60,64 @@ class EndpointClass {
   path: "/path"
 })
 class MinimalEndpointClass {}
+
+@endpoint({
+  method: "GET",
+  path: "/path",
+  tags: ["  "]
+})
+class EndpointWithEmptyTag {}
+
+@endpoint({
+  method: "GET",
+  path: "/path",
+  tags: ["tag", "tag"]
+})
+class EndpointWithDuplicateTag {}
+
+@endpoint({
+  method: "GET",
+  path: "/path/:dynamic/path/:dynamic"
+})
+class EndpointWithDuplicateDynamicPathComponent {}
+
+@endpoint({
+  method: "GET",
+  path: "/path/:dynamic/path/:nested"
+})
+class EndpointWithMissingPathParam {
+  @request
+  request(@pathParams
+  pathParams: {
+    dynamic: string;
+  }) {}
+}
+
+@endpoint({
+  method: "GET",
+  path: "/path/:dynamic"
+})
+class EndpointWithExtraPathParam {
+  @request
+  request(@pathParams
+  pathParams: {
+    dynamic: string;
+    nested: string;
+  }) {}
+}
+
+@endpoint({
+  method: "GET",
+  path: "/path"
+})
+class EndpointWithDuplicateResponseStatus {
+  @response({
+    status: 200
+  })
+  responseOne() {}
+
+  @response({
+    status: 200
+  })
+  responseTwo() {}
+}

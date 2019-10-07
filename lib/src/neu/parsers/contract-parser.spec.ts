@@ -1,4 +1,5 @@
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { ParserError } from "../errors";
 import { parseContract } from "./contract-parser";
 
 describe("contract parser", () => {
@@ -71,5 +72,35 @@ describe("contract parser", () => {
     expect(() => parseContract(file)).toThrowError(
       "expected a decorator @api to be used once, found 0 usages"
     );
+  });
+
+  test("fails to parse file containing @api decorated class with an empty api name", () => {
+    const file = createProjectFromExistingSourceFile(
+      `${__dirname}/__spec-examples__/contracts/empty-api-name-contract.ts`
+    ).file;
+
+    const result = parseContract(file).unwrapErrOrThrow();
+
+    expect(result).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse file containing @api decorated class with an api name containing illegal characters", () => {
+    const file = createProjectFromExistingSourceFile(
+      `${__dirname}/__spec-examples__/contracts/illegal-api-name-contract.ts`
+    ).file;
+
+    const result = parseContract(file).unwrapErrOrThrow();
+
+    expect(result).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse contract containing duplicate endpoint names", () => {
+    const file = createProjectFromExistingSourceFile(
+      `${__dirname}/__spec-examples__/contracts/duplicate-endpoint-name-contract.ts`
+    ).file;
+
+    const result = parseContract(file).unwrapErrOrThrow();
+
+    expect(result).toBeInstanceOf(ParserError);
   });
 });
