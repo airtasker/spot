@@ -37,7 +37,10 @@ export type Type =
   | UnionType
   | ReferenceType;
 
-export type ConcreteRootType = Exclude<Type, UnionType | ReferenceType>;
+/**
+ * A concrete type is any type that is not a union of types or reference to a type.
+ */
+export type ConcreteType = Exclude<Type, UnionType | ReferenceType>;
 
 export interface NullType {
   kind: TypeKind.NULL;
@@ -314,12 +317,12 @@ export function isReferenceType(type: Type): type is ReferenceType {
 export function possibleRootTypes(
   type: Type,
   typeTable: TypeTable
-): ConcreteRootType[] {
+): ConcreteType[] {
   if (isReferenceType(type)) {
     return possibleRootTypes(typeTable.getOrError(type.name), typeTable);
   }
   if (isUnionType(type)) {
-    return type.types.reduce<ConcreteRootType[]>(
+    return type.types.reduce<ConcreteType[]>(
       (acc, curr) => acc.concat(possibleRootTypes(curr, typeTable)),
       []
     );
