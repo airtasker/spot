@@ -336,7 +336,7 @@ export class ContractMismatcher {
       return ok([]);
     }
 
-    const jsv = new JsonSchemaValidator({ coerceTypes: true });
+    const jsv = new JsonSchemaValidator();
     const schema = {
       ...generateJsonSchemaType(contractContentTypeToCheckWith),
       definitions: this.contract.types.reduce<{
@@ -351,7 +351,6 @@ export class ContractMismatcher {
 
     const validateFn = jsv.compile(schema);
     const valid = validateFn(content);
-
     if (valid) {
       return ok([]);
     } else {

@@ -1,12 +1,19 @@
 import * as validators from "validator";
-import { ArrayType, dereferenceType, ObjectType, ReferenceType, Type, TypeKind, TypeTable } from "../types";
+import {
+  ArrayType,
+  dereferenceType,
+  ObjectType,
+  ReferenceType,
+  Type,
+  TypeKind,
+  TypeTable
+} from "../types";
 
 const {
   NULL,
   BOOLEAN,
   DATE,
   DATE_TIME,
-  STRING_LITERAL,
   STRING,
   FLOAT,
   DOUBLE,
@@ -16,7 +23,6 @@ const {
   INT_LITERAL,
   OBJECT,
   ARRAY,
-  UNION,
   REFERENCE
 } = TypeKind;
 
@@ -25,7 +31,9 @@ interface Input {
   value: string | { [key: string]: unknown } | unknown[];
 }
 
-type ValidatorMap = {[key in TypeKind]?: (str: string, options?: {}) => boolean | never }
+type ValidatorMap = {
+  [key in TypeKind]?: (str: string, options?: {}) => boolean | never
+};
 
 export class Validator {
   static validatorMap: ValidatorMap = {

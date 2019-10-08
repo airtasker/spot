@@ -6,7 +6,7 @@ import {
   objectType,
   referenceType,
   stringType,
-  TypeTable,
+  TypeTable
 } from "../types";
 import { Validator } from "./validator";
 
