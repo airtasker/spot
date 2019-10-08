@@ -53,7 +53,7 @@
     "nock": "^11.4.0",
     "prettier": "^1.18.2",
     "react": "^16.10.2",
-    "react-dom": "^16.9.0",
+    "react-dom": "^16.10.2",
     "redoc": "^2.0.0-rc.16",
     "speccy": "^0.11.0",
     "styled-components": "^4.3.2",
