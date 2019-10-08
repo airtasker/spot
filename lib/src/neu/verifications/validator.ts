@@ -32,7 +32,7 @@ interface Input {
 }
 
 type ValidatorMap = {
-  [key in TypeKind]?: (str: string, options?: {}) => boolean | never
+  [key in TypeKind]?: (str: string, options?: {}) => boolean | never;
 };
 
 export class Validator {
@@ -47,7 +47,7 @@ export class Validator {
     [DOUBLE]: validators.isFloat,
     [FLOAT_LITERAL]: validators.isFloat,
     [INT_LITERAL]: validators.isInt,
-    [STRING]: v => Boolean(v)
+    [STRING]: Boolean
   };
 
   static getErrorMessage(input: string, type: string): string {
