@@ -28,7 +28,7 @@
     "qs": "^6.9.0",
     "randomstring": "^1.1.5",
     "supertest": "^4.0.2",
-    "ts-morph": "^4.0.1",
+    "ts-morph": "^4.2.0",
     "tslib": "^1",
     "typescript": "^3.6.3"
   },
