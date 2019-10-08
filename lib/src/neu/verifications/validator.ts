@@ -1,6 +1,5 @@
-import assertNever from "assert-never";
 import * as validators from "validator";
-import { ArrayType, ObjectType, Type, TypeKind } from "../types";
+import { ArrayType, dereferenceType, ObjectType, ReferenceType, Type, TypeKind, TypeTable } from "../types";
 
 const {
   NULL,
@@ -8,6 +7,7 @@ const {
   DATE,
   DATE_TIME,
   STRING_LITERAL,
+  STRING,
   FLOAT,
   DOUBLE,
   FLOAT_LITERAL,
@@ -25,11 +25,10 @@ interface Input {
   value: string | { [key: string]: unknown } | unknown[];
 }
 
+type ValidatorMap = {[key in TypeKind]?: (str: string, options?: {}) => boolean | never }
+
 export class Validator {
-  // @ts-ignore
-  static validatorsMapping: {
-    [key in TypeKind]: (str: string, options?: {}) => boolean;
-  } = {
+  static validatorMap: ValidatorMap = {
     [NULL]: validators.isEmpty,
     [BOOLEAN]: validators.isBoolean,
     [DATE]: validators.isISO8601,
@@ -38,7 +37,9 @@ export class Validator {
     [INT32]: validators.isInt,
     [INT64]: validators.isInt,
     [DOUBLE]: validators.isFloat,
-    [INT_LITERAL]: validators.isInt
+    [FLOAT_LITERAL]: validators.isFloat,
+    [INT_LITERAL]: validators.isInt,
+    [STRING]: v => Boolean(v)
   };
 
   static getErrorMessage(input: string, type: string): string {
@@ -46,10 +47,10 @@ export class Validator {
   }
 
   messages: string[] = [];
-  typesStore: Type[] = [];
+  typeTable: TypeTable;
 
-  constructor(typesStore: Type[] = []) {
-    this.typesStore = typesStore;
+  constructor(typeTable: TypeTable) {
+    this.typeTable = typeTable;
   }
 
   validateObject(input: Input, type: ObjectType): boolean {
@@ -67,7 +68,7 @@ export class Validator {
             !p.optional
           )
         )
-        .some(v => !v)
+        .some(v => v === false)
     );
   }
 
@@ -81,8 +82,12 @@ export class Validator {
             type.elementType
           )
         )
-        .some(v => !v)
+        .some(v => v === false)
     );
+  }
+
+  validateReference(input: Input, type: ReferenceType) {
+    return this.run(input, dereferenceType(type, this.typeTable));
   }
 
   run(input: Input, type: Type, isMandatory: boolean = true): boolean | void {
@@ -94,7 +99,11 @@ export class Validator {
       return this.validateArray(input, type);
     }
 
-    const validator = Validator.validatorsMapping[type.kind];
+    if (type.kind === REFERENCE) {
+      return this.validateReference(input, type);
+    }
+
+    const validator = Validator.validatorMap[type.kind];
 
     if (typeof validator !== "function") {
       return;
