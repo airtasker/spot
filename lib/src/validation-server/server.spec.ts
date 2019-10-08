@@ -5,7 +5,7 @@ import { runValidationServer } from "./server";
 const CONTRACT_PATH = "./lib/src/__examples__/contract.ts";
 const DUMMY_PORT = 5907;
 
-describe("Server", () => {
+describe("Validation Server", () => {
   const mockLogger = {
     log: (message: string) => message,
     error: (message: string) => message
@@ -14,13 +14,12 @@ describe("Server", () => {
   const contract = parse(CONTRACT_PATH);
 
   describe("Run", () => {
-    it("/health and return 200", done => {
+    it("/health and return 200", async () => {
       const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
 
-      request(app)
+      await request(app)
         .get("/health")
-        .expect(200)
-        .then(done);
+        .expect(200);
     });
   });
 });
