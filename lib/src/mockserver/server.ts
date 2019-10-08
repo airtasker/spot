@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { ContractDefinition } from "../models/definitions";
+import { Logger } from "../utilities/logger";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
 import { proxyRequest } from "./proxy";
@@ -71,9 +72,4 @@ export function runMockServer(
     app,
     defer: () => new Promise(resolve => app.listen(port, resolve))
   };
-}
-
-export interface Logger {
-  log(message: string): void;
-  error(message: string): void;
 }
