@@ -72,6 +72,7 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+      - run: yarn build
       - run: ./bin/run validate ./lib/src/validation-server/spots/api.ts
 
   publish:
