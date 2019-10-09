@@ -9,4 +9,7 @@ export interface UnprocessableEntityError extends BaseError {
   type: "unprocessable_entity";
 }
 
-export type Headers = String[];
+export interface Header {
+  key: String;
+  value: String;
+}

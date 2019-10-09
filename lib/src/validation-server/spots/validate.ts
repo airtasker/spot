@@ -1,6 +1,6 @@
 import { body, endpoint, Integer, request, response, String } from "../../lib";
 import { HttpMethod } from "../../models/http";
-import { Headers, UnprocessableEntityError } from "./utils";
+import { Header, UnprocessableEntityError } from "./utils";
 
 @endpoint({
   method: "POST",
@@ -21,14 +21,12 @@ export interface ValidateRequest {
   request: {
     method: HttpMethod;
     path: String;
-    headers: Headers;
+    headers: Header[];
     body: String;
   };
   response: {
-    status: {
-      code: Integer;
-    };
-    headers: Headers;
+    status: Integer;
+    headers: Header[];
     body: String;
   };
 }
