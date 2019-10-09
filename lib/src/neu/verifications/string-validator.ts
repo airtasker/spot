@@ -61,7 +61,7 @@ export class StringValidator {
     this.typeTable = typeTable;
   }
 
-  run(input: Input, type: Type, isMandatory: boolean = true): boolean | void {
+  run(input: Input, type: Type, isMandatory: boolean = true): boolean | never {
     if (type.kind === OBJECT) {
       return this.validateObject(input, type);
     }
@@ -96,9 +96,7 @@ export class StringValidator {
   }
 
   private validateObject(input: Input, type: ObjectType): boolean {
-    return (
-      input &&
-      typeof input === "object" &&
+    const validateProps = () =>
       !type.properties
         .map(p =>
           this.run(
@@ -110,22 +108,23 @@ export class StringValidator {
             !p.optional
           )
         )
-        .some(v => v === false)
-    );
+        .some(v => v === false);
+
+    return input && typeof input === "object" && validateProps();
   }
 
   private validateArray(input: Input, type: ArrayType): boolean {
-    return (
-      Array.isArray(input.value) &&
-      !input.value
+    const validateItems = () =>
+      !(input.value as [])
         .map((v, index) =>
           this.run(
             { name: `${input.name}[${index}]`, value: `${v}` },
             type.elementType
           )
         )
-        .some(v => v === false)
-    );
+        .some(v => v === false);
+
+    return Array.isArray(input.value) && validateItems();
   }
 
   private validateReference(input: Input, type: ReferenceType) {

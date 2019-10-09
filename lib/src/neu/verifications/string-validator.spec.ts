@@ -8,10 +8,10 @@ import {
   stringType,
   TypeTable
 } from "../types";
-import { Validator } from "./validator";
+import { StringValidator } from "./string-validator";
 
 describe("validators", () => {
-  let validator: Validator;
+  let validator: StringValidator;
 
   beforeEach(() => {
     const typeTable = new TypeTable();
@@ -19,7 +19,7 @@ describe("validators", () => {
       "obj1",
       objectType([{ name: "id", type: int64Type(), optional: false }])
     );
-    validator = new Validator(typeTable);
+    validator = new StringValidator(typeTable);
   });
 
   describe("valid inputs", () => {
