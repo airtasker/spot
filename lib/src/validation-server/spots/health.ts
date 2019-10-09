@@ -1,7 +1,7 @@
 import { endpoint, request, response } from "../../lib";
 
 @endpoint({
-  method: "POST",
+  method: "GET",
   path: "/health"
 })
 export class HealthCheck {
