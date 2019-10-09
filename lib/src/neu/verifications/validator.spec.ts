@@ -49,15 +49,16 @@ describe("validators", () => {
         ])
       );
       expect(result).toBe(true);
+      expect(validator.messages.length).toEqual(0);
     });
 
     test("should return true when value matches a reference type", () => {
       const result = validator.run(
-        { name: "param", value: { id: "false", name: "" } },
+        { name: "param", value: { id: "10", name: "test" } },
         referenceType("obj1")
       );
-      expect(result).toBe(false);
-      expect(validator.messages[0]).toEqual('".param.id" should be int64');
+      expect(result).toBe(true);
+      expect(validator.messages.length).toEqual(0);
     });
   });
 

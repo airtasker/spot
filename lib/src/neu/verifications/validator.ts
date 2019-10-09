@@ -35,7 +35,7 @@ type ValidatorMap = {
   [key in TypeKind]?: (str: string, options?: {}) => boolean | never;
 };
 
-export class Validator {
+export class StringValidator {
   static validatorMap: ValidatorMap = {
     [NULL]: validators.isEmpty,
     [BOOLEAN]: validators.isBoolean,
@@ -61,7 +61,41 @@ export class Validator {
     this.typeTable = typeTable;
   }
 
-  validateObject(input: Input, type: ObjectType): boolean {
+  run(input: Input, type: Type, isMandatory: boolean = true): boolean | void {
+    if (type.kind === OBJECT) {
+      return this.validateObject(input, type);
+    }
+
+    if (type.kind === ARRAY) {
+      return this.validateArray(input, type);
+    }
+
+    if (type.kind === REFERENCE) {
+      return this.validateReference(input, type);
+    }
+
+    const validator = StringValidator.validatorMap[type.kind];
+
+    if (typeof validator !== "function") {
+      throw new Error(
+        `StringValidator Err - no validator found for type ${type.kind}`
+      );
+    }
+
+    const isNotRequired = !input.value && !isMandatory;
+
+    const isValid = isNotRequired || validator(`${input.value}`);
+
+    if (!isValid) {
+      this.messages.push(
+        StringValidator.getErrorMessage(input.name, type.kind)
+      );
+    }
+
+    return isValid;
+  }
+
+  private validateObject(input: Input, type: ObjectType): boolean {
     return (
       input &&
       typeof input === "object" &&
@@ -80,7 +114,7 @@ export class Validator {
     );
   }
 
-  validateArray(input: Input, type: ArrayType): boolean {
+  private validateArray(input: Input, type: ArrayType): boolean {
     return (
       Array.isArray(input.value) &&
       !input.value
@@ -94,37 +128,7 @@ export class Validator {
     );
   }
 
-  validateReference(input: Input, type: ReferenceType) {
+  private validateReference(input: Input, type: ReferenceType) {
     return this.run(input, dereferenceType(type, this.typeTable));
-  }
-
-  run(input: Input, type: Type, isMandatory: boolean = true): boolean | void {
-    if (type.kind === OBJECT) {
-      return this.validateObject(input, type);
-    }
-
-    if (type.kind === ARRAY) {
-      return this.validateArray(input, type);
-    }
-
-    if (type.kind === REFERENCE) {
-      return this.validateReference(input, type);
-    }
-
-    const validator = Validator.validatorMap[type.kind];
-
-    if (typeof validator !== "function") {
-      return;
-    }
-
-    const isOptional = !input.value && !isMandatory;
-
-    const isValid = isOptional || validator(`${input.value}`);
-
-    if (!isValid) {
-      this.messages.push(Validator.getErrorMessage(input.name, type.kind));
-    }
-
-    return isValid;
   }
 }
