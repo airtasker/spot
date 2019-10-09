@@ -59,6 +59,22 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: yarn lint:check
 
+  validate-contracts:
+    <<: *job_configuration
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: yarn build
+      - run: ./bin/run validate ./lib/src/validation-server/spots/api.ts
+
   publish:
     <<: *job_configuration
     steps:
@@ -88,6 +104,10 @@ workflows:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
       - lint-check:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - validate-contracts:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
