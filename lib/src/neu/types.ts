@@ -344,17 +344,29 @@ export function dereferenceType(
  * Loci table is a lookup table for types.
  */
 export class TypeTable {
-  private types: Map<string, Type>;
-
-  constructor(types: Map<string, Type> = new Map<string, Type>()) {
-    this.types = types;
-  }
-
   /**
    * Retrieve the number of entries in the type table.
    */
   get size(): number {
     return this.types.size;
+  }
+
+  static fromArray(types: Array<{ name: string; type: Type }>): TypeTable {
+    const entries = types.reduce(
+      (acc: Array<[string, Type]>, t: { name: string; type: Type }) => {
+        acc.push([t.name, t.type]);
+        return acc;
+      },
+      []
+    );
+
+    return new TypeTable(new Map(entries));
+  }
+
+  private types: Map<string, Type>;
+
+  constructor(types: Map<string, Type> = new Map<string, Type>()) {
+    this.types = types;
   }
 
   /**

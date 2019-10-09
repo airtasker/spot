@@ -1,4 +1,6 @@
 import JsonSchemaValidator, { ErrorObject } from "ajv";
+import qs from "qs";
+import * as url from "url";
 import {
   Contract,
   DefaultResponse,
@@ -6,22 +8,24 @@ import {
   Header,
   Response
 } from "../definitions";
-import qs from "qs";
-import * as url from "url";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
-import { Type } from "../types";
+import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
+import { StringInput, StringValidator } from "./string-validator";
 import {
   UserContent,
-  UserInputHeader,
   UserInputRequest,
   UserInputResponse
 } from "./user-input-models";
 
 export class ContractMismatcher {
   private readonly PATH_PARAM_REGEX = /:[^\/]*/g;
-  constructor(private readonly contract: Contract) {}
+  private typeTable: TypeTable;
+
+  constructor(private readonly contract: Contract) {
+    this.typeTable = TypeTable.fromArray(this.contract.types);
+  }
 
   findMismatch(
     userInputRequest: UserInputRequest,
@@ -340,7 +344,7 @@ export class ContractMismatcher {
     );
   }
 
-  private getArraySerializationStrategy(): { comma: boolean } {
+  private getQueryParamsArraySerializationStrategy(): { comma: boolean } {
     const comma =
       this.contract.config.paramSerializationStrategy.query.array === "comma";
 
@@ -355,7 +359,7 @@ export class ContractMismatcher {
     const contractQueryParams = endpoint.request!!.queryParams;
 
     const queryParams = qs.parse(queryParamsString, {
-      ...this.getArraySerializationStrategy()
+      ...this.getQueryParamsArraySerializationStrategy()
     });
 
     let result;
@@ -381,12 +385,12 @@ export class ContractMismatcher {
       }
 
       // Validate current request query param against contract
-      result = this.findMismatchOnContent(
-        requestQueryParam,
+      result = this.findMismatchOnStringContent(
+        { name: queryParamName, value: requestQueryParam },
         contractQueryParamType
       );
 
-      queryParams[queryParams] = null;
+      queryParams[queryParamName] = null;
 
       if (result.isErr()) {
         return result;
@@ -418,7 +422,7 @@ export class ContractMismatcher {
       return ok([]);
     }
 
-    const jsv = new JsonSchemaValidator({ coerceTypes: true });
+    const jsv = new JsonSchemaValidator();
     const schema = {
       ...generateJsonSchemaType(contractContentTypeToCheckWith),
       definitions: this.contract.types.reduce<{
@@ -445,6 +449,25 @@ export class ContractMismatcher {
         );
       }
       return ok(this.errorObjectMapper(validateFn.errors, content));
+    }
+  }
+
+  private findMismatchOnStringContent(
+    content: StringInput,
+    contractContentTypeToCheckWith: Type
+  ): Result<Mismatch[], Error> {
+    if (!content) {
+      return ok([]);
+    }
+
+    const stringValidator = new StringValidator(this.typeTable);
+
+    const valid = stringValidator.run(content, contractContentTypeToCheckWith);
+
+    if (valid) {
+      return ok([]);
+    } else {
+      return ok(stringValidator.messages.map(m => new Mismatch(m)));
     }
   }
 

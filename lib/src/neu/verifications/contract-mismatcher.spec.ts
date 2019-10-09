@@ -308,7 +308,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?id=query+param+array+pipe",
         method: "POST",
-        headers: {},
+        headers: { "x-auth-token": "token" },
         body: {
           data: {
             firstName: "Maple",
@@ -340,11 +340,11 @@ describe("contract mismatch finder", () => {
       );
     });
 
-    test.only("query param type is incorrect (object)", () => {
+    test("query param type is incorrect (object)", () => {
       const request = {
-        path: "/company/0/users?user[id]=12&user[slug]=2",
+        path: "/company/0/users?user[id]=invalid&user[slug]=2",
         method: "POST",
-        headers: {},
+        headers: { "x-auth-token": "token" },
         body: {
           data: {
             firstName: "Maple",
@@ -370,11 +370,46 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      // expect(result.unwrapOrThrow().length).toBe(1);
-      // expect(result.unwrapOrThrow()[0].message).toBe(
-      //   '{"id":"0"} should have required property \'slug\''
-      // );
-      console.log(result.unwrapOrThrow())
+      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()[0].message).toBe(
+        '".user.id" should be float'
+      );
     });
+
+    test("query param type is incorrect (array)", () => {
+      const request = {
+        path: "/company/0/users?user[id]=0&user[slug]=2&ids[0]=false&ids[1]=1",
+        method: "POST",
+        headers: { "x-auth-token": "token" },
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            age: 1.0,
+            email: "maple.syrup@airtasker.com",
+            address: "Doggo bed"
+          }
+        },
+        queryParams: ""
+      };
+
+      const response = {
+        headers: { Location: "testLocation" },
+        statusCode: 201,
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            profile: { private: false, messageOptions: { newsletter: false } }
+          }
+        }
+      };
+
+      const result = mismatcher.findMismatch(request, response);
+      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()[0].message).toBe(
+        '"ids[0]" should be float'
+      );
+    })
   });
 });

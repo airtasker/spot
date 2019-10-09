@@ -46,7 +46,9 @@ class CreateUser {
     queryParams: {
       /** a demo query param */
       "sample-query"?: String;
-      "user"?: UserQuery;
+      user?: UserQuery;
+      ids?: number[];
+      dryRun?: boolean;
     },
     /** request body */
     @body body: CreateUserRequestBody
