@@ -17,7 +17,6 @@
     "@types/supertest": "^2.0.8",
     "@types/validator": "^10.11.3",
     "ajv": "^6.10.2",
-    "antlr4": "^4.7.2",
     "assert-never": "^1.2.0",
     "axios": "^0.19.0",
     "chalk": "^2.4.2",
@@ -32,7 +31,7 @@
     "supertest": "^4.0.2",
     "ts-morph": "^4.2.0",
     "tslib": "^1",
-    "typescript": "^3.6.3",
+    "typescript": "^3.6.4",
     "validator": "^11.1.0"
   },
   "devDependencies": {
@@ -42,7 +41,7 @@
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.0.18",
     "@types/js-yaml": "^3.12.1",
-    "@types/lodash": "^4.14.142",
+    "@types/lodash": "^4.14.144",
     "@types/moxios": "^0.4.8",
     "@types/node": "^12.7.12",
     "@types/react": "^16.9.5",
