@@ -115,6 +115,21 @@ exports[`JSON Schema generator produces valid code: json 1`] = `
       \\"required\\": [
         \\"data\\"
       ]
+    },
+    \\"UserQuery\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"id\\": {
+          \\"type\\": \\"number\\"
+        },
+        \\"slug\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"id\\",
+        \\"slug\\"
+      ]
     }
   }
 }"
@@ -198,5 +213,15 @@ definitions:
           - profile
     required:
       - data
+  UserQuery:
+    type: object
+    properties:
+      id:
+        type: number
+      slug:
+        type: string
+    required:
+      - id
+      - slug
 "
 `;

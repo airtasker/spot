@@ -14,7 +14,7 @@ import {
   test
 } from "@airtasker/spot";
 import "./contract-endpoint";
-import { Address, Company, ErrorBody, UserBody, UserQuery} from "./models";
+import { Address, Company, ErrorBody, UserBody, UserQuery } from "./models";
 
 /** This is the company API. It does cool things */
 @api({ name: "company-api" })

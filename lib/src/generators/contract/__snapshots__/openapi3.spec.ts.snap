@@ -672,6 +672,34 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
             \\"required\\": false
           },
           {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"user\\",
+            \\"schema\\": {
+              \\"$ref\\": \\"#/components/schemas/UserQuery\\"
+            },
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"ids\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"number\\",
+                \\"format\\": \\"float\\"
+              }
+            },
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"dryRun\\",
+            \\"schema\\": {
+              \\"type\\": \\"boolean\\"
+            },
+            \\"required\\": false
+          },
+          {
             \\"in\\": \\"header\\",
             \\"name\\": \\"x-auth-token\\",
             \\"description\\": \\"Auth Header\\",
@@ -851,6 +879,22 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
         \\"required\\": [
           \\"data\\"
         ]
+      },
+      \\"UserQuery\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"id\\": {
+            \\"type\\": \\"number\\",
+            \\"format\\": \\"float\\"
+          },
+          \\"slug\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": [
+          \\"id\\",
+          \\"slug\\"
+        ]
       }
     },
     \\"securitySchemes\\": {
@@ -946,6 +990,24 @@ paths:
           description: a demo query param
           schema:
             type: string
+          required: false
+        - in: query
+          name: user
+          schema:
+            $ref: '#/components/schemas/UserQuery'
+          required: false
+        - in: query
+          name: ids
+          schema:
+            type: array
+            items:
+              type: number
+              format: float
+          required: false
+        - in: query
+          name: dryRun
+          schema:
+            type: boolean
           required: false
         - in: header
           name: x-auth-token
@@ -1064,6 +1126,17 @@ components:
             - profile
       required:
         - data
+    UserQuery:
+      type: object
+      properties:
+        id:
+          type: number
+          format: float
+        slug:
+          type: string
+      required:
+        - id
+        - slug
   securitySchemes:
     securityHeader:
       type: apiKey

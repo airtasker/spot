@@ -410,6 +410,6 @@ describe("contract mismatch finder", () => {
       expect(result.unwrapOrThrow()[0].message).toBe(
         '"ids[0]" should be float'
       );
-    })
+    });
   });
 });

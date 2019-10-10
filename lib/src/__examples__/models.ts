@@ -4,8 +4,8 @@ export interface Company {
 }
 
 export interface UserQuery {
-  id: number,
-  slug: string,
+  id: number;
+  slug: string;
 }
 
 /** User response body */

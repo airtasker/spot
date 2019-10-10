@@ -61,7 +61,11 @@ export class StringValidator {
     this.typeTable = typeTable;
   }
 
-  run(input: StringInput, type: Type, isMandatory: boolean = true): boolean | never {
+  run(
+    input: StringInput,
+    type: Type,
+    isMandatory: boolean = true
+  ): boolean | never {
     if (type.kind === OBJECT) {
       return this.validateObject(input, type);
     }
