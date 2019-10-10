@@ -362,6 +362,13 @@ export class ContractMismatcher {
       ...this.getQueryParamsArraySerializationStrategy()
     });
 
+    // Map to mark parameters that have been checked
+    // Params that could not be checked have their flag set to false
+    const verifiedQueryParams = Object.keys(queryParams).reduce(
+      (acc: { [_: string]: boolean }, key) => ({ ...acc, [key]: false }),
+      {}
+    );
+
     let result;
     let mismatches: Mismatch[] = [];
     for (const {
@@ -371,26 +378,29 @@ export class ContractMismatcher {
     } of contractQueryParams) {
       const requestQueryParam = queryParams[queryParamName];
 
+      // Query parameter is optional, can be skipped
+      if (typeof requestQueryParam === "undefined" && optional) {
+        continue;
+      }
+
       // Query parameter is mandatory and hasn't been provided
-      if (typeof requestQueryParam === "undefined" && !optional) {
+      if (typeof requestQueryParam === "undefined") {
         mismatches.push(
           new Mismatch(
             `Query parameter "${queryParamName}" is required but hasn't been provided.`
           )
         );
-      }
-
-      if (typeof requestQueryParam === "undefined") {
         continue;
       }
+
+      // Mark query param as verified
+      verifiedQueryParams[queryParamName] = true;
 
       // Validate current request query param against contract
       result = this.findMismatchOnStringContent(
         { name: queryParamName, value: requestQueryParam },
         contractQueryParamType
       );
-
-      queryParams[queryParamName] = null;
 
       if (result.isErr()) {
         return result;
@@ -400,8 +410,8 @@ export class ContractMismatcher {
     }
 
     const checkForNonExistingParams = () =>
-      Object.entries(queryParams)
-        .filter(([_, value]) => value !== null)
+      Object.entries(verifiedQueryParams)
+        .filter(([_, value]) => !value)
         .map(
           ([key, _]) =>
             new Mismatch(
