@@ -26,7 +26,7 @@ const {
   REFERENCE
 } = TypeKind;
 
-interface Input {
+export interface StringInput {
   name: string;
   value: string | { [key: string]: unknown } | unknown[];
 }
@@ -61,7 +61,11 @@ export class StringValidator {
     this.typeTable = typeTable;
   }
 
-  run(input: Input, type: Type, isMandatory: boolean = true): boolean | never {
+  run(
+    input: StringInput,
+    type: Type,
+    isMandatory: boolean = true
+  ): boolean | never {
     if (type.kind === OBJECT) {
       return this.validateObject(input, type);
     }
@@ -95,7 +99,7 @@ export class StringValidator {
     return isValid;
   }
 
-  private validateObject(input: Input, type: ObjectType): boolean {
+  private validateObject(input: StringInput, type: ObjectType): boolean {
     const validateProps = () =>
       !type.properties
         .map(p =>
@@ -113,7 +117,7 @@ export class StringValidator {
     return input && typeof input === "object" && validateProps();
   }
 
-  private validateArray(input: Input, type: ArrayType): boolean {
+  private validateArray(input: StringInput, type: ArrayType): boolean {
     const validateItems = () =>
       !(input.value as [])
         .map((v, index) =>
@@ -127,7 +131,7 @@ export class StringValidator {
     return Array.isArray(input.value) && validateItems();
   }
 
-  private validateReference(input: Input, type: ReferenceType) {
+  private validateReference(input: StringInput, type: ReferenceType) {
     return this.run(input, dereferenceType(type, this.typeTable));
   }
 }

@@ -75,6 +75,21 @@ exports[`JSON Schema generator produces valid code: json 1`] = `
         \\"message\\"
       ]
     },
+    \\"UserQuery\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"id\\": {
+          \\"type\\": \\"number\\"
+        },
+        \\"slug\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"id\\",
+        \\"slug\\"
+      ]
+    },
     \\"CreateUserRequestBody\\": {
       \\"type\\": \\"object\\",
       \\"properties\\": {
@@ -170,6 +185,16 @@ definitions:
     required:
       - name
       - message
+  UserQuery:
+    type: object
+    properties:
+      id:
+        type: number
+      slug:
+        type: string
+    required:
+      - id
+      - slug
   CreateUserRequestBody:
     type: object
     properties:

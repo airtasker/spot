@@ -3,6 +3,11 @@ export interface Company {
   id: string;
 }
 
+export interface UserQuery {
+  id: number;
+  slug: string;
+}
+
 /** User response body */
 export interface UserBody {
   /** data wrapper */

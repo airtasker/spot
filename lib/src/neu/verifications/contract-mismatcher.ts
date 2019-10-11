@@ -1,4 +1,6 @@
 import JsonSchemaValidator, { ErrorObject } from "ajv";
+import qs from "qs";
+import * as url from "url";
 import {
   Contract,
   DefaultResponse,
@@ -8,18 +10,22 @@ import {
 } from "../definitions";
 import { generateJsonSchemaType } from "../generators/json-schema-generator";
 import { JsonSchemaType } from "../schemas/json-schema";
-import { Type } from "../types";
+import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
+import { StringInput, StringValidator } from "./string-validator";
 import {
   UserContent,
-  UserInputHeader,
   UserInputRequest,
   UserInputResponse
 } from "./user-input-models";
 
 export class ContractMismatcher {
   private readonly PATH_PARAM_REGEX = /:[^\/]*/g;
-  constructor(private readonly contract: Contract) {}
+  private typeTable: TypeTable;
+
+  constructor(private readonly contract: Contract) {
+    this.typeTable = TypeTable.fromArray(this.contract.types);
+  }
 
   findMismatch(
     userInputRequest: UserInputRequest,
@@ -85,6 +91,16 @@ export class ContractMismatcher {
         return pathParamMismatches;
       }
       mismatches.push(...pathParamMismatches.unwrap());
+
+      const queryParamsMismatches = this.findMismatchOnRequestQueryParams(
+        expectedEndpoint.unwrap(),
+        userInputRequest
+      );
+      if (queryParamsMismatches.isErr()) {
+        return pathParamMismatches;
+      }
+      mismatches.push(...queryParamsMismatches.unwrap());
+
       return ok(mismatches);
     }
   }
@@ -328,6 +344,86 @@ export class ContractMismatcher {
     );
   }
 
+  private getQueryParamsArraySerializationStrategy(): { comma: boolean } {
+    const comma =
+      this.contract.config.paramSerializationStrategy.query.array === "comma";
+
+    return { comma };
+  }
+
+  private findMismatchOnRequestQueryParams(
+    endpoint: Endpoint,
+    userInputRequest: UserInputRequest
+  ): Result<Mismatch[], Error> {
+    const queryParamsString = url.parse(userInputRequest.path).query || "";
+    const contractQueryParams = endpoint.request!!.queryParams;
+
+    const queryParams = qs.parse(queryParamsString, {
+      ...this.getQueryParamsArraySerializationStrategy()
+    });
+
+    // Map to mark parameters that have been checked
+    // Params that could not be checked have their flag set to false
+    const verifiedQueryParams = Object.keys(queryParams).reduce(
+      (acc: { [_: string]: boolean }, key) => ({ ...acc, [key]: false }),
+      {}
+    );
+
+    let result;
+    let mismatches: Mismatch[] = [];
+    for (const {
+      name: queryParamName,
+      optional,
+      type: contractQueryParamType
+    } of contractQueryParams) {
+      const requestQueryParam = queryParams[queryParamName];
+
+      // Query parameter is optional, can be skipped
+      if (typeof requestQueryParam === "undefined" && optional) {
+        continue;
+      }
+
+      // Query parameter is mandatory and hasn't been provided
+      if (typeof requestQueryParam === "undefined") {
+        mismatches.push(
+          new Mismatch(
+            `Query parameter "${queryParamName}" is required but hasn't been provided.`
+          )
+        );
+        continue;
+      }
+
+      // Mark query param as verified
+      verifiedQueryParams[queryParamName] = true;
+
+      // Validate current request query param against contract
+      result = this.findMismatchOnStringContent(
+        { name: queryParamName, value: requestQueryParam },
+        contractQueryParamType
+      );
+
+      if (result.isErr()) {
+        return result;
+      }
+
+      mismatches.push(...result.unwrap());
+    }
+
+    const checkForNonExistingParams = () =>
+      Object.entries(verifiedQueryParams)
+        .filter(([_, value]) => !value)
+        .map(
+          ([key, _]) =>
+            new Mismatch(
+              `Query parameter "${key}" does not exist under the specified endpoint.`
+            )
+        );
+
+    mismatches = [...mismatches, ...checkForNonExistingParams()];
+
+    return ok(mismatches);
+  }
+
   private findMismatchOnContent(
     content: UserContent,
     contractContentTypeToCheckWith: Type
@@ -351,6 +447,7 @@ export class ContractMismatcher {
 
     const validateFn = jsv.compile(schema);
     const valid = validateFn(content);
+
     if (valid) {
       return ok([]);
     } else {
@@ -362,6 +459,25 @@ export class ContractMismatcher {
         );
       }
       return ok(this.errorObjectMapper(validateFn.errors, content));
+    }
+  }
+
+  private findMismatchOnStringContent(
+    content: StringInput,
+    contractContentTypeToCheckWith: Type
+  ): Result<Mismatch[], Error> {
+    if (!content) {
+      return ok([]);
+    }
+
+    const stringValidator = new StringValidator(this.typeTable);
+
+    const valid = stringValidator.run(content, contractContentTypeToCheckWith);
+
+    if (valid) {
+      return ok([]);
+    } else {
+      return ok(stringValidator.messages.map(m => new Mismatch(m)));
     }
   }
 

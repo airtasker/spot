@@ -106,6 +106,28 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
             \\"required\\": false
           },
           {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"user\\",
+            \\"$ref\\": \\"#/definitions/UserQuery\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"ids\\",
+            \\"type\\": \\"array\\",
+            \\"items\\": {
+              \\"type\\": \\"number\\",
+              \\"format\\": \\"float\\"
+            },
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"dryRun\\",
+            \\"type\\": \\"boolean\\",
+            \\"required\\": false
+          },
+          {
             \\"in\\": \\"header\\",
             \\"name\\": \\"x-auth-token\\",
             \\"description\\": \\"Auth Header\\",
@@ -257,6 +279,22 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
       \\"required\\": [
         \\"data\\"
       ]
+    },
+    \\"UserQuery\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"id\\": {
+          \\"type\\": \\"number\\",
+          \\"format\\": \\"float\\"
+        },
+        \\"slug\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"id\\",
+        \\"slug\\"
+      ]
     }
   },
   \\"securityDefinitions\\": {
@@ -348,6 +386,21 @@ paths:
           name: sample-query
           description: a demo query param
           type: string
+          required: false
+        - in: query
+          name: user
+          $ref: '#/definitions/UserQuery'
+          required: false
+        - in: query
+          name: ids
+          type: array
+          items:
+            type: number
+            format: float
+          required: false
+        - in: query
+          name: dryRun
+          type: boolean
           required: false
         - in: header
           name: x-auth-token
@@ -450,6 +503,17 @@ definitions:
           - profile
     required:
       - data
+  UserQuery:
+    type: object
+    properties:
+      id:
+        type: number
+        format: float
+      slug:
+        type: string
+    required:
+      - id
+      - slug
 securityDefinitions:
   securityHeader:
     type: apiKey
