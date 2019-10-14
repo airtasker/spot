@@ -138,86 +138,56 @@ describe("contract mismatch finder", () => {
 
   test("a request header mismatch found, missing required header", () => {
     const request = {
-      path: "/company/5/users",
-      method: "POST",
+      path: "/company/5",
+      method: "GET",
       headers: {},
-      body: {
-        data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          age: 1.0,
-          email: "maple.syrup@airtasker.com",
-          address: "Doggo bed"
-        }
-      },
+      body: {},
       queryParams: ""
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: { accept: "1" },
       statusCode: 201,
       body: {
         data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          profile: { private: false, messageOptions: { newsletter: false } }
+          id: "5"
         }
       }
     };
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow().length).toBe(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "{} does not conform to the request contract headers on path: /company/:companyId/users:POST"
+      "{} does not conform to the request contract headers on path: /company/:companyId:GET"
     );
   });
 
   test("a request header mismatch found, wrong header value type", () => {
     const request = {
-      path: "/company/5/users",
-      method: "POST",
-      headers: { "x-auth-token": 1 },
-      body: {
-        data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          age: 1.0,
-          email: "maple.syrup@airtasker.com",
-          address: "Doggo bed"
-        }
-      },
+      path: "/company/5",
+      method: "GET",
+      headers: { "x-id": "NaN" },
+      body: {},
       queryParams: ""
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: { accept: "1" },
       statusCode: 201,
       body: {
         data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          profile: { private: false, messageOptions: { newsletter: false } }
+          id: "5"
         }
       }
     };
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow().length).toBe(1);
-    expect(result.unwrapOrThrow()[0].message).toBe(
-      "1: #/type should be string"
-    );
+    expect(result.unwrapOrThrow()[0].message).toBe('"x-id" should be float');
   });
 
   test("a response header mismatch found, missing required header", () => {
     const request = {
-      path: "/company/5/users",
-      method: "POST",
-      headers: { "x-auth-token": "test-correct" },
-      body: {
-        data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          age: 1.0,
-          email: "maple.syrup@airtasker.com",
-          address: "Doggo bed"
-        }
-      },
+      path: "/company/5",
+      method: "GET",
+      headers: { "x-id": "5" },
+      body: {},
       queryParams: ""
     };
     const response = {
@@ -225,51 +195,37 @@ describe("contract mismatch finder", () => {
       statusCode: 201,
       body: {
         data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          profile: { private: false, messageOptions: { newsletter: false } }
+          id: "5"
         }
       }
     };
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow().length).toBe(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "Missing response header of Location on /company/:companyId/users:POST"
+      "Missing response header of accept on /company/:companyId:GET"
     );
   });
 
   test("a response header mismatch found, wrong header value type", () => {
     const request = {
-      path: "/company/5/users",
-      method: "POST",
-      headers: { "x-auth-token": "test-correct" },
-      body: {
-        data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          age: 1.0,
-          email: "maple.syrup@airtasker.com",
-          address: "Doggo bed"
-        }
-      },
+      path: "/company/5",
+      method: "GET",
+      headers: { "x-id": "5" },
+      body: {},
       queryParams: ""
     };
     const response = {
-      headers: { Location: 123 },
+      headers: { accept: "NaN" },
       statusCode: 201,
       body: {
         data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          profile: { private: false, messageOptions: { newsletter: false } }
+          id: "5"
         }
       }
     };
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow().length).toBe(1);
-    expect(result.unwrapOrThrow()[0].message).toBe(
-      "123: #/type should be string"
-    );
+    expect(result.unwrapOrThrow()[0].message).toBe('"accept" should be float');
   });
 
   test("having an extra response header that's not defined in the contract is not a mismatch", () => {
