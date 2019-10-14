@@ -88,6 +88,7 @@ describe("OpenAPI 3 generator", () => {
           "enum": Array [
             1.5,
           ],
+          "format": "float",
           "type": "number",
         }
       `);
@@ -97,6 +98,7 @@ describe("OpenAPI 3 generator", () => {
           "enum": Array [
             -23.1,
           ],
+          "format": "float",
           "type": "number",
         }
       `);
@@ -126,6 +128,7 @@ describe("OpenAPI 3 generator", () => {
           "enum": Array [
             0,
           ],
+          "format": "int32",
           "type": "integer",
         }
       `);
@@ -134,6 +137,7 @@ describe("OpenAPI 3 generator", () => {
           "enum": Array [
             123,
           ],
+          "format": "int32",
           "type": "integer",
         }
       `);
@@ -143,6 +147,7 @@ describe("OpenAPI 3 generator", () => {
           "enum": Array [
             -1000,
           ],
+          "format": "int32",
           "type": "integer",
         }
       `);
