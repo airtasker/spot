@@ -86,8 +86,8 @@ describe("OpenAPI 2 generator", () => {
           "enum": Array [
             1.5,
           ],
-          "type": "number",
           "format": "float",
+          "type": "number",
         }
       `);
       expect(openApi2TypeSchema(numberLiteral(-23.1))).toMatchInlineSnapshot(`
@@ -95,8 +95,8 @@ describe("OpenAPI 2 generator", () => {
           "enum": Array [
             -23.1,
           ],
-          "type": "number",
           "format": "float",
+          "type": "number",
         }
       `);
     });
@@ -125,8 +125,8 @@ describe("OpenAPI 2 generator", () => {
           "enum": Array [
             0,
           ],
-          "type": "integer",
           "format": "int32",
+          "type": "integer",
         }
       `);
       expect(openApi2TypeSchema(numberLiteral(122))).toMatchInlineSnapshot(`
@@ -134,8 +134,8 @@ describe("OpenAPI 2 generator", () => {
           "enum": Array [
             122,
           ],
-          "type": "integer",
           "format": "int32",
+          "type": "integer",
         }
       `);
       expect(openApi2TypeSchema(numberLiteral(-1000))).toMatchInlineSnapshot(`
@@ -143,8 +143,8 @@ describe("OpenAPI 2 generator", () => {
           "enum": Array [
             -1000,
           ],
-          "type": "integer",
           "format": "int32",
+          "type": "integer",
         }
       `);
     });
