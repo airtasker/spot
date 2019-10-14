@@ -69,11 +69,13 @@ export function openApi3TypeSchema(
       return Math.round(type.value) === type.value
         ? {
             type: "integer",
-            enum: [type.value]
+            enum: [type.value],
+            format: "int32"
           }
         : {
             type: "number",
-            enum: [type.value]
+            enum: [type.value],
+            format: "float"
           };
     case TypeKind.INT32:
       return {
@@ -225,11 +227,13 @@ export interface OpenAPI3SchemaTypeString extends OpenAPI3BaseSchemaType {
 export interface OpenAPI3SchemaTypeNumber extends OpenAPI3BaseSchemaType {
   type: "number";
   enum?: number[];
+  format: "float" | "double";
 }
 
 export interface OpenAPI3SchemaTypeInteger extends OpenAPI3BaseSchemaType {
   type: "integer";
   enum?: number[];
+  format: "int32" | "int64";
 }
 
 export interface OpenAPI3SchemaTypeDateTime extends OpenAPI3BaseSchemaType {
