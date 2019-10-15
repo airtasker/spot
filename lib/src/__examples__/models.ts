@@ -22,7 +22,7 @@ export interface UserBody {
 }
 
 export interface CompanyBody {
-  data: Company,
+  data: Company;
 }
 
 /** Error body */

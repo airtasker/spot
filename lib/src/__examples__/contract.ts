@@ -122,7 +122,7 @@ class GetCompany {
     headers: {
       /** Auth Header */
       "x-id": number;
-    },
+    }
   ) {}
 
   /** Successful creation of user */

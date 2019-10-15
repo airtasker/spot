@@ -7,6 +7,28 @@ exports[`JSON Schema generator produces valid code: json 1`] = `
     \\"Address\\": {
       \\"type\\": \\"string\\"
     },
+    \\"Company\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"id\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"id\\"
+      ]
+    },
+    \\"CompanyBody\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"data\\": {
+          \\"$ref\\": \\"#/definitions/Company\\"
+        }
+      },
+      \\"required\\": [
+        \\"data\\"
+      ]
+    },
     \\"CreateUserRequestBody\\": {
       \\"type\\": \\"object\\",
       \\"properties\\": {
@@ -140,6 +162,20 @@ exports[`JSON Schema generator produces valid code: yaml 1`] = `
 definitions:
   Address:
     type: string
+  Company:
+    type: object
+    properties:
+      id:
+        type: string
+    required:
+      - id
+  CompanyBody:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/Company'
+    required:
+      - data
   CreateUserRequestBody:
     type: object
     properties:
