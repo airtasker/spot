@@ -46,7 +46,7 @@
     "@types/node": "^12.7.12",
     "@types/react": "^16.9.6",
     "@types/react-dom": "^16.9.1",
-    "core-js": "^3.3.1",
+    "core-js": "^3.3.2",
     "css-loader": "^3.2.0",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.9.0",
