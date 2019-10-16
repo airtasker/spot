@@ -21,6 +21,10 @@ export interface UserBody {
   };
 }
 
+export interface CompanyBody {
+  data: Company;
+}
+
 /** Error body */
 export interface ErrorBody {
   /** error name */

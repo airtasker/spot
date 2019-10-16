@@ -130,6 +130,28 @@ exports[`JSON Schema generator produces valid code: json 1`] = `
     },
     \\"Address\\": {
       \\"type\\": \\"string\\"
+    },
+    \\"CompanyBody\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"data\\": {
+          \\"$ref\\": \\"#/definitions/Company\\"
+        }
+      },
+      \\"required\\": [
+        \\"data\\"
+      ]
+    },
+    \\"Company\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"id\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"id\\"
+      ]
     }
   }
 }"
@@ -223,5 +245,19 @@ definitions:
     type: string
   Address:
     type: string
+  CompanyBody:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/Company'
+    required:
+      - data
+  Company:
+    type: object
+    properties:
+      id:
+        type: string
+    required:
+      - id
 "
 `;

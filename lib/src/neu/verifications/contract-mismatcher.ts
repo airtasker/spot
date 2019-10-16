@@ -146,8 +146,11 @@ export class ContractMismatcher {
           return accumulator;
         }
 
-        const result = this.findMismatchOnContent(
-          userInputRequest.headers[userInputHeaderKey],
+        const result = this.findMismatchOnStringContent(
+          {
+            name: userInputHeaderKey,
+            value: userInputRequest.headers[userInputHeaderKey]
+          },
           contractHeaderType.unwrap()
         );
 
@@ -205,8 +208,11 @@ export class ContractMismatcher {
         return accumulator;
       }
 
-      const result = this.findMismatchOnContent(
-        userInputResponse.headers[matchingHeaderNameOnUserInput],
+      const result = this.findMismatchOnStringContent(
+        {
+          name: matchingHeaderNameOnUserInput,
+          value: userInputResponse.headers[matchingHeaderNameOnUserInput]
+        },
         contractHeaderType
       );
 
@@ -284,8 +290,8 @@ export class ContractMismatcher {
 
         const contractPathParamType = contractPathParam.type;
 
-        const result = this.findMismatchOnContent(
-          userPathArray[i],
+        const result = this.findMismatchOnStringContent(
+          { name: contractPathParam.name, value: userPathArray[i] },
           contractPathParamType
         );
 
@@ -306,13 +312,8 @@ export class ContractMismatcher {
     const requestBodyTypeOnContract = this.getRequestBodyTypeOnContractEndpoint(
       endpoint
     );
-    const mismatches: Mismatch[] = [];
     if (requestBodyTypeOnContract.isErr()) {
-      const mismatch = new Mismatch(
-        requestBodyTypeOnContract.unwrapErr().message
-      );
-      mismatches.push(mismatch);
-      return ok(mismatches);
+      return ok([]);
     }
     return this.findMismatchOnContent(
       userInputRequest.body,

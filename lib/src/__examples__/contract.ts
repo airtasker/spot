@@ -14,7 +14,7 @@ import {
   test
 } from "@airtasker/spot";
 import "./contract-endpoint";
-import { Address, Company, ErrorBody, UserBody, UserQuery } from "./models";
+import { Address, CompanyBody, ErrorBody, UserBody, UserQuery } from "./models";
 
 /** This is the company API. It does cool things */
 @api({ name: "company-api" })
@@ -102,6 +102,40 @@ class CreateUser {
     }
   })
   successResponseTest() {}
+}
+
+/** Creates a user in a company */
+@endpoint({
+  method: "GET",
+  path: "/company/:companyId",
+  tags: ["Company"]
+})
+class GetCompany {
+  @request
+  request(
+    @pathParams
+    pathParams: {
+      /** company identifier */
+      companyId: String;
+    },
+    @headers
+    headers: {
+      /** Auth Header */
+      "x-id": number;
+    }
+  ) {}
+
+  /** Successful creation of user */
+  @response({ status: 201 })
+  successResponse(
+    @headers
+    headers: {
+      /** Location header */
+      accept: number;
+    },
+    /** User response body */
+    @body body: CompanyBody
+  ) {}
 }
 
 /** User request body */
