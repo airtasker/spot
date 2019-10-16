@@ -149,7 +149,7 @@ export class ContractMismatcher {
         const result = this.findMismatchOnStringContent(
           {
             name: userInputHeaderKey,
-            value: userInputRequest.headers[userInputHeaderKey] as string
+            value: userInputRequest.headers[userInputHeaderKey]
           },
           contractHeaderType.unwrap()
         );
@@ -211,9 +211,7 @@ export class ContractMismatcher {
       const result = this.findMismatchOnStringContent(
         {
           name: matchingHeaderNameOnUserInput,
-          value: userInputResponse.headers[
-            matchingHeaderNameOnUserInput
-          ] as string
+          value: userInputResponse.headers[matchingHeaderNameOnUserInput]
         },
         contractHeaderType
       );

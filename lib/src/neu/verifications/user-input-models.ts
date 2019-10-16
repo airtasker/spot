@@ -15,7 +15,7 @@ export interface UserInputResponse {
 export type UserInput = UserInputRequest | UserInputResponse;
 
 export interface UserInputHeader {
-  [key: string]: unknown;
+  [key: string]: string;
 }
 export type UserInputBody = unknown;
 
