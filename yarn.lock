@@ -534,10 +534,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
-"@types/fs-extra@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.0.0.tgz#d3e2c313ca29f95059f198dd60d1f774642d4b25"
-  integrity sha512-bCtL5v9zdbQW86yexOlXWTEGvLNqWxMFyi7gQA7Gcthbezr2cPSOb8SkESVKA937QD5cIwOFLDFt0MQoXOEr9Q==
+"@types/fs-extra@^8.0.1":
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.0.1.tgz#a2378d6e7e8afea1564e44aafa2e207dadf77686"
+  integrity sha512-J00cVDALmi/hJOYsunyT52Hva5TnJeKP5yd1r+mH/ZU0mbYZflR0Z5kw5kITtKTRYMhm1JMClOFYdHnQszEvqw==
   dependencies:
     "@types/node" "*"
 
@@ -649,10 +649,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.9.7":
-  version "16.9.7"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.7.tgz#3b50cb38285a79fd325cf185e0d623e3e0dd2893"
-  integrity sha512-cF/zwVSOa/NQ5ZSLwUmAdeARgJkmu94shnqDO0dUOsp5roeS8SXtYv06uKeQMYgMjnP6dXH5CecxL+GibvqEFg==
+"@types/react@*", "@types/react@^16.9.9":
+  version "16.9.9"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.9.tgz#a62c6f40f04bc7681be5e20975503a64fe783c3a"
+  integrity sha512-L+AudFJkDukk+ukInYvpoAPyJK5q1GanFOINOJnM0w6tUgITuWvJ4jyoBPFL7z4/L8hGLd+K/6xR5uUjXu0vVg==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -7242,10 +7242,10 @@ ts-loader@^6.2.0:
     micromatch "^4.0.0"
     semver "^6.0.0"
 
-ts-morph@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-4.2.0.tgz#1e87cd02d2b2956fdd8e7fa5e7c1209c28200747"
-  integrity sha512-KKSCYkAmXSoa6Mwfa1KI0j5rCkjHsG9QwEHgEfnDlQDEBHPQneXBf5NtGo4/oiNUxN1fXOtqKZPSyKozAV25bA==
+ts-morph@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-4.3.0.tgz#6765100907d0d4805bdf9e9019f30cdb8122bdf6"
+  integrity sha512-+JCihzHj29jc1eXiUHjZ/0zc28HcdI28QyHx7dTz1ickLJwO1Pom8GcYgOSjXKuBK7LIfCerlDOi7Y75rlecLg==
   dependencies:
     "@dsherret/to-absolute-glob" "^2.0.2"
     chalk "^2.4.2"
