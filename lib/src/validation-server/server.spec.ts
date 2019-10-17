@@ -129,7 +129,7 @@ describe("Validation Server", () => {
 
 describe("Transformation functions", () => {
   describe("headersToUserInputHeader", () => {
-    it("should return correct values", () => {
+    it("should transform Header[] into UserInputHeader", () => {
       expect(
         headersToUserInputHeader([
           { key: "a", value: "b" },
@@ -143,7 +143,7 @@ describe("Transformation functions", () => {
   });
 
   describe("recordedRequestToUserInputRequest", () => {
-    it("should return correct values", () => {
+    it("should transform RecordedRequest into UserInputRequest", () => {
       expect(
         recordedRequestToUserInputRequest({
           method: "POST",
@@ -162,7 +162,7 @@ describe("Transformation functions", () => {
   });
 
   describe("recordedResponseToUserInputResponse", () => {
-    it("should return correct values", () => {
+    it("should transform RecordedResponse into UserInputResponse", () => {
       expect(
         recordedResponseToUserInputResponse({
           status: 200,
