@@ -29,9 +29,9 @@ export function runValidationServer(
   });
 
   app.post("/validate", (req, res) => {
-    // TODO: Make sure body matches ValidateRequest, we should probably
-    // send an error if it doesn't match
     try {
+      // TODO: Make sure body matches ValidateRequest, we should
+      // send a 422 if it doesn't match
       const body = req.body as ValidateRequest;
 
       const userInputRequest = recordedRequestToUserInputRequest(body.request);
@@ -74,7 +74,9 @@ const makeInternalServerError = (messages: string[]): InternalServerError => {
   };
 };
 
-const headersToUserInputHeader = (headers: Header[]): UserInputHeader => {
+export const headersToUserInputHeader = (
+  headers: Header[]
+): UserInputHeader => {
   return headers.reduce(
     (userInputHeader, header, _0, _1) => {
       const newUserInputHeader = userInputHeader;
@@ -85,7 +87,7 @@ const headersToUserInputHeader = (headers: Header[]): UserInputHeader => {
   );
 };
 
-const recordedRequestToUserInputRequest = (
+export const recordedRequestToUserInputRequest = (
   recordedRequest: RecordedRequest
 ): UserInputRequest => {
   const url = new URL(recordedRequest.url);
@@ -100,7 +102,7 @@ const recordedRequestToUserInputRequest = (
   };
 };
 
-const recordedResponseToUserInputResponse = (
+export const recordedResponseToUserInputResponse = (
   recordedResponse: RecordedResponse
 ): UserInputResponse => {
   const jsonBody = JSON.parse(recordedResponse.body);

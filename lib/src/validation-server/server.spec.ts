@@ -1,6 +1,6 @@
 import request from "supertest";
 import { parse } from "../neu/parser";
-import { runValidationServer } from "./server";
+import { headersToUserInputHeader, runValidationServer } from "./server";
 
 const CONTRACT_PATH = "./lib/src/__examples__/contract.ts";
 const DUMMY_BODY = { dummy: "helloworld" };
@@ -118,6 +118,22 @@ describe("Validation Server", () => {
           expect(response.body.type).toEqual("internal_server");
           expect(response.body.error_messages).toHaveLength(1);
         });
+    });
+  });
+});
+
+describe("Transformation functions", () => {
+  describe("headersToUserInputHeader", () => {
+    it("should return correct values", () => {
+      expect(
+        headersToUserInputHeader([
+          { key: "a", value: "b" },
+          { key: "c", value: "d" }
+        ])
+      ).toEqual({
+        a: "b",
+        c: "d"
+      });
     });
   });
 });
