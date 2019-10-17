@@ -1,6 +1,6 @@
 import { body, endpoint, Integer, request, response, String } from "../../lib";
 import { HttpMethod } from "../../models/http";
-import { Header, UnprocessableEntityError } from "./utils";
+import { Header, InternalServerError, UnprocessableEntityError } from "./utils";
 
 @endpoint({
   method: "POST",
@@ -15,20 +15,27 @@ export class Validate {
 
   @response({ status: 422 })
   unprocessableEntityError(@body body: UnprocessableEntityError) {}
+
+  @response({ status: 500 })
+  internalServerError(@body body: InternalServerError) {}
+}
+
+export interface RecordedRequest {
+  method: HttpMethod;
+  url: String;
+  headers: Header[];
+  body: String;
+}
+
+export interface RecordedResponse {
+  status: Integer;
+  headers: Header[];
+  body: String;
 }
 
 export interface ValidateRequest {
-  request: {
-    method: HttpMethod;
-    path: String;
-    headers: Header[];
-    body: String;
-  };
-  response: {
-    status: Integer;
-    headers: Header[];
-    body: String;
-  };
+  request: RecordedRequest;
+  response: RecordedResponse;
 }
 
 export interface ValidateResponse {
