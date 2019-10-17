@@ -1,6 +1,10 @@
 import request from "supertest";
 import { parse } from "../neu/parser";
-import { headersToUserInputHeader, runValidationServer } from "./server";
+import {
+  headersToUserInputHeader,
+  recordedRequestToUserInputRequest,
+  runValidationServer
+} from "./server";
 
 const CONTRACT_PATH = "./lib/src/__examples__/contract.ts";
 const DUMMY_BODY = { dummy: "helloworld" };
@@ -133,6 +137,25 @@ describe("Transformation functions", () => {
       ).toEqual({
         a: "b",
         c: "d"
+      });
+    });
+  });
+
+  describe("recordedRequestToUserInputRequest", () => {
+    it("should return correct values", () => {
+      expect(
+        recordedRequestToUserInputRequest({
+          method: "POST",
+          url: "http://spot.com/path/to/somewhere?hello=world",
+          headers: [{ key: "a", value: "b" }, { key: "c", value: "d" }],
+          body: JSON.stringify({ data: "body" })
+        })
+      ).toEqual({
+        path: "/path/to/somewhere",
+        method: "POST",
+        headers: { a: "b", c: "d" },
+        body: { data: "body" },
+        queryParams: "?hello=world"
       });
     });
   });
