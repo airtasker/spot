@@ -45,7 +45,7 @@ describe("Validation Server", () => {
         },
         response: {
           status: 201,
-          headers: [{ key: "Location", value: "" }],
+          headers: [{ key: "Location", value: "hello" }],
           body: JSON.stringify({
             data: {
               firstName: "",
