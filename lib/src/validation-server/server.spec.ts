@@ -3,6 +3,7 @@ import { parse } from "../neu/parser";
 import {
   headersToUserInputHeader,
   recordedRequestToUserInputRequest,
+  recordedResponseToUserInputResponse,
   runValidationServer
 } from "./server";
 
@@ -156,6 +157,22 @@ describe("Transformation functions", () => {
         headers: { a: "b", c: "d" },
         body: { data: "body" },
         queryParams: "?hello=world"
+      });
+    });
+  });
+
+  describe("recordedResponseToUserInputResponse", () => {
+    it("should return correct values", () => {
+      expect(
+        recordedResponseToUserInputResponse({
+          status: 200,
+          headers: [{ key: "a", value: "b" }, { key: "c", value: "d" }],
+          body: JSON.stringify({ data: "body" })
+        })
+      ).toEqual({
+        headers: { a: "b", c: "d" },
+        statusCode: 200,
+        body: { data: "body" }
       });
     });
   });
