@@ -22,8 +22,7 @@ describe("contract mismatch finder", () => {
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed"
         }
-      },
-      queryParams: ""
+      }
     };
     const response = {
       headers: { Location: "testLocation" },
@@ -52,8 +51,7 @@ describe("contract mismatch finder", () => {
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed"
         }
-      },
-      queryParams: ""
+      }
     };
     const response = {
       headers: { Location: "testLocation" },
@@ -82,8 +80,7 @@ describe("contract mismatch finder", () => {
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed"
         }
-      },
-      queryParams: ""
+      }
     };
     const response = {
       headers: { Location: "testLocation" },
@@ -115,8 +112,7 @@ describe("contract mismatch finder", () => {
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed"
         }
-      },
-      queryParams: ""
+      }
     };
     const response = {
       headers: { Location: "testLocation" },
@@ -141,8 +137,7 @@ describe("contract mismatch finder", () => {
       path: "/company/5",
       method: "GET",
       headers: {},
-      body: {},
-      queryParams: ""
+      body: {}
     };
     const response = {
       headers: { accept: "1" },
@@ -165,8 +160,7 @@ describe("contract mismatch finder", () => {
       path: "/company/5",
       method: "GET",
       headers: { "x-id": "NaN" },
-      body: {},
-      queryParams: ""
+      body: {}
     };
     const response = {
       headers: { accept: "1" },
@@ -187,8 +181,7 @@ describe("contract mismatch finder", () => {
       path: "/company/5",
       method: "GET",
       headers: { "x-id": "5" },
-      body: {},
-      queryParams: ""
+      body: {}
     };
     const response = {
       headers: {},
@@ -211,8 +204,7 @@ describe("contract mismatch finder", () => {
       path: "/company/5",
       method: "GET",
       headers: { "x-id": "5" },
-      body: {},
-      queryParams: ""
+      body: {}
     };
     const response = {
       headers: { accept: "NaN" },
@@ -241,8 +233,7 @@ describe("contract mismatch finder", () => {
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed"
         }
-      },
-      queryParams: ""
+      }
     };
     const response = {
       headers: { Location: "testLocation", ExtraHeader: "testExtraHeader" },
@@ -273,8 +264,7 @@ describe("contract mismatch finder", () => {
             email: "maple.syrup@airtasker.com",
             address: "Doggo bed"
           }
-        },
-        queryParams: ""
+        }
       };
 
       const response = {
@@ -309,8 +299,7 @@ describe("contract mismatch finder", () => {
             email: "maple.syrup@airtasker.com",
             address: "Doggo bed"
           }
-        },
-        queryParams: ""
+        }
       };
 
       const response = {
@@ -345,8 +334,7 @@ describe("contract mismatch finder", () => {
             email: "maple.syrup@airtasker.com",
             address: "Doggo bed"
           }
-        },
-        queryParams: ""
+        }
       };
 
       const response = {
