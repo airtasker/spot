@@ -9,6 +9,10 @@ export interface UnprocessableEntityError extends BaseError {
   type: "unprocessable_entity";
 }
 
+export interface InternalServerError extends BaseError {
+  type: "internal_server";
+}
+
 export interface Header {
   key: String;
   value: String;
