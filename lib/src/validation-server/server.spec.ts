@@ -152,11 +152,10 @@ describe("Transformation functions", () => {
           body: JSON.stringify({ data: "body" })
         })
       ).toEqual({
-        path: "/path/to/somewhere",
+        path: "/path/to/somewhere?hello=world",
         method: "POST",
         headers: { a: "b", c: "d" },
-        body: { data: "body" },
-        queryParams: "?hello=world"
+        body: { data: "body" }
       });
     });
   });

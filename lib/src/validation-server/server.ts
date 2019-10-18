@@ -93,12 +93,10 @@ export const recordedRequestToUserInputRequest = (
   const url = new URL(recordedRequest.url);
   const jsonBody = JSON.parse(recordedRequest.body);
   return {
-    path: url.pathname,
+    path: url.pathname + url.search,
     method: recordedRequest.method,
     headers: headersToUserInputHeader(recordedRequest.headers),
-    body: jsonBody,
-    queryParams: url.search // TODO: url.search will send the string with the leading "?",
-    // query params are not verified yet, this should be aligned with the verifier implementation
+    body: jsonBody
   };
 };
 
