@@ -252,11 +252,35 @@ describe("type parser", () => {
     );
   });
 
+  test("parses complex Array", () => {
+    const type = interphace.getPropertyOrThrow("Array").getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.ARRAY,
+        elementType: {
+          kind: TypeKind.OBJECT,
+          properties: [
+            {
+              description: undefined,
+              name: "a",
+              optional: false,
+              type: {
+                kind: TypeKind.BOOLEAN
+              }
+            }
+          ]
+        }
+      }
+    );
+  });
+
   test("parses unions", () => {
     const type = interphace.getPropertyOrThrow("union").getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
       {
+        discriminator: undefined,
         kind: TypeKind.UNION,
         types: [
           {
@@ -267,6 +291,29 @@ describe("type parser", () => {
           },
           {
             kind: TypeKind.NULL
+          }
+        ]
+      }
+    );
+  });
+
+  test("parses discriminated unions", () => {
+    const type = interphace
+      .getPropertyOrThrow("unionDiscriminated")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        discriminator: "type",
+        kind: TypeKind.UNION,
+        types: [
+          {
+            kind: TypeKind.REFERENCE,
+            name: "DiscriminatedUnionElementA"
+          },
+          {
+            kind: TypeKind.REFERENCE,
+            name: "DiscriminatedUnionElementB"
           }
         ]
       }

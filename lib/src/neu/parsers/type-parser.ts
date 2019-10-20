@@ -46,7 +46,8 @@ import {
   Type,
   TypeKind,
   TypeTable,
-  unionType
+  unionType,
+  inferDiscriminator
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
@@ -58,6 +59,9 @@ export function parseType(
 ): Result<Type, ParserError> {
   // Type references must be parsed first to ensure internal type aliases are handled
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
+    if (typeNode.getType().isArray()) {
+      return parseArrayConstructorType(typeNode, typeTable, lociTable);
+    }
     return parseTypeReference(typeNode, typeTable, lociTable);
   } else if (TypeGuards.isNullLiteral(typeNode)) {
     return ok(nullType());
@@ -128,6 +132,7 @@ function parseTypeReference(
 
   const declaration = declarationResult.unwrap();
   const name = declaration.getName();
+
   if (TypeGuards.isTypeAliasDeclaration(declaration)) {
     const decTypeNode = declaration.getTypeNodeOrThrow();
     // if the type name is one of of the internal ones ensure they have not been redefined
@@ -239,6 +244,11 @@ function parseLiteralType(
  * @param typeNode AST type node
  * @param typeTable a TypeTable
  * @param lociTable a LociTable
+ *
+ * @example
+ * ```ts
+ * let array: string[];
+ * ```
  */
 function parseArrayType(
   typeNode: ArrayTypeNode,
@@ -247,6 +257,40 @@ function parseArrayType(
 ): Result<ArrayType, ParserError> {
   const elementDataTypeResult = parseType(
     typeNode.getElementTypeNode(),
+    typeTable,
+    lociTable
+  );
+
+  if (elementDataTypeResult.isErr()) return elementDataTypeResult;
+
+  return ok(arrayType(elementDataTypeResult.unwrap()));
+}
+
+/**
+ * Parse an array constructor type.
+ *
+ * @param typeNode AST type node
+ * @param typeTable a TypeTable
+ * @param lociTable a LociTable
+ */
+function parseArrayConstructorType(
+  typeNode: TypeReferenceNode,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<ArrayType, ParserError> {
+  const typeArguments = typeNode.getTypeArguments();
+
+  if (typeArguments.length !== 1) {
+    return err(
+      new ParserError("Array types must declare exactly one argument", {
+        file: typeNode.getSourceFile().getFilePath(),
+        position: typeNode.getPos()
+      })
+    );
+  }
+
+  const elementDataTypeResult = parseType(
+    typeArguments[0],
     typeTable,
     lociTable
   );
@@ -391,7 +435,7 @@ function parseUnionType(
       if (typeResult.isErr()) return typeResult;
       types.push(typeResult.unwrap());
     }
-    return ok(unionType(types));
+    return ok(unionType(types, inferDiscriminator(types, typeTable)));
   } else {
     return err(
       new TypeNotAllowedError("malformed union type", {

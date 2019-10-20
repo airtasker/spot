@@ -116,6 +116,7 @@ export interface ArrayType {
 export interface UnionType {
   kind: TypeKind.UNION;
   types: Type[];
+  discriminator?: string;
 }
 
 export interface ReferenceType {
@@ -228,10 +229,14 @@ export function arrayType(elementType: Type): ArrayType {
   };
 }
 
-export function unionType(unionTypes: Type[]): UnionType {
+export function unionType(
+  unionTypes: Type[],
+  discriminator?: string
+): UnionType {
   return {
     kind: TypeKind.UNION,
-    types: unionTypes
+    types: unionTypes,
+    discriminator
   };
 }
 
@@ -338,6 +343,69 @@ export function dereferenceType(
     return dereferenceType(typeTable.getOrError(type.name), typeTable);
   }
   return type;
+}
+
+/**
+ * Given a list of types, try to find a disriminator.
+ *
+ * @param types list of types
+ * @param typeTable a TypeTable
+ */
+export function inferDiscriminator(
+  types: Type[],
+  typeTable: TypeTable
+): string | undefined {
+  const conreteRootTypes = types.reduce<ConcreteType[]>((acc, type) => {
+    return acc.concat(...possibleRootTypes(type, typeTable));
+  }, []);
+
+  const possibleDiscriminators = new Map<
+    string,
+    Array<{ value: string; type: Type }>
+  >();
+
+  for (const type of conreteRootTypes) {
+    if (!isObjectType(type)) {
+      // Only objects will have discriminator properties
+      return;
+    }
+
+    for (const property of type.properties) {
+      if (property.optional) {
+        // Optional properties cannot be considered for discriminators
+        continue;
+      }
+      const dereferencedPropertyType = dereferenceType(
+        property.type,
+        typeTable
+      );
+      if (isStringLiteralType(dereferencedPropertyType)) {
+        const current = possibleDiscriminators.get(property.name);
+        possibleDiscriminators.set(
+          property.name,
+          (current || []).concat({
+            value: dereferencedPropertyType.value,
+            type
+          })
+        );
+      }
+    }
+  }
+
+  const candidateDiscriminators = [];
+
+  for (const candidate of possibleDiscriminators.keys()) {
+    const values = possibleDiscriminators.get(candidate)!;
+    if (new Set(values.map(v => v.value)).size !== types.length) {
+      continue;
+    }
+    candidateDiscriminators.push(candidate);
+  }
+
+  // Multiple candidates means the a discriminator is ambiguous and therefore can't be determined
+  return candidateDiscriminators.length === 1
+    ? candidateDiscriminators[0]
+    : undefined;
 }
 
 /**

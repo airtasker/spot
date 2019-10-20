@@ -1,0 +1,167 @@
+import assertNever from "assert-never";
+import { Contract } from "../../definitions";
+import {
+  dereferenceType,
+  isNullType,
+  isStringLiteralType,
+  possibleRootTypes,
+  Type,
+  TypeKind,
+  TypeTable
+} from "../../types";
+import { LintingRuleViolation } from "../rule";
+
+/**
+ * Checks that all union types have a discriminator. Unions that include string literals
+ * exclusively are valid. The union containing 2 types including the `null` type is also valid.
+ *
+ * @param contract a contract
+ */
+export function hasDiscriminator(contract: Contract): LintingRuleViolation[] {
+  const typeTable = TypeTable.fromArray(contract.types);
+
+  const violations: LintingRuleViolation[] = [];
+
+  contract.endpoints.forEach(endpoint => {
+    if (endpoint.request) {
+      endpoint.request.headers.forEach(header => {
+        findDisriminatorViolations(header.type, typeTable).forEach(path => {
+          violations.push({
+            message: `Endpoint (${endpoint.name}) request header (${header.name}) contains a union type with no discriminator: #/${path}`
+          });
+        });
+      });
+      endpoint.request.pathParams.forEach(pathParam => {
+        findDisriminatorViolations(pathParam.type, typeTable).forEach(path => {
+          violations.push({
+            message: `Endpoint (${endpoint.name}) request path parameter (${pathParam.name}) contains a union type with no discriminator: #/${path}`
+          });
+        });
+      });
+      endpoint.request.queryParams.forEach(queryParam => {
+        findDisriminatorViolations(queryParam.type, typeTable).forEach(path => {
+          violations.push({
+            message: `Endpoint (${endpoint.name}) request query parameter (${queryParam.name}) contains a union type with no discriminator: #/${path}`
+          });
+        });
+      });
+      if (endpoint.request.body) {
+        findDisriminatorViolations(
+          endpoint.request.body.type,
+          typeTable
+        ).forEach(path => {
+          violations.push({
+            message: `Endpoint (${endpoint.name}) request body contains a union type with no discriminator: #/${path}`
+          });
+        });
+      }
+    }
+    endpoint.responses.forEach(response => {
+      response.headers.forEach(header => {
+        findDisriminatorViolations(header.type, typeTable).forEach(path => {
+          violations.push({
+            message: `Endpoint (${endpoint.name}) response (${response.status}) header (${header.name}) contains a union type with no discriminator: #/${path}`
+          });
+        });
+      });
+      if (response.body) {
+        findDisriminatorViolations(response.body.type, typeTable).forEach(
+          path => {
+            violations.push({
+              message: `Endpoint (${endpoint.name}) response (${response.status}) body contains a union type with no discriminator: #/${path}`
+            });
+          }
+        );
+      }
+    });
+    if (endpoint.defaultResponse) {
+      endpoint.defaultResponse.headers.forEach(header => {
+        findDisriminatorViolations(header.type, typeTable).forEach(path => {
+          violations.push({
+            message: `Endpoint (${endpoint.name}) response (default) header (${header.name}) contains a union type with no discriminator: #/${path}`
+          });
+        });
+      });
+      if (endpoint.defaultResponse.body) {
+        findDisriminatorViolations(
+          endpoint.defaultResponse.body.type,
+          typeTable
+        ).forEach(path => {
+          violations.push({
+            message: `Endpoint (${endpoint.name}) response (default) body contains a union type with no discriminator: #/${path}`
+          });
+        });
+      }
+    }
+  });
+
+  return violations;
+}
+
+/**
+ * Finds discriminator violations for a given type. The paths to the violations
+ * will be returned.
+ *
+ * @param type current type to check
+ * @param typeTable type reference table
+ * @param typePath type path for context
+ */
+function findDisriminatorViolations(
+  type: Type,
+  typeTable: TypeTable,
+  typePath: string[] = []
+): string[] {
+  switch (type.kind) {
+    case TypeKind.NULL:
+    case TypeKind.BOOLEAN:
+    case TypeKind.BOOLEAN_LITERAL:
+    case TypeKind.STRING:
+    case TypeKind.STRING_LITERAL:
+    case TypeKind.FLOAT:
+    case TypeKind.DOUBLE:
+    case TypeKind.FLOAT_LITERAL:
+    case TypeKind.INT32:
+    case TypeKind.INT64:
+    case TypeKind.INT_LITERAL:
+    case TypeKind.DATE:
+    case TypeKind.DATE_TIME:
+      return [];
+    case TypeKind.OBJECT:
+      return type.properties.reduce<string[]>((acc, prop) => {
+        return acc.concat(
+          findDisriminatorViolations(
+            prop.type,
+            typeTable,
+            typePath.concat(prop.name)
+          )
+        );
+      }, []);
+    case TypeKind.ARRAY:
+      return findDisriminatorViolations(
+        type.elementType,
+        typeTable,
+        typePath.concat("[]")
+      );
+    case TypeKind.UNION:
+      const concreteTypes = possibleRootTypes(type, typeTable);
+      // single type with null is not a violation
+      const isUnionOfSingleTypeAndNull = concreteTypes.some(t => isNullType(t));
+      // union of string literals is not violation
+      const isUnionOfStringLiterals = concreteTypes.every(t =>
+        isStringLiteralType(t)
+      );
+      return !isUnionOfSingleTypeAndNull &&
+        !isUnionOfStringLiterals &&
+        type.discriminator === undefined
+        ? [typePath.join("/")]
+        : [];
+    case TypeKind.REFERENCE:
+      return findDisriminatorViolations(
+        dereferenceType(type, typeTable),
+        typeTable,
+        typePath
+      );
+    default:
+      throw assertNever(type);
+  }
+}

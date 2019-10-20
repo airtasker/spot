@@ -34,7 +34,9 @@ interface TypeInterface {
     propertyB?: boolean;
   };
   array: boolean[];
+  Array: Array<{ a: boolean }>;
   union: boolean | Date | null;
+  unionDiscriminated: DiscriminatedUnionElementA | DiscriminatedUnionElementB;
   alias: Alias;
   interface: Interface;
   interfaceExtends: InterfaceExtends;
@@ -47,6 +49,16 @@ interface TypeInterface {
   map: Map<string, boolean>;
   indexSignature: { [index: string]: boolean };
   interfaceWithIndexSignature: InterfaceWithIndexSignature;
+}
+
+interface DiscriminatedUnionElementA {
+  type: "a";
+  a: string;
+}
+
+interface DiscriminatedUnionElementB {
+  type: "b";
+  b: string;
 }
 
 type Alias = string;
