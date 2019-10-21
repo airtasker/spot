@@ -33,6 +33,9 @@ export function runValidationServer(
       // send a 422 if it doesn't match
       const body = req.body as ValidateRequest;
 
+      console.log(body);
+      console.log(body.request);
+
       const userInputRequest = recordedRequestToUserInputRequest(body.request);
       const userInputResponse = recordedResponseToUserInputResponse(
         body.response
@@ -89,7 +92,7 @@ export const headersToUserInputHeader = (
 export const recordedRequestToUserInputRequest = (
   recordedRequest: RecordedRequest
 ): UserInputRequest => {
-  const jsonBody = JSON.parse(recordedRequest.body);
+  const jsonBody = recordedRequest.body && JSON.parse(recordedRequest.body);
   return {
     path: recordedRequest.path,
     method: recordedRequest.method,
@@ -101,7 +104,7 @@ export const recordedRequestToUserInputRequest = (
 export const recordedResponseToUserInputResponse = (
   recordedResponse: RecordedResponse
 ): UserInputResponse => {
-  const jsonBody = JSON.parse(recordedResponse.body);
+  const jsonBody = recordedResponse.body && JSON.parse(recordedResponse.body);
   return {
     headers: headersToUserInputHeader(recordedResponse.headers),
     statusCode: recordedResponse.status,
