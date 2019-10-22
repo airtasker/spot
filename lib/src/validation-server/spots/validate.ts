@@ -22,7 +22,7 @@ export class Validate {
 
 export interface RecordedRequest {
   method: HttpMethod;
-  url: String;
+  path: String;
   headers: Header[];
   body: String;
 }

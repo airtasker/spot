@@ -1,5 +1,4 @@
 import express from "express";
-import url from "url";
 import { Contract } from "../neu/definitions";
 import { ContractMismatcher } from "../neu/verifications/contract-mismatcher";
 import {
@@ -90,10 +89,9 @@ export const headersToUserInputHeader = (
 export const recordedRequestToUserInputRequest = (
   recordedRequest: RecordedRequest
 ): UserInputRequest => {
-  const url = new URL(recordedRequest.url);
   const jsonBody = JSON.parse(recordedRequest.body);
   return {
-    path: url.pathname + url.search,
+    path: recordedRequest.path,
     method: recordedRequest.method,
     headers: headersToUserInputHeader(recordedRequest.headers),
     body: jsonBody
