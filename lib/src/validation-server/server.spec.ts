@@ -36,7 +36,7 @@ describe("Validation Server", () => {
       const validRequestAndResponse = {
         request: {
           method: "POST",
-          url: "http://spot.com/company/123/users",
+          path: "/company/123/users",
           headers: [{ key: "x-auth-token", value: "helloworld" }],
           body: JSON.stringify({
             data: {
@@ -84,7 +84,7 @@ describe("Validation Server", () => {
       const requestAndResponseWithMismatches = {
         request: {
           method: "POST",
-          url: "http://spot.com/company/123/users",
+          path: "/company/123/users",
           headers: [{ key: "x-auth-token", value: "helloworld" }],
           body: "{}"
         },
@@ -147,7 +147,7 @@ describe("Transformation functions", () => {
       expect(
         recordedRequestToUserInputRequest({
           method: "POST",
-          url: "http://spot.com/path/to/somewhere?hello=world",
+          path: "/path/to/somewhere?hello=world",
           headers: [{ key: "a", value: "b" }, { key: "c", value: "d" }],
           body: JSON.stringify({ data: "body" })
         })
