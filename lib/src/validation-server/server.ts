@@ -33,9 +33,6 @@ export function runValidationServer(
       // send a 422 if it doesn't match
       const body = req.body as ValidateRequest;
 
-      console.log(body);
-      console.log(body.request);
-
       const userInputRequest = recordedRequestToUserInputRequest(body.request);
       const userInputResponse = recordedResponseToUserInputResponse(
         body.response
