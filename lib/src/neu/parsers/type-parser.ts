@@ -28,6 +28,7 @@ import {
   FloatLiteralType,
   floatType,
   FloatType,
+  inferDiscriminator,
   int32Type,
   Int32Type,
   int64Type,
@@ -46,8 +47,7 @@ import {
   Type,
   TypeKind,
   TypeTable,
-  unionType,
-  inferDiscriminator
+  unionType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
