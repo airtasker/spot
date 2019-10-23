@@ -119,6 +119,7 @@ npx @airtasker/spot generate --contract api.ts
 * [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
 * [`spot test SPOT_CONTRACT`](#spot-test-spot_contract)
 * [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
+* [`spot validation-server SPOT_CONTRACT`](#spot-validation-server-spot_contract)
 
 ## `spot checksum SPOT_CONTRACT`
 
@@ -311,4 +312,25 @@ EXAMPLE
 ```
 
 _See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v0.2.18/build/cli/src/commands/validate.js)_
+
+## `spot validation-server SPOT_CONTRACT`
+
+Start the spot contract validation server
+
+```
+USAGE
+  $ spot validation-server SPOT_CONTRACT
+
+ARGUMENTS
+  SPOT_CONTRACT  path to Spot contract
+
+OPTIONS
+  -h, --help       show CLI help
+  -p, --port=port  [default: 5907] The port where application will be available
+
+EXAMPLE
+  $ spot validation-server api.ts
+```
+
+_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v0.2.18/build/cli/src/commands/validation-server.js)_
 <!-- commandsstop -->

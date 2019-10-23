@@ -89,7 +89,7 @@ export const headersToUserInputHeader = (
 export const recordedRequestToUserInputRequest = (
   recordedRequest: RecordedRequest
 ): UserInputRequest => {
-  const jsonBody = JSON.parse(recordedRequest.body);
+  const jsonBody = recordedRequest.body && JSON.parse(recordedRequest.body);
   return {
     path: recordedRequest.path,
     method: recordedRequest.method,
@@ -101,7 +101,7 @@ export const recordedRequestToUserInputRequest = (
 export const recordedResponseToUserInputResponse = (
   recordedResponse: RecordedResponse
 ): UserInputResponse => {
-  const jsonBody = JSON.parse(recordedResponse.body);
+  const jsonBody = recordedResponse.body && JSON.parse(recordedResponse.body);
   return {
     headers: headersToUserInputHeader(recordedResponse.headers),
     statusCode: recordedResponse.status,

@@ -24,13 +24,13 @@ export interface RecordedRequest {
   method: HttpMethod;
   path: String;
   headers: Header[];
-  body: String;
+  body?: String;
 }
 
 export interface RecordedResponse {
   status: Integer;
   headers: Header[];
-  body: String;
+  body?: String;
 }
 
 export interface ValidateRequest {
