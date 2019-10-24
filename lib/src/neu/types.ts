@@ -355,7 +355,7 @@ export function inferDiscriminator(
   types: Type[],
   typeTable: TypeTable
 ): string | undefined {
-  const conreteRootTypes = types.reduce<ConcreteType[]>((acc, type) => {
+  const concreteRootTypes = types.reduce<ConcreteType[]>((acc, type) => {
     return acc.concat(...possibleRootTypes(type, typeTable));
   }, []);
 
@@ -364,7 +364,7 @@ export function inferDiscriminator(
     Array<{ value: string; type: Type }>
   >();
 
-  for (const type of conreteRootTypes) {
+  for (const type of concreteRootTypes) {
     if (!isObjectType(type)) {
       // Only objects will have discriminator properties
       return;
