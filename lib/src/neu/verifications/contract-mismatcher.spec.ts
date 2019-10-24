@@ -1,5 +1,8 @@
 import { parse } from "../parser";
-import { ContractMismatcher } from "./contract-mismatcher";
+import {
+  ContractMismatcher,
+  pathMatchesVariablePath
+} from "./contract-mismatcher";
 
 const EXAMPLE_CONTRACT_PATH = "./lib/src/__examples__/contract.ts";
 
@@ -7,6 +10,31 @@ describe("contract mismatch finder", () => {
   let mismatcher: ContractMismatcher;
   beforeAll(() => {
     mismatcher = new ContractMismatcher(parse(EXAMPLE_CONTRACT_PATH));
+  });
+
+  test("pathMatchesVariablePath should match correct paths", () => {
+    // non-variable
+    expect(pathMatchesVariablePath("/a/b/c", "/a/b/c")).toBeTruthy();
+
+    // one variable path
+    expect(pathMatchesVariablePath("/a/:b/c", "/a/0/c")).toBeTruthy();
+
+    // two variable paths
+    expect(pathMatchesVariablePath("/a/:b/c/:d", "/a/0/c/0")).toBeTruthy();
+  });
+
+  test("pathMatchesVariablePath should not match incorrect paths", () => {
+    // non-variable with prefix
+    expect(pathMatchesVariablePath("/a/b/c", "/z/a/b/c")).toBeFalsy();
+
+    // non-variable with postfix
+    expect(pathMatchesVariablePath("/a/b/c", "/a/b/c/d")).toBeFalsy();
+
+    // variable with prefix
+    expect(pathMatchesVariablePath("/a/:b/c", "/z/a/0/c")).toBeFalsy();
+
+    // variable with postfix
+    expect(pathMatchesVariablePath("/a/:b/c", "/a/0/c/d")).toBeFalsy();
   });
 
   test("no mismatch found", () => {
@@ -96,7 +124,40 @@ describe("contract mismatch finder", () => {
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow().length).toBe(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "Endpoint /compan/5/users with Http Method of POST does not exist under the specified contract."
+      "POST /compan/5/users does not exist under the specified contract."
+    );
+  });
+
+  test("A mismatch is found, when path is similar but contains a prefix", () => {
+    const request = {
+      path: "/some/prefix/company/5/users",
+      method: "POST",
+      headers: { "x-auth-token": "token" },
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed"
+        }
+      }
+    };
+    const response = {
+      headers: { Location: "testLocation" },
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
+    const unwrappedResult = result.unwrapOrThrow();
+    // expect(unwrappedResult.length).toBe(1);
+    expect(unwrappedResult[0].message).toBe(
+      "POST /some/prefix/company/5/users does not exist under the specified contract."
     );
   });
 

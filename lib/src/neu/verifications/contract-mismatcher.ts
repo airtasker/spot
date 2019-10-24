@@ -20,7 +20,6 @@ import {
 } from "./user-input-models";
 
 export class ContractMismatcher {
-  private readonly PATH_PARAM_REGEX = /:[^\/]*/g;
   private typeTable: TypeTable;
 
   constructor(private readonly contract: Contract) {
@@ -262,9 +261,7 @@ export class ContractMismatcher {
     }
 
     const contractPathArray = endpoint.path.split("/");
-    const userPathArray = this.getSeparatedPathFromQueries(
-      userInputRequest.path
-    )[0].split("/");
+    const userPathArray = userInputRequest.path.split("?")[0].split("/");
 
     if (contractPathArray.length !== userPathArray.length) {
       return ok([
@@ -573,53 +570,43 @@ export class ContractMismatcher {
     );
   }
 
-  private getDefaultResponseBodyTypeOnContractEndpoint(
-    endpoint: Endpoint
-  ): Result<Type, Error> {
-    if (!endpoint.defaultResponse || !endpoint.defaultResponse.body) {
-      return err(
-        new Error(
-          `Default response does not exist on ${endpoint.path}:${endpoint.method}.`
-        )
-      );
-    }
-    return ok(endpoint.defaultResponse.body.type);
-  }
-
   private getEndpointByRequest(
     userInputRequest: UserInputRequest
   ): Result<Endpoint, Error> {
-    for (const endpoint of this.contract.endpoints) {
-      if (
-        this.isMatchedToContractPath(userInputRequest.path, endpoint.path) &&
-        endpoint.method === userInputRequest.method
-      ) {
-        return ok(endpoint);
-      }
+    const userInputRequestPath = userInputRequest.path.split("?")[0];
+
+    const endpoint = this.contract.endpoints.find((value, _0, _1) => {
+      return (
+        value.method === userInputRequest.method &&
+        pathMatchesVariablePath(value.path, userInputRequestPath)
+      );
+    });
+
+    if (endpoint) {
+      return ok(endpoint);
     }
+
     return err(
       new Error(
-        `Endpoint ${userInputRequest.path} with Http Method of ${userInputRequest.method} does not exist under the specified contract.`
+        `${userInputRequest.method} ${userInputRequest.path} does not exist under the specified contract.`
       )
     );
   }
-
-  private isMatchedToContractPath(
-    userInputPath: string,
-    contractPath: string
-  ): boolean {
-    const replacedContractPathPattern = contractPath.replace(
-      this.PATH_PARAM_REGEX,
-      ".+"
-    );
-    const regexp = new RegExp(replacedContractPathPattern);
-    return regexp.test(userInputPath);
-  }
-
-  private getSeparatedPathFromQueries(path: string): string[] {
-    return path.split("?");
-  }
 }
+
+// Transform /a/:b/c/:d/e -> /^/a/\w+/c/\w+/e$/
+const regexForVariablePath = (path: string): RegExp => {
+  const regexp = path.replace(/:[^\/]+/g, "\\w+");
+  return new RegExp(`^${regexp}$`);
+};
+
+export const pathMatchesVariablePath = (
+  variablePath: string,
+  path: string
+): boolean => {
+  const variablePathRegex = regexForVariablePath(variablePath);
+  return variablePathRegex.test(path);
+};
 
 export class Mismatch {
   constructor(readonly message: string) {}
