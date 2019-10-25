@@ -596,7 +596,7 @@ export class ContractMismatcher {
 
 // Transform /a/:b/c/:d/e -> /^/a/\w+/c/\w+/e$/
 const regexForVariablePath = (path: string): RegExp => {
-  const regexp = path.replace(/:[^\/]+/g, "\\w+");
+  const regexp = path.replace(/:[^\/]+/g, ".+");
   return new RegExp(`^${regexp}$`);
 };
 
