@@ -23,9 +23,9 @@ describe("has-discriminator linter rule", () => {
     expect(hasDiscriminator(contract)).toHaveLength(0);
   });
 
-  test("returns no violations for contract containing string literal unions", () => {
+  test("returns no violations for contract containing unions with multiple homogeneous primitive type and null unions", () => {
     const file = createProjectFromExistingSourceFile(
-      `${__dirname}/__spec-examples__/has-discriminator/string-literal-union.ts`
+      `${__dirname}/__spec-examples__/has-discriminator/multiple-homogeneous-primitive-type-or-null-union.ts`
     ).file;
 
     const { contract } = parseContract(file).unwrapOrThrow();

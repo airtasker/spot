@@ -1,4 +1,4 @@
-import { api, body, endpoint, response, String } from "@airtasker/spot";
+import { api, body, endpoint, response } from "@airtasker/spot";
 
 @api({ name: "contract" })
 class Contract {}
@@ -13,5 +13,5 @@ class Endpoint {
 }
 
 interface Body {
-  union: "a" | "b" | "c";
+  union: "a" | "b" | "c" | null;
 }

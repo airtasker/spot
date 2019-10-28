@@ -3,7 +3,7 @@ import { Contract } from "../../definitions";
 import {
   dereferenceType,
   isNullType,
-  isStringLiteralType,
+  isPrimitiveType,
   possibleRootTypes,
   Type,
   TypeKind,
@@ -12,8 +12,9 @@ import {
 import { LintingRuleViolation } from "../rule";
 
 /**
- * Checks that all union types have a discriminator. Unions that include string literals
- * exclusively are valid. The union containing 2 types including the `null` type is also valid.
+ * Checks that all union types have a discriminator. A discriminator is *not* required for:
+ * - a two type union where one type is `null`, e.g. `String | null`
+ * - a union composed of `null` and other types of the same primitive type, e.g. `"one" | "two" | "three" | null`
  *
  * @param contract a contract
  */
@@ -143,18 +144,34 @@ function findDisriminatorViolations(
         typePath.concat("[]")
       );
     case TypeKind.UNION:
+      const violationsInUnionTypes = type.types.reduce<string[]>((acc, t) => {
+        return acc.concat(
+          findDisriminatorViolations(t, typeTable, typePath.concat())
+        );
+      }, []);
+
+      // Get concrete types excluding null
       const concreteTypes = possibleRootTypes(type, typeTable);
-      // single type with null is not a violation
-      const isUnionOfSingleTypeAndNull = concreteTypes.some(t => isNullType(t));
-      // union of string literals is not violation
-      const isUnionOfStringLiterals = concreteTypes.every(t =>
-        isStringLiteralType(t)
+      const concreteTypesExcludingNull = concreteTypes.filter(
+        t => !isNullType(t)
       );
-      return !isUnionOfSingleTypeAndNull &&
-        !isUnionOfStringLiterals &&
-        type.discriminator === undefined
-        ? [typePath.join("/")]
-        : [];
+
+      // Union of 2 types with null is valid
+      if (concreteTypesExcludingNull.length === 1) {
+        return violationsInUnionTypes;
+      }
+
+      // Union of primitive type with null is valid
+      if (
+        new Set(concreteTypesExcludingNull.map(t => t.kind)).size === 1 &&
+        isPrimitiveType(concreteTypesExcludingNull[0])
+      ) {
+        return violationsInUnionTypes;
+      }
+
+      return type.discriminator === undefined
+        ? violationsInUnionTypes.concat(typePath.join("/"))
+        : violationsInUnionTypes;
     case TypeKind.REFERENCE:
       return findDisriminatorViolations(
         dereferenceType(type, typeTable),

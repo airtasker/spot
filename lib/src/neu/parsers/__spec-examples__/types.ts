@@ -37,6 +37,10 @@ interface TypeInterface {
   Array: Array<{ a: boolean }>;
   union: boolean | Date | null;
   unionDiscriminated: DiscriminatedUnionElementA | DiscriminatedUnionElementB;
+  unionDiscriminatedNullable:
+    | DiscriminatedUnionElementA
+    | DiscriminatedUnionElementB
+    | null;
   alias: Alias;
   interface: Interface;
   interfaceExtends: InterfaceExtends;

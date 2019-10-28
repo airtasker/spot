@@ -320,6 +320,32 @@ describe("type parser", () => {
     );
   });
 
+  test("parses nullable discriminated unions", () => {
+    const type = interphace
+      .getPropertyOrThrow("unionDiscriminatedNullable")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        discriminator: "type",
+        kind: TypeKind.UNION,
+        types: [
+          {
+            kind: TypeKind.REFERENCE,
+            name: "DiscriminatedUnionElementA"
+          },
+          {
+            kind: TypeKind.REFERENCE,
+            name: "DiscriminatedUnionElementB"
+          },
+          {
+            kind: TypeKind.NULL
+          }
+        ]
+      }
+    );
+  });
+
   test("parses type aliases", () => {
     const type = interphace.getPropertyOrThrow("alias").getTypeNodeOrThrow();
 

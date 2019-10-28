@@ -1,3 +1,5 @@
+import assertNever from "assert-never";
+
 export enum TypeKind {
   NULL = "null",
   BOOLEAN = "boolean",
@@ -41,6 +43,13 @@ export type Type =
  * A concrete type is any type that is not a union of types or reference to a type.
  */
 export type ConcreteType = Exclude<Type, UnionType | ReferenceType>;
+/**
+ * A concrete type is any type that is not a
+ */
+export type PrimitiveType = Exclude<
+  Type,
+  ObjectType | ArrayType | UnionType | ReferenceType
+>;
 
 export interface NullType {
   kind: TypeKind.NULL;
@@ -317,6 +326,32 @@ export function isReferenceType(type: Type): type is ReferenceType {
   return type.kind === TypeKind.REFERENCE;
 }
 
+export function isPrimitiveType(type: Type): type is PrimitiveType {
+  switch (type.kind) {
+    case TypeKind.NULL:
+    case TypeKind.BOOLEAN:
+    case TypeKind.BOOLEAN_LITERAL:
+    case TypeKind.STRING:
+    case TypeKind.STRING_LITERAL:
+    case TypeKind.FLOAT:
+    case TypeKind.DOUBLE:
+    case TypeKind.FLOAT_LITERAL:
+    case TypeKind.INT32:
+    case TypeKind.INT64:
+    case TypeKind.INT_LITERAL:
+    case TypeKind.DATE:
+    case TypeKind.DATE_TIME:
+      return true;
+    case TypeKind.OBJECT:
+    case TypeKind.ARRAY:
+    case TypeKind.UNION:
+    case TypeKind.REFERENCE:
+      return false;
+    default:
+      throw assertNever(type);
+  }
+}
+
 // Type helpers
 
 export function possibleRootTypes(
@@ -346,7 +381,7 @@ export function dereferenceType(
 }
 
 /**
- * Given a list of types, try to find a disriminator.
+ * Given a list of types, try to find a disriminator. The null type is ignored.
  *
  * @param types list of types
  * @param typeTable a TypeTable
@@ -355,16 +390,18 @@ export function inferDiscriminator(
   types: Type[],
   typeTable: TypeTable
 ): string | undefined {
-  const concreteRootTypes = types.reduce<ConcreteType[]>((acc, type) => {
-    return acc.concat(...possibleRootTypes(type, typeTable));
-  }, []);
+  const concreteRootTypesExcludingNull = types
+    .reduce<ConcreteType[]>((acc, type) => {
+      return acc.concat(...possibleRootTypes(type, typeTable));
+    }, [])
+    .filter(t => !isNullType(t));
 
   const possibleDiscriminators = new Map<
     string,
     Array<{ value: string; type: Type }>
   >();
 
-  for (const type of concreteRootTypes) {
+  for (const type of concreteRootTypesExcludingNull) {
     if (!isObjectType(type)) {
       // Only objects will have discriminator properties
       return;
@@ -396,7 +433,10 @@ export function inferDiscriminator(
 
   for (const candidate of possibleDiscriminators.keys()) {
     const values = possibleDiscriminators.get(candidate)!;
-    if (new Set(values.map(v => v.value)).size !== types.length) {
+    if (
+      new Set(values.map(v => v.value)).size !==
+      concreteRootTypesExcludingNull.length
+    ) {
       continue;
     }
     candidateDiscriminators.push(candidate);
