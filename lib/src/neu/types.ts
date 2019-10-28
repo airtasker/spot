@@ -1,3 +1,5 @@
+import assertNever from "assert-never";
+
 export enum TypeKind {
   NULL = "null",
   BOOLEAN = "boolean",
@@ -41,6 +43,13 @@ export type Type =
  * A concrete type is any type that is not a union of types or reference to a type.
  */
 export type ConcreteType = Exclude<Type, UnionType | ReferenceType>;
+/**
+ * A concrete type is any type that is not a
+ */
+export type PrimitiveType = Exclude<
+  Type,
+  ObjectType | ArrayType | UnionType | ReferenceType
+>;
 
 export interface NullType {
   kind: TypeKind.NULL;
@@ -116,6 +125,7 @@ export interface ArrayType {
 export interface UnionType {
   kind: TypeKind.UNION;
   types: Type[];
+  discriminator?: string;
 }
 
 export interface ReferenceType {
@@ -228,10 +238,14 @@ export function arrayType(elementType: Type): ArrayType {
   };
 }
 
-export function unionType(unionTypes: Type[]): UnionType {
+export function unionType(
+  unionTypes: Type[],
+  discriminator?: string
+): UnionType {
   return {
     kind: TypeKind.UNION,
-    types: unionTypes
+    types: unionTypes,
+    discriminator
   };
 }
 
@@ -312,6 +326,32 @@ export function isReferenceType(type: Type): type is ReferenceType {
   return type.kind === TypeKind.REFERENCE;
 }
 
+export function isPrimitiveType(type: Type): type is PrimitiveType {
+  switch (type.kind) {
+    case TypeKind.NULL:
+    case TypeKind.BOOLEAN:
+    case TypeKind.BOOLEAN_LITERAL:
+    case TypeKind.STRING:
+    case TypeKind.STRING_LITERAL:
+    case TypeKind.FLOAT:
+    case TypeKind.DOUBLE:
+    case TypeKind.FLOAT_LITERAL:
+    case TypeKind.INT32:
+    case TypeKind.INT64:
+    case TypeKind.INT_LITERAL:
+    case TypeKind.DATE:
+    case TypeKind.DATE_TIME:
+      return true;
+    case TypeKind.OBJECT:
+    case TypeKind.ARRAY:
+    case TypeKind.UNION:
+    case TypeKind.REFERENCE:
+      return false;
+    default:
+      throw assertNever(type);
+  }
+}
+
 // Type helpers
 
 export function possibleRootTypes(
@@ -338,6 +378,74 @@ export function dereferenceType(
     return dereferenceType(typeTable.getOrError(type.name), typeTable);
   }
   return type;
+}
+
+/**
+ * Given a list of types, try to find a disriminator. The null type is ignored.
+ *
+ * @param types list of types
+ * @param typeTable a TypeTable
+ */
+export function inferDiscriminator(
+  types: Type[],
+  typeTable: TypeTable
+): string | undefined {
+  const concreteRootTypesExcludingNull = types
+    .reduce<ConcreteType[]>((acc, type) => {
+      return acc.concat(...possibleRootTypes(type, typeTable));
+    }, [])
+    .filter(t => !isNullType(t));
+
+  const possibleDiscriminators = new Map<
+    string,
+    Array<{ value: string; type: Type }>
+  >();
+
+  for (const type of concreteRootTypesExcludingNull) {
+    if (!isObjectType(type)) {
+      // Only objects will have discriminator properties
+      return;
+    }
+
+    for (const property of type.properties) {
+      if (property.optional) {
+        // Optional properties cannot be considered for discriminators
+        continue;
+      }
+      const dereferencedPropertyType = dereferenceType(
+        property.type,
+        typeTable
+      );
+      if (isStringLiteralType(dereferencedPropertyType)) {
+        const current = possibleDiscriminators.get(property.name);
+        possibleDiscriminators.set(
+          property.name,
+          (current || []).concat({
+            value: dereferencedPropertyType.value,
+            type
+          })
+        );
+      }
+    }
+  }
+
+  const candidateDiscriminators = [];
+
+  for (const candidate of possibleDiscriminators.keys()) {
+    const values = possibleDiscriminators.get(candidate)!;
+    if (
+      new Set(values.map(v => v.value)).size !==
+      concreteRootTypesExcludingNull.length
+    ) {
+      continue;
+    }
+    candidateDiscriminators.push(candidate);
+  }
+
+  // Multiple candidates means the a discriminator is ambiguous and therefore can't be determined
+  return candidateDiscriminators.length === 1
+    ? candidateDiscriminators[0]
+    : undefined;
 }
 
 /**

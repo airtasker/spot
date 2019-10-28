@@ -152,7 +152,7 @@ function isParamObjectPropertyTypeSafe(
 }
 
 /**
- * Check if a type is safe for use as an parameter's array element type.
+ * Check if a type is safe for use as a parameter's array element type.
  *
  * @param type type to check
  * @param typeTable type lookup table
