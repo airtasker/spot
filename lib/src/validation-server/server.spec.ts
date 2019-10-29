@@ -129,16 +129,13 @@ describe("Validation Server", () => {
 
 describe("Transformation functions", () => {
   describe("headersToUserInputHeader", () => {
-    it("should transform Header[] into UserInputHeader", () => {
+    it("should transform Header[] into UserInputHeader[]", () => {
       expect(
         headersToUserInputHeader([
           { key: "a", value: "b" },
           { key: "c", value: "d" }
         ])
-      ).toEqual({
-        a: "b",
-        c: "d"
-      });
+      ).toEqual([{ name: "a", value: "b" }, { name: "c", value: "d" }]);
     });
   });
 

@@ -41,7 +41,12 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [
+        {
+          name: "x-auth-token",
+          value: "token"
+        }
+      ],
       body: {
         data: {
           firstName: "Maple",
@@ -53,7 +58,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -71,7 +76,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -82,7 +87,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -100,7 +105,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/compan/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -111,7 +116,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -132,7 +137,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/some/prefix/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -143,7 +148,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -165,7 +170,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/true/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -176,7 +181,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -197,11 +202,11 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: {},
+      headers: [],
       body: {}
     };
     const response = {
-      headers: { accept: "1" },
+      headers: [{ name: "accept", value: "1" }],
       statusCode: 201,
       body: {
         data: {
@@ -220,11 +225,11 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: { "x-id": "NaN" },
+      headers: [{ name: "x-id", value: "NaN" }],
       body: {}
     };
     const response = {
-      headers: { accept: "1" },
+      headers: [{ name: "accept", value: "1" }],
       statusCode: 201,
       body: {
         data: {
@@ -241,11 +246,11 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: { "x-id": "5" },
+      headers: [{ name: "x-id", value: "5" }],
       body: {}
     };
     const response = {
-      headers: {},
+      headers: [],
       statusCode: 201,
       body: {
         data: {
@@ -264,11 +269,11 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: { "x-id": "5" },
+      headers: [{ name: "x-id", value: "5" }],
       body: {}
     };
     const response = {
-      headers: { accept: "NaN" },
+      headers: [{ name: "accept", value: "NaN" }],
       statusCode: 201,
       body: {
         data: {
@@ -285,7 +290,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -297,7 +302,10 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation", ExtraHeader: "testExtraHeader" },
+      headers: [
+        { name: "Location", value: "testLocation" },
+        { name: "ExtraHeader", value: "testExtraHeader" }
+      ],
       statusCode: 201,
       body: {
         data: {
@@ -316,7 +324,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?id=query+param+array+pipe",
         method: "POST",
-        headers: { "x-auth-token": "token" },
+        headers: [{ name: "x-auth-token", value: "token" }],
         body: {
           data: {
             firstName: "Maple",
@@ -329,7 +337,7 @@ describe("contract mismatch finder", () => {
       };
 
       const response = {
-        headers: { Location: "testLocation" },
+        headers: [{ name: "Location", value: "testLocation" }],
         statusCode: 201,
         body: {
           data: {
@@ -351,7 +359,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?user[id]=invalid&user[slug]=2",
         method: "POST",
-        headers: { "x-auth-token": "token" },
+        headers: [{ name: "x-auth-token", value: "token" }],
         body: {
           data: {
             firstName: "Maple",
@@ -364,7 +372,7 @@ describe("contract mismatch finder", () => {
       };
 
       const response = {
-        headers: { Location: "testLocation" },
+        headers: [{ name: "Location", value: "testLocation" }],
         statusCode: 201,
         body: {
           data: {
@@ -386,7 +394,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?user[id]=0&user[slug]=2&ids[0]=false&ids[1]=1",
         method: "POST",
-        headers: { "x-auth-token": "token" },
+        headers: [{ name: "x-auth-token", value: "token" }],
         body: {
           data: {
             firstName: "Maple",
@@ -399,7 +407,7 @@ describe("contract mismatch finder", () => {
       };
 
       const response = {
-        headers: { Location: "testLocation" },
+        headers: [{ name: "Location", value: "testLocation" }],
         statusCode: 201,
         body: {
           data: {

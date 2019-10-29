@@ -6,21 +6,14 @@ export interface UserInputRequest {
 }
 
 export interface UserInputResponse {
-  headers: UserInputHeaders;
+  headers: UserInputHeader[];
   statusCode: number;
   body?: UserInputBody;
 }
-
-export type UserInput = UserInputRequest | UserInputResponse;
 
 export interface UserInputHeader {
   name: string;
   value: string;
 }
 
-export interface UserInputHeaders {
-  [key: string]: string;
-}
 export type UserInputBody = unknown;
-
-export type UserContent = UserInputBody | UserInputHeaders;
