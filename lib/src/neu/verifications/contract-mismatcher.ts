@@ -30,78 +30,79 @@ export class ContractMismatcher {
     userInputRequest: UserInputRequest,
     userInputResponse: UserInputResponse
   ): Result<Mismatch[], Error> {
-    const expectedEndpoint = this.getEndpointByRequest(userInputRequest);
+    const mismatches: Mismatch[] = [];
+
+    const expectedEndpointResult = this.getEndpointByRequest(userInputRequest);
     // Return mismatch if endpoint does not exist on the contract.
-    if (expectedEndpoint.isErr()) {
-      return ok([new Mismatch(expectedEndpoint.unwrapErr().message)]);
-    } else {
-      const mismatches: Mismatch[] = [];
-
-      // Header mismatch finding.
-      const mismatchesOnRequestHeader = this.findMismatchOnRequestHeader(
-        expectedEndpoint.unwrap(),
-        userInputRequest
-      );
-
-      if (mismatchesOnRequestHeader.isErr()) {
-        return mismatchesOnRequestHeader;
-      }
-
-      const mismatchesOnResponseHeader = this.findMismatchOnResponseHeader(
-        expectedEndpoint.unwrap(),
-        userInputResponse
-      );
-
-      if (mismatchesOnResponseHeader.isErr()) {
-        return mismatchesOnResponseHeader;
-      }
-
-      mismatches.push(...mismatchesOnRequestHeader.unwrap());
-      mismatches.push(...mismatchesOnResponseHeader.unwrap());
-
-      // Body mismatch finding.
-      const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
-        expectedEndpoint.unwrap(),
-        userInputRequest
-      );
-
-      if (mismatchesOnRequestBody.isErr()) {
-        return mismatchesOnRequestBody;
-      }
-
-      const mismatchesOnResponseBody = this.findMismatchOnResponseBody(
-        expectedEndpoint.unwrap(),
-        userInputResponse
-      );
-
-      if (mismatchesOnResponseBody.isErr()) {
-        return mismatchesOnResponseBody;
-      }
-
-      mismatches.push(...mismatchesOnRequestBody.unwrap());
-      mismatches.push(...mismatchesOnResponseBody.unwrap());
-
-      // Path params mismatch finding
-      const pathParamMismatches = this.findMismatchOnRequestPathParam(
-        expectedEndpoint.unwrap(),
-        userInputRequest
-      );
-      if (pathParamMismatches.isErr()) {
-        return pathParamMismatches;
-      }
-      mismatches.push(...pathParamMismatches.unwrap());
-
-      const queryParamsMismatches = this.findMismatchOnRequestQueryParams(
-        expectedEndpoint.unwrap(),
-        userInputRequest
-      );
-      if (queryParamsMismatches.isErr()) {
-        return pathParamMismatches;
-      }
-      mismatches.push(...queryParamsMismatches.unwrap());
-
-      return ok(mismatches);
+    if (expectedEndpointResult.isErr()) {
+      return ok([new Mismatch(expectedEndpointResult.unwrapErr().message)]);
     }
+    const expectedEndpoint = expectedEndpointResult.unwrap();
+
+    // Header mismatch finding.
+    const mismatchesOnRequestHeader = this.findMismatchOnRequestHeader(
+      expectedEndpoint,
+      userInputRequest
+    );
+
+    if (mismatchesOnRequestHeader.isErr()) {
+      return mismatchesOnRequestHeader;
+    }
+
+    const mismatchesOnResponseHeader = this.findMismatchOnResponseHeader(
+      expectedEndpoint,
+      userInputResponse
+    );
+
+    if (mismatchesOnResponseHeader.isErr()) {
+      return mismatchesOnResponseHeader;
+    }
+
+    mismatches.push(...mismatchesOnRequestHeader.unwrap());
+    mismatches.push(...mismatchesOnResponseHeader.unwrap());
+
+    // Body mismatch finding.
+    const mismatchesOnRequestBody = this.findMismatchOnRequestBody(
+      expectedEndpoint,
+      userInputRequest
+    );
+
+    if (mismatchesOnRequestBody.isErr()) {
+      return mismatchesOnRequestBody;
+    }
+
+    const mismatchesOnResponseBody = this.findMismatchOnResponseBody(
+      expectedEndpoint,
+      userInputResponse
+    );
+
+    if (mismatchesOnResponseBody.isErr()) {
+      return mismatchesOnResponseBody;
+    }
+
+    mismatches.push(...mismatchesOnRequestBody.unwrap());
+    mismatches.push(...mismatchesOnResponseBody.unwrap());
+
+    // Path params mismatch finding
+    const pathParamMismatches = this.findMismatchOnRequestPathParam(
+      expectedEndpoint,
+      userInputRequest
+    );
+    if (pathParamMismatches.isErr()) {
+      return pathParamMismatches;
+    }
+    mismatches.push(...pathParamMismatches.unwrap());
+
+    const queryParamsMismatches = this.findMismatchOnRequestQueryParams(
+      expectedEndpoint,
+      userInputRequest
+    );
+    if (queryParamsMismatches.isErr()) {
+      return pathParamMismatches;
+    }
+    mismatches.push(...queryParamsMismatches.unwrap());
+
+    return ok(mismatches);
   }
 
   private findMismatchOnRequestHeader(
@@ -125,7 +126,7 @@ export class ContractMismatcher {
           `${JSON.stringify(
             userInputRequest.headers
           )} does not conform to the request contract headers on path: ${
-            endpoint.path
+            endpoint.name
           }:${endpoint.method}`
         )
       ]);
