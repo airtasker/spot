@@ -46,6 +46,7 @@ export interface JsonSchemaNull {
 
 export interface JsonSchemaString {
   type: "string";
+  format?: string;
   const?: string;
   enum?: string[];
 }
