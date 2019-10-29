@@ -15,8 +15,10 @@ import { err, ok, Result } from "../util";
 import { StringInput, StringValidator } from "./string-validator";
 import {
   UserContent,
+  UserInputHeaders,
   UserInputRequest,
-  UserInputResponse
+  UserInputResponse,
+  UserInputHeader
 } from "./user-input-models";
 
 export class ContractMismatcher {
@@ -40,9 +42,9 @@ export class ContractMismatcher {
     const expectedEndpoint = expectedEndpointResult.unwrap();
 
     // Header mismatch finding.
-    const mismatchesOnRequestHeader = this.findMismatchOnRequestHeader(
-      expectedEndpoint,
-      userInputRequest
+    const mismatchesOnRequestHeader = this.findHeaderMismatches(
+      [],
+      userInputRequest.headers
     );
 
     if (mismatchesOnRequestHeader.isErr()) {
@@ -105,126 +107,163 @@ export class ContractMismatcher {
     return ok(mismatches);
   }
 
-  private findMismatchOnRequestHeader(
-    endpoint: Endpoint,
-    userInputRequest: UserInputRequest
+  private findHeaderMismatches(
+    headers: Header[],
+    inputHeaders: UserInputHeader[],
+    strict: boolean = false
   ): Result<Mismatch[], Error> {
-    if (userInputRequest && !endpoint.request) {
-      return ok([
-        new Mismatch(
-          `A request header was provided but there is no request defined in the contract under path: ${endpoint.path}:${endpoint.method}`
-        )
-      ]);
+    const mismatches: Mismatch[] = [];
+
+    for (const header of headers) {
+      const inputHeader = inputHeaders.find(iH => iH.name === header.name);
+      if (inputHeader === undefined) {
+        if (!header.optional) {
+          mismatches.push(new Mismatch("header missing on endpoint"));
+        }
+        continue;
+      }
+
+      const typeMatchResult = this.findMismatchOnStringContent(
+        { name: inputHeader.name, value: inputHeader.value },
+        header.type
+      );
+      if (typeMatchResult.isErr()) return typeMatchResult;
+      mismatches.push(...typeMatchResult.unwrap());
     }
 
-    if (
-      Object.keys(userInputRequest.headers).length <
-      endpoint.request!!.headers.length
-    ) {
-      return ok([
-        new Mismatch(
-          `${JSON.stringify(
-            userInputRequest.headers
-          )} does not conform to the request contract headers on path: ${
-            endpoint.name
-          }:${endpoint.method}`
-        )
-      ]);
-    }
-
-    const mismatches: Mismatch[] = Object.keys(userInputRequest.headers).reduce(
-      (accumulator: Mismatch[], userInputHeaderKey: string) => {
-        const contractHeaderType = this.getTypeOnContractRequestHeaders(
-          endpoint,
-          userInputHeaderKey
-        );
-        if (contractHeaderType.isErr()) {
-          accumulator.push(
-            new Mismatch(contractHeaderType.unwrapErr().message)
+    if (strict) {
+      inputHeaders
+        .filter(iH => !headers.some(header => header.name === iH.name))
+        .forEach(iH => {
+          mismatches.push(
+            new Mismatch("received header not found on endpoint")
           );
+        });
+    }
 
-          return accumulator;
-        }
-
-        const result = this.findMismatchOnStringContent(
-          {
-            name: userInputHeaderKey,
-            value: userInputRequest.headers[userInputHeaderKey]
-          },
-          contractHeaderType.unwrap()
-        );
-
-        if (result.isErr()) {
-          accumulator.push(new Mismatch(result.unwrapErr().message));
-        } else {
-          accumulator.push(...result.unwrap());
-        }
-        return accumulator;
-      },
-      []
-    );
     return ok(mismatches);
   }
 
-  private findMismatchOnResponseHeader(
-    endpoint: Endpoint,
-    userInputResponse: UserInputResponse
-  ): Result<Mismatch[], Error> {
-    if (endpoint.responses.length === 0 && !endpoint.defaultResponse) {
-      return err(
-        new Error(
-          `There is no response or default defined in the contract under path: ${endpoint.path}`
-        )
-      );
-    }
-    const contractHeaders = this.getResponseHeadersOnContractEndpoint(
-      endpoint,
-      userInputResponse.statusCode
-    );
+  // private findMismatchOnRequestHeader(
+  //   endpoint: Endpoint,
+  //   userInputRequest: UserInputRequest
+  // ): Result<Mismatch[], Error> {
+  //   if (userInputRequest && !endpoint.request) {
+  //     return ok([
+  //       new Mismatch(
+  //         `A request header was provided but there is no request defined in the contract under path: ${endpoint.path}:${endpoint.method}`
+  //       )
+  //     ]);
+  //   }
 
-    if (contractHeaders.isErr()) {
-      return contractHeaders;
-    }
-    const unwrappedContractHeaders = contractHeaders.unwrap();
+  //   if (
+  //     Object.keys(userInputRequest.headers).length <
+  //     endpoint.request!!.headers.length
+  //   ) {
+  //     return ok([
+  //       new Mismatch(
+  //         `${JSON.stringify(
+  //           userInputRequest.headers
+  //         )} does not conform to the request contract headers on path: ${
+  //           endpoint.name
+  //         }:${endpoint.method}`
+  //       )
+  //     ]);
+  //   }
 
-    const mismatches: Mismatch[] = Object.values(
-      unwrappedContractHeaders
-    ).reduce((accumulator: Mismatch[], contractHeader: Header) => {
-      const contractHeaderType = contractHeader.type;
+  //   const mismatches: Mismatch[] = Object.keys(userInputRequest.headers).reduce(
+  //     (accumulator: Mismatch[], userInputHeaderKey: string) => {
+  //       const contractHeaderType = this.getTypeOnContractRequestHeaders(
+  //         endpoint,
+  //         userInputHeaderKey
+  //       );
+  //       if (contractHeaderType.isErr()) {
+  //         accumulator.push(
+  //           new Mismatch(contractHeaderType.unwrapErr().message)
+  //         );
 
-      const matchingHeaderNameOnUserInput = Object.keys(
-        userInputResponse.headers
-      ).find(
-        headerName =>
-          headerName.toLowerCase() === contractHeader.name.toLowerCase()
-      );
+  //         return accumulator;
+  //       }
 
-      if (!matchingHeaderNameOnUserInput) {
-        accumulator.push(
-          new Mismatch(
-            `Missing response header of ${contractHeader.name} on ${endpoint.path}:${endpoint.method}`
-          )
-        );
-        return accumulator;
-      }
+  //       const result = this.findMismatchOnStringContent(
+  //         {
+  //           name: userInputHeaderKey,
+  //           value: userInputRequest.headers[userInputHeaderKey]
+  //         },
+  //         contractHeaderType.unwrap()
+  //       );
 
-      const result = this.findMismatchOnStringContent(
-        {
-          name: matchingHeaderNameOnUserInput,
-          value: userInputResponse.headers[matchingHeaderNameOnUserInput]
-        },
-        contractHeaderType
-      );
+  //       if (result.isErr()) {
+  //         accumulator.push(new Mismatch(result.unwrapErr().message));
+  //       } else {
+  //         accumulator.push(...result.unwrap());
+  //       }
+  //       return accumulator;
+  //     },
+  //     []
+  //   );
+  //   return ok(mismatches);
+  // }
 
-      if (result.isErr()) {
-        accumulator.push(new Mismatch(result.unwrapErr().message));
-      } else {
-        accumulator.push(...result.unwrap());
-      }
-      return accumulator;
-    }, []);
-    return ok(mismatches);
-  }
+  // private findMismatchOnResponseHeader(
+  //   endpoint: Endpoint,
+  //   userInputResponse: UserInputResponse
+  // ): Result<Mismatch[], Error> {
+  //   if (endpoint.responses.length === 0 && !endpoint.defaultResponse) {
+  //     return err(
+  //       new Error(
+  //         `There is no response or default defined in the contract under path: ${endpoint.path}`
+  //       )
+  //     );
+  //   }
+  //   const contractHeaders = this.getResponseHeadersOnContractEndpoint(
+  //     endpoint,
+  //     userInputResponse.statusCode
+  //   );
+
+  //   if (contractHeaders.isErr()) {
+  //     return contractHeaders;
+  //   }
+  //   const unwrappedContractHeaders = contractHeaders.unwrap();
+
+  //   const mismatches: Mismatch[] = Object.values(
+  //     unwrappedContractHeaders
+  //   ).reduce((accumulator: Mismatch[], contractHeader: Header) => {
+  //     const contractHeaderType = contractHeader.type;
+
+  //     const matchingHeaderNameOnUserInput = Object.keys(
+  //       userInputResponse.headers
+  //     ).find(
+  //       headerName =>
+  //         headerName.toLowerCase() === contractHeader.name.toLowerCase()
+  //     );
+
+  //     if (!matchingHeaderNameOnUserInput) {
+  //       accumulator.push(
+  //         new Mismatch(
+  //           `Missing response header of ${contractHeader.name} on ${endpoint.path}:${endpoint.method}`
+  //         )
+  //       );
+  //       return accumulator;
+  //     }
+
+  //     const result = this.findMismatchOnStringContent(
+  //       {
+  //         name: matchingHeaderNameOnUserInput,
+  //         value: userInputResponse.headers[matchingHeaderNameOnUserInput]
+  //       },
+  //       contractHeaderType
+  //     );
+
+  //     if (result.isErr()) {
+  //       accumulator.push(new Mismatch(result.unwrapErr().message));
+  //     } else {
+  //       accumulator.push(...result.unwrap());
+  //     }
+  //     return accumulator;
+  //   }, []);
+  //   return ok(mismatches);
+  // }
 
   private getTypeOnContractRequestHeaders(
     endpoint: Endpoint,
@@ -578,7 +617,7 @@ export class ContractMismatcher {
 
     const endpoint = this.contract.endpoints.find((value, _0, _1) => {
       return (
-        value.method === userInputRequest.method &&
+        value.method === userInputRequest.method.toUpperCase() &&
         pathMatchesVariablePath(value.path, userInputRequestPath)
       );
     });
@@ -589,13 +628,13 @@ export class ContractMismatcher {
 
     return err(
       new Error(
-        `${userInputRequest.method} ${userInputRequest.path} does not exist under the specified contract.`
+        `Endpoint ${userInputRequest.method} ${userInputRequest.path} not found.`
       )
     );
   }
 }
 
-// Transform /a/:b/c/:d/e -> /^/a/\w+/c/\w+/e$/
+// Transform /a/:b/c/:d/e -> /^/a/.+/c/.+/e$/
 const regexForVariablePath = (path: string): RegExp => {
   const regexp = path.replace(/:[^\/]+/g, ".+");
   return new RegExp(`^${regexp}$`);

@@ -2,7 +2,7 @@ import express from "express";
 import { Contract } from "../neu/definitions";
 import { ContractMismatcher } from "../neu/verifications/contract-mismatcher";
 import {
-  UserInputHeader,
+  UserInputHeaders,
   UserInputRequest,
   UserInputResponse
 } from "../neu/verifications/user-input-models";
@@ -75,14 +75,14 @@ const makeInternalServerError = (messages: string[]): InternalServerError => {
 
 export const headersToUserInputHeader = (
   headers: Header[]
-): UserInputHeader => {
+): UserInputHeaders => {
   return headers.reduce(
     (userInputHeader, header, _0, _1) => {
       const newUserInputHeader = userInputHeader;
       newUserInputHeader[header.key] = header.value;
       return newUserInputHeader;
     },
-    {} as UserInputHeader
+    {} as UserInputHeaders
   );
 };
 
