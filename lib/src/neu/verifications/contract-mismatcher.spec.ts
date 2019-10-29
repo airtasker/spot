@@ -69,7 +69,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(0);
+    expect(result.unwrapOrThrow()).toHaveLength(0);
   });
 
   test("a mismatch is found, missing 1 property on request body.", () => {
@@ -98,7 +98,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
   });
 
   test("a mismatch is found, no matching path on the contract", () => {
@@ -127,9 +127,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "POST /compan/5/users does not exist under the specified contract."
+      "Endpoint POST /compan/5/users not found."
     );
   });
 
@@ -160,9 +160,9 @@ describe("contract mismatch finder", () => {
     };
     const result = mismatcher.findMismatch(request, response);
     const unwrappedResult = result.unwrapOrThrow();
-    // expect(unwrappedResult.length).toBe(1);
+    expect(unwrappedResult).toHaveLength(1);
     expect(unwrappedResult[0].message).toBe(
-      "POST /some/prefix/company/5/users does not exist under the specified contract."
+      "Endpoint POST /some/prefix/company/5/users not found."
     );
   });
 
@@ -192,7 +192,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
       '{"data":{"firstName":"Maple","lastName":"Syrup","email":"maple.syrup@airtasker.com","address":"Doggo bed"}}: #/properties/data/required should have required property \'age\''
     );
@@ -202,8 +202,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: [],
-      body: {}
+      headers: []
     };
     const response = {
       headers: [{ name: "accept", value: "1" }],
@@ -215,9 +214,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "{} does not conform to the request contract headers on path: /company/:companyId:GET"
+      'Header "x-id" missing on endpoint'
     );
   });
 
@@ -225,8 +224,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: [{ name: "x-id", value: "NaN" }],
-      body: {}
+      headers: [{ name: "x-id", value: "NaN" }]
     };
     const response = {
       headers: [{ name: "accept", value: "1" }],
@@ -238,7 +236,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe('"x-id" should be float');
   });
 
@@ -246,8 +244,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: [{ name: "x-id", value: "5" }],
-      body: {}
+      headers: [{ name: "x-id", value: "5" }]
     };
     const response = {
       headers: [],
@@ -259,9 +256,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "Missing response header of accept on /company/:companyId:GET"
+      'Header "accept" missing on endpoint'
     );
   });
 
@@ -269,8 +266,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: [{ name: "x-id", value: "5" }],
-      body: {}
+      headers: [{ name: "x-id", value: "5" }]
     };
     const response = {
       headers: [{ name: "accept", value: "NaN" }],
@@ -282,7 +278,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe('"accept" should be float');
   });
 
@@ -316,7 +312,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(0);
+    expect(result.unwrapOrThrow()).toHaveLength(0);
   });
 
   describe("a mismatch is found, query params do not conform to contract", () => {
@@ -349,7 +345,7 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()).toHaveLength(1);
       expect(result.unwrapOrThrow()[0].message).toBe(
         'Query parameter "id" does not exist under the specified endpoint.'
       );
@@ -384,7 +380,7 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()).toHaveLength(1);
       expect(result.unwrapOrThrow()[0].message).toBe(
         '".user.id" should be float'
       );
@@ -419,7 +415,7 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()).toHaveLength(1);
       expect(result.unwrapOrThrow()[0].message).toBe(
         '"ids[0]" should be float'
       );
