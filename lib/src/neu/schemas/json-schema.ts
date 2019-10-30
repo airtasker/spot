@@ -22,6 +22,7 @@ export interface JsonSchemaObject {
     [name: string]: JsonSchemaType;
   };
   required?: string[];
+  additionalProperties: boolean;
 }
 
 export interface JsonSchemaArray {

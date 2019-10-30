@@ -1,21 +1,19 @@
 export interface UserInputRequest {
   path: string;
   method: string;
-  headers: UserInputHeader;
+  headers: UserInputHeader[];
   body?: UserInputBody;
 }
 
 export interface UserInputResponse {
-  headers: UserInputHeader;
+  headers: UserInputHeader[];
   statusCode: number;
   body?: UserInputBody;
 }
 
-export type UserInput = UserInputRequest | UserInputResponse;
-
 export interface UserInputHeader {
-  [key: string]: string;
+  name: string;
+  value: string;
 }
-export type UserInputBody = unknown;
 
-export type UserContent = UserInputBody | UserInputHeader;
+export type UserInputBody = unknown;

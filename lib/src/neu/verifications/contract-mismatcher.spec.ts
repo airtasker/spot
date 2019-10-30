@@ -41,7 +41,12 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [
+        {
+          name: "x-auth-token",
+          value: "token"
+        }
+      ],
       body: {
         data: {
           firstName: "Maple",
@@ -53,7 +58,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -64,14 +69,14 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(0);
+    expect(result.unwrapOrThrow()).toHaveLength(0);
   });
 
   test("a mismatch is found, missing 1 property on request body.", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -82,7 +87,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -93,14 +98,14 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
   });
 
   test("a mismatch is found, no matching path on the contract", () => {
     const request = {
       path: "/compan/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -111,7 +116,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -122,9 +127,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "POST /compan/5/users does not exist under the specified contract."
+      "Endpoint POST /compan/5/users not found."
     );
   });
 
@@ -132,7 +137,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/some/prefix/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -143,7 +148,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -155,9 +160,9 @@ describe("contract mismatch finder", () => {
     };
     const result = mismatcher.findMismatch(request, response);
     const unwrappedResult = result.unwrapOrThrow();
-    // expect(unwrappedResult.length).toBe(1);
+    expect(unwrappedResult).toHaveLength(1);
     expect(unwrappedResult[0].message).toBe(
-      "POST /some/prefix/company/5/users does not exist under the specified contract."
+      "Endpoint POST /some/prefix/company/5/users not found."
     );
   });
 
@@ -165,7 +170,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/true/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -176,7 +181,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -187,7 +192,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
       '{"data":{"firstName":"Maple","lastName":"Syrup","email":"maple.syrup@airtasker.com","address":"Doggo bed"}}: #/properties/data/required should have required property \'age\''
     );
@@ -197,11 +202,10 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: {},
-      body: {}
+      headers: []
     };
     const response = {
-      headers: { accept: "1" },
+      headers: [{ name: "accept", value: "1" }],
       statusCode: 201,
       body: {
         data: {
@@ -210,9 +214,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "{} does not conform to the request contract headers on path: /company/:companyId:GET"
+      'Header "x-id" missing on endpoint'
     );
   });
 
@@ -220,11 +224,10 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: { "x-id": "NaN" },
-      body: {}
+      headers: [{ name: "x-id", value: "NaN" }]
     };
     const response = {
-      headers: { accept: "1" },
+      headers: [{ name: "accept", value: "1" }],
       statusCode: 201,
       body: {
         data: {
@@ -233,7 +236,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe('"x-id" should be float');
   });
 
@@ -241,11 +244,10 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: { "x-id": "5" },
-      body: {}
+      headers: [{ name: "x-id", value: "5" }]
     };
     const response = {
-      headers: {},
+      headers: [],
       statusCode: 201,
       body: {
         data: {
@@ -254,9 +256,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe(
-      "Missing response header of accept on /company/:companyId:GET"
+      'Header "accept" missing on endpoint'
     );
   });
 
@@ -264,11 +266,10 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5",
       method: "GET",
-      headers: { "x-id": "5" },
-      body: {}
+      headers: [{ name: "x-id", value: "5" }]
     };
     const response = {
-      headers: { accept: "NaN" },
+      headers: [{ name: "accept", value: "NaN" }],
       statusCode: 201,
       body: {
         data: {
@@ -277,7 +278,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()).toHaveLength(1);
     expect(result.unwrapOrThrow()[0].message).toBe('"accept" should be float');
   });
 
@@ -285,7 +286,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -297,7 +298,10 @@ describe("contract mismatch finder", () => {
       }
     };
     const response = {
-      headers: { Location: "testLocation", ExtraHeader: "testExtraHeader" },
+      headers: [
+        { name: "Location", value: "testLocation" },
+        { name: "ExtraHeader", value: "testExtraHeader" }
+      ],
       statusCode: 201,
       body: {
         data: {
@@ -308,7 +312,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().length).toBe(0);
+    expect(result.unwrapOrThrow()).toHaveLength(0);
   });
 
   describe("a mismatch is found, query params do not conform to contract", () => {
@@ -316,7 +320,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?id=query+param+array+pipe",
         method: "POST",
-        headers: { "x-auth-token": "token" },
+        headers: [{ name: "x-auth-token", value: "token" }],
         body: {
           data: {
             firstName: "Maple",
@@ -329,7 +333,7 @@ describe("contract mismatch finder", () => {
       };
 
       const response = {
-        headers: { Location: "testLocation" },
+        headers: [{ name: "Location", value: "testLocation" }],
         statusCode: 201,
         body: {
           data: {
@@ -341,7 +345,7 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()).toHaveLength(1);
       expect(result.unwrapOrThrow()[0].message).toBe(
         'Query parameter "id" does not exist under the specified endpoint.'
       );
@@ -351,7 +355,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?user[id]=invalid&user[slug]=2",
         method: "POST",
-        headers: { "x-auth-token": "token" },
+        headers: [{ name: "x-auth-token", value: "token" }],
         body: {
           data: {
             firstName: "Maple",
@@ -364,7 +368,7 @@ describe("contract mismatch finder", () => {
       };
 
       const response = {
-        headers: { Location: "testLocation" },
+        headers: [{ name: "Location", value: "testLocation" }],
         statusCode: 201,
         body: {
           data: {
@@ -376,7 +380,7 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()).toHaveLength(1);
       expect(result.unwrapOrThrow()[0].message).toBe(
         '".user.id" should be float'
       );
@@ -386,7 +390,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?user[id]=0&user[slug]=2&ids[0]=false&ids[1]=1",
         method: "POST",
-        headers: { "x-auth-token": "token" },
+        headers: [{ name: "x-auth-token", value: "token" }],
         body: {
           data: {
             firstName: "Maple",
@@ -399,7 +403,7 @@ describe("contract mismatch finder", () => {
       };
 
       const response = {
-        headers: { Location: "testLocation" },
+        headers: [{ name: "Location", value: "testLocation" }],
         statusCode: 201,
         body: {
           data: {
@@ -411,7 +415,7 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()).toHaveLength(1);
       expect(result.unwrapOrThrow()[0].message).toBe(
         '"ids[0]" should be float'
       );

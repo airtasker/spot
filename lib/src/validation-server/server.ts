@@ -75,15 +75,13 @@ const makeInternalServerError = (messages: string[]): InternalServerError => {
 
 export const headersToUserInputHeader = (
   headers: Header[]
-): UserInputHeader => {
-  return headers.reduce(
-    (userInputHeader, header, _0, _1) => {
-      const newUserInputHeader = userInputHeader;
-      newUserInputHeader[header.key] = header.value;
-      return newUserInputHeader;
-    },
-    {} as UserInputHeader
-  );
+): UserInputHeader[] => {
+  return headers.map(header => {
+    return {
+      name: header.key,
+      value: header.value
+    };
+  });
 };
 
 export const recordedRequestToUserInputRequest = (

@@ -129,16 +129,13 @@ describe("Validation Server", () => {
 
 describe("Transformation functions", () => {
   describe("headersToUserInputHeader", () => {
-    it("should transform Header[] into UserInputHeader", () => {
+    it("should transform Header[] into UserInputHeader[]", () => {
       expect(
         headersToUserInputHeader([
           { key: "a", value: "b" },
           { key: "c", value: "d" }
         ])
-      ).toEqual({
-        a: "b",
-        c: "d"
-      });
+      ).toEqual([{ name: "a", value: "b" }, { name: "c", value: "d" }]);
     });
   });
 
@@ -154,7 +151,7 @@ describe("Transformation functions", () => {
       ).toEqual({
         path: "/path/to/somewhere?hello=world",
         method: "POST",
-        headers: { a: "b", c: "d" },
+        headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
         body: { data: "body" }
       });
     });
@@ -169,7 +166,7 @@ describe("Transformation functions", () => {
           body: JSON.stringify({ data: "body" })
         })
       ).toEqual({
-        headers: { a: "b", c: "d" },
+        headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
         statusCode: 200,
         body: { data: "body" }
       });
