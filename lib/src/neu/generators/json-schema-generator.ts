@@ -35,6 +35,15 @@ function jsonSchemaOfSpotContract(contract: Contract): JsonSchema {
   };
 }
 
+/**
+ * Generate a JSON Schema type definition. `objectAdditionalProperties` may
+ * be used to configure whether additional properties should be allowed on
+ * object types. This can be useful for data validation purposes where
+ * property validation can be strict or lenient.
+ *
+ * @param type a contract type
+ * @param objectAdditionalProperties whether to allow additional properties for objects
+ */
 export function generateJsonSchemaType(
   type: Type,
   objectAdditionalProperties: boolean = true // TODO: expose proper configuration object
