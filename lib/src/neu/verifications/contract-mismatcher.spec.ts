@@ -54,7 +54,9 @@ describe("contract mismatch finder", () => {
           age: 1.0,
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed"
-        }
+        },
+        date: '2020-01-01',
+        datetime: '2020-01-01T20:20:39+00:00'
       }
     };
     const response = {
@@ -99,6 +101,40 @@ describe("contract mismatch finder", () => {
     };
     const result = mismatcher.findMismatch(request, response);
     expect(result.unwrapOrThrow()).toHaveLength(1);
+  });
+
+  test("a mismatch is found, request body property type is incorrect (date)", () => {
+    const request = {
+      path: "/company/5/users",
+      method: "POST",
+      headers: { "x-auth-token": "token" },
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          age: 1.0,
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed",
+          createdAt: 'invalidDate'
+        }
+      }
+    };
+    const response = {
+      headers: { Location: "testLocation" },
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findMismatch(request, response);
+    expect(result.unwrapOrThrow().length).toBe(1);
+    expect(result.unwrapOrThrow()[0].message).toBe(
+      '{"data":{"firstName":"Maple","lastName":"Syrup","age":1,"email":"maple.syrup@airtasker.com","address":"Doggo bed","createdAt":"invalidDate"}}: #/properties/data/properties/createdAt/format should match format "date"'
+    );
   });
 
   test("a mismatch is found, no matching path on the contract", () => {
@@ -420,5 +456,42 @@ describe("contract mismatch finder", () => {
         '"ids[0]" should be float'
       );
     });
+
+    test("query param type is incorrect (date)", () => {
+      const request = {
+        path: "/company/0/users?date=11-13",
+        method: "POST",
+        headers: { "x-auth-token": "token" },
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            age: 1.0,
+            email: "maple.syrup@airtasker.com",
+            address: "Doggo bed"
+          }
+        }
+      };
+
+      const response = {
+        headers: { Location: "testLocation" },
+        statusCode: 201,
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            profile: { private: false, messageOptions: { newsletter: false } }
+          }
+        }
+      };
+
+      const result = mismatcher.findMismatch(request, response);
+      expect(result.unwrapOrThrow().length).toBe(1);
+      expect(result.unwrapOrThrow()[0].message).toBe(
+        '"date" should be date'
+      );
+    })
   });
+
+ 
 });
