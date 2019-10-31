@@ -54,7 +54,7 @@ describe("contract mismatch finder", () => {
           age: 1.0,
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed",
-          createdAt: "2020-01-01",
+          createdAt: "2020-01-01"
         }
       }
     };
