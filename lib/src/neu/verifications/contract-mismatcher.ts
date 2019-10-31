@@ -1,4 +1,5 @@
-import JsonSchemaValidator, { ErrorObject } from "ajv";
+import JsonSchemaValidator from "ajv";
+import assertNever from "assert-never";
 import qs from "qs";
 import * as url from "url";
 import {
@@ -31,14 +32,19 @@ export class ContractMismatcher {
   findMismatch(
     userInputRequest: UserInputRequest,
     userInputResponse: UserInputResponse
-  ): Result<Mismatch[], Error> {
+  ): Result<{ mismatches: Mismatch[]; context: { endpoint: string } }, Error> {
     const mismatches: Mismatch[] = [];
 
     // Get endpoint
     // Return mismatch if endpoint does not exist on the contract.
     const expectedEndpointResult = this.getEndpointByRequest(userInputRequest);
     if (expectedEndpointResult.isErr()) {
-      return ok([new Mismatch(expectedEndpointResult.unwrapErr().message)]);
+      return ok({
+        mismatches: [new Mismatch(expectedEndpointResult.unwrapErr().message)],
+        context: {
+          endpoint: ""
+        }
+      });
     }
     const expectedEndpoint = expectedEndpointResult.unwrap();
 
@@ -62,7 +68,33 @@ export class ContractMismatcher {
     if (requestHeaderMismatchesResult.isErr()) {
       return requestHeaderMismatchesResult;
     }
-    mismatches.push(...requestHeaderMismatchesResult.unwrap());
+    requestHeaderMismatchesResult.unwrap().forEach(m => {
+      switch (m.kind) {
+        case MismatchKind.REQUIRED_HEADER_MISSING:
+          mismatches.push(
+            new Mismatch(`Required request header "${m.header}" missing`)
+          );
+          return;
+        case MismatchKind.UNDEFINED_HEADER:
+          mismatches.push(
+            new Mismatch(
+              `Request header "${m.header}" not defined in contract request headers`
+            )
+          );
+          return;
+        case MismatchKind.HEADER_TYPE_MISMATCH:
+          mismatches.push(
+            new Mismatch(
+              `Request header "${m.header}" type mismatch: ${m.mismatches.join(
+                ", "
+              )}`
+            )
+          );
+          return;
+        default:
+          assertNever(m);
+      }
+    });
 
     // Find response header mismatches
     const responseHeaderMismatchesResult = this.findHeaderMismatches(
@@ -72,7 +104,33 @@ export class ContractMismatcher {
     if (responseHeaderMismatchesResult.isErr()) {
       return responseHeaderMismatchesResult;
     }
-    mismatches.push(...responseHeaderMismatchesResult.unwrap());
+    responseHeaderMismatchesResult.unwrap().forEach(m => {
+      switch (m.kind) {
+        case MismatchKind.REQUIRED_HEADER_MISSING:
+          mismatches.push(
+            new Mismatch(`Required response header "${m.header}" missing`)
+          );
+          return;
+        case MismatchKind.UNDEFINED_HEADER:
+          mismatches.push(
+            new Mismatch(
+              `Response header "${m.header}" not defined in contract response headers`
+            )
+          );
+          return;
+        case MismatchKind.HEADER_TYPE_MISMATCH:
+          mismatches.push(
+            new Mismatch(
+              `Response header "${m.header}" type mismatch: ${m.mismatches.join(
+                ", "
+              )}`
+            )
+          );
+          return;
+        default:
+          assertNever(m);
+      }
+    });
 
     // Find request body mismatches
     const requestBodyMismatchesResult = this.findBodyMismatches(
@@ -83,7 +141,22 @@ export class ContractMismatcher {
     if (requestBodyMismatchesResult.isErr()) {
       return requestBodyMismatchesResult;
     }
-    mismatches.push(...requestBodyMismatchesResult.unwrap());
+    requestBodyMismatchesResult.unwrap().forEach(m => {
+      switch (m.kind) {
+        case MismatchKind.UNDEFINED_BODY:
+          mismatches.push(new Mismatch("Request body not defined in contract"));
+          return;
+        case MismatchKind.BODY_TYPE_MISMATCH:
+          mismatches.push(
+            new Mismatch(
+              `Request body type mismatch:\n${m.mismatches.join("\n\n")}`
+            )
+          );
+          return;
+        default:
+          assertNever(m);
+      }
+    });
 
     // Find response body mismatches
     const responseBodyMismatchesResult = this.findBodyMismatches(
@@ -93,45 +166,110 @@ export class ContractMismatcher {
     if (responseBodyMismatchesResult.isErr()) {
       return responseBodyMismatchesResult;
     }
-    mismatches.push(...responseBodyMismatchesResult.unwrap());
+    responseBodyMismatchesResult.unwrap().forEach(m => {
+      switch (m.kind) {
+        case MismatchKind.UNDEFINED_BODY:
+          mismatches.push(
+            new Mismatch("Response body not defined in contract")
+          );
+          return;
+        case MismatchKind.BODY_TYPE_MISMATCH:
+          mismatches.push(
+            new Mismatch(
+              `Response body type mismatch:\n${m.mismatches.join("\n\n")}`
+            )
+          );
+          return;
+        default:
+          assertNever(m);
+      }
+    });
 
     // Find path parameter mismatches
-    const pathParamMismatches = this.findPathParamMismatches(
+    const pathParamMismatchesResult = this.findPathParamMismatches(
       expectedEndpoint,
       userInputRequest.path
     );
-    if (pathParamMismatches.isErr()) {
-      return pathParamMismatches;
+    if (pathParamMismatchesResult.isErr()) {
+      return pathParamMismatchesResult;
     }
-    mismatches.push(...pathParamMismatches.unwrap());
+    pathParamMismatchesResult.unwrap().forEach(m => {
+      switch (m.kind) {
+        case MismatchKind.PATH_PARAM_TYPE_MISMATCH:
+          mismatches.push(
+            new Mismatch(
+              `Path param "${m.pathParam}" type mismatch: ${m.mismatches.join(
+                ", "
+              )}`
+            )
+          );
+          return;
+        default:
+          assertNever(m.kind);
+      }
+    });
 
     // Find query parameter mismatches
-    const queryParamMismatches = this.findQueryParamMismatches(
+    const queryParamMismatchesResult = this.findQueryParamMismatches(
       expectedEndpoint,
       userInputRequest.path
     );
-    if (queryParamMismatches.isErr()) {
-      return pathParamMismatches;
+    if (queryParamMismatchesResult.isErr()) {
+      return queryParamMismatchesResult;
     }
-    mismatches.push(...queryParamMismatches.unwrap());
+    queryParamMismatchesResult.unwrap().forEach(m => {
+      switch (m.kind) {
+        case MismatchKind.REQUIRED_QUERY_PARAM_MISSING:
+          mismatches.push(
+            new Mismatch(`Required query param "${m.queryParam}" missing`)
+          );
+          return;
+        case MismatchKind.UNDEFINED_QUERY_PARAM:
+          mismatches.push(
+            new Mismatch(
+              `Query param "${m.queryParam}" not defined in contract request query params`
+            )
+          );
+          return;
+        case MismatchKind.QUERY_PARAM_TYPE_MISMATCH:
+          mismatches.push(
+            new Mismatch(
+              `Query param "${m.queryParam}" type mismatch: ${m.mismatches.join(
+                ", "
+              )}`
+            )
+          );
+          return;
+        default:
+          assertNever(m);
+      }
+    });
 
-    return ok(mismatches);
+    return ok({
+      mismatches,
+      context: {
+        endpoint: expectedEndpoint.name
+      }
+    });
   }
 
   private findHeaderMismatches(
     contractHeaders: Header[],
     inputHeaders: UserInputHeader[],
     strict: boolean = false
-  ): Result<Mismatch[], Error> {
-    const mismatches: Mismatch[] = [];
+  ): Result<
+    Array<RequiredHeaderMissing | UndefinedHeader | HeaderTypeMismatch>,
+    Error
+  > {
+    const mismatches = [];
 
     for (const header of contractHeaders) {
-      const inputHeader = inputHeaders.find(iH => iH.name === header.name);
+      const inputHeader = inputHeaders.find(
+        iH => iH.name.toLowerCase() === header.name.toLowerCase()
+      );
       if (inputHeader === undefined) {
         if (!header.optional) {
-          mismatches.push(
-            new Mismatch(`Header "${header.name}" missing on endpoint`)
-          );
+          mismatches.push(new RequiredHeaderMissing(header.name));
         }
         continue;
       }
@@ -140,16 +278,26 @@ export class ContractMismatcher {
         { name: inputHeader.name, value: inputHeader.value },
         header.type
       );
-      mismatches.push(...typeMismatches);
+      if (typeMismatches.length > 0) {
+        mismatches.push(
+          new HeaderTypeMismatch(
+            header.name,
+            typeMismatches.map(mis => mis.message)
+          )
+        );
+      }
     }
 
     if (strict) {
       inputHeaders
-        .filter(iH => !contractHeaders.some(header => header.name === iH.name))
+        .filter(
+          iH =>
+            !contractHeaders.some(
+              header => header.name.toLowerCase() === iH.name.toLowerCase()
+            )
+        )
         .forEach(iH => {
-          mismatches.push(
-            new Mismatch(`Header "${iH.name}" not found on endpoint`)
-          );
+          mismatches.push(new UndefinedHeader(iH.name));
         });
     }
 
@@ -159,7 +307,7 @@ export class ContractMismatcher {
   private findPathParamMismatches(
     contractEndpoint: Endpoint,
     inputPath: string
-  ): Result<Mismatch[], Error> {
+  ): Result<PathParamTypeMismatch[], Error> {
     const contractPathParams =
       (contractEndpoint.request && contractEndpoint.request.pathParams) || [];
 
@@ -175,7 +323,7 @@ export class ContractMismatcher {
       );
     }
 
-    const mismatches: Mismatch[] = [];
+    const mismatches = [];
     for (let i = 0; i < contractPathArray.length; i++) {
       if (contractPathArray[i].startsWith(":")) {
         const contractPathParam = contractPathParams.find(
@@ -195,7 +343,14 @@ export class ContractMismatcher {
           { name: contractPathParam.name, value: inputPathArray[i] },
           contractPathParamType
         );
-        mismatches.push(...pathParamMismatches);
+        if (pathParamMismatches.length > 0) {
+          mismatches.push(
+            new PathParamTypeMismatch(
+              contractPathParam.name,
+              pathParamMismatches.map(mis => mis.message)
+            )
+          );
+        }
       }
     }
     return ok(mismatches);
@@ -205,21 +360,20 @@ export class ContractMismatcher {
     contractBody: Body | undefined,
     inputBody: UserInputBody,
     strict: boolean = false
-  ): Result<Mismatch[], Error> {
+  ): Result<Array<UndefinedBody | BodyTypeMismatch>, Error> {
     if (contractBody === undefined) {
       if (inputBody === undefined) {
         return ok([]);
       }
       if (strict) {
-        return ok([
-          new Mismatch("contract body has no type, but a body was given")
-        ]);
+        return ok([new UndefinedBody()]);
       }
       return ok([]);
     }
 
     const jsv = new JsonSchemaValidator({
-      format: "full"
+      format: "full",
+      verbose: true
     });
     const schema = {
       ...generateJsonSchemaType(contractBody.type, !strict),
@@ -246,7 +400,20 @@ export class ContractMismatcher {
         )
       );
     }
-    return ok(this.errorObjectMapper(validateFn.errors, inputBody));
+
+    const bodyTypeMismatches = validateFn.errors.map(e => {
+      return e.message
+        ? `${JSON.stringify(inputBody, undefined, 2)}\n${e.dataPath} ${
+            e.message
+          }`
+        : `JsonSchemaValidator encountered an unexpected error for ${e.data}.`;
+    });
+
+    if (bodyTypeMismatches.length > 0) {
+      return ok([new BodyTypeMismatch(bodyTypeMismatches)]);
+    }
+
+    return ok([]);
   }
 
   private getQueryParamsArraySerializationStrategy(): { comma: boolean } {
@@ -259,7 +426,12 @@ export class ContractMismatcher {
   private findQueryParamMismatches(
     contractEndpoint: Endpoint,
     inputPath: string
-  ): Result<Mismatch[], Error> {
+  ): Result<
+    Array<
+      RequiredQueryParamMissing | UndefinedQueryParam | QueryParamTypeMismatch
+    >,
+    Error
+  > {
     const contractQueryParams =
       (contractEndpoint.request && contractEndpoint.request.queryParams) || [];
 
@@ -276,8 +448,7 @@ export class ContractMismatcher {
       {}
     );
 
-    let result;
-    let mismatches: Mismatch[] = [];
+    const mismatches = [];
     for (const {
       name: queryParamName,
       optional,
@@ -292,11 +463,7 @@ export class ContractMismatcher {
 
       // Query parameter is mandatory and hasn't been provided
       if (typeof requestQueryParam === "undefined") {
-        mismatches.push(
-          new Mismatch(
-            `Query parameter "${queryParamName}" is required but hasn't been provided.`
-          )
-        );
+        mismatches.push(new RequiredQueryParamMissing(queryParamName));
         continue;
       }
 
@@ -304,25 +471,27 @@ export class ContractMismatcher {
       verifiedQueryParams[queryParamName] = true;
 
       // Validate current request query param against contract
-      result = this.findMismatchOnStringContent(
+      const result = this.findMismatchOnStringContent(
         { name: queryParamName, value: requestQueryParam },
         contractQueryParamType
       );
 
-      mismatches.push(...result);
+      if (result.length > 0) {
+        mismatches.push(
+          new QueryParamTypeMismatch(
+            queryParamName,
+            result.map(mis => mis.message)
+          )
+        );
+      }
     }
 
-    const checkForNonExistingParams = () =>
-      Object.entries(verifiedQueryParams)
-        .filter(([_, value]) => !value)
-        .map(
-          ([key, _]) =>
-            new Mismatch(
-              `Query parameter "${key}" does not exist under the specified endpoint.`
-            )
-        );
-
-    mismatches = [...mismatches, ...checkForNonExistingParams()];
+    Object.entries(verifiedQueryParams)
+      .filter(([_, value]) => !value)
+      .map(([key, _]) => key)
+      .forEach(key => {
+        mismatches.push(new UndefinedQueryParam(key));
+      });
 
     return ok(mismatches);
   }
@@ -344,18 +513,6 @@ export class ContractMismatcher {
       return [];
     }
     return stringValidator.messages.map(m => new Mismatch(m));
-  }
-
-  private errorObjectMapper(
-    array: ErrorObject[],
-    inputBody: UserInputBody
-  ): Mismatch[] {
-    return array.map(e => {
-      const message = e.message
-        ? `${JSON.stringify(inputBody)}: ${e.schemaPath} ${e.message}`
-        : `JsonSchemaValidator encountered an unexpected error for ${e.data}.`;
-      return new Mismatch(message);
-    });
   }
 
   private getRelevantResponse(
@@ -422,4 +579,61 @@ export const pathMatchesVariablePath = (
 
 export class Mismatch {
   constructor(readonly message: string) {}
+}
+
+enum MismatchKind {
+  REQUIRED_HEADER_MISSING = "required_header_missing",
+  UNDEFINED_HEADER = "undefined_header",
+  HEADER_TYPE_MISMATCH = "header_type_mismatch",
+  UNDEFINED_BODY = "undefined_body",
+  BODY_TYPE_MISMATCH = "body_type_mismatch",
+  PATH_PARAM_TYPE_MISMATCH = "path_param_type_mismatch",
+  REQUIRED_QUERY_PARAM_MISSING = "required_query_param_missing",
+  UNDEFINED_QUERY_PARAM = "undefined_query_param",
+  QUERY_PARAM_TYPE_MISMATCH = "query_param_type_mismatch"
+}
+
+class RequiredHeaderMissing {
+  readonly kind = MismatchKind.REQUIRED_HEADER_MISSING;
+  constructor(readonly header: string) {}
+}
+
+class UndefinedHeader {
+  readonly kind = MismatchKind.UNDEFINED_HEADER;
+  constructor(readonly header: string) {}
+}
+
+class HeaderTypeMismatch {
+  readonly kind = MismatchKind.HEADER_TYPE_MISMATCH;
+  constructor(readonly header: string, readonly mismatches: string[]) {}
+}
+
+class UndefinedBody {
+  readonly kind = MismatchKind.UNDEFINED_BODY;
+  constructor() {}
+}
+
+class BodyTypeMismatch {
+  readonly kind = MismatchKind.BODY_TYPE_MISMATCH;
+  constructor(readonly mismatches: string[]) {}
+}
+
+class PathParamTypeMismatch {
+  readonly kind = MismatchKind.PATH_PARAM_TYPE_MISMATCH;
+  constructor(readonly pathParam: string, readonly mismatches: string[]) {}
+}
+
+class RequiredQueryParamMissing {
+  readonly kind = MismatchKind.REQUIRED_QUERY_PARAM_MISSING;
+  constructor(readonly queryParam: string) {}
+}
+
+class UndefinedQueryParam {
+  readonly kind = MismatchKind.UNDEFINED_QUERY_PARAM;
+  constructor(readonly queryParam: string) {}
+}
+
+class QueryParamTypeMismatch {
+  readonly kind = MismatchKind.QUERY_PARAM_TYPE_MISMATCH;
+  constructor(readonly queryParam: string, readonly mismatches: string[]) {}
 }

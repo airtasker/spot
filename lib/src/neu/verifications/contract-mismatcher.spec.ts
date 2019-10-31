@@ -69,7 +69,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(0);
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(0);
   });
 
   test("a mismatch is found, missing 1 property on request body.", () => {
@@ -98,7 +98,21 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(1);
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      `Request body type mismatch:\n${JSON.stringify(
+        {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            email: "maple.syrup@airtasker.com",
+            address: "Doggo bed"
+          }
+        },
+        undefined,
+        2
+      )}\n.data should have required property 'age'`
+    );
   });
 
   test("a mismatch is found, no matching path on the contract", () => {
@@ -127,13 +141,13 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(1);
-    expect(result.unwrapOrThrow()[0].message).toBe(
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
       "Endpoint POST /compan/5/users not found."
     );
   });
 
-  test("A mismatch is found, when path is similar but contains a prefix", () => {
+  test("a mismatch is found, when path is similar but contains a prefix", () => {
     const request = {
       path: "/some/prefix/company/5/users",
       method: "POST",
@@ -160,41 +174,9 @@ describe("contract mismatch finder", () => {
     };
     const result = mismatcher.findMismatch(request, response);
     const unwrappedResult = result.unwrapOrThrow();
-    expect(unwrappedResult).toHaveLength(1);
-    expect(unwrappedResult[0].message).toBe(
+    expect(unwrappedResult.mismatches).toHaveLength(1);
+    expect(unwrappedResult.mismatches[0].message).toBe(
       "Endpoint POST /some/prefix/company/5/users not found."
-    );
-  });
-
-  test("a mismatch is found, path params do not conform to contract", () => {
-    const request = {
-      path: "/company/true/users",
-      method: "POST",
-      headers: [{ name: "x-auth-token", value: "token" }],
-      body: {
-        data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          email: "maple.syrup@airtasker.com",
-          address: "Doggo bed"
-        }
-      }
-    };
-    const response = {
-      headers: [{ name: "Location", value: "testLocation" }],
-      statusCode: 201,
-      body: {
-        data: {
-          firstName: "Maple",
-          lastName: "Syrup",
-          profile: { private: false, messageOptions: { newsletter: false } }
-        }
-      }
-    };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(1);
-    expect(result.unwrapOrThrow()[0].message).toBe(
-      '{"data":{"firstName":"Maple","lastName":"Syrup","email":"maple.syrup@airtasker.com","address":"Doggo bed"}}: #/properties/data/required should have required property \'age\''
     );
   });
 
@@ -214,9 +196,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(1);
-    expect(result.unwrapOrThrow()[0].message).toBe(
-      'Header "x-id" missing on endpoint'
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      'Required request header "x-id" missing'
     );
   });
 
@@ -236,8 +218,10 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(1);
-    expect(result.unwrapOrThrow()[0].message).toBe('"x-id" should be float');
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      'Request header "x-id" type mismatch: "x-id" should be float'
+    );
   });
 
   test("a response header mismatch found, missing required header", () => {
@@ -256,9 +240,9 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(1);
-    expect(result.unwrapOrThrow()[0].message).toBe(
-      'Header "accept" missing on endpoint'
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      'Required response header "accept" missing'
     );
   });
 
@@ -278,8 +262,10 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(1);
-    expect(result.unwrapOrThrow()[0].message).toBe('"accept" should be float');
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      'Response header "accept" type mismatch: "accept" should be float'
+    );
   });
 
   test("having an extra response header that's not defined in the contract is not a mismatch", () => {
@@ -312,7 +298,7 @@ describe("contract mismatch finder", () => {
       }
     };
     const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow()).toHaveLength(0);
+    expect(result.unwrapOrThrow().mismatches).toHaveLength(0);
   });
 
   describe("a mismatch is found, query params do not conform to contract", () => {
@@ -345,9 +331,9 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow()).toHaveLength(1);
-      expect(result.unwrapOrThrow()[0].message).toBe(
-        'Query parameter "id" does not exist under the specified endpoint.'
+      expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+      expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+        'Query param "id" not defined in contract request query params'
       );
     });
 
@@ -380,9 +366,9 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow()).toHaveLength(1);
-      expect(result.unwrapOrThrow()[0].message).toBe(
-        '".user.id" should be float'
+      expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+      expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+        'Query param "user" type mismatch: ".user.id" should be float'
       );
     });
 
@@ -415,9 +401,9 @@ describe("contract mismatch finder", () => {
       };
 
       const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow()).toHaveLength(1);
-      expect(result.unwrapOrThrow()[0].message).toBe(
-        '"ids[0]" should be float'
+      expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
+      expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+        'Query param "ids" type mismatch: "ids[0]" should be float'
       );
     });
   });

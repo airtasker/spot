@@ -1,7 +1,6 @@
 import request from "supertest";
 import { parse } from "../neu/parser";
 import {
-  headersToUserInputHeader,
   recordedRequestToUserInputRequest,
   recordedResponseToUserInputResponse,
   runValidationServer
@@ -37,7 +36,7 @@ describe("Validation Server", () => {
         request: {
           method: "POST",
           path: "/company/123/users",
-          headers: [{ key: "x-auth-token", value: "helloworld" }],
+          headers: [{ name: "x-auth-token", value: "helloworld" }],
           body: JSON.stringify({
             data: {
               firstName: "",
@@ -50,7 +49,7 @@ describe("Validation Server", () => {
         },
         response: {
           status: 201,
-          headers: [{ key: "Location", value: "hello" }],
+          headers: [{ name: "Location", value: "hello" }],
           body: JSON.stringify({
             data: {
               firstName: "",
@@ -74,7 +73,8 @@ describe("Validation Server", () => {
         .expect(200)
         .then(response => {
           // Expecting no mismatches
-          expect(response.body).toEqual([]);
+          expect(response.body.mismatches).toEqual([]);
+          expect(response.body.endpoint).toEqual("CreateUser");
         });
     });
 
@@ -85,12 +85,12 @@ describe("Validation Server", () => {
         request: {
           method: "POST",
           path: "/company/123/users",
-          headers: [{ key: "x-auth-token", value: "helloworld" }],
+          headers: [{ name: "x-auth-token", value: "helloworld" }],
           body: "{}"
         },
         response: {
           status: 200,
-          headers: [{ key: "a", value: "b" }],
+          headers: [{ name: "a", value: "b" }],
           body: "{}"
         }
       };
@@ -102,10 +102,11 @@ describe("Validation Server", () => {
         .send(requestAndResponseWithMismatches)
         .expect(200)
         .then(response => {
-          expect(response.body).toEqual([
-            "{}: #/required should have required property 'data'",
-            "{}: #/definitions/ErrorBody/required should have required property 'name'"
+          expect(response.body.mismatches).toEqual([
+            "Request body type mismatch:\n{}\n should have required property 'data'",
+            "Response body type mismatch:\n{}\n should have required property 'name'"
           ]);
+          expect(response.body.endpoint).toEqual("CreateUser");
         });
     });
 
@@ -128,24 +129,13 @@ describe("Validation Server", () => {
 });
 
 describe("Transformation functions", () => {
-  describe("headersToUserInputHeader", () => {
-    it("should transform Header[] into UserInputHeader[]", () => {
-      expect(
-        headersToUserInputHeader([
-          { key: "a", value: "b" },
-          { key: "c", value: "d" }
-        ])
-      ).toEqual([{ name: "a", value: "b" }, { name: "c", value: "d" }]);
-    });
-  });
-
   describe("recordedRequestToUserInputRequest", () => {
     it("should transform RecordedRequest into UserInputRequest", () => {
       expect(
         recordedRequestToUserInputRequest({
           method: "POST",
           path: "/path/to/somewhere?hello=world",
-          headers: [{ key: "a", value: "b" }, { key: "c", value: "d" }],
+          headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
           body: JSON.stringify({ data: "body" })
         })
       ).toEqual({
@@ -162,7 +152,7 @@ describe("Transformation functions", () => {
       expect(
         recordedResponseToUserInputResponse({
           status: 200,
-          headers: [{ key: "a", value: "b" }, { key: "c", value: "d" }],
+          headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
           body: JSON.stringify({ data: "body" })
         })
       ).toEqual({

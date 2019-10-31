@@ -39,5 +39,7 @@ export interface ValidateRequest {
 }
 
 export interface ValidateResponse {
+  interaction: ValidateRequest;
+  endpoint: String;
   mismatches: String[];
 }

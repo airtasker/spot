@@ -2,12 +2,11 @@ import express from "express";
 import { Contract } from "../neu/definitions";
 import { ContractMismatcher } from "../neu/verifications/contract-mismatcher";
 import {
-  UserInputHeader,
   UserInputRequest,
   UserInputResponse
 } from "../neu/verifications/user-input-models";
 import { Logger } from "../utilities/logger";
-import { Header, InternalServerError } from "./spots/utils";
+import { InternalServerError } from "./spots/utils";
 import {
   RecordedRequest,
   RecordedResponse,
@@ -40,20 +39,27 @@ export function runValidationServer(
 
       const contractValidator = new ContractMismatcher(contract);
 
-      const mismatchesResult = contractValidator.findMismatch(
+      const validatorResult = contractValidator.findMismatch(
         userInputRequest,
         userInputResponse
       );
 
-      if (mismatchesResult.isErr()) {
-        const error = mismatchesResult.unwrapErr();
+      if (validatorResult.isErr()) {
+        const error = validatorResult.unwrapErr();
         res.status(500).send(makeInternalServerError([error.message]));
         return;
       }
 
-      const mismatches = mismatchesResult.unwrap();
+      const { mismatches, context } = validatorResult.unwrap();
       const messages = mismatches.map(mismatch => mismatch.message);
-      res.json(messages);
+      res.json({
+        interaction: {
+          request: body.request,
+          response: body.response
+        },
+        endpoint: context.endpoint,
+        mismatches: messages
+      });
     } catch (error) {
       res.status(500).send(makeInternalServerError([error.message]));
     }
@@ -73,36 +79,23 @@ const makeInternalServerError = (messages: string[]): InternalServerError => {
   };
 };
 
-export const headersToUserInputHeader = (
-  headers: Header[]
-): UserInputHeader[] => {
-  return headers.map(header => {
-    return {
-      name: header.key,
-      value: header.value
-    };
-  });
-};
-
 export const recordedRequestToUserInputRequest = (
   recordedRequest: RecordedRequest
 ): UserInputRequest => {
-  const jsonBody = recordedRequest.body && JSON.parse(recordedRequest.body);
   return {
     path: recordedRequest.path,
     method: recordedRequest.method,
-    headers: headersToUserInputHeader(recordedRequest.headers),
-    body: jsonBody
+    headers: recordedRequest.headers,
+    body: recordedRequest.body && JSON.parse(recordedRequest.body)
   };
 };
 
 export const recordedResponseToUserInputResponse = (
   recordedResponse: RecordedResponse
 ): UserInputResponse => {
-  const jsonBody = recordedResponse.body && JSON.parse(recordedResponse.body);
   return {
-    headers: headersToUserInputHeader(recordedResponse.headers),
+    headers: recordedResponse.headers,
     statusCode: recordedResponse.status,
-    body: jsonBody
+    body: recordedResponse.body && JSON.parse(recordedResponse.body)
   };
 };
