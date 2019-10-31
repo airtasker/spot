@@ -53,10 +53,9 @@ describe("contract mismatch finder", () => {
           lastName: "Syrup",
           age: 1.0,
           email: "maple.syrup@airtasker.com",
-          address: "Doggo bed"
-        },
-        date: '2020-01-01',
-        datetime: '2020-01-01T20:20:39+00:00'
+          address: "Doggo bed",
+          createdAt: "2020-01-01",
+        }
       }
     };
     const response = {
@@ -107,7 +106,7 @@ describe("contract mismatch finder", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
-      headers: { "x-auth-token": "token" },
+      headers: [{ name: "x-auth-token", value: "token" }],
       body: {
         data: {
           firstName: "Maple",
@@ -115,12 +114,12 @@ describe("contract mismatch finder", () => {
           age: 1.0,
           email: "maple.syrup@airtasker.com",
           address: "Doggo bed",
-          createdAt: 'invalidDate'
+          createdAt: "invalidDate"
         }
       }
     };
     const response = {
-      headers: { Location: "testLocation" },
+      headers: [{ name: "Location", value: "testLocation" }],
       statusCode: 201,
       body: {
         data: {
@@ -461,7 +460,7 @@ describe("contract mismatch finder", () => {
       const request = {
         path: "/company/0/users?date=11-13",
         method: "POST",
-        headers: { "x-auth-token": "token" },
+        headers: [{ name: "x-auth-token", value: "token" }],
         body: {
           data: {
             firstName: "Maple",
@@ -474,7 +473,7 @@ describe("contract mismatch finder", () => {
       };
 
       const response = {
-        headers: { Location: "testLocation" },
+        headers: [{ name: "Location", value: "testLocation" }],
         statusCode: 201,
         body: {
           data: {
@@ -487,11 +486,7 @@ describe("contract mismatch finder", () => {
 
       const result = mismatcher.findMismatch(request, response);
       expect(result.unwrapOrThrow().length).toBe(1);
-      expect(result.unwrapOrThrow()[0].message).toBe(
-        '"date" should be date'
-      );
-    })
+      expect(result.unwrapOrThrow()[0].message).toBe('"date" should be date');
+    });
   });
-
- 
 });

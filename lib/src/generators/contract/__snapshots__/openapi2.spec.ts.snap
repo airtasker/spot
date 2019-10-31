@@ -107,8 +107,22 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
           },
           {
             \\"in\\": \\"query\\",
-            \\"name\\": \\"user\\",
-            \\"$ref\\": \\"#/definitions/UserQuery\\",
+            \\"name\\": \\"date\\",
+            \\"type\\": \\"string\\",
+            \\"format\\": \\"date\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"datetime\\",
+            \\"type\\": \\"string\\",
+            \\"format\\": \\"date-time\\",
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"dryRun\\",
+            \\"type\\": \\"boolean\\",
             \\"required\\": false
           },
           {
@@ -123,8 +137,8 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
           },
           {
             \\"in\\": \\"query\\",
-            \\"name\\": \\"dryRun\\",
-            \\"type\\": \\"boolean\\",
+            \\"name\\": \\"user\\",
+            \\"$ref\\": \\"#/definitions/UserQuery\\",
             \\"required\\": false
           },
           {
@@ -254,6 +268,10 @@ exports[`OpenAPI 2 generator produces valid code: json 1`] = `
             },
             \\"address\\": {
               \\"$ref\\": \\"#/definitions/Address\\"
+            },
+            \\"createdAt\\": {
+              \\"type\\": \\"string\\",
+              \\"format\\": \\"date\\"
             }
           },
           \\"required\\": [
@@ -451,8 +469,18 @@ paths:
           type: string
           required: false
         - in: query
-          name: user
-          $ref: '#/definitions/UserQuery'
+          name: date
+          type: string
+          format: date
+          required: false
+        - in: query
+          name: datetime
+          type: string
+          format: date-time
+          required: false
+        - in: query
+          name: dryRun
+          type: boolean
           required: false
         - in: query
           name: ids
@@ -462,8 +490,8 @@ paths:
             format: float
           required: false
         - in: query
-          name: dryRun
-          type: boolean
+          name: user
+          $ref: '#/definitions/UserQuery'
           required: false
         - in: header
           name: x-auth-token
@@ -551,6 +579,9 @@ definitions:
             $ref: '#/definitions/Email'
           address:
             $ref: '#/definitions/Address'
+          createdAt:
+            type: string
+            format: date
         required:
           - firstName
           - lastName

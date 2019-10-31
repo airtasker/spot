@@ -157,7 +157,7 @@ interface CreateUserRequestBody {
     /** user address */
     address: Address;
     /** user creation date */
-    createdAt?: Date
+    createdAt?: Date;
   };
 }
 
