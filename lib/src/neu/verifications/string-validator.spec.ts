@@ -60,6 +60,12 @@ describe("validators", () => {
       expect(result).toBe(true);
       expect(validator.messages.length).toEqual(0);
     });
+
+    test("should return true for an empty string matching string", () => {
+      const result = validator.run({ name: "param", value: "" }, stringType());
+      expect(result).toBe(true);
+      expect(validator.messages.length).toEqual(0);
+    });
   });
 
   describe("invalid inputs", () => {

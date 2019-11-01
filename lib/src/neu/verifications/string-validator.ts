@@ -47,7 +47,7 @@ export class StringValidator {
     [DOUBLE]: validators.isFloat,
     [FLOAT_LITERAL]: validators.isFloat,
     [INT_LITERAL]: validators.isInt,
-    [STRING]: Boolean
+    [STRING]: (str: string) => typeof str === "string"
   };
 
   static getErrorMessage(input: string, type: string): string {
