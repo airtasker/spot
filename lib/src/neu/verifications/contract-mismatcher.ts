@@ -116,7 +116,8 @@ export class ContractMismatcher {
             requestHeaderTypeMismatch(
               `Request header "${m.header}" type mismatch: ${m.mismatches.join(
                 ", "
-              )}`
+              )}`,
+              m.mismatches
             )
           );
           return;
@@ -154,7 +155,8 @@ export class ContractMismatcher {
             responseHeaderTypeMismatch(
               `Response header "${m.header}" type mismatch: ${m.mismatches.join(
                 ", "
-              )}`
+              )}`,
+              m.mismatches
             )
           );
           return;
@@ -184,7 +186,8 @@ export class ContractMismatcher {
             requestBodyTypeMismatch(
               `Request body type mismatch:\n${m.data}\n${m.mismatches
                 .map(mismatch => `- ${mismatch}`)
-                .join("\n")}`
+                .join("\n")}`,
+              m.mismatches
             )
           );
           return;
@@ -213,7 +216,8 @@ export class ContractMismatcher {
             responseBodyTypeMismatch(
               `Response body type mismatch:\n${m.data}\n${m.mismatches
                 .map(mismatch => `- ${mismatch}`)
-                .join("\n")}`
+                .join("\n")}`,
+              m.mismatches
             )
           );
           return;
@@ -237,7 +241,8 @@ export class ContractMismatcher {
             pathParamTypeMismatch(
               `Path param "${m.pathParam}" type mismatch: ${m.mismatches.join(
                 ", "
-              )}`
+              )}`,
+              m.mismatches
             )
           );
           return;
@@ -275,7 +280,8 @@ export class ContractMismatcher {
             queryParamTypeMismatch(
               `Query param "${m.queryParam}" type mismatch: ${m.mismatches.join(
                 ", "
-              )}`
+              )}`,
+              m.mismatches
             )
           );
           return;

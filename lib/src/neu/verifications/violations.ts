@@ -52,18 +52,24 @@ export function undefinedRequestHeader(
 }
 
 export function requestHeaderTypeMismatch(
-  message: string
+  message: string,
+  typeViolations: string[]
 ): RequestHeaderTypeMismatch {
   return {
     type: "request_header_type_mismatch",
-    message
+    message,
+    type_violations: typeViolations
   };
 }
 
-export function pathParamTypeMismatch(message: string): PathParamTypeMismatch {
+export function pathParamTypeMismatch(
+  message: string,
+  typeViolations: string[]
+): PathParamTypeMismatch {
   return {
     type: "path_param_type_mismatch",
-    message
+    message,
+    type_violations: typeViolations
   };
 }
 
@@ -84,11 +90,13 @@ export function undefinedQueryParam(message: string): UndefinedQueryParam {
 }
 
 export function queryParamTypeMismatch(
-  message: string
+  message: string,
+  typeViolations: string[]
 ): QueryParamTypeMismatch {
   return {
     type: "query_param_type_mismatch",
-    message
+    message,
+    type_violations: typeViolations
   };
 }
 
@@ -100,11 +108,13 @@ export function undefinedRequestBody(message: string): UndefinedRequestBody {
 }
 
 export function requestBodyTypeMismatch(
-  message: string
+  message: string,
+  typeViolations: string[]
 ): RequestBodyTypeMismatch {
   return {
     type: "request_body_type_mismatch",
-    message
+    message,
+    type_violations: typeViolations
   };
 }
 
@@ -127,11 +137,13 @@ export function undefinedResponseHeader(
 }
 
 export function responseHeaderTypeMismatch(
-  message: string
+  message: string,
+  typeViolations: string[]
 ): ResponseHeaderTypeMismatch {
   return {
     type: "response_header_type_mismatch",
-    message
+    message,
+    type_violations: typeViolations
   };
 }
 
@@ -143,10 +155,12 @@ export function undefinedResponseBody(message: string): UndefinedResponseBody {
 }
 
 export function responseBodyTypeMismatch(
-  message: string
+  message: string,
+  typeViolations: string[]
 ): ResponseBodyTypeMismatch {
   return {
     type: "response_body_type_mismatch",
-    message
+    message,
+    type_violations: typeViolations
   };
 }

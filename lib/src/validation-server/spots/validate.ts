@@ -66,6 +66,10 @@ export interface ViolationBase {
   message: String;
 }
 
+export interface TypeViolationBase {
+  type_violations: string[];
+}
+
 export interface UndefinedEndpoint extends ViolationBase {
   type: "undefined_endpoint";
 }
@@ -82,11 +86,15 @@ export interface UndefinedRequestHeader extends ViolationBase {
   type: "undefined_request_header";
 }
 
-export interface RequestHeaderTypeMismatch extends ViolationBase {
+export interface RequestHeaderTypeMismatch
+  extends ViolationBase,
+    TypeViolationBase {
   type: "request_header_type_mismatch";
 }
 
-export interface PathParamTypeMismatch extends ViolationBase {
+export interface PathParamTypeMismatch
+  extends ViolationBase,
+    TypeViolationBase {
   type: "path_param_type_mismatch";
 }
 
@@ -98,7 +106,9 @@ export interface UndefinedQueryParam extends ViolationBase {
   type: "undefined_query_param";
 }
 
-export interface QueryParamTypeMismatch extends ViolationBase {
+export interface QueryParamTypeMismatch
+  extends ViolationBase,
+    TypeViolationBase {
   type: "query_param_type_mismatch";
 }
 
@@ -106,7 +116,9 @@ export interface UndefinedRequestBody extends ViolationBase {
   type: "undefined_request_body";
 }
 
-export interface RequestBodyTypeMismatch extends ViolationBase {
+export interface RequestBodyTypeMismatch
+  extends ViolationBase,
+    TypeViolationBase {
   type: "request_body_type_mismatch";
 }
 
@@ -118,7 +130,9 @@ export interface UndefinedResponseHeader extends ViolationBase {
   type: "undefined_response_header";
 }
 
-export interface ResponseHeaderTypeMismatch extends ViolationBase {
+export interface ResponseHeaderTypeMismatch
+  extends ViolationBase,
+    TypeViolationBase {
   type: "response_header_type_mismatch";
 }
 
@@ -126,6 +140,8 @@ export interface UndefinedResponseBody extends ViolationBase {
   type: "undefined_response_body";
 }
 
-export interface ResponseBodyTypeMismatch extends ViolationBase {
+export interface ResponseBodyTypeMismatch
+  extends ViolationBase,
+    TypeViolationBase {
   type: "response_body_type_mismatch";
 }

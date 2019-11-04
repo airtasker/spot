@@ -106,12 +106,17 @@ describe("Validation Server", () => {
             {
               type: "request_body_type_mismatch",
               message:
-                "Request body type mismatch:\n{}\n- # should have required property 'data'"
+                "Request body type mismatch:\n{}\n- # should have required property 'data'",
+              type_violations: ["# should have required property 'data'"]
             },
             {
               type: "response_body_type_mismatch",
               message:
-                "Response body type mismatch:\n{}\n- # should have required property 'name'\n- # should have required property 'message'"
+                "Response body type mismatch:\n{}\n- # should have required property 'name'\n- # should have required property 'message'",
+              type_violations: [
+                "# should have required property 'name'",
+                "# should have required property 'message'"
+              ]
             }
           ]);
           expect(response.body.endpoint).toEqual("CreateUser");
