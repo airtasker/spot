@@ -29,7 +29,7 @@ describe("Validation Server", () => {
   });
 
   describe("/validate", () => {
-    it("should return no mismatches for valid request/response pair", async () => {
+    it("should return no violations for valid request/response pair", async () => {
       const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
 
       const validRequestAndResponse = {
@@ -72,16 +72,16 @@ describe("Validation Server", () => {
         .send(validRequestAndResponse)
         .expect(200)
         .then(response => {
-          // Expecting no mismatches
-          expect(response.body.mismatches).toEqual([]);
+          // Expecting no violations
+          expect(response.body.violations).toEqual([]);
           expect(response.body.endpoint).toEqual("CreateUser");
         });
     });
 
-    it("should return mismatches for invalid request/response pair", async () => {
+    it("should return violations for invalid request/response pair", async () => {
       const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
 
-      const requestAndResponseWithMismatches = {
+      const requestAndResponseWithViolations = {
         request: {
           method: "POST",
           path: "/company/123/users",
@@ -99,12 +99,20 @@ describe("Validation Server", () => {
         .post("/validate")
         .set("Content-Type", "application/json")
         .set("Accept", "application/json")
-        .send(requestAndResponseWithMismatches)
+        .send(requestAndResponseWithViolations)
         .expect(200)
         .then(response => {
-          expect(response.body.mismatches).toEqual([
-            "Request body type mismatch:\n{}\n should have required property 'data'",
-            "Response body type mismatch:\n{}\n should have required property 'name'"
+          expect(response.body.violations).toEqual([
+            {
+              type: "request_body_type_mismatch",
+              message:
+                "Request body type mismatch:\n{}\n- # should have required property 'data'"
+            },
+            {
+              type: "response_body_type_mismatch",
+              message:
+                "Response body type mismatch:\n{}\n- # should have required property 'name'\n- # should have required property 'message'"
+            }
           ]);
           expect(response.body.endpoint).toEqual("CreateUser");
         });

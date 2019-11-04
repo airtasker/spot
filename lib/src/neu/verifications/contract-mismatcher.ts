@@ -2,6 +2,7 @@ import JsonSchemaValidator from "ajv";
 import assertNever from "assert-never";
 import qs from "qs";
 import * as url from "url";
+import { Violation } from "../../validation-server/spots/validate";
 import {
   Body,
   Contract,
@@ -21,6 +22,24 @@ import {
   UserInputRequest,
   UserInputResponse
 } from "./user-input-models";
+import {
+  pathParamTypeMismatch,
+  queryParamTypeMismatch,
+  requestBodyTypeMismatch,
+  requestHeaderTypeMismatch,
+  requiredQueryParamMissing,
+  requiredRequestHeaderMissing,
+  requiredResponseHeaderMissing,
+  responseBodyTypeMismatch,
+  responseHeaderTypeMismatch,
+  undefinedEndpoint,
+  undefinedEndpointResponse,
+  undefinedQueryParam,
+  undefinedRequestBody,
+  undefinedRequestHeader,
+  undefinedResponseBody,
+  undefinedResponseHeader
+} from "./violations";
 
 export class ContractMismatcher {
   private typeTable: TypeTable;
@@ -29,21 +48,21 @@ export class ContractMismatcher {
     this.typeTable = TypeTable.fromArray(this.contract.types);
   }
 
-  findMismatch(
+  findViolations(
     userInputRequest: UserInputRequest,
     userInputResponse: UserInputResponse
-  ): Result<{ mismatches: Mismatch[]; context: { endpoint: string } }, Error> {
-    const mismatches: Mismatch[] = [];
+  ): Result<{ violations: Violation[]; context: { endpoint: string } }, Error> {
+    const violations: Violation[] = [];
 
     // Get endpoint
-    // Return mismatch if endpoint does not exist on the contract.
+    // Return violation if endpoint does not exist on the contract
     const expectedEndpointResult = this.getEndpointByRequest(userInputRequest);
     if (expectedEndpointResult.isErr()) {
       return ok({
-        mismatches: [new Mismatch(expectedEndpointResult.unwrapErr().message)],
-        context: {
-          endpoint: ""
-        }
+        violations: [
+          undefinedEndpoint(expectedEndpointResult.unwrapErr().message)
+        ],
+        context: { endpoint: "" }
       });
     }
     const expectedEndpoint = expectedEndpointResult.unwrap();
@@ -52,11 +71,19 @@ export class ContractMismatcher {
     const expectedRequest = expectedEndpoint.request;
 
     // Get response
+    // Return violation if endpoint response does not exist on the contract
     const expectedResponseResult = this.getRelevantResponse(
       expectedEndpoint,
       userInputResponse.statusCode
     );
-    if (expectedResponseResult.isErr()) return expectedResponseResult;
+    if (expectedResponseResult.isErr()) {
+      return ok({
+        violations: [
+          undefinedEndpointResponse(expectedResponseResult.unwrapErr().message)
+        ],
+        context: { endpoint: expectedEndpoint.name }
+      });
+    }
     const expectedResponse = expectedResponseResult.unwrap();
 
     // Find request header mismatches
@@ -71,20 +98,22 @@ export class ContractMismatcher {
     requestHeaderMismatchesResult.unwrap().forEach(m => {
       switch (m.kind) {
         case MismatchKind.REQUIRED_HEADER_MISSING:
-          mismatches.push(
-            new Mismatch(`Required request header "${m.header}" missing`)
+          violations.push(
+            requiredRequestHeaderMissing(
+              `Required request header "${m.header}" missing`
+            )
           );
           return;
         case MismatchKind.UNDEFINED_HEADER:
-          mismatches.push(
-            new Mismatch(
+          violations.push(
+            undefinedRequestHeader(
               `Request header "${m.header}" not defined in contract request headers`
             )
           );
           return;
         case MismatchKind.HEADER_TYPE_MISMATCH:
-          mismatches.push(
-            new Mismatch(
+          violations.push(
+            requestHeaderTypeMismatch(
               `Request header "${m.header}" type mismatch: ${m.mismatches.join(
                 ", "
               )}`
@@ -107,20 +136,22 @@ export class ContractMismatcher {
     responseHeaderMismatchesResult.unwrap().forEach(m => {
       switch (m.kind) {
         case MismatchKind.REQUIRED_HEADER_MISSING:
-          mismatches.push(
-            new Mismatch(`Required response header "${m.header}" missing`)
+          violations.push(
+            requiredResponseHeaderMissing(
+              `Required response header "${m.header}" missing`
+            )
           );
           return;
         case MismatchKind.UNDEFINED_HEADER:
-          mismatches.push(
-            new Mismatch(
+          violations.push(
+            undefinedResponseHeader(
               `Response header "${m.header}" not defined in contract response headers`
             )
           );
           return;
         case MismatchKind.HEADER_TYPE_MISMATCH:
-          mismatches.push(
-            new Mismatch(
+          violations.push(
+            responseHeaderTypeMismatch(
               `Response header "${m.header}" type mismatch: ${m.mismatches.join(
                 ", "
               )}`
@@ -144,12 +175,16 @@ export class ContractMismatcher {
     requestBodyMismatchesResult.unwrap().forEach(m => {
       switch (m.kind) {
         case MismatchKind.UNDEFINED_BODY:
-          mismatches.push(new Mismatch("Request body not defined in contract"));
+          violations.push(
+            undefinedRequestBody("Request body not defined in contract")
+          );
           return;
         case MismatchKind.BODY_TYPE_MISMATCH:
-          mismatches.push(
-            new Mismatch(
-              `Request body type mismatch:\n${m.mismatches.join("\n\n")}`
+          violations.push(
+            requestBodyTypeMismatch(
+              `Request body type mismatch:\n${m.data}\n${m.mismatches
+                .map(mismatch => `- ${mismatch}`)
+                .join("\n")}`
             )
           );
           return;
@@ -169,14 +204,16 @@ export class ContractMismatcher {
     responseBodyMismatchesResult.unwrap().forEach(m => {
       switch (m.kind) {
         case MismatchKind.UNDEFINED_BODY:
-          mismatches.push(
-            new Mismatch("Response body not defined in contract")
+          violations.push(
+            undefinedResponseBody("Response body not defined in contract")
           );
           return;
         case MismatchKind.BODY_TYPE_MISMATCH:
-          mismatches.push(
-            new Mismatch(
-              `Response body type mismatch:\n${m.mismatches.join("\n\n")}`
+          violations.push(
+            responseBodyTypeMismatch(
+              `Response body type mismatch:\n${m.data}\n${m.mismatches
+                .map(mismatch => `- ${mismatch}`)
+                .join("\n")}`
             )
           );
           return;
@@ -196,8 +233,8 @@ export class ContractMismatcher {
     pathParamMismatchesResult.unwrap().forEach(m => {
       switch (m.kind) {
         case MismatchKind.PATH_PARAM_TYPE_MISMATCH:
-          mismatches.push(
-            new Mismatch(
+          violations.push(
+            pathParamTypeMismatch(
               `Path param "${m.pathParam}" type mismatch: ${m.mismatches.join(
                 ", "
               )}`
@@ -220,20 +257,22 @@ export class ContractMismatcher {
     queryParamMismatchesResult.unwrap().forEach(m => {
       switch (m.kind) {
         case MismatchKind.REQUIRED_QUERY_PARAM_MISSING:
-          mismatches.push(
-            new Mismatch(`Required query param "${m.queryParam}" missing`)
+          violations.push(
+            requiredQueryParamMissing(
+              `Required query param "${m.queryParam}" missing`
+            )
           );
           return;
         case MismatchKind.UNDEFINED_QUERY_PARAM:
-          mismatches.push(
-            new Mismatch(
+          violations.push(
+            undefinedQueryParam(
               `Query param "${m.queryParam}" not defined in contract request query params`
             )
           );
           return;
         case MismatchKind.QUERY_PARAM_TYPE_MISMATCH:
-          mismatches.push(
-            new Mismatch(
+          violations.push(
+            queryParamTypeMismatch(
               `Query param "${m.queryParam}" type mismatch: ${m.mismatches.join(
                 ", "
               )}`
@@ -245,12 +284,7 @@ export class ContractMismatcher {
       }
     });
 
-    return ok({
-      mismatches,
-      context: {
-        endpoint: expectedEndpoint.name
-      }
-    });
+    return ok({ violations, context: { endpoint: expectedEndpoint.name } });
   }
 
   private findHeaderMismatches(
@@ -373,7 +407,8 @@ export class ContractMismatcher {
 
     const jsv = new JsonSchemaValidator({
       format: "full",
-      verbose: true
+      verbose: true,
+      allErrors: true
     });
     const schema = {
       ...generateJsonSchemaType(contractBody.type, !strict),
@@ -402,15 +437,17 @@ export class ContractMismatcher {
     }
 
     const bodyTypeMismatches = validateFn.errors.map(e => {
-      return e.message
-        ? `${JSON.stringify(inputBody, undefined, 2)}\n${e.dataPath} ${
-            e.message
-          }`
-        : `JsonSchemaValidator encountered an unexpected error for ${e.data}.`;
+      return `#${e.dataPath} ${e.message ||
+        "JsonSchemaValidator encountered an unexpected error"}`;
     });
 
     if (bodyTypeMismatches.length > 0) {
-      return ok([new BodyTypeMismatch(bodyTypeMismatches)]);
+      return ok([
+        new BodyTypeMismatch(
+          JSON.stringify(inputBody, undefined, 2),
+          bodyTypeMismatches
+        )
+      ]);
     }
 
     return ok([]);
@@ -615,7 +652,7 @@ class UndefinedBody {
 
 class BodyTypeMismatch {
   readonly kind = MismatchKind.BODY_TYPE_MISMATCH;
-  constructor(readonly mismatches: string[]) {}
+  constructor(readonly data: string, readonly mismatches: string[]) {}
 }
 
 class PathParamTypeMismatch {

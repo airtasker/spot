@@ -68,11 +68,11 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(0);
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(0);
   });
 
-  test("a mismatch is found, missing 1 property on request body.", () => {
+  test("a violation is found, missing 1 property on request body.", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
@@ -97,9 +97,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(1);
+    expect(result.unwrapOrThrow().violations[0].message).toBe(
       `Request body type mismatch:\n${JSON.stringify(
         {
           data: {
@@ -111,11 +111,11 @@ describe("contract mismatch finder", () => {
         },
         undefined,
         2
-      )}\n.data should have required property 'age'`
+      )}\n- #.data should have required property 'age'`
     );
   });
 
-  test("a mismatch is found, no matching path on the contract", () => {
+  test("a violation is found, no matching path on the contract", () => {
     const request = {
       path: "/compan/5/users",
       method: "POST",
@@ -140,14 +140,14 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(1);
+    expect(result.unwrapOrThrow().violations[0].message).toBe(
       "Endpoint POST /compan/5/users not found."
     );
   });
 
-  test("a mismatch is found, when path is similar but contains a prefix", () => {
+  test("a violation is found, when path is similar but contains a prefix", () => {
     const request = {
       path: "/some/prefix/company/5/users",
       method: "POST",
@@ -172,15 +172,15 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
+    const result = mismatcher.findViolations(request, response);
     const unwrappedResult = result.unwrapOrThrow();
-    expect(unwrappedResult.mismatches).toHaveLength(1);
-    expect(unwrappedResult.mismatches[0].message).toBe(
+    expect(unwrappedResult.violations).toHaveLength(1);
+    expect(unwrappedResult.violations[0].message).toBe(
       "Endpoint POST /some/prefix/company/5/users not found."
     );
   });
 
-  test("a request header mismatch found, missing required header", () => {
+  test("a request header violation found, missing required header", () => {
     const request = {
       path: "/company/5",
       method: "GET",
@@ -195,14 +195,14 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(1);
+    expect(result.unwrapOrThrow().violations[0].message).toBe(
       'Required request header "x-id" missing'
     );
   });
 
-  test("a request header mismatch found, wrong header value type", () => {
+  test("a request header violation found, wrong header value type", () => {
     const request = {
       path: "/company/5",
       method: "GET",
@@ -217,14 +217,14 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(1);
+    expect(result.unwrapOrThrow().violations[0].message).toBe(
       'Request header "x-id" type mismatch: "x-id" should be float'
     );
   });
 
-  test("a response header mismatch found, missing required header", () => {
+  test("a response header violation found, missing required header", () => {
     const request = {
       path: "/company/5",
       method: "GET",
@@ -239,14 +239,14 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(1);
+    expect(result.unwrapOrThrow().violations[0].message).toBe(
       'Required response header "accept" missing'
     );
   });
 
-  test("a response header mismatch found, wrong header value type", () => {
+  test("a response header violation found, wrong header value type", () => {
     const request = {
       path: "/company/5",
       method: "GET",
@@ -261,14 +261,14 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-    expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(1);
+    expect(result.unwrapOrThrow().violations[0].message).toBe(
       'Response header "accept" type mismatch: "accept" should be float'
     );
   });
 
-  test("having an extra response header that's not defined in the contract is not a mismatch", () => {
+  test("having an extra response header that's not defined in the contract is not a violation", () => {
     const request = {
       path: "/company/5/users",
       method: "POST",
@@ -297,11 +297,11 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
-    expect(result.unwrapOrThrow().mismatches).toHaveLength(0);
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(0);
   });
 
-  describe("a mismatch is found, query params do not conform to contract", () => {
+  describe("a violation is found, query params do not conform to contract", () => {
     test("query param does not exist under endpoint", () => {
       const request = {
         path: "/company/0/users?id=query+param+array+pipe",
@@ -330,9 +330,9 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-      expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      const result = mismatcher.findViolations(request, response);
+      expect(result.unwrapOrThrow().violations).toHaveLength(1);
+      expect(result.unwrapOrThrow().violations[0].message).toBe(
         'Query param "id" not defined in contract request query params'
       );
     });
@@ -365,9 +365,9 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-      expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      const result = mismatcher.findViolations(request, response);
+      expect(result.unwrapOrThrow().violations).toHaveLength(1);
+      expect(result.unwrapOrThrow().violations[0].message).toBe(
         'Query param "user" type mismatch: ".user.id" should be float'
       );
     });
@@ -400,9 +400,9 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().mismatches).toHaveLength(1);
-      expect(result.unwrapOrThrow().mismatches[0].message).toBe(
+      const result = mismatcher.findViolations(request, response);
+      expect(result.unwrapOrThrow().violations).toHaveLength(1);
+      expect(result.unwrapOrThrow().violations[0].message).toBe(
         'Query param "ids" type mismatch: "ids[0]" should be float'
       );
     });

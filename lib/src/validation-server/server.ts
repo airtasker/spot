@@ -10,7 +10,8 @@ import { InternalServerError } from "./spots/utils";
 import {
   RecordedRequest,
   RecordedResponse,
-  ValidateRequest
+  ValidateRequest,
+  ValidateResponse
 } from "./spots/validate";
 
 export function runValidationServer(
@@ -39,7 +40,7 @@ export function runValidationServer(
 
       const contractValidator = new ContractMismatcher(contract);
 
-      const validatorResult = contractValidator.findMismatch(
+      const validatorResult = contractValidator.findViolations(
         userInputRequest,
         userInputResponse
       );
@@ -50,16 +51,16 @@ export function runValidationServer(
         return;
       }
 
-      const { mismatches, context } = validatorResult.unwrap();
-      const messages = mismatches.map(mismatch => mismatch.message);
-      res.json({
+      const { violations, context } = validatorResult.unwrap();
+      const responseBody: ValidateResponse = {
         interaction: {
           request: body.request,
           response: body.response
         },
         endpoint: context.endpoint,
-        mismatches: messages
-      });
+        violations
+      };
+      res.json(responseBody);
     } catch (error) {
       res.status(500).send(makeInternalServerError([error.message]));
     }
