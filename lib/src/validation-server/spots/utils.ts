@@ -14,6 +14,6 @@ export interface InternalServerError extends BaseError {
 }
 
 export interface Header {
-  key: String;
+  name: String;
   value: String;
 }
