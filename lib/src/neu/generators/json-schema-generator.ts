@@ -63,7 +63,9 @@ export function generateJsonSchemaType(
         const: type.value
       };
     case TypeKind.DATE:
+      return { type: "string", format: "date" };
     case TypeKind.DATE_TIME:
+      return { type: "string", format: "date-time" };
     case TypeKind.STRING:
       return {
         type: "string"

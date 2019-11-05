@@ -53,7 +53,8 @@ describe("contract mismatch finder", () => {
           lastName: "Syrup",
           age: 1.0,
           email: "maple.syrup@airtasker.com",
-          address: "Doggo bed"
+          address: "Doggo bed",
+          createdAt: "2020-01-01"
         }
       }
     };
@@ -112,6 +113,40 @@ describe("contract mismatch finder", () => {
         undefined,
         2
       )}\n- #.data should have required property 'age'`
+    );
+  });
+
+  test("a mismatch is found, request body property type is incorrect (date)", () => {
+    const request = {
+      path: "/company/5/users",
+      method: "POST",
+      headers: [{ name: "x-auth-token", value: "token" }],
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          age: 1.0,
+          email: "maple.syrup@airtasker.com",
+          address: "Doggo bed",
+          createdAt: "invalidDate"
+        }
+      }
+    };
+    const response = {
+      headers: [{ name: "Location", value: "testLocation" }],
+      statusCode: 201,
+      body: {
+        data: {
+          firstName: "Maple",
+          lastName: "Syrup",
+          profile: { private: false, messageOptions: { newsletter: false } }
+        }
+      }
+    };
+    const result = mismatcher.findViolations(request, response);
+    expect(result.unwrapOrThrow().violations).toHaveLength(1);
+    expect(result.unwrapOrThrow().violations[0].message).toBe(
+      'Request body type disparity:\n{\n  "data": {\n    "firstName": "Maple",\n    "lastName": "Syrup",\n    "age": 1,\n    "email": "maple.syrup@airtasker.com",\n    "address": "Doggo bed",\n    "createdAt": "invalidDate"\n  }\n}\n- #.data.createdAt should match format "date"'
     );
   });
 
@@ -404,6 +439,41 @@ describe("contract mismatch finder", () => {
       expect(result.unwrapOrThrow().violations).toHaveLength(1);
       expect(result.unwrapOrThrow().violations[0].message).toBe(
         'Query param "ids" type disparity: "ids[0]" should be float'
+      );
+    });
+
+    test("query param type is incorrect (date)", () => {
+      const request = {
+        path: "/company/0/users?date=11-13",
+        method: "POST",
+        headers: [{ name: "x-auth-token", value: "token" }],
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            age: 1.0,
+            email: "maple.syrup@airtasker.com",
+            address: "Doggo bed"
+          }
+        }
+      };
+
+      const response = {
+        headers: [{ name: "Location", value: "testLocation" }],
+        statusCode: 201,
+        body: {
+          data: {
+            firstName: "Maple",
+            lastName: "Syrup",
+            profile: { private: false, messageOptions: { newsletter: false } }
+          }
+        }
+      };
+
+      const result = mismatcher.findViolations(request, response);
+      expect(result.unwrapOrThrow().violations).toHaveLength(1);
+      expect(result.unwrapOrThrow().violations[0].message).toBe(
+        'Query param "date" type disparity: "date" should be date'
       );
     });
   });

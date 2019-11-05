@@ -1,6 +1,8 @@
 import {
   api,
   body,
+  Date,
+  DateTime,
   defaultResponse,
   endpoint,
   Float,
@@ -46,9 +48,11 @@ class CreateUser {
     queryParams: {
       /** a demo query param */
       "sample-query"?: String;
-      user?: UserQuery;
-      ids?: number[];
+      date?: Date;
+      datetime?: DateTime;
       dryRun?: boolean;
+      ids?: number[];
+      user?: UserQuery;
     },
     /** request body */
     @body body: CreateUserRequestBody
@@ -152,6 +156,8 @@ interface CreateUserRequestBody {
     email: Email;
     /** user address */
     address: Address;
+    /** user creation date */
+    createdAt?: Date;
   };
 }
 

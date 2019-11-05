@@ -51,6 +51,10 @@ exports[`JSON Schema generator produces valid code: json 1`] = `
             },
             \\"address\\": {
               \\"$ref\\": \\"#/definitions/Address\\"
+            },
+            \\"createdAt\\": {
+              \\"type\\": \\"string\\",
+              \\"format\\": \\"date\\"
             }
           },
           \\"required\\": [
@@ -204,6 +208,9 @@ definitions:
             $ref: '#/definitions/Email'
           address:
             $ref: '#/definitions/Address'
+          createdAt:
+            type: string
+            format: date
         required:
           - firstName
           - lastName

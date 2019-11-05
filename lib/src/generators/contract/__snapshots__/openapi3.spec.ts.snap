@@ -673,9 +673,27 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
           },
           {
             \\"in\\": \\"query\\",
-            \\"name\\": \\"user\\",
+            \\"name\\": \\"date\\",
             \\"schema\\": {
-              \\"$ref\\": \\"#/components/schemas/UserQuery\\"
+              \\"type\\": \\"string\\",
+              \\"format\\": \\"date\\"
+            },
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"datetime\\",
+            \\"schema\\": {
+              \\"type\\": \\"string\\",
+              \\"format\\": \\"date-time\\"
+            },
+            \\"required\\": false
+          },
+          {
+            \\"in\\": \\"query\\",
+            \\"name\\": \\"dryRun\\",
+            \\"schema\\": {
+              \\"type\\": \\"boolean\\"
             },
             \\"required\\": false
           },
@@ -693,9 +711,9 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
           },
           {
             \\"in\\": \\"query\\",
-            \\"name\\": \\"dryRun\\",
+            \\"name\\": \\"user\\",
             \\"schema\\": {
-              \\"type\\": \\"boolean\\"
+              \\"$ref\\": \\"#/components/schemas/UserQuery\\"
             },
             \\"required\\": false
           },
@@ -865,6 +883,10 @@ exports[`OpenAPI 3 generator produces valid code: json 1`] = `
               },
               \\"address\\": {
                 \\"$ref\\": \\"#/components/schemas/Address\\"
+              },
+              \\"createdAt\\": {
+                \\"type\\": \\"string\\",
+                \\"format\\": \\"date\\"
               }
             },
             \\"required\\": [
@@ -1066,9 +1088,21 @@ paths:
             type: string
           required: false
         - in: query
-          name: user
+          name: date
           schema:
-            $ref: '#/components/schemas/UserQuery'
+            type: string
+            format: date
+          required: false
+        - in: query
+          name: datetime
+          schema:
+            type: string
+            format: date-time
+          required: false
+        - in: query
+          name: dryRun
+          schema:
+            type: boolean
           required: false
         - in: query
           name: ids
@@ -1079,9 +1113,9 @@ paths:
               format: float
           required: false
         - in: query
-          name: dryRun
+          name: user
           schema:
-            type: boolean
+            $ref: '#/components/schemas/UserQuery'
           required: false
         - in: header
           name: x-auth-token
@@ -1191,6 +1225,9 @@ components:
               $ref: '#/components/schemas/Email'
             address:
               $ref: '#/components/schemas/Address'
+            createdAt:
+              type: string
+              format: date
           required:
             - firstName
             - lastName
