@@ -143,10 +143,10 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findMismatch(request, response);
+    const result = mismatcher.findViolations(request, response);
     expect(result.unwrapOrThrow().violations).toHaveLength(1);
     expect(result.unwrapOrThrow().violations[0].message).toBe(
-      '{"data":{"firstName":"Maple","lastName":"Syrup","age":1,"email":"maple.syrup@airtasker.com","address":"Doggo bed","createdAt":"invalidDate"}}: #/properties/data/properties/createdAt/format should match format "date"'
+      'Request body type disparity:\n{\n  "data": {\n    "firstName": "Maple",\n    "lastName": "Syrup",\n    "age": 1,\n    "email": "maple.syrup@airtasker.com",\n    "address": "Doggo bed",\n    "createdAt": "invalidDate"\n  }\n}\n- #.data.createdAt should match format "date"'
     );
   });
 
@@ -470,9 +470,11 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findMismatch(request, response);
-      expect(result.unwrapOrThrow().length).toBe(1);
-      expect(result.unwrapOrThrow()[0].message).toBe('"date" should be date');
+      const result = mismatcher.findViolations(request, response);
+      expect(result.unwrapOrThrow().violations).toHaveLength(1);
+      expect(result.unwrapOrThrow().violations[0].message).toBe(
+        'Query param "date" type disparity: "date" should be date'
+      );
     });
   });
 });
