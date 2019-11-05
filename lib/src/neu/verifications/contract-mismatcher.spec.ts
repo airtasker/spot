@@ -100,7 +100,7 @@ describe("contract mismatch finder", () => {
     const result = mismatcher.findViolations(request, response);
     expect(result.unwrapOrThrow().violations).toHaveLength(1);
     expect(result.unwrapOrThrow().violations[0].message).toBe(
-      `Request body type mismatch:\n${JSON.stringify(
+      `Request body type disparity:\n${JSON.stringify(
         {
           data: {
             firstName: "Maple",
@@ -220,7 +220,7 @@ describe("contract mismatch finder", () => {
     const result = mismatcher.findViolations(request, response);
     expect(result.unwrapOrThrow().violations).toHaveLength(1);
     expect(result.unwrapOrThrow().violations[0].message).toBe(
-      'Request header "x-id" type mismatch: "x-id" should be float'
+      'Request header "x-id" type disparity: "x-id" should be float'
     );
   });
 
@@ -264,7 +264,7 @@ describe("contract mismatch finder", () => {
     const result = mismatcher.findViolations(request, response);
     expect(result.unwrapOrThrow().violations).toHaveLength(1);
     expect(result.unwrapOrThrow().violations[0].message).toBe(
-      'Response header "accept" type mismatch: "accept" should be float'
+      'Response header "accept" type disparity: "accept" should be float'
     );
   });
 
@@ -368,7 +368,7 @@ describe("contract mismatch finder", () => {
       const result = mismatcher.findViolations(request, response);
       expect(result.unwrapOrThrow().violations).toHaveLength(1);
       expect(result.unwrapOrThrow().violations[0].message).toBe(
-        'Query param "user" type mismatch: ".user.id" should be float'
+        'Query param "user" type disparity: ".user.id" should be float'
       );
     });
 
@@ -403,7 +403,7 @@ describe("contract mismatch finder", () => {
       const result = mismatcher.findViolations(request, response);
       expect(result.unwrapOrThrow().violations).toHaveLength(1);
       expect(result.unwrapOrThrow().violations[0].message).toBe(
-        'Query param "ids" type mismatch: "ids[0]" should be float'
+        'Query param "ids" type disparity: "ids[0]" should be float'
       );
     });
   });

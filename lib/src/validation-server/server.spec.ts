@@ -104,16 +104,16 @@ describe("Validation Server", () => {
         .then(response => {
           expect(response.body.violations).toEqual([
             {
-              type: "request_body_type_mismatch",
+              type: "request_body_type_disparity",
               message:
-                "Request body type mismatch:\n{}\n- # should have required property 'data'",
-              type_violations: ["# should have required property 'data'"]
+                "Request body type disparity:\n{}\n- # should have required property 'data'",
+              type_disparities: ["# should have required property 'data'"]
             },
             {
-              type: "response_body_type_mismatch",
+              type: "response_body_type_disparity",
               message:
-                "Response body type mismatch:\n{}\n- # should have required property 'name'\n- # should have required property 'message'",
-              type_violations: [
+                "Response body type disparity:\n{}\n- # should have required property 'name'\n- # should have required property 'message'",
+              type_disparities: [
                 "# should have required property 'name'",
                 "# should have required property 'message'"
               ]

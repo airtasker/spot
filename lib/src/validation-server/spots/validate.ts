@@ -45,103 +45,103 @@ export interface ValidateResponse {
 }
 
 export type Violation =
-  | UndefinedEndpoint
-  | UndefinedEndpointResponse
-  | RequiredRequestHeaderMissing
-  | UndefinedRequestHeader
-  | RequestHeaderTypeMismatch
-  | PathParamTypeMismatch
-  | RequiredQueryParamMissing
-  | UndefinedQueryParam
-  | QueryParamTypeMismatch
-  | UndefinedRequestBody
-  | RequestBodyTypeMismatch
-  | RequiredResponseHeaderMissing
-  | UndefinedResponseHeader
-  | ResponseHeaderTypeMismatch
-  | UndefinedResponseBody
-  | ResponseBodyTypeMismatch;
+  | UndefinedEndpointViolation
+  | UndefinedEndpointResponseViolation
+  | RequiredRequestHeaderMissingViolation
+  | UndefinedRequestHeaderViolation
+  | RequestHeaderTypeDisparityViolation
+  | PathParamTypeDisparityViolation
+  | RequiredQueryParamMissingViolation
+  | UndefinedQueryParamViolation
+  | QueryParamTypeDisparityViolation
+  | UndefinedRequestBodyViolation
+  | RequestBodyTypeDisparityViolation
+  | RequiredResponseHeaderMissingViolation
+  | UndefinedResponseHeaderViolation
+  | ResponseHeaderTypeDisparityViolation
+  | UndefinedResponseBodyViolation
+  | ResponseBodyTypeDisparityViolation;
 
 export interface ViolationBase {
   message: String;
 }
 
 export interface TypeViolationBase {
-  type_violations: string[];
+  type_disparities: string[];
 }
 
-export interface UndefinedEndpoint extends ViolationBase {
+export interface UndefinedEndpointViolation extends ViolationBase {
   type: "undefined_endpoint";
 }
 
-export interface UndefinedEndpointResponse extends ViolationBase {
+export interface UndefinedEndpointResponseViolation extends ViolationBase {
   type: "undefined_endpoint_response";
 }
 
-export interface RequiredRequestHeaderMissing extends ViolationBase {
+export interface RequiredRequestHeaderMissingViolation extends ViolationBase {
   type: "required_request_header_missing";
 }
 
-export interface UndefinedRequestHeader extends ViolationBase {
+export interface UndefinedRequestHeaderViolation extends ViolationBase {
   type: "undefined_request_header";
 }
 
-export interface RequestHeaderTypeMismatch
+export interface RequestHeaderTypeDisparityViolation
   extends ViolationBase,
     TypeViolationBase {
-  type: "request_header_type_mismatch";
+  type: "request_header_type_disparity";
 }
 
-export interface PathParamTypeMismatch
+export interface PathParamTypeDisparityViolation
   extends ViolationBase,
     TypeViolationBase {
-  type: "path_param_type_mismatch";
+  type: "path_param_type_disparity";
 }
 
-export interface RequiredQueryParamMissing extends ViolationBase {
+export interface RequiredQueryParamMissingViolation extends ViolationBase {
   type: "required_query_param_missing";
 }
 
-export interface UndefinedQueryParam extends ViolationBase {
+export interface UndefinedQueryParamViolation extends ViolationBase {
   type: "undefined_query_param";
 }
 
-export interface QueryParamTypeMismatch
+export interface QueryParamTypeDisparityViolation
   extends ViolationBase,
     TypeViolationBase {
-  type: "query_param_type_mismatch";
+  type: "query_param_type_disparity";
 }
 
-export interface UndefinedRequestBody extends ViolationBase {
+export interface UndefinedRequestBodyViolation extends ViolationBase {
   type: "undefined_request_body";
 }
 
-export interface RequestBodyTypeMismatch
+export interface RequestBodyTypeDisparityViolation
   extends ViolationBase,
     TypeViolationBase {
-  type: "request_body_type_mismatch";
+  type: "request_body_type_disparity";
 }
 
-export interface RequiredResponseHeaderMissing extends ViolationBase {
+export interface RequiredResponseHeaderMissingViolation extends ViolationBase {
   type: "required_response_header_missing";
 }
 
-export interface UndefinedResponseHeader extends ViolationBase {
+export interface UndefinedResponseHeaderViolation extends ViolationBase {
   type: "undefined_response_header";
 }
 
-export interface ResponseHeaderTypeMismatch
+export interface ResponseHeaderTypeDisparityViolation
   extends ViolationBase,
     TypeViolationBase {
-  type: "response_header_type_mismatch";
+  type: "response_header_type_disparity";
 }
 
-export interface UndefinedResponseBody extends ViolationBase {
+export interface UndefinedResponseBodyViolation extends ViolationBase {
   type: "undefined_response_body";
 }
 
-export interface ResponseBodyTypeMismatch
+export interface ResponseBodyTypeDisparityViolation
   extends ViolationBase,
     TypeViolationBase {
-  type: "response_body_type_mismatch";
+  type: "response_body_type_disparity";
 }

@@ -1,166 +1,149 @@
+/**
+ * Violations are used as part of the validation server payload to
+ * express contract violations.
+ */
+
 import {
-  PathParamTypeMismatch,
-  QueryParamTypeMismatch,
-  RequestBodyTypeMismatch,
-  RequestHeaderTypeMismatch,
-  RequiredQueryParamMissing,
-  RequiredRequestHeaderMissing,
-  RequiredResponseHeaderMissing,
-  ResponseBodyTypeMismatch,
-  ResponseHeaderTypeMismatch,
-  UndefinedEndpoint,
-  UndefinedEndpointResponse,
-  UndefinedQueryParam,
-  UndefinedRequestBody,
-  UndefinedRequestHeader,
-  UndefinedResponseBody,
-  UndefinedResponseHeader
+  PathParamTypeDisparityViolation,
+  QueryParamTypeDisparityViolation,
+  RequestBodyTypeDisparityViolation,
+  RequestHeaderTypeDisparityViolation,
+  RequiredQueryParamMissingViolation,
+  RequiredRequestHeaderMissingViolation,
+  RequiredResponseHeaderMissingViolation,
+  ResponseBodyTypeDisparityViolation,
+  ResponseHeaderTypeDisparityViolation,
+  UndefinedEndpointResponseViolation,
+  UndefinedEndpointViolation,
+  UndefinedQueryParamViolation,
+  UndefinedRequestBodyViolation,
+  UndefinedRequestHeaderViolation,
+  UndefinedResponseBodyViolation,
+  UndefinedResponseHeaderViolation
 } from "../../validation-server/spots/validate";
 
-export function undefinedEndpoint(message: string): UndefinedEndpoint {
-  return {
-    type: "undefined_endpoint",
-    message
-  };
-}
-
-export function undefinedEndpointResponse(
+export function undefinedEndpointViolation(
   message: string
-): UndefinedEndpointResponse {
-  return {
-    type: "undefined_endpoint_response",
-    message
-  };
+): UndefinedEndpointViolation {
+  return { type: "undefined_endpoint", message };
 }
 
-export function requiredRequestHeaderMissing(
+export function undefinedEndpointResponseViolation(
   message: string
-): RequiredRequestHeaderMissing {
-  return {
-    type: "required_request_header_missing",
-    message
-  };
+): UndefinedEndpointResponseViolation {
+  return { type: "undefined_endpoint_response", message };
 }
 
-export function undefinedRequestHeader(
+export function requiredRequestHeaderMissingViolation(
   message: string
-): UndefinedRequestHeader {
-  return {
-    type: "undefined_request_header",
-    message
-  };
+): RequiredRequestHeaderMissingViolation {
+  return { type: "required_request_header_missing", message };
 }
 
-export function requestHeaderTypeMismatch(
-  message: string,
-  typeViolations: string[]
-): RequestHeaderTypeMismatch {
-  return {
-    type: "request_header_type_mismatch",
-    message,
-    type_violations: typeViolations
-  };
-}
-
-export function pathParamTypeMismatch(
-  message: string,
-  typeViolations: string[]
-): PathParamTypeMismatch {
-  return {
-    type: "path_param_type_mismatch",
-    message,
-    type_violations: typeViolations
-  };
-}
-
-export function requiredQueryParamMissing(
+export function undefinedRequestHeaderViolation(
   message: string
-): RequiredQueryParamMissing {
-  return {
-    type: "required_query_param_missing",
-    message
-  };
+): UndefinedRequestHeaderViolation {
+  return { type: "undefined_request_header", message };
 }
 
-export function undefinedQueryParam(message: string): UndefinedQueryParam {
-  return {
-    type: "undefined_query_param",
-    message
-  };
-}
-
-export function queryParamTypeMismatch(
+export function requestHeaderTypeDisparityViolation(
   message: string,
-  typeViolations: string[]
-): QueryParamTypeMismatch {
+  typeDisparities: string[]
+): RequestHeaderTypeDisparityViolation {
   return {
-    type: "query_param_type_mismatch",
+    type: "request_header_type_disparity",
     message,
-    type_violations: typeViolations
+    type_disparities: typeDisparities
   };
 }
 
-export function undefinedRequestBody(message: string): UndefinedRequestBody {
-  return {
-    type: "undefined_request_body",
-    message
-  };
-}
-
-export function requestBodyTypeMismatch(
+export function pathParamTypeDisparityViolation(
   message: string,
-  typeViolations: string[]
-): RequestBodyTypeMismatch {
+  typeDisparities: string[]
+): PathParamTypeDisparityViolation {
   return {
-    type: "request_body_type_mismatch",
+    type: "path_param_type_disparity",
     message,
-    type_violations: typeViolations
+    type_disparities: typeDisparities
   };
 }
 
-export function requiredResponseHeaderMissing(
+export function requiredQueryParamMissingViolation(
   message: string
-): RequiredResponseHeaderMissing {
-  return {
-    type: "required_response_header_missing",
-    message
-  };
+): RequiredQueryParamMissingViolation {
+  return { type: "required_query_param_missing", message };
 }
 
-export function undefinedResponseHeader(
+export function undefinedQueryParamViolation(
   message: string
-): UndefinedResponseHeader {
-  return {
-    type: "undefined_response_header",
-    message
-  };
+): UndefinedQueryParamViolation {
+  return { type: "undefined_query_param", message };
 }
 
-export function responseHeaderTypeMismatch(
+export function queryParamTypeDisparityViolation(
   message: string,
-  typeViolations: string[]
-): ResponseHeaderTypeMismatch {
+  typeDisparities: string[]
+): QueryParamTypeDisparityViolation {
   return {
-    type: "response_header_type_mismatch",
+    type: "query_param_type_disparity",
     message,
-    type_violations: typeViolations
+    type_disparities: typeDisparities
   };
 }
 
-export function undefinedResponseBody(message: string): UndefinedResponseBody {
-  return {
-    type: "undefined_response_body",
-    message
-  };
+export function undefinedRequestBodyViolation(
+  message: string
+): UndefinedRequestBodyViolation {
+  return { type: "undefined_request_body", message };
 }
 
-export function responseBodyTypeMismatch(
+export function requestBodyTypeDisparityViolation(
   message: string,
-  typeViolations: string[]
-): ResponseBodyTypeMismatch {
+  typeDisparities: string[]
+): RequestBodyTypeDisparityViolation {
   return {
-    type: "response_body_type_mismatch",
+    type: "request_body_type_disparity",
     message,
-    type_violations: typeViolations
+    type_disparities: typeDisparities
+  };
+}
+
+export function requiredResponseHeaderMissingViolation(
+  message: string
+): RequiredResponseHeaderMissingViolation {
+  return { type: "required_response_header_missing", message };
+}
+
+export function undefinedResponseHeaderViolation(
+  message: string
+): UndefinedResponseHeaderViolation {
+  return { type: "undefined_response_header", message };
+}
+
+export function responseHeaderTypeDisparityViolation(
+  message: string,
+  typeDisparities: string[]
+): ResponseHeaderTypeDisparityViolation {
+  return {
+    type: "response_header_type_disparity",
+    message,
+    type_disparities: typeDisparities
+  };
+}
+
+export function undefinedResponseBodyViolation(
+  message: string
+): UndefinedResponseBodyViolation {
+  return { type: "undefined_response_body", message };
+}
+
+export function responseBodyTypeDisparityViolation(
+  message: string,
+  typeDisparities: string[]
+): ResponseBodyTypeDisparityViolation {
+  return {
+    type: "response_body_type_disparity",
+    message,
+    type_disparities: typeDisparities
   };
 }
