@@ -26,7 +26,7 @@
     "inquirer": "^7.0.0",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.14",
-    "qs": "^6.9.0",
+    "qs": "^6.9.1",
     "randomstring": "^1.1.5",
     "supertest": "^4.0.2",
     "ts-morph": "^4.3.3",
