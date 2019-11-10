@@ -43,7 +43,7 @@
     "@types/js-yaml": "^3.12.1",
     "@types/lodash": "^4.14.145",
     "@types/moxios": "^0.4.8",
-    "@types/node": "^12.12.6",
+    "@types/node": "^12.12.7",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.3",
     "core-js": "^3.3.6",
