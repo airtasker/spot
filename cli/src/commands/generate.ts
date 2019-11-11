@@ -45,13 +45,15 @@ export default class Generate extends Command {
     let { contract: contractPath, language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
     if (!generator) {
-      generator = (await prompt<{
-        Generator: string;
-      }>({
-        name: "Generator",
-        type: "list",
-        choices: sortBy(Object.keys(generators))
-      })).Generator;
+      generator = (
+        await prompt<{
+          Generator: string;
+        }>({
+          name: "Generator",
+          type: "list",
+          choices: sortBy(Object.keys(generators))
+        })
+      ).Generator;
     }
     if (!generators[generator]) {
       this.error(
@@ -60,21 +62,25 @@ export default class Generate extends Command {
       this.exit(1);
     }
     if (!language) {
-      language = (await prompt<{
-        Language: string;
-      }>({
-        name: "Language",
-        type: "list",
-        choices: sortBy(Object.keys(generators[generator]))
-      })).Language;
+      language = (
+        await prompt<{
+          Language: string;
+        }>({
+          name: "Language",
+          type: "list",
+          choices: sortBy(Object.keys(generators[generator]))
+        })
+      ).Language;
     }
     if (!outDir) {
-      outDir = (await prompt<{
-        "Output destination": string;
-      }>({
-        name: "Output destination",
-        default: "."
-      }))["Output destination"];
+      outDir = (
+        await prompt<{
+          "Output destination": string;
+        }>({
+          name: "Output destination",
+          default: "."
+        })
+      )["Output destination"];
     }
     if (!generators[generator][language]) {
       const otherGenerators = Object.entries(generators)
