@@ -65,7 +65,7 @@ export function createProject() {
 
 export function createProjectFromExistingSourceFile(filePath: string) {
   const project = createProject();
-  const file = project.addExistingSourceFile(filePath);
+  const file = project.addSourceFileAtPath(filePath);
   project.resolveSourceFileDependencies();
   validateProject(project);
   return { project, file };
