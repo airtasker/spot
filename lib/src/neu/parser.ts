@@ -7,7 +7,7 @@ export function parse(sourcePath: string): Contract {
   const project = createProject();
 
   // Add all dependent files that the project requires
-  const sourceFile = project.addExistingSourceFile(sourcePath);
+  const sourceFile = project.addSourceFileAtPath(sourcePath);
   project.resolveSourceFileDependencies();
 
   // Validate that the project has no TypeScript syntax errors

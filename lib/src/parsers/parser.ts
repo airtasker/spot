@@ -44,7 +44,7 @@ export function parse(sourcePath: string): ContractNode {
 
   // Creates a new typescript program in memory
   const project = new Project({ compilerOptions });
-  const sourceFile = project.addExistingSourceFile(sourcePath);
+  const sourceFile = project.addSourceFileAtPath(sourcePath);
 
   // Add all dependent files that the project requires
   project.resolveSourceFileDependencies();
