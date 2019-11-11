@@ -18,11 +18,13 @@ class CompanyApi {}
 })
 class GetUser {
   @request
-  request(@pathParams
-  pathParams: {
-    companyId: String;
-    userId: String;
-  }) {}
+  request(
+    @pathParams
+    pathParams: {
+      companyId: String;
+      userId: String;
+    }
+  ) {}
 
   @response({ status: 200 })
   successResponse(@body body: UserBody) {}

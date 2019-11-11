@@ -428,9 +428,9 @@ describe("type parser", () => {
       .getPropertyOrThrow("indexedAccess")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
-      { kind: "boolean" }
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapOrThrow()
+    ).toStrictEqual({ kind: "boolean" });
   });
 
   test("parses nested indexed accessing", () => {
@@ -438,9 +438,9 @@ describe("type parser", () => {
       .getPropertyOrThrow("indexedAccessNested")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
-      { kind: "boolean" }
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapOrThrow()
+    ).toStrictEqual({ kind: "boolean" });
   });
 
   test("parses indexed indexed accessing", () => {
@@ -448,9 +448,9 @@ describe("type parser", () => {
       .getPropertyOrThrow("indexedIndexedAccess")
       .getTypeNodeOrThrow();
 
-    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
-      { kind: "boolean" }
-    );
+    expect(
+      parseType(type, typeTable, lociTable).unwrapOrThrow()
+    ).toStrictEqual({ kind: "boolean" });
   });
 
   test("fails to parse inlined indexed accessing", () => {

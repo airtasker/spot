@@ -87,10 +87,12 @@ class EndpointWithDuplicateDynamicPathComponent {}
 })
 class EndpointWithMissingPathParam {
   @request
-  request(@pathParams
-  pathParams: {
-    dynamic: string;
-  }) {}
+  request(
+    @pathParams
+    pathParams: {
+      dynamic: string;
+    }
+  ) {}
 }
 
 @endpoint({
@@ -99,11 +101,13 @@ class EndpointWithMissingPathParam {
 })
 class EndpointWithExtraPathParam {
   @request
-  request(@pathParams
-  pathParams: {
-    dynamic: string;
-    nested: string;
-  }) {}
+  request(
+    @pathParams
+    pathParams: {
+      dynamic: string;
+      nested: string;
+    }
+  ) {}
 }
 
 @endpoint({

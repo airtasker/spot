@@ -18,11 +18,7 @@ export const noOmittableFieldsWithinResponses: LintingRule = contract => {
       (type: TypeNode) => t && extractNestedObjectTypes(type, contract.types)
     );
 
-  const extractTypes = flow(
-    extractResponseTypes,
-    extractObjectTypes,
-    flatten
-  );
+  const extractTypes = flow(extractResponseTypes, extractObjectTypes, flatten);
 
   const types = flatten(contract.endpoints.map(extractTypes));
 
