@@ -322,9 +322,9 @@ function parseIndexedAccessType(typeNode: IndexedAccessTypeNode): TypeNode {
 
   const declaration = getTargetDeclarationFromTypeReference(typeReference);
 
-  const literalChain = resolveLiteralTypesInIndexedAccessType(typeNode).map(
-    literalNode => literalNode.getLiteral()
-  );
+  const literalChain = resolveLiteralTypesInIndexedAccessType(
+    typeNode
+  ).map(literalNode => literalNode.getLiteral());
 
   if (literalChain.some(literal => !TypeGuards.isStringLiteral(literal))) {
     throw new Error("indexed access type error: not a string literal");

@@ -148,13 +148,19 @@ describe("Transformation functions", () => {
         recordedRequestToUserInputRequest({
           method: "POST",
           path: "/path/to/somewhere?hello=world",
-          headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
+          headers: [
+            { name: "a", value: "b" },
+            { name: "c", value: "d" }
+          ],
           body: JSON.stringify({ data: "body" })
         })
       ).toEqual({
         path: "/path/to/somewhere?hello=world",
         method: "POST",
-        headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
+        headers: [
+          { name: "a", value: "b" },
+          { name: "c", value: "d" }
+        ],
         body: { data: "body" }
       });
     });
@@ -165,11 +171,17 @@ describe("Transformation functions", () => {
       expect(
         recordedResponseToUserInputResponse({
           status: 200,
-          headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
+          headers: [
+            { name: "a", value: "b" },
+            { name: "c", value: "d" }
+          ],
           body: JSON.stringify({ data: "body" })
         })
       ).toEqual({
-        headers: [{ name: "a", value: "b" }, { name: "c", value: "d" }],
+        headers: [
+          { name: "a", value: "b" },
+          { name: "c", value: "d" }
+        ],
         statusCode: 200,
         body: { data: "body" }
       });

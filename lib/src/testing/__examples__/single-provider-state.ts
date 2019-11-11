@@ -19,10 +19,12 @@ class CompanyApi {}
 })
 class GetCompany {
   @request
-  request(@pathParams
-  pathParams: {
-    companyId: String;
-  }) {}
+  request(
+    @pathParams
+    pathParams: {
+      companyId: String;
+    }
+  ) {}
 
   @response({ status: 200 })
   successResponse(@body body: CompanyBody) {}

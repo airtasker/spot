@@ -19,10 +19,12 @@ class CompanyApi {}
 })
 class GetCompanies {
   @request
-  request(@queryParams
-  queryParam: {
-    profile?: { name: String };
-  }) {}
+  request(
+    @queryParams
+    queryParam: {
+      profile?: { name: String };
+    }
+  ) {}
 
   @response({ status: 200 })
   successResponse(@body body: CompanyBody[]) {}
