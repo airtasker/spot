@@ -1,12 +1,12 @@
 # Linting
 
-Spot linters are a set of functions whose goal is to ensure a contract definition conforms with our API guidelines. In other words, linters check whether or not a contract is semantically correct.
+Spot linters are a set of functions whose goal is to ensure a contract definition conforms with our API guidelines.
 
 Linting rules can be found in files inside the spot directory (under [lib/src/linting](/lib/src/linting). Each file corresponds to a specific rule and holds the logic to validate a subset of a contract (e.g. headers definition, request/response types, etc).
 
 ## Anatomy of a linting rule
 
-Let's take an example of a linting rule to demonstrate how we can catch semantic errors in a given contract  :
+Let's take an example of a linting rule to demonstrate how we can catch errors in a given contract:
 
 ```typescript
 export const hasDiscriminator: LintingRule = contract => {
@@ -107,9 +107,9 @@ $ ./bin/run lint [contract].ts
 
 ## Test a linting rule
 
-Testing a linting rule is necessary. It allows to ensure it works as expected and comply with the guidelines.
+Testing a linting rule is necessary. It makes sure everything works as expected and complies with the guidelines.
 
-Every linting rule comes with a specification file. Writing tests for a specific rule consists in creating contracts inputs and programmatically call the function associated with this rule.
+Every linting rule comes with a specification file. Writing tests for a specific rule consists in creating contracts inputs and programmatically calling the function associated with this rule.
 
 ### Create a specs file
 
