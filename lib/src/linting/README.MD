@@ -2,7 +2,7 @@
 
 Spot linters are a set of functions whose goal is to ensure a contract definition conforms with our API guidelines. In other words, linters check whether or not a contract is semantically correct.
 
-Linting rules can be found in files inside the spot directory (under [lib/src/linting](lib/src/linting). Each file corresponds to a specific rule and holds the logic to validate a subset of a contract (e.g. headers definition, request/response types, etc).
+Linting rules can be found in files inside the spot directory (under [lib/src/linting](/lib/src/linting). Each file corresponds to a specific rule and holds the logic to validate a subset of a contract (e.g. headers definition, request/response types, etc).
 
 ## Anatomy of a linting rule
 
@@ -34,7 +34,7 @@ To do so, we define a function that takes an in-memory representation of a contr
 
 As we use JavaScript, the main data structures we leverage are objects and arrays. Objects can be used to describe nodes such as endpoints or types. Arrays are mainly used for composition and therefore to define collections of nodes (e.g. list of endpoints, list of types, etc).
 
-Refer to [lib/src/models/nodes.ts](lib/src/linting/rules) to find out all the internal types Spot to represent a contract object.
+Refer to [lib/src/models/nodes.ts](/lib/src/linting/rules) to find out all the internal types Spot to represent a contract object.
 
 ## Write a linting rule
 
@@ -242,4 +242,4 @@ Primitive types can be simply represented by using the following structure :
 }
 ```
 
-List of supported types - TypeKinds enum [lib/src/models/types/kinds.ts](lib/src/models/types/kinds.ts)
+List of supported TypeKinds [lib/src/models/types/kinds.ts](/lib/src/models/types/kinds.ts)
