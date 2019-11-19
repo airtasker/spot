@@ -41,7 +41,7 @@
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.0.23",
     "@types/js-yaml": "^3.12.1",
-    "@types/lodash": "^4.14.148",
+    "@types/lodash": "^4.14.149",
     "@types/moxios": "^0.4.8",
     "@types/node": "^12.12.8",
     "@types/react": "^16.9.11",
