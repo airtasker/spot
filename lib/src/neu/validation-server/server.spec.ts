@@ -1,12 +1,12 @@
 import request from "supertest";
-import { parse } from "../neu/parser";
+import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
+import { parseContract } from "../parsers/contract-parser";
 import {
   recordedRequestToUserInputRequest,
   recordedResponseToUserInputResponse,
   runValidationServer
 } from "./server";
 
-const CONTRACT_PATH = "./lib/src/__examples__/contract.ts";
 const DUMMY_BODY = { dummy: "helloworld" };
 const DUMMY_PORT = 5907;
 
@@ -16,7 +16,11 @@ describe("Validation Server", () => {
     error: (message: string) => message
   };
 
-  const contract = parse(CONTRACT_PATH);
+  const file = createProjectFromExistingSourceFile(
+    `${__dirname}/__spec-examples__/contract/contract.ts`
+  ).file;
+
+  const { contract } = parseContract(file).unwrapOrThrow();
 
   describe("/health", () => {
     it("should return 200", async () => {

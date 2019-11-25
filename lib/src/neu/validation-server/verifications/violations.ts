@@ -20,7 +20,7 @@ import {
   UndefinedRequestHeaderViolation,
   UndefinedResponseBodyViolation,
   UndefinedResponseHeaderViolation
-} from "../../validation-server/spots/validate";
+} from "../spots/validate";
 
 export function undefinedEndpointViolation(
   message: string

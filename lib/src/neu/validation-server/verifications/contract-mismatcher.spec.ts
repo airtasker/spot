@@ -1,15 +1,21 @@
-import { parse } from "../parser";
+import { createProjectFromExistingSourceFile } from "../../../spec-helpers/helper";
+import { parseContract } from "../../parsers/contract-parser";
 import {
   ContractMismatcher,
   pathMatchesVariablePath
 } from "./contract-mismatcher";
 
-const EXAMPLE_CONTRACT_PATH = "./lib/src/__examples__/contract.ts";
-
 describe("contract mismatch finder", () => {
+  const file = createProjectFromExistingSourceFile(
+    `${__dirname}/__spec-examples__/contract/contract.ts`
+  ).file;
+
+  const { contract } = parseContract(file).unwrapOrThrow();
+
   let mismatcher: ContractMismatcher;
+
   beforeAll(() => {
-    mismatcher = new ContractMismatcher(parse(EXAMPLE_CONTRACT_PATH));
+    mismatcher = new ContractMismatcher(contract);
   });
 
   test("pathMatchesVariablePath should match correct paths", () => {

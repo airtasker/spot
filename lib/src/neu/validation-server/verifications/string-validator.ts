@@ -7,7 +7,7 @@ import {
   Type,
   TypeKind,
   TypeTable
-} from "../types";
+} from "../../types";
 
 const {
   NULL,

@@ -1,5 +1,12 @@
-import { body, endpoint, Integer, request, response, String } from "../../lib";
-import { HttpMethod } from "../../models/http";
+import {
+  body,
+  endpoint,
+  Integer,
+  request,
+  response,
+  String
+} from "../../../lib";
+import { HttpMethod } from "../../../models/http";
 import { Header, InternalServerError, UnprocessableEntityError } from "./utils";
 
 @endpoint({

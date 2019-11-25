@@ -2,7 +2,6 @@ import JsonSchemaValidator from "ajv";
 import assertNever from "assert-never";
 import qs from "qs";
 import * as url from "url";
-import { Violation } from "../../validation-server/spots/validate";
 import {
   Body,
   Contract,
@@ -10,11 +9,12 @@ import {
   Endpoint,
   Header,
   Response
-} from "../definitions";
-import { generateJsonSchemaType } from "../generators/json-schema-generator";
-import { JsonSchemaType } from "../schemas/json-schema";
-import { Type, TypeTable } from "../types";
-import { err, ok, Result } from "../util";
+} from "../../definitions";
+import { generateJsonSchemaType } from "../../generators/json-schema-generator";
+import { JsonSchemaType } from "../../schemas/json-schema";
+import { Type, TypeTable } from "../../types";
+import { err, ok, Result } from "../../util";
+import { Violation } from "../spots/validate";
 import {
   BodyTypeDisparityMismatch,
   bodyTypeDisparityMismatch,

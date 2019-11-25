@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import { parse } from "../../../lib/src/neu/parser";
-import { runValidationServer } from "../../../lib/src/validation-server/server";
+import { runValidationServer } from "../../../lib/src/neu/validation-server/server";
 
 const ARG_API = "spot_contract";
 
