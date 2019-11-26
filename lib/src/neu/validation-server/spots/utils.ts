@@ -1,4 +1,4 @@
-import { String } from "../../lib";
+import { String } from "../../../lib";
 
 export interface BaseError {
   error_code: String;

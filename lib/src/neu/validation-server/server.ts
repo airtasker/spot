@@ -1,11 +1,6 @@
 import express from "express";
-import { Contract } from "../neu/definitions";
-import { ContractMismatcher } from "../neu/verifications/contract-mismatcher";
-import {
-  UserInputRequest,
-  UserInputResponse
-} from "../neu/verifications/user-input-models";
-import { Logger } from "../utilities/logger";
+import { Logger } from "../../utilities/logger";
+import { Contract } from "../definitions";
 import { InternalServerError } from "./spots/utils";
 import {
   RecordedRequest,
@@ -13,6 +8,11 @@ import {
   ValidateRequest,
   ValidateResponse
 } from "./spots/validate";
+import { ContractMismatcher } from "./verifications/contract-mismatcher";
+import {
+  UserInputRequest,
+  UserInputResponse
+} from "./verifications/user-input-models";
 
 export function runValidationServer(
   port: number,

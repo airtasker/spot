@@ -1,4 +1,4 @@
-import { endpoint, request, response } from "../../lib";
+import { endpoint, request, response } from "../../../lib";
 
 @endpoint({
   method: "GET",

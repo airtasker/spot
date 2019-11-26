@@ -7,7 +7,7 @@ import {
   referenceType,
   stringType,
   TypeTable
-} from "../types";
+} from "../../types";
 import { StringValidator } from "./string-validator";
 
 describe("validators", () => {
