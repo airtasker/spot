@@ -1,4 +1,4 @@
-import * as validators from "validator";
+import validator from "validator";
 import {
   ArrayType,
   dereferenceType,
@@ -37,16 +37,16 @@ type ValidatorMap = {
 
 export class StringValidator {
   static validatorMap: ValidatorMap = {
-    [NULL]: validators.isEmpty,
-    [BOOLEAN]: validators.isBoolean,
-    [DATE]: validators.isISO8601,
-    [DATE_TIME]: validators.isISO8601,
-    [FLOAT]: validators.isFloat,
-    [INT32]: validators.isInt,
-    [INT64]: validators.isInt,
-    [DOUBLE]: validators.isFloat,
-    [FLOAT_LITERAL]: validators.isFloat,
-    [INT_LITERAL]: validators.isInt,
+    [NULL]: validator.isEmpty,
+    [BOOLEAN]: validator.isBoolean,
+    [DATE]: validator.isISO8601,
+    [DATE_TIME]: validator.isISO8601,
+    [FLOAT]: validator.isFloat,
+    [INT32]: validator.isInt,
+    [INT64]: validator.isInt,
+    [DOUBLE]: validator.isFloat,
+    [FLOAT_LITERAL]: validator.isFloat,
+    [INT_LITERAL]: validator.isInt,
     [STRING]: (str: string) => typeof str === "string"
   };
 
