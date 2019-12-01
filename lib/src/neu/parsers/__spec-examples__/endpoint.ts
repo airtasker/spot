@@ -1,6 +1,7 @@
 import {
   body,
   defaultResponse,
+  draft,
   endpoint,
   headers,
   pathParams,
@@ -60,6 +61,13 @@ class EndpointClass {
   path: "/path"
 })
 class MinimalEndpointClass {}
+
+@draft
+@endpoint({
+  method: "GET",
+  path: "/path"
+})
+class DraftEndpointClass {}
 
 @endpoint({
   method: "GET",

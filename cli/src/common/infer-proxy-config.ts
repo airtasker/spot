@@ -1,4 +1,4 @@
-import { ProxyConfig } from "../../../lib/src/mockserver/server";
+import { ProxyConfig } from "../../../lib/src/neu/mock-server/server";
 
 export default function inferProxyConfig(
   proxyBaseUrl: string

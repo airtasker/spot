@@ -1,10 +1,8 @@
 import nock from "nock";
 import request from "supertest";
-import {
-  ContractDefinition,
-  defaultConfigDefinition
-} from "../models/definitions";
-import { TypeKind } from "../models/types";
+import { Contract } from "../definitions";
+import { defaultConfig } from "../parsers/config-parser";
+import { TypeKind } from "../types";
 import { runMockServer } from "./server";
 
 describe("Server", () => {
@@ -16,18 +14,15 @@ describe("Server", () => {
   });
 
   // Use inline contract to keep consistency with api definition and mock servers
-  const contract: ContractDefinition = {
-    api: {
-      name: "company-api",
-      description: undefined,
-      securityHeader: undefined
-    },
-    config: defaultConfigDefinition,
+  const contract: Contract = {
+    name: "company-api",
+    description: undefined,
+    config: defaultConfig(),
     endpoints: [
       {
         name: "CreateCompany",
         description: undefined,
-        isDraft: true,
+        draft: true,
         tags: [],
         method: "POST",
         path: "/companies",
@@ -56,13 +51,12 @@ describe("Server", () => {
         ],
         defaultResponse: {
           headers: []
-        },
-        tests: []
+        }
       },
       {
         name: "GetCompany",
         description: undefined,
-        isDraft: false,
+        draft: false,
         tags: [],
         method: "GET",
         path: "/companies",
@@ -74,8 +68,7 @@ describe("Server", () => {
         responses: [{ status: 200, headers: [] }],
         defaultResponse: {
           headers: []
-        },
-        tests: []
+        }
       }
     ],
     types: []

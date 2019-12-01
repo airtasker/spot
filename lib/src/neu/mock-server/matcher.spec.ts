@@ -28,7 +28,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "GET",
             path: "/users",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeTruthy();
@@ -43,7 +43,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "GET",
             path: "/users",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeTruthy();
@@ -58,7 +58,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "POST",
             path: "/users/:userId",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeTruthy();
@@ -73,7 +73,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "POST",
             path: "/users/:userId/details",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeTruthy();
@@ -90,7 +90,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "GET",
             path: "/users",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeFalsy();
@@ -107,7 +107,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "GET",
             path: "/users",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeFalsy();
@@ -122,7 +122,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "GET",
             path: "/users",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeFalsy();
@@ -139,7 +139,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "GET",
             path: "/users",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeFalsy();
@@ -154,7 +154,7 @@ describe("Matcher", () => {
             ...BASE_ENDPOINT,
             method: "GET",
             path: "/users/abc",
-            isDraft: false
+            draft: false
           }
         )
       ).toBeFalsy();

@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
-import { runMockServer } from "../../../lib/src/mockserver/server";
+import { runMockServer } from "../../../lib/src/neu/mock-server/server";
+import { parse } from "../../../lib/src/neu/parser";
 import inferProxyConfig from "../common/infer-proxy-config";
-import { safeParse } from "../common/safe-parse";
 
 const ARG_API = "spot_contract";
 
@@ -46,7 +46,7 @@ export default class Mock extends Command {
     } = this.parse(Mock);
     try {
       const proxyConfig = inferProxyConfig(proxyBaseUrl);
-      const contract = safeParse.call(this, args[ARG_API]).definition;
+      const contract = parse(args[ARG_API]);
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix || "",

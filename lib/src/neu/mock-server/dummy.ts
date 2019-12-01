@@ -1,12 +1,11 @@
 import assertNever from "assert-never";
 import { generate as generateRandomString } from "randomstring";
-import { TypeDefinition } from "../models/definitions";
-import { DataType, TypeKind } from "../models/types";
+import { Type, TypeKind, TypeTable } from "../types";
 
 /**
  * Generates dummy data based on a type.
  */
-export function generateData(types: TypeDefinition[], type: DataType): any {
+export function generateData(types: TypeTable, type: Type): any {
   switch (type.kind) {
     case TypeKind.NULL:
       return null;
@@ -28,7 +27,8 @@ export function generateData(types: TypeDefinition[], type: DataType): any {
     case TypeKind.DATE:
     case TypeKind.DATE_TIME:
       return new Date().toISOString();
-    case TypeKind.NUMBER_LITERAL:
+    case TypeKind.INT_LITERAL:
+    case TypeKind.FLOAT_LITERAL:
       return type.value;
     case TypeKind.OBJECT:
       return type.properties.reduce<{ [key: string]: any }>((acc, property) => {
@@ -41,7 +41,7 @@ export function generateData(types: TypeDefinition[], type: DataType): any {
       const size = randomInteger(10);
       const array: any[] = [];
       for (let i = 0; i < size; i++) {
-        array.push(generateData(types, type.elements));
+        array.push(generateData(types, type.elementType));
       }
       return array;
     case TypeKind.UNION:
@@ -49,12 +49,12 @@ export function generateData(types: TypeDefinition[], type: DataType): any {
         types,
         type.types[randomInteger(type.types.length - 1)]
       );
-    case TypeKind.TYPE_REFERENCE:
-      const referencedType = types.find(t => t.name === type.name);
+    case TypeKind.REFERENCE:
+      const referencedType = types.get(type.name);
       if (!referencedType) {
         throw new Error(`Missing referenced type: ${type.name}`);
       }
-      return generateData(types, referencedType.type);
+      return generateData(types, referencedType);
     default:
       throw assertNever(type);
   }
