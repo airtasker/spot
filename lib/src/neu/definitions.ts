@@ -32,6 +32,7 @@ export interface Endpoint {
   request?: Request;
   responses: Response[];
   defaultResponse?: DefaultResponse;
+  draft: boolean;
 }
 
 export interface Request {

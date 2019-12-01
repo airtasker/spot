@@ -40,6 +40,7 @@ describe("endpoint parser", () => {
         ]
       },
       description: "endpoint description",
+      draft: false,
       method: "POST",
       name: "EndpointClass",
       path: "/path/:pathParam/nest",
@@ -102,8 +103,29 @@ describe("endpoint parser", () => {
     expect(result).toStrictEqual({
       defaultResponse: undefined,
       description: undefined,
+      draft: false,
       method: "GET",
       name: "MinimalEndpointClass",
+      path: "/path",
+      request: undefined,
+      responses: [],
+      tags: []
+    });
+  });
+
+  test("parses @draft & @endpoint decorated class", () => {
+    const result = parseEndpoint(
+      exampleFile.getClassOrThrow("DraftEndpointClass"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+
+    expect(result).toStrictEqual({
+      defaultResponse: undefined,
+      description: undefined,
+      draft: true,
+      method: "GET",
+      name: "DraftEndpointClass",
       path: "/path",
       request: undefined,
       responses: [],

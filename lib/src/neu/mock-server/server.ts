@@ -1,7 +1,8 @@
 import cors from "cors";
 import express from "express";
-import { ContractDefinition } from "../models/definitions";
-import { Logger } from "../utilities/logger";
+import { Logger } from "../../utilities/logger";
+import { Contract } from "../definitions";
+import { TypeTable } from "../types";
 import { generateData } from "./dummy";
 import { isRequestForEndpoint } from "./matcher";
 import { proxyRequest } from "./proxy";
@@ -15,7 +16,7 @@ export interface ProxyConfig {
  * Runs a mock server that returns dummy data that conforms to an API definition.
  */
 export function runMockServer(
-  api: ContractDefinition,
+  api: Contract,
   {
     port,
     pathPrefix,
@@ -40,7 +41,7 @@ export function runMockServer(
     for (const endpoint of api.endpoints) {
       if (isRequestForEndpoint(req, pathPrefix, endpoint)) {
         // non-draft end points get real response
-        const shouldProxy = !endpoint.isDraft;
+        const shouldProxy = !endpoint.draft;
 
         if (shouldProxy && proxyConfig) {
           return proxyRequest({
@@ -60,7 +61,9 @@ export function runMockServer(
         resp.header("content-type", "application/json");
         if (response.body) {
           resp.send(
-            JSON.stringify(generateData(api.types, response.body.type))
+            JSON.stringify(
+              generateData(TypeTable.fromArray(api.types), response.body.type)
+            )
           );
         }
         return;

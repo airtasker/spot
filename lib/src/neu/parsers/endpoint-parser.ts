@@ -4,7 +4,7 @@ import {
   TypeGuards
 } from "ts-morph";
 import { EndpointConfig } from "../../syntax/endpoint";
-import { Endpoint, Request, Response } from "../definitions";
+import { Endpoint, Response } from "../definitions";
 import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { TypeTable } from "../types";
@@ -53,6 +53,9 @@ export function parseEndpoint(
   // Handle jsdoc
   const descriptionDoc = getJsDoc(klass);
   const description = descriptionDoc && descriptionDoc.getComment();
+
+  // Handle draft
+  const draft = klass.getDecorator("draft") !== undefined;
 
   // Handle request
   const requestMethod = getMethodWithDecorator(klass, "request");
@@ -135,7 +138,8 @@ export function parseEndpoint(
     path,
     request,
     responses,
-    defaultResponse
+    defaultResponse,
+    draft
   });
 }
 

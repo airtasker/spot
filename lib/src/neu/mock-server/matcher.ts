@@ -1,4 +1,4 @@
-import { EndpointDefinition } from "../models/definitions";
+import { Endpoint } from "../definitions";
 
 /**
  * Returns whether a given request should associated with an endpoint, as in the path and method match.
@@ -13,7 +13,7 @@ export function isRequestForEndpoint(
     path: string;
   },
   pathPrefix: string,
-  endpoint: EndpointDefinition
+  endpoint: Endpoint
 ): boolean {
   if (req.path.substr(0, pathPrefix.length) !== pathPrefix) {
     return false;
