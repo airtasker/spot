@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command";
-import { lint } from "../../../lib/src/linting/linter";
-import { safeParse } from "../common/safe-parse";
+import { lint } from "../../../lib/src/neu/linting/linter";
+import { parse } from "../../../lib/src/neu/parser";
 
 const ARG_API = "spot_contract";
 
@@ -28,15 +28,12 @@ export default class Lint extends Command {
   async run() {
     const { args } = this.parse(Lint);
     const contractPath = args[ARG_API];
-    const parsedContract = safeParse.call(this, contractPath).source;
+    const contract = parse(contractPath);
     // TODO: Make it possible to specify with a config file which lint rules to enable.
-    const lintingErrors = lint(parsedContract);
+    const lintingErrors = lint(contract);
+
     lintingErrors.forEach(error => {
-      this.error(
-        error.source
-          ? `${error.source.location}#${error.source.line}: ${error.message}`
-          : error.message
-      );
+      this.error(error.message);
     });
   }
 }
