@@ -33,7 +33,7 @@ export default class Lint extends Command {
     const lintingErrors = lint(contract);
 
     lintingErrors.forEach(error => {
-      this.error(error.message);
+      this.error(error.message, { exit: false });
     });
   }
 }
