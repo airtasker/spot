@@ -31,9 +31,14 @@ export default class Lint extends Command {
     const contract = parse(contractPath);
     // TODO: Make it possible to specify with a config file which lint rules to enable.
     const lintingErrors = lint(contract);
+    const deferExit = lintingErrors.length > 0;
 
     lintingErrors.forEach(error => {
-      this.error(error.message);
+      this.error(error.message, { exit: false });
     });
+
+    if (deferExit) {
+      process.exit(1);
+    }
   }
 }
