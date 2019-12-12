@@ -75,8 +75,8 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(0);
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(0);
   });
 
   test("a violation is found, missing 1 property on request body.", () => {
@@ -104,9 +104,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(1);
-    expect(result.unwrapOrThrow().violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       `Request body type disparity:\n${JSON.stringify(
         {
           data: {
@@ -149,9 +149,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(1);
-    expect(result.unwrapOrThrow().violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       'Request body type disparity:\n{\n  "data": {\n    "firstName": "Maple",\n    "lastName": "Syrup",\n    "age": 1,\n    "email": "maple.syrup@airtasker.com",\n    "address": "Doggo bed",\n    "createdAt": "invalidDate"\n  }\n}\n- #.data.createdAt should match format "date"'
     );
   });
@@ -181,9 +181,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(1);
-    expect(result.unwrapOrThrow().violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       "Endpoint POST /compan/5/users not found."
     );
   });
@@ -213,10 +213,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    const unwrappedResult = result.unwrapOrThrow();
-    expect(unwrappedResult.violations).toHaveLength(1);
-    expect(unwrappedResult.violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       "Endpoint POST /some/prefix/company/5/users not found."
     );
   });
@@ -236,9 +235,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(1);
-    expect(result.unwrapOrThrow().violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       'Required request header "x-id" missing'
     );
   });
@@ -258,9 +257,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(1);
-    expect(result.unwrapOrThrow().violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       'Request header "x-id" type disparity: "x-id" should be float'
     );
   });
@@ -280,9 +279,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(1);
-    expect(result.unwrapOrThrow().violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       'Required response header "accept" missing'
     );
   });
@@ -302,9 +301,9 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(1);
-    expect(result.unwrapOrThrow().violations[0].message).toBe(
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].message).toBe(
       'Response header "accept" type disparity: "accept" should be float'
     );
   });
@@ -338,8 +337,8 @@ describe("contract mismatch finder", () => {
         }
       }
     };
-    const result = mismatcher.findViolations(request, response);
-    expect(result.unwrapOrThrow().violations).toHaveLength(0);
+    const result = mismatcher.findViolations(request, response, true);
+    expect(result.violations).toHaveLength(0);
   });
 
   describe("a violation is found, query params do not conform to contract", () => {
@@ -371,9 +370,9 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findViolations(request, response);
-      expect(result.unwrapOrThrow().violations).toHaveLength(1);
-      expect(result.unwrapOrThrow().violations[0].message).toBe(
+      const result = mismatcher.findViolations(request, response, true);
+      expect(result.violations).toHaveLength(1);
+      expect(result.violations[0].message).toBe(
         'Query param "id" not defined in contract request query params'
       );
     });
@@ -406,9 +405,9 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findViolations(request, response);
-      expect(result.unwrapOrThrow().violations).toHaveLength(1);
-      expect(result.unwrapOrThrow().violations[0].message).toBe(
+      const result = mismatcher.findViolations(request, response, true);
+      expect(result.violations).toHaveLength(1);
+      expect(result.violations[0].message).toBe(
         'Query param "user" type disparity: ".user.id" should be float'
       );
     });
@@ -441,9 +440,9 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findViolations(request, response);
-      expect(result.unwrapOrThrow().violations).toHaveLength(1);
-      expect(result.unwrapOrThrow().violations[0].message).toBe(
+      const result = mismatcher.findViolations(request, response, true);
+      expect(result.violations).toHaveLength(1);
+      expect(result.violations[0].message).toBe(
         'Query param "ids" type disparity: "ids[0]" should be float'
       );
     });
@@ -476,9 +475,9 @@ describe("contract mismatch finder", () => {
         }
       };
 
-      const result = mismatcher.findViolations(request, response);
-      expect(result.unwrapOrThrow().violations).toHaveLength(1);
-      expect(result.unwrapOrThrow().violations[0].message).toBe(
+      const result = mismatcher.findViolations(request, response, true);
+      expect(result.violations).toHaveLength(1);
+      expect(result.violations[0].message).toBe(
         'Query param "date" type disparity: "date" should be date'
       );
     });

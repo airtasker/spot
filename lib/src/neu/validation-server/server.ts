@@ -40,18 +40,12 @@ export function runValidationServer(
 
       const contractValidator = new ContractMismatcher(contract);
 
-      const validatorResult = contractValidator.findViolations(
+      const { violations, context } = contractValidator.findViolations(
         userInputRequest,
-        userInputResponse
+        userInputResponse,
+        true
       );
 
-      if (validatorResult.isErr()) {
-        const error = validatorResult.unwrapErr();
-        res.status(500).send(makeInternalServerError([error.message]));
-        return;
-      }
-
-      const { violations, context } = validatorResult.unwrap();
       const responseBody: ValidateResponse = {
         interaction: {
           request: body.request,
