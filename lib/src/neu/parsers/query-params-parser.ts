@@ -43,7 +43,7 @@ export function parseQueryParams(
     const type = typeResult.unwrap();
 
     const pDescription = getJsDoc(propertySignature);
-    const description = pDescription && pDescription.getComment();
+    const description = pDescription && pDescription.getDescription();
 
     const optional = propertySignature.hasQuestionToken();
 

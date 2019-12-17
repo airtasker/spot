@@ -48,7 +48,7 @@ export function parseResponse(
   return ok({
     status: statusLiteral.getLiteralValue(),
     headers,
-    description: descriptionDoc && descriptionDoc.getComment(),
+    description: descriptionDoc && descriptionDoc.getDescription(),
     body
   });
 }

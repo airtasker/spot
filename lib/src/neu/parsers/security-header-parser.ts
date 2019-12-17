@@ -33,7 +33,7 @@ export function parseSecurityHeader(
 
   // Handle description
   const descriptionDoc = getJsDoc(property);
-  const description = descriptionDoc && descriptionDoc.getComment();
+  const description = descriptionDoc && descriptionDoc.getDescription();
 
   // Handle type
   const typeResult = extractType(property, typeTable, lociTable);
