@@ -34,7 +34,7 @@ export function parseDefaultResponse(
 
   return ok({
     headers,
-    description: descriptionDoc && descriptionDoc.getComment(),
+    description: descriptionDoc && descriptionDoc.getDescription(),
     body
   });
 }

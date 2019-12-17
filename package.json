@@ -29,7 +29,7 @@
     "qs": "^6.9.1",
     "randomstring": "^1.1.5",
     "supertest": "^4.0.2",
-    "ts-morph": "^5.0.0",
+    "ts-morph": "^6.0.2",
     "tslib": "^1",
     "typescript": "^3.7.3",
     "validator": "^12.1.0"

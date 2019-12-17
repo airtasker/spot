@@ -52,7 +52,7 @@ export function parseEndpoint(
 
   // Handle jsdoc
   const descriptionDoc = getJsDoc(klass);
-  const description = descriptionDoc && descriptionDoc.getComment();
+  const description = descriptionDoc && descriptionDoc.getDescription();
 
   // Handle draft
   const draft = klass.getDecorator("draft") !== undefined;
