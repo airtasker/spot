@@ -1,334 +1,198 @@
-import { Contract } from "../../definitions";
+import assertNever from "assert-never";
+import {
+  Contract,
+  DefaultResponse,
+  Endpoint,
+  Header,
+  HttpMethod,
+  Response
+} from "../../definitions";
+import {
+  isNullType,
+  possibleRootTypes,
+  Type,
+  TypeKind,
+  TypeTable
+} from "../../types";
+import {
+  HeaderObject,
+  ObjectPropertiesSchemaObject,
+  OpenApiV3,
+  OperationObject,
+  PathsObject,
+  ReferenceObject,
+  ResponsesObject,
+  SchemaObject
+} from "./openapi3-schema";
 
 function generateOpenAPI3(contract: Contract): OpenApiV3 {
+  const typeTable = TypeTable.fromArray(contract.types);
   const openapi: OpenApiV3 = {
     openapi: "3.0.2",
     info: {
-      title: "some title",
+      title: contract.name,
+      description: contract.description,
       version: "0.0.0"
     },
-    paths: {}
+    paths: endpointsToPathsObject(contract.endpoints, typeTable)
   };
 
   return openapi;
 }
 
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#openapi-object
-interface OpenApiV3 {
-  openapi: "3.0.2";
-  info: InfoObject;
-  servers?: ServerObject[];
-  paths: PathsObject;
-  components?: ComponentsObject;
-  security?: SecurityRequirementObject[];
-  tags?: TagObject[];
-  externalDocs?: ExternalDocumentationObject;
+function endpointsToPathsObject(
+  endpoints: Endpoint[],
+  typeTable: TypeTable
+): PathsObject {
+  return endpoints.reduce<PathsObject>((acc, endpoint) => {
+    acc[endpoint.path] = acc[endpoint.path] || {};
+    const pathItemMethod = httpMethodToPathItemMethod(endpoint.method);
+    acc[endpoint.path][pathItemMethod] = endpointToOperationObject(
+      endpoint,
+      typeTable
+    );
+    return acc;
+  }, {});
 }
 
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#info-object
-interface InfoObject {
-  title: string;
-  description?: string;
-  termsOfService?: string;
-  contact?: ContactObject;
-  license?: LicenseObject;
-  version: string;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#contact-object
-interface ContactObject {
-  name?: string;
-  url?: string;
-  email?: string;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#license-object
-interface LicenseObject {
-  name: string;
-  url?: string;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#server-object
-interface ServerObject {
-  url: string;
-  description?: string;
-  variables?: { [serverVariable: string]: ServerVariableObject };
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#serverVariableObject
-interface ServerVariableObject {
-  enum?: string[];
-  default: string;
-  description?: string;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#pathsObject
-interface PathsObject {
-  [path: string]: PathItemObject;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#pathItemObject
-interface PathItemObject {
-  $ref?: string;
-  summary?: string;
-  description?: string;
-  get?: OperationObject;
-  put?: OperationObject;
-  post?: OperationObject;
-  delete?: OperationObject;
-  options?: OperationObject;
-  head?: OperationObject;
-  patch?: OperationObject;
-  trace?: OperationObject;
-  servers?: ServerObject[];
-  parameters: Array<ParameterObject | ReferenceObject>;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#operationObject
-interface OperationObject {
-  tags?: string[];
-  summary?: string;
-  description?: string;
-  externalDocs?: ExternalDocumentationObject;
-  operationId?: string;
-  parameters?: Array<ParameterObject | ReferenceObject>;
-  requestBody?: RequestBodyObject | ReferenceObject;
-  responses: ResponsesObject;
-  callbacks?: { [callback: string]: CallbackObject | ReferenceObject };
-  deprecated?: boolean;
-  security: SecurityRequirementObject[];
-  servers: ServerObject[];
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#referenceObject
-interface ReferenceObject {
-  $ref: string;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#requestBodyObject
-interface RequestBodyObject {
-  description?: string;
-  content: { [mediaType: string]: MediaTypeObject };
-  required: boolean;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#mediaTypeObject
-interface MediaTypeObject {
-  schema?: SchemaObject | ReferenceObject;
-  example?: any;
-  examples?: { [example: string]: ExampleObject | ReferenceObject };
-  encoding?: { [encoding: string]: EncodingObject };
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#schemaObject
-interface SchemaObject {
-  nullable?: boolean;
-  discriminator?: DiscriminatorObject;
-  readOnly?: boolean;
-  writeOnly?: boolean;
-  xml?: XmlObject;
-  externalDocs?: ExternalDocumentationObject;
-  example?: any;
-  deprecated?: boolean;
-
-  type?: string;
-  allOf?: Array<SchemaObject | ReferenceObject>;
-  oneOf?: Array<SchemaObject | ReferenceObject>;
-  anyOf?: Array<SchemaObject | ReferenceObject>;
-  not?: SchemaObject | ReferenceObject;
-  items?: SchemaObject | ReferenceObject;
-  properties?: { [propertyName: string]: SchemaObject | ReferenceObject };
-  additionalProperties?: SchemaObject | ReferenceObject | boolean;
-  description?: string;
-  format?: string;
-  default?: any;
-
-  title?: string;
-  multipleOf?: number;
-  maximum?: number;
-  exclusiveMaximum?: boolean;
-  minimum?: number;
-  exclusiveMinimum?: boolean;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: string;
-  maxItems?: number;
-  minItems?: number;
-  uniqueItems?: boolean;
-  maxProperties?: number;
-  minProperties?: number;
-  required?: string[];
-  enum?: any[];
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#discriminatorObject
-interface DiscriminatorObject {
-  propertyName: string;
-  mapping?: { [key: string]: string };
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#securitySchemeObject
-type SecuritySchemeObject =
-  | ApiKeySecuritySchemeObject
-  | HttpSecuritySchemeObject
-  | OAuth2SecuritySchemeObject
-  | OpenIdConnectSecuritySchemeObject;
-
-interface ApiKeySecuritySchemeObject extends SecuritySchemeObjectBase {
-  name: string;
-  in: "query" | "header" | "cookie";
-}
-
-interface HttpSecuritySchemeObject extends SecuritySchemeObjectBase {
-  scheme: string;
-  bearerFormat?: string;
-}
-
-interface OAuth2SecuritySchemeObject extends SecuritySchemeObjectBase {
-  flows?: OAuthFlowsObject;
-}
-
-interface OpenIdConnectSecuritySchemeObject extends SecuritySchemeObjectBase {
-  openIdConnectUrl?: string;
-}
-
-interface SecuritySchemeObjectBase {
-  type: SecuritySchemeType;
-  description?: string;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#oauthFlowsObject
-interface OAuthFlowsObject {
-  implicit?: OAuthFlowObject;
-  password?: OAuthFlowObject;
-  clientCredentials?: OAuthFlowObject;
-  authorizationCode?: OAuthFlowObject;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#oauthFlowObject
-interface OAuthFlowObject {
-  authorizationUrl?: string;
-  tokenUrl?: string;
-  refreshUrl?: string;
-  scopes: { [scope: string]: string };
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#securityRequirementObject
-interface SecurityRequirementObject {
-  [name: string]: string[];
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#componentsObject
-interface ComponentsObject {
-  schemas?: { [schema: string]: SchemaObject | ReferenceObject };
-  responses?: { [response: string]: ResponseObject | ReferenceObject };
-  parameters?: { [parameter: string]: ParameterObject | ReferenceObject };
-  examples?: { [example: string]: ExampleObject | ReferenceObject };
-  requestBodies?: { [request: string]: RequestBodyObject | ReferenceObject };
-  headers?: { [header: string]: HeaderObject | ReferenceObject };
-  securitySchemes?: {
-    [securityScheme: string]: SecuritySchemeObject | ReferenceObject;
+function endpointToOperationObject(
+  endpoint: Endpoint,
+  typeTable: TypeTable
+): OperationObject {
+  return {
+    tags: endpoint.tags,
+    description: endpoint.description,
+    operationId: endpoint.name,
+    parameters: [],
+    // requestBody:
+    responses: endpointResponsesToResponsesObject(
+      {
+        specific: endpoint.responses,
+        default: endpoint.defaultResponse
+      },
+      typeTable
+    )
   };
-  links?: { [link: string]: LinkObject | ReferenceObject };
-  callbacks?: { [callback: string]: CallbackObject | ReferenceObject };
 }
 
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#xmlObject
-interface XmlObject {
-  name?: string;
-  namespace?: string;
-  prefix?: string;
-  attribute?: boolean;
-  wrapped?: boolean;
+function endpointResponsesToResponsesObject(
+  responses: {
+    specific: Response[];
+    default?: DefaultResponse;
+  },
+  typeTable: TypeTable
+): ResponsesObject {
+  const specificResponses = responses.specific.reduce<ResponsesObject>(
+    (acc, response) => {
+      acc[response.status.toString()] = {
+        description: response.description || `${response.status} response`
+      };
+      return acc;
+    },
+    {}
+  );
+
+  return {};
 }
 
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#exampleObject
-interface ExampleObject {
-  summary?: string;
-  description?: string;
-  value?: any;
-  externalValue?: string;
+function headerToHeaderObject(
+  header: Header,
+  typeTable: TypeTable
+): HeaderObject {
+  return {
+    description: header.description,
+    required: !header.optional,
+    schema: typeToSchemaOrReferenceObject(header.type, typeTable)
+  };
 }
 
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#encoding-object
-interface EncodingObject {
-  contentType?: string;
-  headers?: { [name: string]: HeaderObject | ReferenceObject };
-  style?: string;
-  explode?: boolean;
-  allowReserved?: boolean;
+function typeToSchemaOrReferenceObject(
+  type: Type,
+  typeTable: TypeTable
+): SchemaObject | ReferenceObject {
+  switch (type.kind) {
+    case TypeKind.NULL:
+      throw new Error("unexpected error");
+    case TypeKind.BOOLEAN:
+      return { type: "boolean" };
+    case TypeKind.BOOLEAN_LITERAL:
+      return { type: "boolean", enum: [type.value] };
+    case TypeKind.STRING:
+      return { type: "string" };
+    case TypeKind.STRING_LITERAL:
+      return { type: "string", enum: [type.value] };
+    case TypeKind.FLOAT:
+      return { type: "number", format: "float" };
+    case TypeKind.DOUBLE:
+      return { type: "number", format: "double" };
+    case TypeKind.FLOAT_LITERAL:
+      return { type: "number", enum: [type.value] };
+    case TypeKind.INT32:
+      return { type: "integer", format: "int32" };
+    case TypeKind.INT64:
+      return { type: "integer", format: "int64" };
+    case TypeKind.INT_LITERAL:
+      return { type: "integer", enum: [type.value] };
+    case TypeKind.DATE:
+      return { type: "string", format: "date" };
+    case TypeKind.DATE_TIME:
+      return { type: "string", format: "date-time" };
+    case TypeKind.OBJECT:
+      return {
+        type: "object",
+        properties:
+          type.properties.length > 0
+            ? type.properties.reduce<ObjectPropertiesSchemaObject>(
+                (acc, property) => {
+                  acc[property.name] = typeToSchemaOrReferenceObject(
+                    property.type,
+                    typeTable
+                  );
+                  return acc;
+                },
+                {}
+              )
+            : undefined
+      };
+    case TypeKind.ARRAY:
+      return {
+        type: "array",
+        items: typeToSchemaOrReferenceObject(type.elementType, typeTable)
+      };
+    case TypeKind.UNION:
+      // Check if true union
+      const concreteNonNullTypes = possibleRootTypes(
+        type,
+        typeTable
+      ).filter(t => isNullType(t));
+      // const isRealUnion = concreteNonNullTypes.length > 1;
+      return {
+        oneOf: []
+      };
+    case TypeKind.REFERENCE:
+      return {
+        $ref: `#/components/schemas/${type.name}`
+      };
+    default:
+      assertNever(type);
+  }
 }
 
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#responsesObject
-interface ResponsesObject {
-  [statusCodeOrDefault: string]: ResponseObject | ReferenceObject;
+function httpMethodToPathItemMethod(
+  method: HttpMethod
+): "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace" {
+  switch (method) {
+    case "GET":
+      return "get";
+    case "PUT":
+      return "put";
+    case "POST":
+      return "post";
+    case "DELETE":
+      return "delete";
+    case "PATCH":
+      return "patch";
+    default:
+      assertNever(method);
+  }
 }
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#responseObject
-interface ResponseObject {
-  description: string;
-  headers?: { [name: string]: HeaderObject | ReferenceObject };
-  content?: { [mediaType: string]: MediaTypeObject };
-  links?: { [link: string]: LinkObject | ReferenceObject };
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#parameterObject
-interface ParameterObject extends ParameterObjectBase {
-  name: string;
-  in: "query" | "header" | "path" | "cookie";
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#headerObject
-type HeaderObject = ParameterObjectBase;
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#callbackObject
-interface CallbackObject {
-  [name: string]: PathItemObject;
-}
-
-interface LinkObject {
-  operationRef?: string;
-  operationId?: string;
-  parameters?: { [name: string]: any };
-  requestBody?: any;
-  description?: string;
-  server?: ServerObject;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#tagObject
-interface TagObject {
-  name: string;
-  description?: string;
-  externalDocs?: ExternalDocumentationObject;
-}
-
-// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#externalDocumentationObject
-interface ExternalDocumentationObject {
-  description?: string;
-  url: string;
-}
-
-interface ParameterObjectBase {
-  description?: string;
-  required?: boolean; // must be true for "path"
-  deprecated?: boolean;
-  allowEmptyValue?: boolean;
-
-  style?: ParameterStyle;
-  explode?: boolean;
-  allowReserved?: boolean;
-  schema: SchemaObject | ReferenceObject;
-  example: any;
-  examples: { [example: string]: ExampleObject | ReferenceObject };
-}
-
-type ParameterStyle =
-  | "matrix"
-  | "label"
-  | "form"
-  | "simple"
-  | "spaceDelimited"
-  | "pipeDelimited"
-  | "deepObject";
-
-type SecuritySchemeType = "apiKey" | "http" | "oauth2" | "openIdConnect";
