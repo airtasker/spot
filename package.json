@@ -31,7 +31,7 @@
     "supertest": "^4.0.2",
     "ts-morph": "^6.0.2",
     "tslib": "^1",
-    "typescript": "^3.7.3",
+    "typescript": "^3.7.4",
     "validator": "^12.1.0"
   },
   "devDependencies": {
