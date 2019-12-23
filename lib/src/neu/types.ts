@@ -1,4 +1,5 @@
 import assertNever from "assert-never";
+import { type } from "os";
 
 export enum TypeKind {
   NULL = "null",
@@ -378,6 +379,47 @@ export function dereferenceType(
     return dereferenceType(typeTable.getOrError(type.name), typeTable);
   }
   return type;
+}
+
+export function duplicateTypesInUnion(
+  unionType: UnionType,
+  typeTable: TypeTable
+) {
+  const rootTypes = possibleRootTypes(unionType, typeTable);
+  const foundTypes: ConcreteType[] = [];
+
+  for (const type of rootTypes) {
+    foundTypes.some(ft => ft);
+  }
+}
+
+export function isIdenticalType(typeA: Type, typeB: Type): boolean {
+  switch (typeA.kind) {
+    case TypeKind.NULL:
+    case TypeKind.BOOLEAN:
+    case TypeKind.STRING:
+    case TypeKind.FLOAT:
+    case TypeKind.DOUBLE:
+    case TypeKind.INT32:
+    case TypeKind.INT64:
+    case TypeKind.DATE:
+    case TypeKind.DATE_TIME:
+    case TypeKind.BOOLEAN_LITERAL:
+    case TypeKind.STRING_LITERAL:
+    case TypeKind.FLOAT_LITERAL:
+    case TypeKind.INT_LITERAL:
+      return typeA.kind === typeB.kind;
+    case TypeKind.OBJECT:
+    // TODO
+    case TypeKind.ARRAY:
+    // return isArrayType(typeB) : false
+    case TypeKind.UNION:
+      return false; // TODO
+    case TypeKind.REFERENCE:
+      return isReferenceType(typeB) ? typeA.name === typeB.name : false;
+    default:
+      assertNever(typeA);
+  }
 }
 
 /**

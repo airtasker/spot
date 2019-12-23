@@ -425,24 +425,26 @@ function parseUnionType(
   const allowedTargetTypes = typeNode
     .getTypeNodes()
     .filter(type => !type.getType().isUndefined());
-  if (allowedTargetTypes.length === 1) {
-    // not a union
-    return parseType(allowedTargetTypes[0], typeTable, lociTable);
-  } else if (allowedTargetTypes.length > 1) {
-    const types = [];
-    for (const tn of allowedTargetTypes) {
-      const typeResult = parseType(tn, typeTable, lociTable);
-      if (typeResult.isErr()) return typeResult;
-      types.push(typeResult.unwrap());
-    }
-    return ok(unionType(types, inferDiscriminator(types, typeTable)));
-  } else {
-    return err(
-      new TypeNotAllowedError("malformed union type", {
-        file: typeNode.getSourceFile().getFilePath(),
-        position: typeNode.getPos()
-      })
-    );
+
+  switch (allowedTargetTypes.length) {
+    case 0:
+      return err(
+        new TypeNotAllowedError("malformed union type", {
+          file: typeNode.getSourceFile().getFilePath(),
+          position: typeNode.getPos()
+        })
+      );
+    case 1:
+      // not a union
+      return parseType(allowedTargetTypes[0], typeTable, lociTable);
+    default:
+      const types = [];
+      for (const tn of allowedTargetTypes) {
+        const typeResult = parseType(tn, typeTable, lociTable);
+        if (typeResult.isErr()) return typeResult;
+        types.push(typeResult.unwrap());
+      }
+      return ok(unionType(types, inferDiscriminator(types, typeTable)));
   }
 }
 

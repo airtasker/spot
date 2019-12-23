@@ -5,6 +5,7 @@ import {
   Endpoint,
   Header,
   HttpMethod,
+  isSpecificResponse,
   Response
 } from "../../definitions";
 import {
@@ -21,6 +22,7 @@ import {
   OperationObject,
   PathsObject,
   ReferenceObject,
+  ResponseObject,
   ResponsesObject,
   SchemaObject
 } from "./openapi3-schema";
@@ -82,17 +84,58 @@ function endpointResponsesToResponsesObject(
   },
   typeTable: TypeTable
 ): ResponsesObject {
-  const specificResponses = responses.specific.reduce<ResponsesObject>(
+  const responsesObject = responses.specific.reduce<ResponsesObject>(
     (acc, response) => {
-      acc[response.status.toString()] = {
-        description: response.description || `${response.status} response`
-      };
+      acc[response.status.toString(10)] = endpointResponseToResponseObject(
+        response,
+        typeTable
+      );
       return acc;
     },
     {}
   );
 
-  return {};
+  if (responses.default) {
+    responsesObject.default = endpointResponseToResponseObject(
+      responses.default,
+      typeTable
+    );
+  }
+
+  return responsesObject;
+}
+
+function endpointResponseToResponseObject(
+  response: Response | DefaultResponse,
+  typeTable: TypeTable
+): ResponseObject {
+  const description =
+    response.description ||
+    (isSpecificResponse(response)
+      ? `${response.status} response`
+      : "default response");
+
+  const headers =
+    response.headers.length > 0
+      ? response.headers.reduce<{ [name: string]: HeaderObject }>(
+          (acc, header) => {
+            acc[header.name] = headerToHeaderObject(header, typeTable);
+            return acc;
+          },
+          {}
+        )
+      : undefined;
+
+  const content =
+    response.body !== undefined
+      ? {
+          "application/json": {
+            schema: typeToSchemaOrReferenceObject(response.body.type, typeTable)
+          }
+        }
+      : undefined;
+
+  return { description, headers, content };
 }
 
 function headerToHeaderObject(
@@ -165,7 +208,16 @@ function typeToSchemaOrReferenceObject(
         type,
         typeTable
       ).filter(t => isNullType(t));
-      // const isRealUnion = concreteNonNullTypes.length > 1;
+
+      // Flatten unions
+
+      switch (concreteNonNullTypes.length) {
+        case 0:
+          throw new Error("unexpected error");
+        case 1:
+        default:
+      }
+
       return {
         oneOf: []
       };
