@@ -5,8 +5,10 @@ import {
   int64Type,
   objectType,
   referenceType,
+  stringLiteralType,
   stringType,
-  TypeTable
+  TypeTable,
+  unionType
 } from "../../types";
 import { StringValidator } from "./string-validator";
 
@@ -66,6 +68,18 @@ describe("validators", () => {
       expect(result).toBe(true);
       expect(validator.messages.length).toEqual(0);
     });
+
+    test("should return true when value matches a union type", () => {
+      const result = validator.run(
+        { name: "param", value: "unionElementA" },
+        unionType([
+          stringLiteralType("unionElementA"),
+          stringLiteralType("unionElementB")
+        ])
+      );
+      expect(result).toBe(true);
+      expect(validator.messages.length).toEqual(0);
+    });
   });
 
   describe("invalid inputs", () => {
@@ -106,6 +120,20 @@ describe("validators", () => {
       );
       expect(result).toBe(false);
       expect(validator.messages[0]).toEqual('".param.id" should be int64');
+    });
+
+    test("should return an error value doesn't match a union type", () => {
+      const result = validator.run(
+        { name: "param", value: "unknownElement" },
+        unionType([
+          stringLiteralType("unionElementA"),
+          stringLiteralType("unionElementB")
+        ])
+      );
+      expect(result).toBe(false);
+      expect(validator.messages[0]).toEqual(
+        '"param" should be a member of a union'
+      );
     });
   });
 });

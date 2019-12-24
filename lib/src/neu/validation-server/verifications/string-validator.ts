@@ -1,3 +1,4 @@
+import assertNever from "assert-never";
 import validator from "validator";
 import {
   ArrayType,
@@ -6,52 +7,41 @@ import {
   ReferenceType,
   Type,
   TypeKind,
-  TypeTable
+  TypeTable,
+  UnionType
 } from "../../types";
-
-const {
-  NULL,
-  BOOLEAN,
-  DATE,
-  DATE_TIME,
-  STRING,
-  FLOAT,
-  DOUBLE,
-  FLOAT_LITERAL,
-  INT32,
-  INT64,
-  INT_LITERAL,
-  OBJECT,
-  ARRAY,
-  REFERENCE
-} = TypeKind;
 
 export interface StringInput {
   name: string;
   value: string | { [key: string]: unknown } | unknown[];
 }
 
-type ValidatorMap = {
-  [key in TypeKind]?: (str: string, options?: {}) => boolean | never;
-};
-
 export class StringValidator {
-  static validatorMap: ValidatorMap = {
-    [NULL]: validator.isEmpty,
-    [BOOLEAN]: validator.isBoolean,
-    [DATE]: validator.isISO8601,
-    [DATE_TIME]: validator.isISO8601,
-    [FLOAT]: validator.isFloat,
-    [INT32]: validator.isInt,
-    [INT64]: validator.isInt,
-    [DOUBLE]: validator.isFloat,
-    [FLOAT_LITERAL]: validator.isFloat,
-    [INT_LITERAL]: validator.isInt,
-    [STRING]: (str: string) => typeof str === "string"
-  };
-
-  static getErrorMessage(input: string, type: string): string {
-    return `"${input}" should be ${type}`;
+  static getErrorMessage(
+    input: string,
+    type: Exclude<Type, ObjectType | ArrayType | ReferenceType>
+  ): string {
+    switch (type.kind) {
+      case TypeKind.NULL:
+      case TypeKind.BOOLEAN:
+      case TypeKind.STRING:
+      case TypeKind.FLOAT:
+      case TypeKind.DOUBLE:
+      case TypeKind.INT32:
+      case TypeKind.INT64:
+      case TypeKind.DATE:
+      case TypeKind.DATE_TIME:
+        return `"${input}" should be ${type.kind}`;
+      case TypeKind.BOOLEAN_LITERAL:
+      case TypeKind.STRING_LITERAL:
+      case TypeKind.FLOAT_LITERAL:
+      case TypeKind.INT_LITERAL:
+        return `"${input}" should be ${type.value}`;
+      case TypeKind.UNION:
+        return `"${input}" should be a member of a union`;
+      default:
+        assertNever(type);
+    }
   }
 
   messages: string[] = [];
@@ -66,36 +56,83 @@ export class StringValidator {
     type: Type,
     isMandatory: boolean = true
   ): boolean | never {
-    if (type.kind === OBJECT) {
-      return this.validateObject(input, type);
+    if (!input.value && !isMandatory) return true;
+
+    switch (type.kind) {
+      case TypeKind.NULL:
+        return this.validateWithValidator(input, type, validator.isEmpty);
+      case TypeKind.BOOLEAN:
+        return this.validateWithValidator(input, type, (str: string) =>
+          ["true", "false"].includes(str.toLowerCase())
+        );
+      case TypeKind.BOOLEAN_LITERAL:
+        return this.validateWithValidator(
+          input,
+          type,
+          (str: string) => str.toLowerCase() === type.value.toString()
+        );
+      case TypeKind.STRING:
+        return this.validateWithValidator(
+          input,
+          type,
+          (str: string) => typeof str === "string"
+        );
+      case TypeKind.STRING_LITERAL:
+        return this.validateWithValidator(
+          input,
+          type,
+          (str: string) => typeof str === "string" && str === type.value
+        );
+      case TypeKind.FLOAT:
+      case TypeKind.DOUBLE:
+        return this.validateWithValidator(input, type, validator.isFloat);
+      case TypeKind.FLOAT_LITERAL:
+        return this.validateWithValidator(
+          input,
+          type,
+          (str: string) => validator.isFloat(str) && Number(str) === type.value
+        );
+      case TypeKind.INT32:
+      case TypeKind.INT64:
+        return this.validateWithValidator(input, type, validator.isInt);
+      case TypeKind.INT_LITERAL:
+        return this.validateWithValidator(
+          input,
+          type,
+          (str: string) => validator.isInt(str) && Number(str) === type.value
+        );
+      case TypeKind.DATE:
+      case TypeKind.DATE_TIME:
+        return this.validateWithValidator(input, type, validator.isISO8601);
+      case TypeKind.OBJECT:
+        return this.validateObject(input, type);
+      case TypeKind.ARRAY:
+        return this.validateArray(input, type);
+      case TypeKind.UNION:
+        const anyValid = type.types.some(t => {
+          const unionStringValidator = new StringValidator(this.typeTable);
+          return unionStringValidator.run(input, t, isMandatory);
+        });
+        if (!anyValid) {
+          this.messages.push(StringValidator.getErrorMessage(input.name, type));
+        }
+        return anyValid;
+      case TypeKind.REFERENCE:
+        return this.run(input, dereferenceType(type, this.typeTable));
+      default:
+        assertNever(type);
     }
+  }
 
-    if (type.kind === ARRAY) {
-      return this.validateArray(input, type);
-    }
-
-    if (type.kind === REFERENCE) {
-      return this.validateReference(input, type);
-    }
-
-    const validator = StringValidator.validatorMap[type.kind];
-
-    if (typeof validator !== "function") {
-      throw new Error(
-        `StringValidator Err - no validator found for type ${type.kind}`
-      );
-    }
-
-    const isNotRequired = !input.value && !isMandatory;
-
-    const isValid = isNotRequired || validator(`${input.value}`);
-
+  private validateWithValidator(
+    input: StringInput,
+    type: Exclude<Type, ObjectType | ArrayType | ReferenceType | UnionType>,
+    validatorFn: (str: string, options?: {}) => boolean
+  ): boolean {
+    const isValid = validatorFn(`${input.value}`);
     if (!isValid) {
-      this.messages.push(
-        StringValidator.getErrorMessage(input.name, type.kind)
-      );
+      this.messages.push(StringValidator.getErrorMessage(input.name, type));
     }
-
     return isValid;
   }
 
@@ -129,9 +166,5 @@ export class StringValidator {
         .some(v => v === false);
 
     return Array.isArray(input.value) && validateItems();
-  }
-
-  private validateReference(input: StringInput, type: ReferenceType) {
-    return this.run(input, dereferenceType(type, this.typeTable));
   }
 }
