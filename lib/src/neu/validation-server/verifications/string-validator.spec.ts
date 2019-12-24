@@ -5,10 +5,10 @@ import {
   int64Type,
   objectType,
   referenceType,
+  stringLiteralType,
   stringType,
   TypeTable,
-  unionType,
-  stringLiteralType
+  unionType
 } from "../../types";
 import { StringValidator } from "./string-validator";
 
