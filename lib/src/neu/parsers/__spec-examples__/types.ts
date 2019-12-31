@@ -41,9 +41,9 @@ interface TypeInterface {
     | DiscriminatedUnionElementA
     | DiscriminatedUnionElementB
     | null;
-  unionWithDuplicate: string | string; // TODO: test
-  unionWithAliasedDuplicate: string | AliasString; // TODO: test
-  unionWithNestedDuplicate: string | StringBooleanUnion; // TODO: test
+  // unionWithDuplicate: string | string; // TODO: test
+  // unionWithAliasedDuplicate: string | AliasString; // TODO: test
+  // unionWithDuplicateInReferencedUnion: string | StringBooleanUnion; // TODO: test
   alias: AliasString;
   interface: Interface;
   interfaceExtends: InterfaceExtends;
@@ -70,7 +70,7 @@ interface DiscriminatedUnionElementB {
 
 type AliasString = string;
 
-type StringBooleanUnion = string | boolean;
+// type StringBooleanUnion = string | boolean;
 
 interface Interface {
   interfaceProperty: boolean;

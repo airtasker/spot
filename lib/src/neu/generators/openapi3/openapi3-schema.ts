@@ -88,6 +88,36 @@ export interface OperationObject {
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#referenceObject
 export interface ReferenceObject {
   $ref: string;
+  /**
+   * WARNING
+   *
+   * `nullable: true` will occur when exactly one type reference is combined with null.
+   *
+   * Example:
+   *
+   * `MyType | null`
+   *
+   * https://swagger.io/docs/specification/using-ref/#considerations
+   *
+   * Schema references cannot contain sibling elements. `nullable` therefore should
+   * not be combined with schema reference objects. This rule was misunderstood during
+   * development on the OpenAPI 3 generator at Airtasker. This will be removed in a
+   * future version of Spot when Airtasker's tooling supports an alternative valid
+   * representation for the above scenario.
+   *
+   * TODO: Find a way to remove this
+   * A possible seemingly accepted workaround to this is to wrap the schema reference
+   * into an allOf.
+   *
+   * Example:
+   *
+   * ```
+   * nullable: true
+   * allOf:
+   *   - $ref: #/components/schemas/MyType
+   * ```
+   */
+  nullable?: boolean;
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#requestBodyObject
@@ -149,7 +179,7 @@ interface NumberSchemaObjectBase {
   minimum?: number;
   exclusiveMinimum?: boolean;
   multipleOf?: number;
-  enum?: number[];
+  enum?: Array<number | null>;
   default?: number;
 }
 
@@ -157,15 +187,19 @@ export interface StringSchemaObject extends SchemaObjectBase {
   type: "string";
   maxLength?: number;
   minLength?: number;
-  format?: string;
+  /**
+   * OpenAPI allows custom formats. We constrain the format here to those
+   * that OpenAPI has defined and custom formats that Spot may produce.
+   */
+  format?: "date" | "date-time" | "password" | "byte" | "binary";
   pattern?: string;
-  enum?: string[];
+  enum?: Array<string | null>;
   default?: string;
 }
 
 export interface BooleanSchemaObject extends SchemaObjectBase {
   type: "boolean";
-  enum?: boolean[];
+  enum?: Array<boolean | null>;
   default?: boolean;
 }
 

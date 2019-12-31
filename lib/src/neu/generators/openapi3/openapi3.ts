@@ -8,24 +8,16 @@ import {
   isSpecificResponse,
   Response
 } from "../../definitions";
-import {
-  isNullType,
-  possibleRootTypes,
-  Type,
-  TypeKind,
-  TypeTable
-} from "../../types";
+import { TypeTable } from "../../types";
 import {
   HeaderObject,
-  ObjectPropertiesSchemaObject,
   OpenApiV3,
   OperationObject,
   PathsObject,
-  ReferenceObject,
   ResponseObject,
-  ResponsesObject,
-  SchemaObject
+  ResponsesObject
 } from "./openapi3-schema";
+import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
 
 function generateOpenAPI3(contract: Contract): OpenApiV3 {
   const typeTable = TypeTable.fromArray(contract.types);
@@ -147,87 +139,6 @@ function headerToHeaderObject(
     required: !header.optional,
     schema: typeToSchemaOrReferenceObject(header.type, typeTable)
   };
-}
-
-function typeToSchemaOrReferenceObject(
-  type: Type,
-  typeTable: TypeTable
-): SchemaObject | ReferenceObject {
-  switch (type.kind) {
-    case TypeKind.NULL:
-      throw new Error("unexpected error");
-    case TypeKind.BOOLEAN:
-      return { type: "boolean" };
-    case TypeKind.BOOLEAN_LITERAL:
-      return { type: "boolean", enum: [type.value] };
-    case TypeKind.STRING:
-      return { type: "string" };
-    case TypeKind.STRING_LITERAL:
-      return { type: "string", enum: [type.value] };
-    case TypeKind.FLOAT:
-      return { type: "number", format: "float" };
-    case TypeKind.DOUBLE:
-      return { type: "number", format: "double" };
-    case TypeKind.FLOAT_LITERAL:
-      return { type: "number", enum: [type.value] };
-    case TypeKind.INT32:
-      return { type: "integer", format: "int32" };
-    case TypeKind.INT64:
-      return { type: "integer", format: "int64" };
-    case TypeKind.INT_LITERAL:
-      return { type: "integer", enum: [type.value] };
-    case TypeKind.DATE:
-      return { type: "string", format: "date" };
-    case TypeKind.DATE_TIME:
-      return { type: "string", format: "date-time" };
-    case TypeKind.OBJECT:
-      return {
-        type: "object",
-        properties:
-          type.properties.length > 0
-            ? type.properties.reduce<ObjectPropertiesSchemaObject>(
-                (acc, property) => {
-                  acc[property.name] = typeToSchemaOrReferenceObject(
-                    property.type,
-                    typeTable
-                  );
-                  return acc;
-                },
-                {}
-              )
-            : undefined
-      };
-    case TypeKind.ARRAY:
-      return {
-        type: "array",
-        items: typeToSchemaOrReferenceObject(type.elementType, typeTable)
-      };
-    case TypeKind.UNION:
-      // Check if true union
-      const concreteNonNullTypes = possibleRootTypes(
-        type,
-        typeTable
-      ).filter(t => isNullType(t));
-
-      // Flatten unions
-
-      switch (concreteNonNullTypes.length) {
-        case 0:
-          throw new Error("unexpected error");
-        case 1:
-        default:
-      }
-
-      return {
-        oneOf: []
-      };
-    case TypeKind.REFERENCE:
-      return {
-        $ref: `#/components/schemas/${type.name}`
-      };
-    default:
-      assertNever(type);
-  }
 }
 
 function httpMethodToPathItemMethod(

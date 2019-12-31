@@ -1,5 +1,4 @@
 import assertNever from "assert-never";
-import { type } from "os";
 
 export enum TypeKind {
   NULL = "null",
@@ -51,6 +50,12 @@ export type PrimitiveType = Exclude<
   Type,
   ObjectType | ArrayType | UnionType | ReferenceType
 >;
+
+export type LiteralType =
+  | BooleanLiteralType
+  | StringLiteralType
+  | FloatLiteralType
+  | IntLiteralType;
 
 export interface NullType {
   kind: TypeKind.NULL;
@@ -271,12 +276,24 @@ export function isBooleanLiteralType(type: Type): type is BooleanLiteralType {
   return type.kind === TypeKind.BOOLEAN_LITERAL;
 }
 
+export function areBooleanLiteralTypes(
+  types: Type[]
+): types is BooleanLiteralType[] {
+  return types.every(t => isBooleanLiteralType(t));
+}
+
 export function isStringType(type: Type): type is StringType {
   return type.kind === TypeKind.STRING;
 }
 
 export function isStringLiteralType(type: Type): type is StringLiteralType {
   return type.kind === TypeKind.STRING_LITERAL;
+}
+
+export function areStringLiteralTypes(
+  types: Type[]
+): types is StringLiteralType[] {
+  return types.every(t => isStringLiteralType(t));
 }
 
 export function isFloatType(type: Type): type is FloatType {
@@ -291,6 +308,12 @@ export function isFloatLiteralType(type: Type): type is FloatLiteralType {
   return type.kind === TypeKind.FLOAT_LITERAL;
 }
 
+export function areFloatLiteralTypes(
+  types: Type[]
+): types is FloatLiteralType[] {
+  return types.every(t => isFloatLiteralType(t));
+}
+
 export function isInt32Type(type: Type): type is Int32Type {
   return type.kind === TypeKind.INT32;
 }
@@ -301,6 +324,10 @@ export function isInt64Type(type: Type): type is Int64Type {
 
 export function isIntLiteralType(type: Type): type is IntLiteralType {
   return type.kind === TypeKind.INT_LITERAL;
+}
+
+export function areIntLiteralTypes(types: Type[]): types is IntLiteralType[] {
+  return types.every(t => isIntLiteralType(t));
 }
 
 export function isDateType(type: Type): type is DateType {
@@ -353,6 +380,15 @@ export function isPrimitiveType(type: Type): type is PrimitiveType {
   }
 }
 
+export function isLiteralType(type: Type): type is LiteralType {
+  return (
+    isBooleanLiteralType(type) ||
+    isStringLiteralType(type) ||
+    isFloatLiteralType(type) ||
+    isIntLiteralType(type)
+  );
+}
+
 // Type helpers
 
 export function possibleRootTypes(
@@ -393,34 +429,60 @@ export function duplicateTypesInUnion(
   }
 }
 
-export function isIdenticalType(typeA: Type, typeB: Type): boolean {
-  switch (typeA.kind) {
-    case TypeKind.NULL:
-    case TypeKind.BOOLEAN:
-    case TypeKind.STRING:
-    case TypeKind.FLOAT:
-    case TypeKind.DOUBLE:
-    case TypeKind.INT32:
-    case TypeKind.INT64:
-    case TypeKind.DATE:
-    case TypeKind.DATE_TIME:
-    case TypeKind.BOOLEAN_LITERAL:
-    case TypeKind.STRING_LITERAL:
-    case TypeKind.FLOAT_LITERAL:
-    case TypeKind.INT_LITERAL:
-      return typeA.kind === typeB.kind;
-    case TypeKind.OBJECT:
-    // TODO
-    case TypeKind.ARRAY:
-    // return isArrayType(typeB) : false
-    case TypeKind.UNION:
-      return false; // TODO
-    case TypeKind.REFERENCE:
-      return isReferenceType(typeB) ? typeA.name === typeB.name : false;
-    default:
-      assertNever(typeA);
-  }
-}
+// export function isEqualType(
+//   typeA: Type,
+//   typeB: Type,
+//   typeTable: TypeTable
+// ): boolean {
+//   const concreteTypeA = dereferenceType(typeA, typeTable);
+//   const concreteTypeB = dereferenceType(typeB, typeTable);
+//   switch (concreteTypeA.kind) {
+//     case TypeKind.NULL:
+//     case TypeKind.BOOLEAN:
+//     case TypeKind.STRING:
+//     case TypeKind.FLOAT:
+//     case TypeKind.DOUBLE:
+//     case TypeKind.INT32:
+//     case TypeKind.INT64:
+//     case TypeKind.DATE:
+//     case TypeKind.DATE_TIME:
+//       return concreteTypeA.kind === concreteTypeB.kind;
+//     case TypeKind.BOOLEAN_LITERAL:
+//     case TypeKind.STRING_LITERAL:
+//     case TypeKind.FLOAT_LITERAL:
+//     case TypeKind.INT_LITERAL:
+//       return (
+//         concreteTypeA.kind === concreteTypeB.kind &&
+//         concreteTypeA.value === concreteTypeB.value
+//       );
+//     case TypeKind.OBJECT:
+//       if (concreteTypeA.kind !== concreteTypeB.kind) return false;
+//       if (concreteTypeA.properties.length !== concreteTypeB.properties.length) {
+//         return false;
+//       }
+//       return concreteTypeA.properties.every(pa =>
+//         concreteTypeB.properties.some(
+//           pb =>
+//             pb.name === pa.name &&
+//             pb.optional === pa.optional &&
+//             isEqualType(pa.type, pb.type, typeTable)
+//         )
+//       );
+//     case TypeKind.ARRAY:
+//       return concreteTypeA.kind === concreteTypeB.kind
+//         ? isEqualType(
+//             concreteTypeA.elementType,
+//             concreteTypeB.elementType,
+//             typeTable
+//           )
+//         : false;
+//     case TypeKind.UNION:
+//       if (concreteTypeA.kind !== concreteTypeB.kind) return false;
+//       concreteTypeA.types;
+//     default:
+//       assertNever(concreteTypeA);
+//   }
+// }
 
 /**
  * Given a list of types, try to find a disriminator. The null type is ignored.
