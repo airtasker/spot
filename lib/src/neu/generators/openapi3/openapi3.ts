@@ -1,5 +1,6 @@
 import assertNever from "assert-never";
 import {
+  Body,
   Contract,
   DefaultResponse,
   Endpoint,
@@ -9,13 +10,16 @@ import {
   Response
 } from "../../definitions";
 import { TypeTable } from "../../types";
+import { KeyOfType } from "../../util";
 import {
   HeaderObject,
   OpenApiV3,
   OperationObject,
+  PathItemObject,
   PathsObject,
   ResponseObject,
-  ResponsesObject
+  ResponsesObject,
+  RequestBodyObject
 } from "./openapi3-schema";
 import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
 
@@ -53,12 +57,19 @@ function endpointToOperationObject(
   endpoint: Endpoint,
   typeTable: TypeTable
 ): OperationObject {
+  const endpointRequest = endpoint.request;
+  const endpointRequestBody = endpointRequest
+    ? endpointRequest.body
+    : undefined;
+
   return {
     tags: endpoint.tags,
     description: endpoint.description,
     operationId: endpoint.name,
-    parameters: [],
-    // requestBody:
+    parameters: [], // TODO: header, query, path params
+    requestBody: endpointRequestBody
+      ? endpointRequestBodyToRequestBodyObject(endpointRequestBody, typeTable)
+      : undefined,
     responses: endpointResponsesToResponsesObject(
       {
         specific: endpoint.responses,
@@ -67,6 +78,20 @@ function endpointToOperationObject(
       typeTable
     )
   };
+}
+
+function endpointRequestBodyToRequestBodyObject(
+  requestBody: Body,
+  typeTable: TypeTable
+): RequestBodyObject {
+  const content = {
+    "application/json": {
+      schema: typeToSchemaOrReferenceObject(requestBody.type, typeTable)
+    }
+  };
+
+  // TODO: currently Spot does not support optional request body
+  return { content, required: true };
 }
 
 function endpointResponsesToResponsesObject(
@@ -143,7 +168,7 @@ function headerToHeaderObject(
 
 function httpMethodToPathItemMethod(
   method: HttpMethod
-): "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace" {
+): KeyOfType<PathItemObject, OperationObject> {
   switch (method) {
     case "GET":
       return "get";

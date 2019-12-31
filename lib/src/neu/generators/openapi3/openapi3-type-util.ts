@@ -199,7 +199,7 @@ function unionTypeToSchema(
     throw new Error("Unexpected type: union with no types");
   }
 
-  const hasNull = type.types.some(t => isNullType(t));
+  const nullable = type.types.some(t => isNullType(t));
   const nonNullTypes = type.types.filter(t => !isNullType(t));
 
   switch (nonNullTypes.length) {
@@ -207,33 +207,33 @@ function unionTypeToSchema(
       throw new Error("Null must be part of a union for OpenAPI 3");
     case 1: // not an OpenAPI union, but a single type, possibly nullable
       const singleType = nonNullTypes[0];
-      return typeToSchemaOrReferenceObject(singleType, typeTable, hasNull);
+      return typeToSchemaOrReferenceObject(singleType, typeTable, nullable);
     default:
       if (areBooleanLiteralTypes(nonNullTypes)) {
         return booleanSchema({
           values: nonNullTypes.map(t => t.value),
-          nullable: hasNull
+          nullable
         });
       } else if (areStringLiteralTypes(nonNullTypes)) {
         return stringSchema({
           values: nonNullTypes.map(t => t.value),
-          nullable: hasNull
+          nullable
         });
       } else if (areFloatLiteralTypes(nonNullTypes)) {
         return numberSchema({
           values: nonNullTypes.map(t => t.value),
           format: "float",
-          nullable: hasNull
+          nullable
         });
       } else if (areIntLiteralTypes(nonNullTypes)) {
         return integerSchema({
           values: nonNullTypes.map(t => t.value),
           format: "int32",
-          nullable: hasNull
+          nullable
         });
       } else {
         return {
-          nullable: hasNull || undefined,
+          nullable: nullable || undefined,
           oneOf: nonNullTypes.map(t =>
             typeToSchemaOrReferenceObject(t, typeTable)
           ),
