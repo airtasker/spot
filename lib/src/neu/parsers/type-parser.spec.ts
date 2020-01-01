@@ -346,16 +346,6 @@ describe("type parser", () => {
     );
   });
 
-  // test.only("fails to parses union with duplicate elements", () => {
-  //   const type = interphace
-  //     .getPropertyOrThrow("unionWithDuplicate")
-  //     .getTypeNodeOrThrow();
-
-  //   expect(
-  //     parseType(type, typeTable, lociTable).unwrapErrOrThrow()
-  //   ).toBeInstanceOf(TypeNotAllowedError);
-  // });
-
   test("parses type aliases", () => {
     const type = interphace.getPropertyOrThrow("alias").getTypeNodeOrThrow();
 
