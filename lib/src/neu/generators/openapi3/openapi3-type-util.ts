@@ -82,11 +82,8 @@ function booleanSchema(
     nullable?: boolean;
   } = {}
 ): BooleanSchemaObject {
-  const enums = opts.values
-    ? opts.nullable
-      ? [...opts.values, null]
-      : opts.values
-    : undefined;
+  const enums =
+    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
   return { type: "boolean", enum: enums, nullable: opts.nullable || undefined };
 }
 
@@ -97,11 +94,8 @@ function stringSchema(
     format?: StringSchemaObject["format"];
   } = {}
 ): StringSchemaObject {
-  const enums = opts.values
-    ? opts.nullable
-      ? [...opts.values, null]
-      : opts.values
-    : undefined;
+  const enums =
+    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
   return {
     type: "string",
     enum: enums,
@@ -117,11 +111,8 @@ function numberSchema(
     format?: NumberSchemaObject["format"];
   } = {}
 ): NumberSchemaObject {
-  const enums = opts.values
-    ? opts.nullable
-      ? [...opts.values, null]
-      : opts.values
-    : undefined;
+  const enums =
+    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
   return {
     type: "number",
     enum: enums,
@@ -137,11 +128,8 @@ function integerSchema(
     format?: IntegerSchemaObject["format"];
   } = {}
 ): IntegerSchemaObject {
-  const enums = opts.values
-    ? opts.nullable
-      ? [...opts.values, null]
-      : opts.values
-    : undefined;
+  const enums =
+    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
   return {
     type: "integer",
     enum: enums,
@@ -207,8 +195,11 @@ function unionTypeToSchema(
     case 0: // previous guard guarantees only null was present
       throw new Error("Null must be part of a union for OpenAPI 3");
     case 1: // not an OpenAPI union, but a single type, possibly nullable
-      const singleType = nonNullTypes[0];
-      return typeToSchemaOrReferenceObject(singleType, typeTable, nullable);
+      return typeToSchemaOrReferenceObject(
+        nonNullTypes[0],
+        typeTable,
+        nullable
+      );
     default:
       if (areBooleanLiteralTypes(nonNullTypes)) {
         return booleanSchema({

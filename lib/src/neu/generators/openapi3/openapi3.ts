@@ -176,6 +176,8 @@ function typeToQueryParameterSerializationStrategy(
     throw new Error("Unexpected error: query param resolved to no types");
   }
 
+  // Style is ambigious for a union containing both object and array types
+  // TODO: warn
   const possiblyObjectType = possibleTypes.some(isObjectType);
   const possiblyArrayType = possibleTypes.some(isArrayType);
 
