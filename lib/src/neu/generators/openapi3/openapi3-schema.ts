@@ -390,13 +390,60 @@ export interface ResponseObject {
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#parameterObject
-export interface ParameterObject extends ParameterObjectBase {
-  name: string;
-  in: "query" | "header" | "path" | "cookie";
+export type ParameterObject =
+  | QueryParameterObject
+  | HeaderParameterObject
+  | PathParameterObject
+  | CookieParameterObject;
+
+export interface QueryParameterObject extends ParameterObjectBase {
+  in: "query";
+  allowEmptyValue?: boolean;
+  style?: "form" | "spaceDelimited" | "pipeDelimited" | "deepObject";
+  allowReserved?: boolean;
+}
+
+export interface HeaderParameterObject extends ParameterObjectBase {
+  in: "header";
+  style?: "simple";
+}
+
+export interface PathParameterObject extends ParameterObjectBase {
+  in: "path";
+  required: true;
+  style?: "simple" | "label" | "matrix";
+}
+
+export interface CookieParameterObject extends ParameterObjectBase {
+  in: "cookie";
+  style?: "form";
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#headerObject
-export type HeaderObject = ParameterObjectBase;
+export type HeaderObject = Omit<HeaderParameterObject, "name" | "in">;
+
+interface ParameterObjectBase {
+  name: string;
+  in: "query" | "header" | "path" | "cookie";
+  description?: string;
+  required?: boolean;
+  deprecated?: boolean;
+
+  style?: ParameterStyle;
+  explode?: boolean;
+  schema?: SchemaObject | ReferenceObject;
+  example?: any;
+  examples?: { [example: string]: ExampleObject | ReferenceObject };
+}
+
+type ParameterStyle =
+  | "matrix"
+  | "label"
+  | "form"
+  | "simple"
+  | "spaceDelimited"
+  | "pipeDelimited"
+  | "deepObject";
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#callbackObject
 export interface CallbackObject {
@@ -424,26 +471,3 @@ export interface ExternalDocumentationObject {
   description?: string;
   url: string;
 }
-
-interface ParameterObjectBase {
-  description?: string;
-  required?: boolean; // must be true for "path"
-  deprecated?: boolean;
-  allowEmptyValue?: boolean;
-
-  style?: ParameterStyle;
-  explode?: boolean;
-  allowReserved?: boolean;
-  schema?: SchemaObject | ReferenceObject;
-  example?: any;
-  examples?: { [example: string]: ExampleObject | ReferenceObject };
-}
-
-export type ParameterStyle =
-  | "matrix"
-  | "label"
-  | "form"
-  | "simple"
-  | "spaceDelimited"
-  | "pipeDelimited"
-  | "deepObject";

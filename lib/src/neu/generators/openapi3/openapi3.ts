@@ -1,25 +1,38 @@
 import assertNever from "assert-never";
 import {
   Body,
+  Config,
   Contract,
   DefaultResponse,
   Endpoint,
   Header,
   HttpMethod,
   isSpecificResponse,
+  Request,
   Response
 } from "../../definitions";
-import { TypeTable } from "../../types";
+import {
+  isArrayType,
+  isNotNullType,
+  isObjectType,
+  possibleRootTypes,
+  Type,
+  TypeTable
+} from "../../types";
 import { KeyOfType } from "../../util";
 import {
   HeaderObject,
+  HeaderParameterObject,
   OpenApiV3,
   OperationObject,
+  ParameterObject,
   PathItemObject,
+  PathParameterObject,
   PathsObject,
+  QueryParameterObject,
+  RequestBodyObject,
   ResponseObject,
-  ResponsesObject,
-  RequestBodyObject
+  ResponsesObject
 } from "./openapi3-schema";
 import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
 
@@ -32,7 +45,11 @@ function generateOpenAPI3(contract: Contract): OpenApiV3 {
       description: contract.description,
       version: "0.0.0"
     },
-    paths: endpointsToPathsObject(contract.endpoints, typeTable)
+    paths: endpointsToPathsObject(
+      contract.endpoints,
+      typeTable,
+      contract.config
+    )
   };
 
   return openapi;
@@ -40,14 +57,16 @@ function generateOpenAPI3(contract: Contract): OpenApiV3 {
 
 function endpointsToPathsObject(
   endpoints: Endpoint[],
-  typeTable: TypeTable
+  typeTable: TypeTable,
+  config: Config
 ): PathsObject {
   return endpoints.reduce<PathsObject>((acc, endpoint) => {
     acc[endpoint.path] = acc[endpoint.path] || {};
     const pathItemMethod = httpMethodToPathItemMethod(endpoint.method);
     acc[endpoint.path][pathItemMethod] = endpointToOperationObject(
       endpoint,
-      typeTable
+      typeTable,
+      config
     );
     return acc;
   }, {});
@@ -55,21 +74,22 @@ function endpointsToPathsObject(
 
 function endpointToOperationObject(
   endpoint: Endpoint,
-  typeTable: TypeTable
+  typeTable: TypeTable,
+  config: Config
 ): OperationObject {
   const endpointRequest = endpoint.request;
-  const endpointRequestBody = endpointRequest
-    ? endpointRequest.body
-    : undefined;
+  const endpointRequestBody = endpointRequest && endpointRequest.body;
 
   return {
     tags: endpoint.tags,
     description: endpoint.description,
     operationId: endpoint.name,
-    parameters: [], // TODO: header, query, path params
-    requestBody: endpointRequestBody
-      ? endpointRequestBodyToRequestBodyObject(endpointRequestBody, typeTable)
-      : undefined,
+    parameters:
+      endpointRequest &&
+      endpointRequestToParameterObjects(endpointRequest, typeTable, config),
+    requestBody:
+      endpointRequestBody &&
+      endpointRequestBodyToRequestBodyObject(endpointRequestBody, typeTable),
     responses: endpointResponsesToResponsesObject(
       {
         specific: endpoint.responses,
@@ -78,6 +98,83 @@ function endpointToOperationObject(
       typeTable
     )
   };
+}
+
+function endpointRequestToParameterObjects(
+  request: Request,
+  typeTable: TypeTable,
+  config: Config
+): ParameterObject[] {
+  const pathParameters: PathParameterObject[] = request.pathParams.map(p => {
+    return {
+      name: p.name,
+      in: "path",
+      description: p.description,
+      required: true,
+      schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+    };
+  });
+
+  const queryParameters: QueryParameterObject[] = request.queryParams.map(p => {
+    return {
+      name: p.name,
+      in: "query",
+      description: p.description,
+      ...typeToQueryParameterSerializationStrategy(p.type, typeTable, config),
+      required: !p.optional,
+      schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+    };
+  });
+
+  const headerParameters: HeaderParameterObject[] = request.headers.map(p => {
+    return {
+      name: p.name,
+      in: "header",
+      description: p.description,
+      required: !p.optional,
+      schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+    };
+  });
+
+  const parameters: ParameterObject[] = [];
+
+  return parameters.concat(pathParameters, queryParameters, headerParameters);
+}
+
+function typeToQueryParameterSerializationStrategy(
+  type: Type,
+  typeTable: TypeTable,
+  config: Config
+): Pick<QueryParameterObject, "style" | "explode"> {
+  const possibleTypes = possibleRootTypes(type, typeTable).filter(
+    isNotNullType
+  );
+
+  if (possibleTypes.length === 0) {
+    throw new Error("Unexpected error: query param resolved to no types");
+  }
+
+  const possiblyObjectType = possibleTypes.some(isObjectType);
+  const possiblyArrayType = possibleTypes.some(isArrayType);
+
+  if (possiblyObjectType && !possiblyArrayType) {
+    return { style: "deepObject", explode: true };
+  }
+
+  if (possiblyArrayType && !possiblyObjectType) {
+    switch (config.paramSerializationStrategy.query.array) {
+      case "ampersand": {
+        return { style: "form", explode: true };
+      }
+      case "comma": {
+        return { style: "form", explode: false };
+      }
+      default:
+        assertNever(config.paramSerializationStrategy.query.array);
+    }
+  }
+
+  return {};
 }
 
 function endpointRequestBodyToRequestBodyObject(
@@ -143,14 +240,11 @@ function endpointResponseToResponseObject(
         )
       : undefined;
 
-  const content =
-    response.body !== undefined
-      ? {
-          "application/json": {
-            schema: typeToSchemaOrReferenceObject(response.body.type, typeTable)
-          }
-        }
-      : undefined;
+  const content = response.body && {
+    "application/json": {
+      schema: typeToSchemaOrReferenceObject(response.body.type, typeTable)
+    }
+  };
 
   return { description, headers, content };
 }

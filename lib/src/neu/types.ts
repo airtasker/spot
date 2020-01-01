@@ -268,6 +268,12 @@ export function isNullType(type: Type): type is NullType {
   return type.kind === TypeKind.NULL;
 }
 
+export function isNotNullType<T extends Type>(
+  type: T
+): type is Exclude<T, NullType> {
+  return type.kind !== TypeKind.NULL;
+}
+
 export function isBooleanType(type: Type): type is BooleanType {
   return type.kind === TypeKind.BOOLEAN;
 }
@@ -279,11 +285,17 @@ export function isBooleanLiteralType(type: Type): type is BooleanLiteralType {
 export function areBooleanLiteralTypes(
   types: Type[]
 ): types is BooleanLiteralType[] {
-  return types.every(t => isBooleanLiteralType(t));
+  return types.every(isBooleanLiteralType);
 }
 
 export function isStringType(type: Type): type is StringType {
   return type.kind === TypeKind.STRING;
+}
+
+export function isNotStringType<T extends Type>(
+  type: T
+): type is Exclude<T, StringType> {
+  return type.kind !== TypeKind.STRING;
 }
 
 export function isStringLiteralType(type: Type): type is StringLiteralType {
@@ -293,7 +305,7 @@ export function isStringLiteralType(type: Type): type is StringLiteralType {
 export function areStringLiteralTypes(
   types: Type[]
 ): types is StringLiteralType[] {
-  return types.every(t => isStringLiteralType(t));
+  return types.every(isStringLiteralType);
 }
 
 export function isFloatType(type: Type): type is FloatType {
@@ -311,7 +323,7 @@ export function isFloatLiteralType(type: Type): type is FloatLiteralType {
 export function areFloatLiteralTypes(
   types: Type[]
 ): types is FloatLiteralType[] {
-  return types.every(t => isFloatLiteralType(t));
+  return types.every(isFloatLiteralType);
 }
 
 export function isInt32Type(type: Type): type is Int32Type {
@@ -327,7 +339,7 @@ export function isIntLiteralType(type: Type): type is IntLiteralType {
 }
 
 export function areIntLiteralTypes(types: Type[]): types is IntLiteralType[] {
-  return types.every(t => isIntLiteralType(t));
+  return types.every(isIntLiteralType);
 }
 
 export function isDateType(type: Type): type is DateType {
@@ -498,7 +510,7 @@ export function inferDiscriminator(
     .reduce<ConcreteType[]>((acc, type) => {
       return acc.concat(...possibleRootTypes(type, typeTable));
     }, [])
-    .filter(t => !isNullType(t));
+    .filter(isNotNullType);
 
   const possibleDiscriminators = new Map<
     string,

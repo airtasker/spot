@@ -15,7 +15,8 @@ import {
   Type,
   TypeKind,
   TypeTable,
-  UnionType
+  UnionType,
+  isNotNullType
 } from "../../types";
 import {
   ArraySchemaObject,
@@ -199,8 +200,8 @@ function unionTypeToSchema(
     throw new Error("Unexpected type: union with no types");
   }
 
-  const nullable = type.types.some(t => isNullType(t));
-  const nonNullTypes = type.types.filter(t => !isNullType(t));
+  const nullable = type.types.some(isNullType);
+  const nonNullTypes = type.types.filter(isNotNullType);
 
   switch (nonNullTypes.length) {
     case 0: // previous guard guarantees only null was present
@@ -249,7 +250,7 @@ function unionTypeToDiscrimintorObject(
 ): DiscriminatorObject | undefined {
   if (unionType.discriminator === undefined) return undefined;
 
-  const nonNullTypes = unionType.types.filter(t => !isNullType(t));
+  const nonNullTypes = unionType.types.filter(isNotNullType);
 
   // Discriminator mapping is only supported for reference types
   const objectReferenceOnly = nonNullTypes.every(

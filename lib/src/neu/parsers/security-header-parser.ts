@@ -2,7 +2,7 @@ import { PropertyDeclaration } from "ts-morph";
 import { SecurityHeader } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { LociTable } from "../locations";
-import { isStringType, possibleRootTypes, Type, TypeTable } from "../types";
+import { isNotStringType, possibleRootTypes, Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
 import { parseType } from "./type-parser";
@@ -81,7 +81,7 @@ function extractType(
   );
   if (typeResult.isErr()) return typeResult;
   const rootTypes = possibleRootTypes(typeResult.unwrap(), typeTable);
-  if (rootTypes.some(rt => !isStringType(rt))) {
+  if (rootTypes.some(isNotStringType)) {
     return err(
       new ParserError("@securityHeader type may only be a string type", {
         file: property.getSourceFile().getFilePath(),
