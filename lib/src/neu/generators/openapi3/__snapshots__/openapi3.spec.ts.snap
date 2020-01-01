@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 3 generator produces valid code 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"description\\": \\"contract description\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/path/:param/nest\\": {
+      \\"get\\": {
+        \\"tags\\": [],
+        \\"operationId\\": \\"GetEndpoint\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"param\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          },
+          {
+            \\"name\\": \\"param\\",
+            \\"in\\": \\"query\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          },
+          {
+            \\"name\\": \\"header\\",
+            \\"in\\": \\"header\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"headers\\": {
+              \\"responseHeader\\": {
+                \\"required\\": true,
+                \\"schema\\": {
+                  \\"type\\": \\"string\\"
+                }
+              }
+            },
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/SuccessBody\\"
+                }
+              }
+            }
+          },
+          \\"default\\": {
+            \\"description\\": \\"default response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"$ref\\": \\"#/components/schemas/DefaultBody\\"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"components\\": {
+    \\"schemas\\": {
+      \\"DefaultBody\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          }
+        }
+      },
+      \\"SuccessBody\\": {
+        \\"type\\": \\"object\\",
+        \\"properties\\": {
+          \\"message\\": {
+            \\"type\\": \\"string\\"
+          }
+        }
+      }
+    },
+    \\"securitySchemes\\": {
+      \\"SecurityHeader\\": {
+        \\"type\\": \\"apiKey\\",
+        \\"in\\": \\"header\\",
+        \\"name\\": \\"security-header\\"
+      }
+    }
+  },
+  \\"security\\": [
+    {
+      \\"SecurityHeader\\": []
+    }
+  ]
+}"
+`;

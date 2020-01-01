@@ -39,7 +39,7 @@ import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
 
 const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
 
-function generateOpenAPI3(contract: Contract): OpenApiV3 {
+export function generateOpenAPI3(contract: Contract): OpenApiV3 {
   const typeTable = TypeTable.fromArray(contract.types);
   const openapi: OpenApiV3 = {
     openapi: "3.0.2",
