@@ -21,6 +21,7 @@ import {
 } from "../../types";
 import { KeyOfType } from "../../util";
 import {
+  ComponentsObject,
   HeaderObject,
   HeaderParameterObject,
   OpenApiV3,
@@ -30,11 +31,15 @@ import {
   PathParameterObject,
   PathsObject,
   QueryParameterObject,
+  ReferenceObject,
   RequestBodyObject,
   ResponseObject,
-  ResponsesObject
+  ResponsesObject,
+  SchemaObject
 } from "./openapi3-schema";
 import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
+
+const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
 
 function generateOpenAPI3(contract: Contract): OpenApiV3 {
   const typeTable = TypeTable.fromArray(contract.types);
@@ -49,7 +54,26 @@ function generateOpenAPI3(contract: Contract): OpenApiV3 {
       contract.endpoints,
       typeTable,
       contract.config
-    )
+    ),
+    components: {
+      schemas: contractTypesToComponentsObjectSchemas(
+        contract.types,
+        typeTable
+      ),
+      securitySchemes: contract.security && {
+        [SECURITY_HEADER_SCHEME_NAME]: {
+          type: "apiKey",
+          in: "header",
+          name: contract.security.name,
+          description: contract.security.description
+        }
+      }
+    },
+    security: contract.security && [
+      {
+        [SECURITY_HEADER_SCHEME_NAME]: []
+      }
+    ]
   };
 
   return openapi;
@@ -258,6 +282,18 @@ function headerToHeaderObject(
     required: !header.optional,
     schema: typeToSchemaOrReferenceObject(header.type, typeTable)
   };
+}
+
+function contractTypesToComponentsObjectSchemas(
+  types: Contract["types"],
+  typeTable: TypeTable
+): ComponentsObject["schemas"] {
+  return types.reduce<{
+    [schema: string]: SchemaObject | ReferenceObject;
+  }>((acc, t) => {
+    acc[t.name] = typeToSchemaOrReferenceObject(t.type, typeTable);
+    return acc;
+  }, {});
 }
 
 function httpMethodToPathItemMethod(
