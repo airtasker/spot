@@ -6,6 +6,7 @@ import {
   areStringLiteralTypes,
   ArrayType,
   dereferenceType,
+  isNotNullType,
   isNullType,
   isObjectType,
   isReferenceType,
@@ -15,8 +16,7 @@ import {
   Type,
   TypeKind,
   TypeTable,
-  UnionType,
-  isNotNullType
+  UnionType
 } from "../../types";
 import {
   ArraySchemaObject,
