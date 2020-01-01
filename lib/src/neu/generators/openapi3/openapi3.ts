@@ -31,11 +31,9 @@ import {
   PathParameterObject,
   PathsObject,
   QueryParameterObject,
-  ReferenceObject,
   RequestBodyObject,
   ResponseObject,
-  ResponsesObject,
-  SchemaObject
+  ResponsesObject
 } from "./openapi3-schema";
 import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
 
@@ -288,9 +286,7 @@ function contractTypesToComponentsObjectSchemas(
   types: Contract["types"],
   typeTable: TypeTable
 ): ComponentsObject["schemas"] {
-  return types.reduce<{
-    [schema: string]: SchemaObject | ReferenceObject;
-  }>((acc, t) => {
+  return types.reduce<Required<ComponentsObject>["schemas"]>((acc, t) => {
     acc[t.name] = typeToSchemaOrReferenceObject(t.type, typeTable);
     return acc;
   }, {});
