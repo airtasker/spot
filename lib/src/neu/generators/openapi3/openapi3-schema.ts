@@ -128,12 +128,10 @@ export interface RequestBodyObject {
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#mediaTypeObject
-export interface MediaTypeObject {
+export type MediaTypeObject = {
   schema?: SchemaObject | ReferenceObject;
-  example?: any;
-  examples?: { [example: string]: ExampleObject | ReferenceObject };
   encoding?: { [encoding: string]: EncodingObject };
-}
+} & MutuallyExclusiveExample;
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#schemaObject
 export type SchemaObject =
@@ -360,12 +358,22 @@ export interface XmlObject {
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#exampleObject
-export interface ExampleObject {
+export type ExampleObject = {
   summary?: string;
   description?: string;
   value?: any;
   externalValue?: string;
-}
+} & MutuallyExclusiveExampleObjectValue;
+
+type MutuallyExclusiveExampleObjectValue =
+  | {
+      value: any;
+      externalValue?: never;
+    }
+  | {
+      value?: never;
+      externalValue: string;
+    };
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#encoding-object
 export interface EncodingObject {
@@ -396,33 +404,33 @@ export type ParameterObject =
   | PathParameterObject
   | CookieParameterObject;
 
-export interface QueryParameterObject extends ParameterObjectBase {
+export type QueryParameterObject = ParameterObjectBase & {
   in: "query";
   allowEmptyValue?: boolean;
   style?: "form" | "spaceDelimited" | "pipeDelimited" | "deepObject";
   allowReserved?: boolean;
-}
+};
 
-export interface HeaderParameterObject extends ParameterObjectBase {
+export type HeaderParameterObject = ParameterObjectBase & {
   in: "header";
   style?: "simple";
-}
+};
 
-export interface PathParameterObject extends ParameterObjectBase {
+export type PathParameterObject = ParameterObjectBase & {
   in: "path";
   required: true;
   style?: "simple" | "label" | "matrix";
-}
+};
 
-export interface CookieParameterObject extends ParameterObjectBase {
+export type CookieParameterObject = ParameterObjectBase & {
   in: "cookie";
   style?: "form";
-}
+};
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#headerObject
 export type HeaderObject = Omit<HeaderParameterObject, "name" | "in">;
 
-interface ParameterObjectBase {
+type ParameterObjectBase = {
   name: string;
   in: "query" | "header" | "path" | "cookie";
   description?: string;
@@ -432,9 +440,7 @@ interface ParameterObjectBase {
   style?: ParameterStyle;
   explode?: boolean;
   schema?: SchemaObject | ReferenceObject;
-  example?: any;
-  examples?: { [example: string]: ExampleObject | ReferenceObject };
-}
+} & MutuallyExclusiveExample;
 
 type ParameterStyle =
   | "matrix"
@@ -450,14 +456,23 @@ export interface CallbackObject {
   [name: string]: PathItemObject;
 }
 
-export interface LinkObject {
-  operationRef?: string;
-  operationId?: string;
+// https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#linkObject
+type LinkObject = {
   parameters?: { [name: string]: any };
   requestBody?: any;
   description?: string;
   server?: ServerObject;
-}
+} & MutuallyExclusiveLinkObjectOperation;
+
+type MutuallyExclusiveLinkObjectOperation =
+  | {
+      operationRef: string;
+      operationId?: never;
+    }
+  | {
+      operationRef?: never;
+      operationId: string;
+    };
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#tagObject
 export interface TagObject {
@@ -471,3 +486,15 @@ export interface ExternalDocumentationObject {
   description?: string;
   url: string;
 }
+
+// Common
+
+type MutuallyExclusiveExample =
+  | {
+      example?: any;
+      examples?: never;
+    }
+  | {
+      example?: never;
+      examples?: { [example: string]: ExampleObject | ReferenceObject };
+    };
