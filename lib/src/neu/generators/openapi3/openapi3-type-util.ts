@@ -70,7 +70,7 @@ export function typeToSchemaOrReferenceObject(
     case TypeKind.UNION:
       return unionTypeToSchema(type, typeTable);
     case TypeKind.REFERENCE:
-      return referenceTypeToSchema(type);
+      return referenceTypeToSchema(type, nullable);
     default:
       assertNever(type);
   }
@@ -157,9 +157,15 @@ function objectTypeToSchema(
         )
       : undefined;
 
+  const required =
+    type.properties.length > 0
+      ? type.properties.filter(p => !p.optional).map(p => p.name)
+      : undefined;
+
   return {
     type: "object",
     properties,
+    required,
     nullable: nullable || undefined
   };
 }
