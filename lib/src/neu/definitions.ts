@@ -84,7 +84,7 @@ export interface Body {
 export type QueryParamArrayStrategy = "ampersand" | "comma";
 
 /** Supported HTTP methods */
-export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+export type HttpMethod = "HEAD" | "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 /** Type guards */
 export function isSpecificResponse(
