@@ -29,7 +29,7 @@ import {
   ReferenceObject,
   SchemaObject,
   StringSchemaObject
-} from "./openapi3-schema";
+} from "./openapi3-specification";
 
 export function typeToSchemaOrReferenceObject(
   type: Type,

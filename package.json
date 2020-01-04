@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
+    "@stoplight/spectral": "^5.0.0",
     "@types/chai": "^4",
     "@types/fs-extra": "^8.0.1",
     "@types/inquirer": "^6.5.0",

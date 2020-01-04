@@ -34,7 +34,7 @@ import {
   RequestBodyObject,
   ResponseObject,
   ResponsesObject
-} from "./openapi3-schema";
+} from "./openapi3-specification";
 import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
 
 const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
@@ -53,20 +53,7 @@ export function generateOpenAPI3(contract: Contract): OpenApiV3 {
       typeTable,
       contract.config
     ),
-    components: {
-      schemas: contractTypesToComponentsObjectSchemas(
-        contract.types,
-        typeTable
-      ),
-      securitySchemes: contract.security && {
-        [SECURITY_HEADER_SCHEME_NAME]: {
-          type: "apiKey",
-          in: "header",
-          name: contract.security.name,
-          description: contract.security.description
-        }
-      }
-    },
+    components: contractToComponentsObject(contract, typeTable),
     security: contract.security && [
       {
         [SECURITY_HEADER_SCHEME_NAME]: []
@@ -77,15 +64,45 @@ export function generateOpenAPI3(contract: Contract): OpenApiV3 {
   return openapi;
 }
 
+function contractToComponentsObject(
+  contract: Contract,
+  typeTable: TypeTable
+): ComponentsObject | undefined {
+  if (contract.types.length === 0 && contract.security === undefined) {
+    return undefined;
+  }
+
+  return {
+    schemas:
+      contract.types.length > 0
+        ? contractTypesToComponentsObjectSchemas(contract.types, typeTable)
+        : undefined,
+    securitySchemes: contract.security && {
+      [SECURITY_HEADER_SCHEME_NAME]: {
+        type: "apiKey",
+        in: "header",
+        name: contract.security.name,
+        description: contract.security.description
+      }
+    }
+  };
+}
+
 function endpointsToPathsObject(
   endpoints: Endpoint[],
   typeTable: TypeTable,
   config: Config
 ): PathsObject {
   return endpoints.reduce<PathsObject>((acc, endpoint) => {
-    acc[endpoint.path] = acc[endpoint.path] || {};
+    const pathName = endpoint.path
+      .split("/")
+      .map(component =>
+        component.startsWith(":") ? `{${component.slice(1)}}` : component
+      )
+      .join("/");
+    acc[pathName] = acc[pathName] || {};
     const pathItemMethod = httpMethodToPathItemMethod(endpoint.method);
-    acc[endpoint.path][pathItemMethod] = endpointToOperationObject(
+    acc[pathName][pathItemMethod] = endpointToOperationObject(
       endpoint,
       typeTable,
       config
@@ -103,7 +120,7 @@ function endpointToOperationObject(
   const endpointRequestBody = endpointRequest && endpointRequest.body;
 
   return {
-    tags: endpoint.tags,
+    tags: endpoint.tags.length > 0 ? endpoint.tags : undefined,
     description: endpoint.description,
     operationId: endpoint.name,
     parameters:

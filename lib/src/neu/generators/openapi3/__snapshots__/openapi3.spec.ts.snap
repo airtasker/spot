@@ -1,37 +1,301 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OpenAPI 3 generator produces valid code 1`] = `
+exports[`OpenAPI 3 generator HTTP verbs DELETE endpoint 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",
   \\"info\\": {
     \\"title\\": \\"contract\\",
-    \\"description\\": \\"contract description\\",
     \\"version\\": \\"0.0.0\\"
   },
   \\"paths\\": {
-    \\"/path/:param/nest\\": {
-      \\"get\\": {
-        \\"tags\\": [],
-        \\"operationId\\": \\"GetEndpoint\\",
+    \\"/users/{id}\\": {
+      \\"delete\\": {
+        \\"operationId\\": \\"DeleteEndpoint\\",
         \\"parameters\\": [
           {
-            \\"name\\": \\"param\\",
+            \\"name\\": \\"id\\",
             \\"in\\": \\"path\\",
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\"
             }
-          },
+          }
+        ],
+        \\"responses\\": {
+          \\"204\\": {
+            \\"description\\": \\"204 response\\"
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator HTTP verbs GET endpoint 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"GetEndpoint\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator HTTP verbs PATCH endpoint 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users/{id}\\": {
+      \\"patch\\": {
+        \\"operationId\\": \\"PatchEndpoint\\",
+        \\"parameters\\": [
           {
-            \\"name\\": \\"param\\",
-            \\"in\\": \\"query\\",
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
             \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"requestBody\\": {
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"name\\"
+                ]
+              }
+            }
+          },
+          \\"required\\": true
+        },
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\",
+                    \\"name\\"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator HTTP verbs POST endpoint 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"PostEndpoint\\",
+        \\"parameters\\": [],
+        \\"requestBody\\": {
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"name\\"
+                ]
+              }
+            }
+          },
+          \\"required\\": true
+        },
+        \\"responses\\": {
+          \\"201\\": {
+            \\"description\\": \\"201 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\",
+                    \\"name\\"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator HTTP verbs PUT endpoint 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users/{id}\\": {
+      \\"put\\": {
+        \\"operationId\\": \\"PutEndpoint\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"requestBody\\": {
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"name\\"
+                ]
+              }
+            }
+          },
+          \\"required\\": true
+        },
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\",
+                    \\"name\\"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator headers endpoint with request headers 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithRequestHeaders\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"Accept-Encoding\\",
+            \\"in\\": \\"header\\",
+            \\"required\\": false,
             \\"schema\\": {
               \\"type\\": \\"string\\"
             }
           },
           {
-            \\"name\\": \\"header\\",
+            \\"name\\": \\"Accept-Language\\",
             \\"in\\": \\"header\\",
             \\"required\\": true,
             \\"schema\\": {
@@ -42,8 +306,77 @@ exports[`OpenAPI 3 generator produces valid code 1`] = `
         \\"responses\\": {
           \\"200\\": {
             \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator headers endpoint with response headers 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"EndpointWithResponseHeaders\\",
+        \\"parameters\\": [],
+        \\"requestBody\\": {
+          \\"content\\": {
+            \\"application/json\\": {
+              \\"schema\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"name\\"
+                ]
+              }
+            }
+          },
+          \\"required\\": true
+        },
+        \\"responses\\": {
+          \\"201\\": {
+            \\"description\\": \\"201 response\\",
             \\"headers\\": {
-              \\"responseHeader\\": {
+              \\"Link\\": {
+                \\"required\\": false,
+                \\"schema\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"Location\\": {
                 \\"required\\": true,
                 \\"schema\\": {
                   \\"type\\": \\"string\\"
@@ -53,7 +386,342 @@ exports[`OpenAPI 3 generator produces valid code 1`] = `
             \\"content\\": {
               \\"application/json\\": {
                 \\"schema\\": {
-                  \\"$ref\\": \\"#/components/schemas/SuccessBody\\"
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\",
+                    \\"name\\"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator minimal contract produces minimal OpenAPI 3 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {}
+}"
+`;
+
+exports[`OpenAPI 3 generator path params endpoint with path params 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/companies/{companyId}/users/{userId}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithPathParams\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"companyId\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          },
+          {
+            \\"name\\": \\"userId\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\",
+                    \\"name\\"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator query params endpoint with array query param 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/companies\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"countries\\",
+            \\"in\\": \\"query\\",
+            \\"style\\": \\"form\\",
+            \\"explode\\": true,
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"string\\"
+              }
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator query params endpoint with array query param and comma serialization strategy 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/companies\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"countries\\",
+            \\"in\\": \\"query\\",
+            \\"style\\": \\"form\\",
+            \\"explode\\": false,
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"string\\"
+              }
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator query params endpoint with query params 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/companies\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithQueryParams\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"country\\",
+            \\"in\\": \\"query\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          },
+          {
+            \\"name\\": \\"postcode\\",
+            \\"in\\": \\"query\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator responses endpoint specific and default responses 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users/{id}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithResponses\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\",
+                    \\"name\\"
+                  ]
+                }
+              }
+            }
+          },
+          \\"404\\": {
+            \\"description\\": \\"404 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"message\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"status\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"message\\",
+                    \\"status\\"
+                  ]
                 }
               }
             }
@@ -63,7 +731,59 @@ exports[`OpenAPI 3 generator produces valid code 1`] = `
             \\"content\\": {
               \\"application/json\\": {
                 \\"schema\\": {
-                  \\"$ref\\": \\"#/components/schemas/DefaultBody\\"
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"message\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"message\\"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3 generator security contract with security header 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"GetEndpoint\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
                 }
               }
             }
@@ -73,24 +793,6 @@ exports[`OpenAPI 3 generator produces valid code 1`] = `
     }
   },
   \\"components\\": {
-    \\"schemas\\": {
-      \\"DefaultBody\\": {
-        \\"type\\": \\"object\\",
-        \\"properties\\": {
-          \\"message\\": {
-            \\"type\\": \\"string\\"
-          }
-        }
-      },
-      \\"SuccessBody\\": {
-        \\"type\\": \\"object\\",
-        \\"properties\\": {
-          \\"message\\": {
-            \\"type\\": \\"string\\"
-          }
-        }
-      }
-    },
     \\"securitySchemes\\": {
       \\"SecurityHeader\\": {
         \\"type\\": \\"apiKey\\",
