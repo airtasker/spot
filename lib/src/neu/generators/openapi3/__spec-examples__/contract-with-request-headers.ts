@@ -2,10 +2,10 @@ import {
   api,
   body,
   endpoint,
+  headers,
   request,
   response,
-  String,
-  headers
+  String
 } from "@airtasker/spot";
 
 @api({ name: "contract" })

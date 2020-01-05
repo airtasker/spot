@@ -2,11 +2,11 @@ import {
   api,
   body,
   endpoint,
+  Int32,
   queryParams,
   request,
   response,
-  String,
-  Int32
+  String
 } from "@airtasker/spot";
 
 @api({ name: "contract" })

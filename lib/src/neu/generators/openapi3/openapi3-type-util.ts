@@ -316,7 +316,7 @@ function referenceObjectValue(referenceName: string): string {
 function createEnum<T>(
   values?: T[],
   nullable?: boolean
-): (T | null)[] | undefined {
+): Array<T | null> | undefined {
   if (!values) return;
   return nullable ? [...values, null] : values;
 }
