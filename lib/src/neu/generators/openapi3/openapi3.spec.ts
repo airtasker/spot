@@ -17,8 +17,8 @@ describe("OpenAPI 3 generator", () => {
     const result = generateOpenAPI3(contract);
 
     expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-    // const spectralResult = await spectral.run(result);
-    // expect(spectralResult).toHaveLength(0);
+    const spectralResult = await spectral.run(result);
+    expect(spectralResult).toHaveLength(0);
   });
 
   describe("security", () => {
