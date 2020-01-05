@@ -203,6 +203,38 @@ describe("OpenAPI 3 generator", () => {
       const spectralResult = await spectral.run(result);
       expect(spectralResult).toHaveLength(0);
     });
+
+    test("endpoint with object query param", async () => {
+      const contract = generateContract("contract-with-object-query-param.ts");
+      const result = generateOpenAPI3(contract);
+
+      expect(result.paths["/companies"].get).toHaveProperty("parameters", [
+        {
+          name: "pagination",
+          in: "query",
+          style: "deepObject",
+          explode: true,
+          required: true,
+          schema: {
+            type: "object",
+            properties: {
+              page: {
+                type: "integer",
+                format: "int32"
+              },
+              order: {
+                type: "string",
+                enum: ["desc", "asc"]
+              }
+            },
+            required: ["page", "order"]
+          }
+        }
+      ]);
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
   });
   describe("headers", () => {
     test("endpoint with request headers", async () => {

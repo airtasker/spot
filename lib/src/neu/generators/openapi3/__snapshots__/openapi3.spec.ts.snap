@@ -598,6 +598,79 @@ exports[`OpenAPI 3 generator query params endpoint with array query param and co
 }"
 `;
 
+exports[`OpenAPI 3 generator query params endpoint with object query param 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/companies\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"pagination\\",
+            \\"in\\": \\"query\\",
+            \\"style\\": \\"deepObject\\",
+            \\"explode\\": true,
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"page\\": {
+                  \\"type\\": \\"integer\\",
+                  \\"format\\": \\"int32\\"
+                },
+                \\"order\\": {
+                  \\"type\\": \\"string\\",
+                  \\"enum\\": [
+                    \\"desc\\",
+                    \\"asc\\"
+                  ]
+                }
+              },
+              \\"required\\": [
+                \\"page\\",
+                \\"order\\"
+              ]
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3 generator query params endpoint with query params 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",
