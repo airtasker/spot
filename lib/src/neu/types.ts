@@ -271,7 +271,7 @@ export function isNullType(type: Type): type is NullType {
 export function isNotNullType<T extends Type>(
   type: T
 ): type is Exclude<T, NullType> {
-  return type.kind !== TypeKind.NULL;
+  return !isNullType(type);
 }
 
 export function isBooleanType(type: Type): type is BooleanType {
@@ -285,7 +285,7 @@ export function isBooleanLiteralType(type: Type): type is BooleanLiteralType {
 export function areBooleanLiteralTypes(
   types: Type[]
 ): types is BooleanLiteralType[] {
-  return types.every(isBooleanLiteralType);
+  return areTypes(types, isBooleanLiteralType);
 }
 
 export function isStringType(type: Type): type is StringType {
@@ -295,7 +295,7 @@ export function isStringType(type: Type): type is StringType {
 export function isNotStringType<T extends Type>(
   type: T
 ): type is Exclude<T, StringType> {
-  return type.kind !== TypeKind.STRING;
+  return !isStringType(type);
 }
 
 export function isStringLiteralType(type: Type): type is StringLiteralType {
@@ -305,7 +305,7 @@ export function isStringLiteralType(type: Type): type is StringLiteralType {
 export function areStringLiteralTypes(
   types: Type[]
 ): types is StringLiteralType[] {
-  return types.every(isStringLiteralType);
+  return areTypes(types, isStringLiteralType);
 }
 
 export function isFloatType(type: Type): type is FloatType {
@@ -323,7 +323,7 @@ export function isFloatLiteralType(type: Type): type is FloatLiteralType {
 export function areFloatLiteralTypes(
   types: Type[]
 ): types is FloatLiteralType[] {
-  return types.every(isFloatLiteralType);
+  return areTypes(types, isFloatLiteralType);
 }
 
 export function isInt32Type(type: Type): type is Int32Type {
@@ -339,7 +339,7 @@ export function isIntLiteralType(type: Type): type is IntLiteralType {
 }
 
 export function areIntLiteralTypes(types: Type[]): types is IntLiteralType[] {
-  return types.every(isIntLiteralType);
+  return areTypes(types, isIntLiteralType);
 }
 
 export function isDateType(type: Type): type is DateType {
@@ -399,6 +399,15 @@ export function isLiteralType(type: Type): type is LiteralType {
     isFloatLiteralType(type) ||
     isIntLiteralType(type)
   );
+}
+
+// Guard helpers
+
+function areTypes<T extends Type>(
+  types: Type[],
+  predicate: (type: Type) => type is T
+): types is T[] {
+  return types.every(predicate);
 }
 
 // Type helpers

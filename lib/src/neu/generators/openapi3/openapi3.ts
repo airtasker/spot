@@ -144,36 +144,32 @@ function endpointRequestToParameterObjects(
   typeTable: TypeTable,
   config: Config
 ): ParameterObject[] {
-  const pathParameters: PathParameterObject[] = request.pathParams.map(p => {
-    return {
-      name: p.name,
-      in: "path",
-      description: p.description,
-      required: true,
-      schema: typeToSchemaOrReferenceObject(p.type, typeTable)
-    };
-  });
+  const pathParameters: PathParameterObject[] = request.pathParams.map(p => ({
+    name: p.name,
+    in: "path",
+    description: p.description,
+    required: true,
+    schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+  }));
 
-  const queryParameters: QueryParameterObject[] = request.queryParams.map(p => {
-    return {
+  const queryParameters: QueryParameterObject[] = request.queryParams.map(
+    p => ({
       name: p.name,
       in: "query",
       description: p.description,
       ...typeToQueryParameterSerializationStrategy(p.type, typeTable, config),
       required: !p.optional,
       schema: typeToSchemaOrReferenceObject(p.type, typeTable)
-    };
-  });
+    })
+  );
 
-  const headerParameters: HeaderParameterObject[] = request.headers.map(p => {
-    return {
-      name: p.name,
-      in: "header",
-      description: p.description,
-      required: !p.optional,
-      schema: typeToSchemaOrReferenceObject(p.type, typeTable)
-    };
-  });
+  const headerParameters: HeaderParameterObject[] = request.headers.map(p => ({
+    name: p.name,
+    in: "header",
+    description: p.description,
+    required: !p.optional,
+    schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+  }));
 
   const parameters: ParameterObject[] = [];
 

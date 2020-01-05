@@ -82,9 +82,11 @@ function booleanSchema(
     nullable?: boolean;
   } = {}
 ): BooleanSchemaObject {
-  const enums =
-    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
-  return { type: "boolean", enum: enums, nullable: opts.nullable || undefined };
+  return {
+    type: "boolean",
+    enum: createEnum(opts.values, opts.nullable),
+    nullable: opts.nullable || undefined
+  };
 }
 
 function stringSchema(
@@ -94,11 +96,9 @@ function stringSchema(
     format?: StringSchemaObject["format"];
   } = {}
 ): StringSchemaObject {
-  const enums =
-    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
   return {
     type: "string",
-    enum: enums,
+    enum: createEnum(opts.values, opts.nullable),
     format: opts.format,
     nullable: opts.nullable || undefined
   };
@@ -111,11 +111,9 @@ function numberSchema(
     format?: NumberSchemaObject["format"];
   } = {}
 ): NumberSchemaObject {
-  const enums =
-    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
   return {
     type: "number",
-    enum: enums,
+    enum: createEnum(opts.values, opts.nullable),
     format: opts.format,
     nullable: opts.nullable || undefined
   };
@@ -128,11 +126,9 @@ function integerSchema(
     format?: IntegerSchemaObject["format"];
   } = {}
 ): IntegerSchemaObject {
-  const enums =
-    opts.values && (opts.nullable ? [...opts.values, null] : opts.values);
   return {
     type: "integer",
-    enum: enums,
+    enum: createEnum(opts.values, opts.nullable),
     format: opts.format,
     nullable: opts.nullable || undefined
   };
@@ -312,4 +308,15 @@ function referenceTypeToSchema(
 
 function referenceObjectValue(referenceName: string): string {
   return `#/components/schemas/${referenceName}`;
+}
+
+/**
+ * Enum generation helper
+ */
+function createEnum<T>(
+  values?: T[],
+  nullable?: boolean
+): (T | null)[] | undefined {
+  if (!values) return;
+  return nullable ? [...values, null] : values;
 }
