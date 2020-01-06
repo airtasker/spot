@@ -30,7 +30,7 @@ describe("has-request-payload linter rule", () => {
   });
 
   describe("HTTP POST", () => {
-    test("returns violations for endpoint with quey parameters", () => {
+    test("returns violations for endpoint with query parameters", () => {
       const file = createProjectFromExistingSourceFile(
         `${__dirname}/__spec-examples__/has-query-parameters/post-endpoint-with-query-parameters.ts`
       ).file;
@@ -56,7 +56,7 @@ describe("has-request-payload linter rule", () => {
   });
 
   describe("HTTP PUT", () => {
-    test("returns violations for endpoint with quey parameters", () => {
+    test("returns violations for endpoint with query parameters", () => {
       const file = createProjectFromExistingSourceFile(
         `${__dirname}/__spec-examples__/has-query-parameters/put-endpoint-with-query-parameters.ts`
       ).file;

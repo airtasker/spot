@@ -4,7 +4,7 @@ import { LintingRuleViolation } from "../rule";
 
 /**
  * Checks that endpoint request payload conform to HTTP method semantics:
- * - POST | PATCH | PUT requests MUST NOT contain query parameters
+ * - PATCH | PUT | POST requests MUST NOT contain query parameters
  *
  * @param contract a contract
  */
