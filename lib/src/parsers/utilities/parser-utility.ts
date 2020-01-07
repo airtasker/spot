@@ -26,7 +26,7 @@ import { Locatable } from "../../models/locatable";
 export function extractJsDocComment(node: JSDocableNode): string | undefined {
   const jsDocs = node.getJsDocs();
   if (jsDocs.length === 1) {
-    return jsDocs[0].getDescription();
+    return jsDocs[0].getDescription().trim();
   } else if (jsDocs.length > 1) {
     throw new Error(`expected 1 jsDoc node, got ${jsDocs.length}`);
   }
@@ -76,7 +76,7 @@ export function extractJsDocCommentLocatable(
   const jsDocs = node.getJsDocs();
   if (jsDocs.length === 1) {
     const jsDoc = jsDocs[0];
-    const value = jsDoc.getDescription();
+    const value = jsDoc.getDescription().trim();
     // value may be undefined for an empty comment
     if (value) {
       const location = jsDoc.getSourceFile().getFilePath();

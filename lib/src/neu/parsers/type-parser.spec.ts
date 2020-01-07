@@ -352,11 +352,11 @@ describe("type parser", () => {
     expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
       {
         kind: TypeKind.REFERENCE,
-        name: "Alias"
+        name: "AliasString"
       }
     );
     expect(typeTable.size).toBe(1);
-    expect(typeTable.getOrError("Alias")).toStrictEqual({
+    expect(typeTable.getOrError("AliasString")).toStrictEqual({
       kind: TypeKind.STRING
     });
   });

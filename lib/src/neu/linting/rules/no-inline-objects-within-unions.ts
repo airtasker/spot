@@ -2,7 +2,7 @@ import assertNever from "assert-never";
 import { Contract } from "../../definitions";
 import {
   dereferenceType,
-  isNullType,
+  isNotNullType,
   isObjectType,
   possibleRootTypes,
   Type,
@@ -165,16 +165,14 @@ function findInlineObjectInUnionViolations(
 
       // Get concrete types excluding null
       const concreteTypes = possibleRootTypes(type, typeTable);
-      const concreteTypesExcludingNull = concreteTypes.filter(
-        t => !isNullType(t)
-      );
+      const concreteTypesExcludingNull = concreteTypes.filter(isNotNullType);
 
       // Union of 2 types with null is valid
       if (concreteTypesExcludingNull.length === 1) {
         return violationsInUnionTypes;
       }
 
-      return type.types.some(t => isObjectType(t))
+      return type.types.some(isObjectType)
         ? violationsInUnionTypes.concat(typePath.join("/"))
         : violationsInUnionTypes;
     case TypeKind.REFERENCE:

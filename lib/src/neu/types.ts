@@ -51,6 +51,12 @@ export type PrimitiveType = Exclude<
   ObjectType | ArrayType | UnionType | ReferenceType
 >;
 
+export type LiteralType =
+  | BooleanLiteralType
+  | StringLiteralType
+  | FloatLiteralType
+  | IntLiteralType;
+
 export interface NullType {
   kind: TypeKind.NULL;
 }
@@ -262,6 +268,12 @@ export function isNullType(type: Type): type is NullType {
   return type.kind === TypeKind.NULL;
 }
 
+export function isNotNullType<T extends Type>(
+  type: T
+): type is Exclude<T, NullType> {
+  return !isNullType(type);
+}
+
 export function isBooleanType(type: Type): type is BooleanType {
   return type.kind === TypeKind.BOOLEAN;
 }
@@ -270,12 +282,30 @@ export function isBooleanLiteralType(type: Type): type is BooleanLiteralType {
   return type.kind === TypeKind.BOOLEAN_LITERAL;
 }
 
+export function areBooleanLiteralTypes(
+  types: Type[]
+): types is BooleanLiteralType[] {
+  return areTypes(types, isBooleanLiteralType);
+}
+
 export function isStringType(type: Type): type is StringType {
   return type.kind === TypeKind.STRING;
 }
 
+export function isNotStringType<T extends Type>(
+  type: T
+): type is Exclude<T, StringType> {
+  return !isStringType(type);
+}
+
 export function isStringLiteralType(type: Type): type is StringLiteralType {
   return type.kind === TypeKind.STRING_LITERAL;
+}
+
+export function areStringLiteralTypes(
+  types: Type[]
+): types is StringLiteralType[] {
+  return areTypes(types, isStringLiteralType);
 }
 
 export function isFloatType(type: Type): type is FloatType {
@@ -290,6 +320,12 @@ export function isFloatLiteralType(type: Type): type is FloatLiteralType {
   return type.kind === TypeKind.FLOAT_LITERAL;
 }
 
+export function areFloatLiteralTypes(
+  types: Type[]
+): types is FloatLiteralType[] {
+  return areTypes(types, isFloatLiteralType);
+}
+
 export function isInt32Type(type: Type): type is Int32Type {
   return type.kind === TypeKind.INT32;
 }
@@ -300,6 +336,10 @@ export function isInt64Type(type: Type): type is Int64Type {
 
 export function isIntLiteralType(type: Type): type is IntLiteralType {
   return type.kind === TypeKind.INT_LITERAL;
+}
+
+export function areIntLiteralTypes(types: Type[]): types is IntLiteralType[] {
+  return areTypes(types, isIntLiteralType);
 }
 
 export function isDateType(type: Type): type is DateType {
@@ -352,6 +392,24 @@ export function isPrimitiveType(type: Type): type is PrimitiveType {
   }
 }
 
+export function isLiteralType(type: Type): type is LiteralType {
+  return (
+    isBooleanLiteralType(type) ||
+    isStringLiteralType(type) ||
+    isFloatLiteralType(type) ||
+    isIntLiteralType(type)
+  );
+}
+
+// Guard helpers
+
+function areTypes<T extends Type>(
+  types: Type[],
+  predicate: (type: Type) => type is T
+): types is T[] {
+  return types.every(predicate);
+}
+
 // Type helpers
 
 export function possibleRootTypes(
@@ -394,7 +452,7 @@ export function inferDiscriminator(
     .reduce<ConcreteType[]>((acc, type) => {
       return acc.concat(...possibleRootTypes(type, typeTable));
     }, [])
-    .filter(t => !isNullType(t));
+    .filter(isNotNullType);
 
   const possibleDiscriminators = new Map<
     string,

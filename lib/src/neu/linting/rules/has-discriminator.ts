@@ -2,7 +2,7 @@ import assertNever from "assert-never";
 import { Contract } from "../../definitions";
 import {
   dereferenceType,
-  isNullType,
+  isNotNullType,
   isPrimitiveType,
   possibleRootTypes,
   Type,
@@ -152,9 +152,7 @@ function findDisriminatorViolations(
 
       // Get concrete types excluding null
       const concreteTypes = possibleRootTypes(type, typeTable);
-      const concreteTypesExcludingNull = concreteTypes.filter(
-        t => !isNullType(t)
-      );
+      const concreteTypesExcludingNull = concreteTypes.filter(isNotNullType);
 
       // Union of 2 types with null is valid
       if (concreteTypesExcludingNull.length === 1) {

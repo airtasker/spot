@@ -69,7 +69,7 @@ function extractPathParam(
   const type = typeResult.unwrap();
 
   const pDescription = getJsDoc(propertySignature);
-  const description = pDescription && pDescription.getDescription();
+  const description = pDescription && pDescription.getDescription().trim();
 
   return ok({ name, type, description });
 }
