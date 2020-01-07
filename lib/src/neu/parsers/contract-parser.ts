@@ -57,7 +57,7 @@ export function parseContract(
 
   // Handle description
   const descriptionDoc = getJsDoc(klass);
-  const description = descriptionDoc && descriptionDoc.getDescription();
+  const description = descriptionDoc && descriptionDoc.getDescription().trim();
 
   // Handle config
   const configResult = resolveConfig(klass);

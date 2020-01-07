@@ -340,7 +340,7 @@ function parseObjectLiteralType(
 
     const prop = {
       name: getPropertyName(ps),
-      description: psDescription && psDescription.getDescription(),
+      description: psDescription && psDescription.getDescription().trim(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };
@@ -399,7 +399,7 @@ function parseInterfaceDeclaration(
 
     const prop = {
       name: getPropertyName(ps),
-      description: psDescription && psDescription.getDescription(),
+      description: psDescription && psDescription.getDescription().trim(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };

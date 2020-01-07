@@ -124,7 +124,7 @@ export interface ReferenceObject {
 export interface RequestBodyObject {
   description?: string;
   content: { [mediaType: string]: MediaTypeObject };
-  required: boolean;
+  required?: boolean;
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#mediaTypeObject
