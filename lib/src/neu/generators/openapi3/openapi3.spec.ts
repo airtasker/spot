@@ -3,9 +3,6 @@ import { createProjectFromExistingSourceFile } from "../../../spec-helpers/helpe
 import { Contract } from "../../definitions";
 import { parseContract } from "../../parsers/contract-parser";
 import { generateOpenAPI3 } from "./openapi3";
-import { openApiV3 } from "../../../generators/contract/openapi3";
-import { parse } from "../../../parsers/parser";
-import { cleanse } from "../../../cleansers/cleanser";
 
 describe("OpenAPI 3 generator", () => {
   const spectral = new Spectral();
@@ -23,28 +20,6 @@ describe("OpenAPI 3 generator", () => {
     const spectralResult = await spectral.run(result);
     expect(spectralResult).toHaveLength(0);
   });
-
-  // test("cool test", async () => {
-  //   const file = createProjectFromExistingSourceFile(
-  //     `${__dirname}/../../../../../../rails-monolith/spots/api.ts`
-  //   ).file;
-
-  //   const { contract } = parseContract(file).unwrapOrThrow();
-  //   const result = generateOpenAPI3(contract);
-
-  //   // console.log(result.paths["/checkouts"])
-
-  //   const contractNode = await parse(
-  //     `${__dirname}/../../../../../../rails-monolith/spots/api.ts`
-  //   );
-  //   const contractDefinition = cleanse(contractNode);
-
-  //   const oldResult = openApiV3(contractDefinition)
-
-  //   // console.log(oldResult.paths["/checkouts"])
-
-  //   expect(JSON.parse(JSON.stringify(result, null, 2))).toEqual(JSON.parse(JSON.stringify(oldResult, null, 2)))
-  // })
 
   describe("security", () => {
     test("contract with security header", async () => {

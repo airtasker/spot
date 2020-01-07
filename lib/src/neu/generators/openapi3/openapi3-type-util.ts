@@ -153,8 +153,11 @@ function objectTypeToSchema(
         )
       : undefined;
 
-  const requiredProperties = type.properties.filter(p => !p.optional).map(p => p.name)
-  const required = requiredProperties.length > 0 ? requiredProperties : undefined
+  const requiredProperties = type.properties
+    .filter(p => !p.optional)
+    .map(p => p.name);
+  const required =
+    requiredProperties.length > 0 ? requiredProperties : undefined;
 
   return {
     type: "object",
