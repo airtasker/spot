@@ -1,0 +1,798 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 2 generator HTTP verbs DELETE endpoint 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users/{id}\\": {
+      \\"delete\\": {
+        \\"operationId\\": \\"DeleteEndpoint\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          }
+        ],
+        \\"responses\\": {
+          \\"204\\": {
+            \\"description\\": \\"204 response\\"
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator HTTP verbs GET endpoint 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"GetEndpoint\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"id\\",
+                  \\"name\\"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator HTTP verbs PATCH endpoint 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users/{id}\\": {
+      \\"patch\\": {
+        \\"operationId\\": \\"PatchEndpoint\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          },
+          {
+            \\"in\\": \\"body\\",
+            \\"name\\": \\"Body\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"name\\"
+              ]
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"id\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"id\\",
+                \\"name\\"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator HTTP verbs POST endpoint 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"PostEndpoint\\",
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"body\\",
+            \\"name\\": \\"Body\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"name\\"
+              ]
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"201\\": {
+            \\"description\\": \\"201 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"id\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"id\\",
+                \\"name\\"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator HTTP verbs PUT endpoint 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users/{id}\\": {
+      \\"put\\": {
+        \\"operationId\\": \\"PutEndpoint\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          },
+          {
+            \\"in\\": \\"body\\",
+            \\"name\\": \\"Body\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"name\\"
+              ]
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"id\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"id\\",
+                \\"name\\"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator headers endpoint with request headers 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithRequestHeaders\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"Accept-Encoding\\",
+            \\"in\\": \\"header\\",
+            \\"required\\": false,
+            \\"type\\": \\"string\\"
+          },
+          {
+            \\"name\\": \\"Accept-Language\\",
+            \\"in\\": \\"header\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"id\\",
+                  \\"name\\"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator headers endpoint with response headers 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"post\\": {
+        \\"operationId\\": \\"EndpointWithResponseHeaders\\",
+        \\"parameters\\": [
+          {
+            \\"in\\": \\"body\\",
+            \\"name\\": \\"Body\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"name\\"
+              ]
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"201\\": {
+            \\"description\\": \\"201 response\\",
+            \\"headers\\": {
+              \\"Link\\": {
+                \\"type\\": \\"string\\"
+              },
+              \\"Location\\": {
+                \\"type\\": \\"string\\"
+              }
+            },
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"id\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"id\\",
+                \\"name\\"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator minimal contract produces minimal OpenAPI 2 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {}
+}"
+`;
+
+exports[`OpenAPI 2 generator path params endpoint with path params 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/companies/{companyId}/users/{userId}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithPathParams\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"companyId\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          },
+          {
+            \\"name\\": \\"userId\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"id\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"id\\",
+                \\"name\\"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator query params endpoint with array query param 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/companies\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"countries\\",
+            \\"in\\": \\"query\\",
+            \\"required\\": true,
+            \\"type\\": \\"array\\",
+            \\"collectionFormat\\": \\"multi\\",
+            \\"items\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"id\\",
+                  \\"name\\"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator query params endpoint with array query param and comma serialization strategy 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/companies\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"countries\\",
+            \\"in\\": \\"query\\",
+            \\"required\\": true,
+            \\"type\\": \\"array\\",
+            \\"collectionFormat\\": \\"csv\\",
+            \\"items\\": {
+              \\"type\\": \\"string\\"
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"id\\",
+                  \\"name\\"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator query params endpoint with query params 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/companies\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithQueryParams\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"country\\",
+            \\"in\\": \\"query\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          },
+          {
+            \\"name\\": \\"postcode\\",
+            \\"in\\": \\"query\\",
+            \\"required\\": false,
+            \\"type\\": \\"string\\"
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"id\\",
+                  \\"name\\"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator responses endpoint specific and default responses 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users/{id}\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithResponses\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\"
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"id\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"id\\",
+                \\"name\\"
+              ]
+            }
+          },
+          \\"404\\": {
+            \\"description\\": \\"404 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"message\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"status\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"message\\",
+                \\"status\\"
+              ]
+            }
+          },
+          \\"default\\": {
+            \\"description\\": \\"default response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"message\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"message\\"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 2 generator security contract with security header 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"GetEndpoint\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"id\\",
+                  \\"name\\"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"securityDefinitions\\": {
+    \\"SecurityHeader\\": {
+      \\"type\\": \\"apiKey\\",
+      \\"in\\": \\"header\\",
+      \\"name\\": \\"security-header\\"
+    }
+  },
+  \\"security\\": [
+    {
+      \\"SecurityHeader\\": []
+    }
+  ]
+}"
+`;
