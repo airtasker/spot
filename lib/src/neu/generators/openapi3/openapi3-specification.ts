@@ -66,7 +66,7 @@ export interface PathItemObject {
   patch?: OperationObject;
   trace?: OperationObject;
   servers?: ServerObject[];
-  parameters: Array<ParameterObject | ReferenceObject>;
+  parameters?: Array<ParameterObject | ReferenceObject>;
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#operationObject
@@ -238,6 +238,7 @@ export interface AnySchemaObject extends SchemaObjectBase {
 
 export interface AllOfSchemaObject extends SchemaObjectBase {
   allOf: Array<SchemaObject | ReferenceObject>;
+  discriminator?: DiscriminatorObject;
 }
 
 export interface OneOfSchemaObject extends SchemaObjectBase {
