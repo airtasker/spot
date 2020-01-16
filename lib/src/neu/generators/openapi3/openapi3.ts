@@ -100,7 +100,9 @@ function endpointsToPathsObject(
         component.startsWith(":") ? `{${component.slice(1)}}` : component
       )
       .join("/");
-    acc[pathName] = acc[pathName] || {};
+
+    // Note: acc[pathName] || {} breaks type safety, ternary operation is type safe
+    acc[pathName] = acc[pathName] ? acc[pathName] : {};
     const pathItemMethod = httpMethodToPathItemMethod(endpoint.method);
     acc[pathName][pathItemMethod] = endpointToOperationObject(
       endpoint,
