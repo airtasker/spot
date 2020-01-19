@@ -59,7 +59,11 @@ export function parseType(
 ): Result<Type, ParserError> {
   // Type references must be parsed first to ensure internal type aliases are handled
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
-    if (typeNode.getType().isArray()) {
+    if (
+      typeNode.getType().isArray() &&
+      typeNode.getTypeArguments().length > 0
+    ) {
+      // TypeScript forbids use of Array constructor without at least one type argument
       return parseArrayConstructorType(typeNode, typeTable, lociTable);
     }
     return parseTypeReference(typeNode, typeTable, lociTable);

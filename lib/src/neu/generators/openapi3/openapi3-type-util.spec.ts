@@ -673,13 +673,13 @@ describe("OpenAPI 3 type util", () => {
         });
       });
 
-      test("CustomType | string", () => {
+      test("CustomType | boolean", () => {
         const typeTable = new TypeTable();
         typeTable.add("CustomType", stringType());
 
         const result = typeToSchemaOrReferenceObject(
           unionType([referenceType("CustomType"), booleanType()]),
-          new TypeTable()
+          typeTable
         );
         expect(result).toEqual({
           oneOf: [
