@@ -401,6 +401,12 @@ export function isLiteralType(type: Type): type is LiteralType {
   );
 }
 
+export function isNotLiteralType<T extends Type>(
+  type: T
+): type is Exclude<T, LiteralType> {
+  return !isLiteralType(type);
+}
+
 // Guard helpers
 
 function areTypes<T extends Type>(

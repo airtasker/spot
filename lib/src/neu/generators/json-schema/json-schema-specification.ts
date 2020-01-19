@@ -66,6 +66,7 @@ export interface JsonSchemaInteger {
 export interface JsonSchemaBoolean {
   type: "boolean";
   const?: boolean;
+  enum?: boolean[];
 }
 
 export interface JsonSchemaTypeReference {
