@@ -252,8 +252,10 @@ describe("type parser", () => {
     );
   });
 
-  test("parses complex Array", () => {
-    const type = interphace.getPropertyOrThrow("Array").getTypeNodeOrThrow();
+  test("parses Array constructor", () => {
+    const type = interphace
+      .getPropertyOrThrow("arrayConstructor")
+      .getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
       {
@@ -346,8 +348,10 @@ describe("type parser", () => {
     );
   });
 
-  test("parses type aliases", () => {
-    const type = interphace.getPropertyOrThrow("alias").getTypeNodeOrThrow();
+  test("parses basic type aliases", () => {
+    const type = interphace
+      .getPropertyOrThrow("aliasString")
+      .getTypeNodeOrThrow();
 
     expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
       {
@@ -358,6 +362,26 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasString")).toStrictEqual({
       kind: TypeKind.STRING
+    });
+  });
+
+  test("parses array type aliases", () => {
+    const type = interphace
+      .getPropertyOrThrow("aliasArray")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.REFERENCE,
+        name: "AliasArray"
+      }
+    );
+    expect(typeTable.size).toBe(1);
+    expect(typeTable.getOrError("AliasArray")).toStrictEqual({
+      kind: TypeKind.ARRAY,
+      elementType: {
+        kind: TypeKind.STRING
+      }
     });
   });
 

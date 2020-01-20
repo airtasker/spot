@@ -34,14 +34,15 @@ interface TypeInterface {
     propertyB?: boolean;
   };
   array: boolean[];
-  Array: Array<{ a: boolean }>;
+  arrayConstructor: Array<{ a: boolean }>;
   union: boolean | Date | null;
   unionDiscriminated: DiscriminatedUnionElementA | DiscriminatedUnionElementB;
   unionDiscriminatedNullable:
     | DiscriminatedUnionElementA
     | DiscriminatedUnionElementB
     | null;
-  alias: AliasString;
+  aliasString: AliasString;
+  aliasArray: AliasArray;
   interface: Interface;
   interfaceExtends: InterfaceExtends;
   indexedAccess: IndexedAccess["root"];
@@ -66,6 +67,8 @@ interface DiscriminatedUnionElementB {
 }
 
 type AliasString = string;
+
+type AliasArray = string[];
 
 interface Interface {
   interfaceProperty: boolean;
