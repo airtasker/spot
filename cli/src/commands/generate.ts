@@ -1,14 +1,14 @@
 import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
+import YAML from "js-yaml";
 import sortBy from "lodash/sortBy";
 import path from "path";
-import { generateJsonSchema } from "../../../lib/src/generators/contract/json-schema";
-import { generateOpenApiV2 } from "../../../lib/src/generators/contract/openapi2";
-import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
 import { outputFile } from "../../../lib/src/io/output";
-import { ContractDefinition } from "../../../lib/src/models/definitions";
+import { Contract } from "../../../lib/src/neu/definitions";
+import { generateJsonSchema } from "../../../lib/src/neu/generators/json-schema/json-schema";
+import { generateOpenAPI2 } from "../../../lib/src/neu/generators/openapi2/openapi2";
+import { generateOpenAPI3 } from "../../../lib/src/neu/generators/openapi3/openapi3";
 import { parse } from "../../../lib/src/neu/parser";
-import { safeParse } from "../common/safe-parse";
 
 export default class Generate extends Command {
   static description =
@@ -44,6 +44,7 @@ export default class Generate extends Command {
     // tslint:disable-next-line:prefer-const
     let { contract: contractPath, language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
+
     if (!generator) {
       generator = (
         await prompt<{
@@ -51,16 +52,22 @@ export default class Generate extends Command {
         }>({
           name: "Generator",
           type: "list",
-          choices: sortBy(Object.keys(generators))
+          choices: sortBy(availableGenerators())
         })
       ).Generator;
     }
-    if (!generators[generator]) {
+
+    if (!availableGenerators().includes(generator)) {
+      const generatorList = availableGenerators()
+        .map(g => `- ${g}`)
+        .join("\n");
+
       this.error(
-        `No such generator ${generator}. Available generators:\n${availableGeneratorsList()}`
+        `No such generator ${generator}. Available generators:\n${generatorList}`,
+        { exit: 1 }
       );
-      this.exit(1);
     }
+
     if (!language) {
       language = (
         await prompt<{
@@ -68,10 +75,22 @@ export default class Generate extends Command {
         }>({
           name: "Language",
           type: "list",
-          choices: sortBy(Object.keys(generators[generator]))
+          choices: sortBy(availableFormats(generator))
         })
       ).Language;
     }
+
+    if (!availableFormats(generator).includes(language)) {
+      const formatsList = availableFormats(generator)
+        .map(f => `- ${f}`)
+        .join("\n");
+
+      this.error(
+        `Language ${language} is unsupported for the generator ${generator}. Supported languages:\n${formatsList}`,
+        { exit: 1 }
+      );
+    }
+
     if (!outDir) {
       outDir = (
         await prompt<{
@@ -82,93 +101,85 @@ export default class Generate extends Command {
         })
       )["Output destination"];
     }
-    if (!generators[generator][language]) {
-      const otherGenerators = Object.entries(generators)
-        .filter(([name, languages]) => language! in languages)
-        .map(([name, languages]) => name);
-      if (otherGenerators.length === 0) {
-        this.error(
-          `${language} is not supported by any generator. Available generators:\n${availableGeneratorsList()}`
-        );
-      } else {
-        this.error(
-          `${language} is not a supported language for this generator.\n\nThe generator ${generator} supports the following languages:\n${Object.keys(
-            generators[generator]
-          )
-            .map(name => `- ${name}`)
-            .join(
-              "\n"
-            )}\n\nOther generators that produce ${language} are available: ${otherGenerators.join(
-            ", "
-          )}`
-        );
-      }
-      this.exit(1);
-    }
 
-    const generatedFiles =
-      generator === "raw"
-        ? { "*.json": JSON.stringify(parse(contractPath)) }
-        : generators[generator][language](
-            safeParse.call(this, contractPath).definition
-          );
-    for (let [relativePath, content] of Object.entries(generatedFiles)) {
-      if (relativePath.indexOf("*") !== -1) {
-        relativePath = relativePath.replace(/\*/g, contractFilename);
-      }
-      outputFile(outDir, relativePath, content);
-    }
-    this.log(`Generated the following files:`);
-    Object.keys(generatedFiles).forEach(relativePath =>
-      this.log(`- ${path.join(outDir!, relativePath)}`)
+    const generatorTransformer = generators[generator].transformer;
+    const formatTransformer = generators[generator].formats[language].formatter;
+    const formatExtension = generators[generator].formats[language].extension;
+
+    const transformedContract = generatorTransformer(parse(contractPath));
+    const formattedContract = formatTransformer(transformedContract);
+
+    outputFile(
+      outDir,
+      `${contractFilename}.${formatExtension}`,
+      formattedContract
     );
   }
 }
 
-function availableGeneratorsList() {
-  return Object.entries(generators)
-    .map(
-      ([name, languages]) => `- ${name} (${Object.keys(languages).join(", ")})`
-    )
-    .join("\n");
+function availableGenerators() {
+  return Object.keys(generators);
 }
 
-const generators: {
-  [generatorName: string]: {
-    [languageName: string]: (
-      contract: ContractDefinition
-    ) => {
-      [relativePath: string]: string;
-    };
+function availableFormats(generator: string) {
+  return Object.keys(generators[generator].formats);
+}
+
+interface Generators {
+  [name: string]: Generator;
+}
+
+interface Generator {
+  transformer: (contract: Contract) => Object;
+  formats: {
+    [name: string]: Format;
   };
-} = {
+}
+
+interface Format {
+  formatter: (generatedObject: Object) => string;
+  extension: string;
+}
+
+const jsonFormat: Format = {
+  formatter: (obj: Object) => JSON.stringify(obj, null, 2),
+  extension: "json"
+};
+
+const yamlFormat: Format = {
+  formatter: (obj: Object) =>
+    YAML.safeDump(obj, { skipInvalid: true /* for undefined */ }),
+  extension: "yml"
+};
+
+const generators: Generators = {
   raw: {
-    json: contract => ({
-      "*.json": "dummy" // TODO consolidate with other generaters
-    })
+    transformer: (contract: Contract) => {
+      return contract;
+    },
+    formats: {
+      json: jsonFormat
+    }
   },
   "json-schema": {
-    json: contract => ({
-      "*.json": generateJsonSchema(contract, "json")
-    }),
-    yaml: contract => ({
-      "*.yml": generateJsonSchema(contract, "yaml")
-    })
+    transformer: generateJsonSchema,
+    formats: {
+      json: jsonFormat,
+      yaml: yamlFormat
+    }
   },
   openapi2: {
-    json: contract => ({
-      "*.json": generateOpenApiV2(contract, "json")
-    }),
-    yaml: contract => ({
-      "*.yml": generateOpenApiV2(contract, "yaml")
-    })
+    transformer: generateOpenAPI2,
+    formats: {
+      json: jsonFormat,
+      yaml: yamlFormat
+    }
   },
   openapi3: {
-    json: contract => ({
-      "*.json": generateOpenApiV3(contract, "json")
-    }),
-    yaml: contract => ({
-      "*.yml": generateOpenApiV3(contract, "yaml")
-    })
+    transformer: generateOpenAPI3,
+    formats: {
+      json: jsonFormat,
+      yaml: yamlFormat
+    }
   }
 };
