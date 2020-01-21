@@ -117,7 +117,7 @@ export function typeToJsonSchemaType(
         areFloatLiteralTypes(elements) ||
         areIntLiteralTypes(elements)
       ) {
-        return literalsHelper(elements);
+        return singleTypeLiteralsToSchema(elements);
       } else {
         // Guaranteed oneOf
 
@@ -127,22 +127,22 @@ export function typeToJsonSchemaType(
 
         const booleanLiterals = elements.filter(isBooleanLiteralType);
         if (booleanLiterals.length > 0) {
-          oneOfElements.push(literalsHelper(booleanLiterals));
+          oneOfElements.push(singleTypeLiteralsToSchema(booleanLiterals));
         }
 
         const stringLiterals = elements.filter(isStringLiteralType);
         if (stringLiterals.length > 0) {
-          oneOfElements.push(literalsHelper(stringLiterals));
+          oneOfElements.push(singleTypeLiteralsToSchema(stringLiterals));
         }
 
         const floatLiterals = elements.filter(isFloatLiteralType);
         if (floatLiterals.length > 0) {
-          oneOfElements.push(literalsHelper(floatLiterals));
+          oneOfElements.push(singleTypeLiteralsToSchema(floatLiterals));
         }
 
         const integerLiterals = elements.filter(isIntLiteralType);
         if (integerLiterals.length > 0) {
-          oneOfElements.push(literalsHelper(integerLiterals));
+          oneOfElements.push(singleTypeLiteralsToSchema(integerLiterals));
         }
 
         return {
@@ -158,7 +158,7 @@ export function typeToJsonSchemaType(
   }
 }
 
-function literalsHelper(
+function singleTypeLiteralsToSchema(
   literals:
     | BooleanLiteralType[]
     | StringLiteralType[]
