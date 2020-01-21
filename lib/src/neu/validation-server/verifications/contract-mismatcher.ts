@@ -10,8 +10,8 @@ import {
   Header,
   Response
 } from "../../definitions";
-import { generateJsonSchemaType } from "../../generators/json-schema-generator";
-import { JsonSchemaType } from "../../schemas/json-schema";
+import { JsonSchemaType } from "../../generators/json-schema/json-schema-specification";
+import { typeToJsonSchemaType } from "../../generators/json-schema/json-schema-type-util";
 import { Type, TypeTable } from "../../types";
 import { Violation } from "../spots/validate";
 import {
@@ -419,12 +419,12 @@ export class ContractMismatcher {
       allErrors: true
     });
     const schema = {
-      ...generateJsonSchemaType(contractBody.type, !strict),
+      ...typeToJsonSchemaType(contractBody.type, !strict),
       definitions: this.contract.types.reduce<{
         [key: string]: JsonSchemaType;
       }>((defAcc, typeNode) => {
         return {
-          [typeNode.name]: generateJsonSchemaType(typeNode.type, !strict),
+          [typeNode.name]: typeToJsonSchemaType(typeNode.type, !strict),
           ...defAcc
         };
       }, {})
