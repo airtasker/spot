@@ -9,8 +9,13 @@ import {
   isIntLiteralType,
   isNotLiteralType,
   isStringLiteralType,
+  LiteralType,
   Type,
-  TypeKind
+  TypeKind,
+  FloatLiteralType,
+  IntLiteralType,
+  BooleanLiteralType,
+  StringLiteralType
 } from "../../types";
 import { JsonSchemaObject, JsonSchemaType } from "./json-schema-specification";
 
@@ -103,26 +108,16 @@ export function typeToJsonSchemaType(
       };
     case TypeKind.UNION:
       const elements = type.types;
-      if (areBooleanLiteralTypes(elements)) {
-        return {
-          type: "boolean",
-          enum: elements.map(e => e.value)
-        };
-      } else if (areStringLiteralTypes(elements)) {
-        return {
-          type: "string",
-          enum: elements.map(e => e.value)
-        };
-      } else if (areFloatLiteralTypes(elements)) {
-        return {
-          type: "number",
-          enum: elements.map(e => e.value)
-        };
-      } else if (areIntLiteralTypes(elements)) {
-        return {
-          type: "integer",
-          enum: elements.map(e => e.value)
-        };
+      if (elements.length === 0) throw new Error("Union type has no elements");
+      if (elements.length === 1) return typeToJsonSchemaType(elements[0]);
+
+      if (
+        areBooleanLiteralTypes(elements) ||
+        areStringLiteralTypes(elements) ||
+        areFloatLiteralTypes(elements) ||
+        areIntLiteralTypes(elements)
+      ) {
+        return literalsHelper(elements);
       } else {
         // Guaranteed oneOf
 
@@ -131,59 +126,23 @@ export function typeToJsonSchemaType(
           .map(t => typeToJsonSchemaType(t, objectAdditionalProperties));
 
         const booleanLiterals = elements.filter(isBooleanLiteralType);
-        switch (booleanLiterals.length) {
-          case 0:
-            break;
-          case 1:
-            oneOfElements.push(typeToJsonSchemaType(booleanLiterals[0]));
-            break;
-          default:
-            oneOfElements.push({
-              type: "boolean",
-              enum: booleanLiterals.map(b => b.value)
-            });
+        if (booleanLiterals.length > 0) {
+          oneOfElements.push(literalsHelper(booleanLiterals));
         }
 
         const stringLiterals = elements.filter(isStringLiteralType);
-        switch (stringLiterals.length) {
-          case 0:
-            break;
-          case 1:
-            oneOfElements.push(typeToJsonSchemaType(stringLiterals[0]));
-            break;
-          default:
-            oneOfElements.push({
-              type: "string",
-              enum: stringLiterals.map(s => s.value)
-            });
+        if (stringLiterals.length > 0) {
+          oneOfElements.push(literalsHelper(stringLiterals));
         }
 
         const floatLiterals = elements.filter(isFloatLiteralType);
-        switch (floatLiterals.length) {
-          case 0:
-            break;
-          case 1:
-            oneOfElements.push(typeToJsonSchemaType(floatLiterals[0]));
-            break;
-          default:
-            oneOfElements.push({
-              type: "number",
-              enum: floatLiterals.map(f => f.value)
-            });
+        if (floatLiterals.length > 0) {
+          oneOfElements.push(literalsHelper(floatLiterals));
         }
 
         const integerLiterals = elements.filter(isIntLiteralType);
-        switch (integerLiterals.length) {
-          case 0:
-            break;
-          case 1:
-            oneOfElements.push(typeToJsonSchemaType(integerLiterals[0]));
-            break;
-          default:
-            oneOfElements.push({
-              type: "integer",
-              enum: integerLiterals.map(i => i.value)
-            });
+        if (integerLiterals.length > 0) {
+          oneOfElements.push(literalsHelper(integerLiterals));
         }
 
         return {
@@ -196,5 +155,45 @@ export function typeToJsonSchemaType(
       };
     default:
       throw assertNever(type);
+  }
+}
+
+function literalsHelper(
+  literals:
+    | BooleanLiteralType[]
+    | StringLiteralType[]
+    | FloatLiteralType[]
+    | IntLiteralType[]
+): JsonSchemaType {
+  switch (literals.length) {
+    case 0:
+      throw new Error("no literals found");
+    case 1:
+      return typeToJsonSchemaType(literals[0]);
+    default:
+      if (areBooleanLiteralTypes(literals)) {
+        literals.map(e => e.value);
+        return {
+          type: "boolean",
+          enum: literals.map(e => e.value)
+        };
+      } else if (areStringLiteralTypes(literals)) {
+        return {
+          type: "string",
+          enum: literals.map(e => e.value)
+        };
+      } else if (areFloatLiteralTypes(literals)) {
+        return {
+          type: "number",
+          enum: literals.map(e => e.value)
+        };
+      } else if (areIntLiteralTypes(literals)) {
+        return {
+          type: "integer",
+          enum: literals.map(e => e.value)
+        };
+      } else {
+        throw new Error("Unknown literals");
+      }
   }
 }
