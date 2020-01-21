@@ -4,18 +4,17 @@ import {
   areFloatLiteralTypes,
   areIntLiteralTypes,
   areStringLiteralTypes,
+  BooleanLiteralType,
+  FloatLiteralType,
+  IntLiteralType,
   isBooleanLiteralType,
   isFloatLiteralType,
   isIntLiteralType,
   isNotLiteralType,
   isStringLiteralType,
-  LiteralType,
+  StringLiteralType,
   Type,
-  TypeKind,
-  FloatLiteralType,
-  IntLiteralType,
-  BooleanLiteralType,
-  StringLiteralType
+  TypeKind
 } from "../../types";
 import { JsonSchemaObject, JsonSchemaType } from "./json-schema-specification";
 
