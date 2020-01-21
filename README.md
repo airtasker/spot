@@ -117,7 +117,6 @@ npx @airtasker/spot generate --contract api.ts
 * [`spot init`](#spot-init)
 * [`spot lint SPOT_CONTRACT`](#spot-lint-spot_contract)
 * [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
-* [`spot test SPOT_CONTRACT`](#spot-test-spot_contract)
 * [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
 * [`spot validation-server SPOT_CONTRACT`](#spot-validation-server-spot_contract)
 
@@ -265,33 +264,6 @@ EXAMPLE
 ```
 
 _See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v0.3.1/build/cli/src/commands/mock.js)_
-
-## `spot test SPOT_CONTRACT`
-
-Test a Spot contract
-
-```
-USAGE
-  $ spot test SPOT_CONTRACT
-
-ARGUMENTS
-  SPOT_CONTRACT  path to Spot contract
-
-OPTIONS
-  -h, --help                   show CLI help
-  -s, --stateUrl=stateUrl      Base URL for state changes
-  -t, --testFilter=testFilter  Filter by endpoint and test
-  -u, --url=url                (required) Base URL
-  --debug                      Enable debug logs
-  --includeDraft               Include draft endpoint tests
-
-EXAMPLES
-  $ spot test api.ts -u http://localhost:3000
-  $ spot test api.ts -u http://localhost:3000 -s http://localhost:3000/spot
-  $ spot test api.ts -u http://localhost:3000 -t MyEndpoint:myTest
-```
-
-_See code: [build/cli/src/commands/test.js](https://github.com/airtasker/spot/blob/v0.3.1/build/cli/src/commands/test.js)_
 
 ## `spot validate SPOT_CONTRACT`
 
