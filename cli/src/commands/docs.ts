@@ -1,8 +1,8 @@
 import { Command, flags } from "@oclif/command";
 import express from "express";
 import path from "path";
-import { generateOpenApiV3 } from "../../../lib/src/generators/contract/openapi3";
-import { safeParse } from "../common/safe-parse";
+import { generateOpenAPI3 } from "../../../lib/src/neu/generators/openapi3/openapi3";
+import { parse } from "../../../lib/src/neu/parser";
 
 const ARG_API = "spot_contract";
 
@@ -43,16 +43,11 @@ export default class Docs extends Command {
      *   <RedocStandalone specUrl="/contract-openapi3" />
      * The contract is regenerated on each invocation (browser refresh)
      */
-    server.get("/contract-openapi3", (req, res) =>
-      res.send(
-        JSON.parse(
-          generateOpenApiV3(
-            safeParse.call(this, args[ARG_API]).definition,
-            "json"
-          )
-        )
-      )
-    );
+    server.get("/contract-openapi3", (req, res) => {
+      const contract = parse(args[ARG_API]);
+      const openApiObj = generateOpenAPI3(contract);
+      res.send(openApiObj);
+    });
 
     const start = async () => {
       try {
