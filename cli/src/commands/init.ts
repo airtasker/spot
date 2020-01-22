@@ -27,7 +27,7 @@ Generated the following files:
     outputFile(
       ".",
       "api.ts",
-      `import { api, body, endpoint, request, response, test } from "@airtasker/spot";
+      `import { api, body, endpoint, request, response, String } from "@airtasker/spot";
 
 @api({ name: "my-api" })
 class Api {}
@@ -46,30 +46,17 @@ class CreateUser {
   successfulResponse(
     @body body: CreateUserResponse
   ) {}
-
-  @test({
-    request: {
-      body: {
-        firstName: "Bob",
-        lastName: "Cat"
-      }
-    },
-    response: {
-      status: 201
-    }
-  })
-  successTest() {}
 }
 
 interface CreateUserRequest {
-  firstName: string;
-  lastName: string;
+  firstName: String;
+  lastName: String;
 }
 
 interface CreateUserResponse {
-  firstName: string;
-  lastName: string;
-  role: string;
+  firstName: String;
+  lastName: String;
+  role: String;
 }
 `,
       false

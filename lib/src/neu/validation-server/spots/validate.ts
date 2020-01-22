@@ -6,7 +6,7 @@ import {
   response,
   String
 } from "../../../lib";
-import { HttpMethod } from "../../../models/http";
+import { HttpMethod } from "../../definitions";
 import { Header, InternalServerError, UnprocessableEntityError } from "./utils";
 
 @endpoint({
