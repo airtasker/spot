@@ -1,8 +1,5 @@
 import { Project, ts } from "ts-morph";
 
-// TODO: change this to relative from this directory
-export const EXAMPLES_DIR = "./lib/src/neu/__spec-examples__/";
-
 /**
  * Create an AST source file. Any files imported from the main file must also be provided.
  * All files will be loaded into a virtual filesystem under a `test/` directory.

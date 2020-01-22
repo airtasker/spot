@@ -96,7 +96,7 @@
     "build:watch": "tsc --watch",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc -p tsconfig.prod.json && rm -rf build/examples && oclif-dev manifest && yarn build-docs && oclif-dev readme",
-    "test": "jest -w 2 --testPathIgnorePatterns '<rootDir>/node_modules/' --testPathIgnorePatterns '<rootDir>/clients'",
+    "test": "jest -w 2 --testPathIgnorePatterns '<rootDir>/node_modules/'",
     "lint:check": "yarn prettier:check && yarn tslint:check",
     "tslint:check": "tslint -p .",
     "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",

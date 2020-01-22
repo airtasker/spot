@@ -1,4 +1,5 @@
-import { ParamSerializationStrategy } from "../models/types";
+import { QueryParamArrayStrategy } from "../neu/definitions";
+
 /**
  * Class decorator factory for describing a configuration.
  * Should be used in conjunction with @api.
@@ -23,4 +24,12 @@ export function config(config: ConfigConfig) {
 export interface ConfigConfig {
   /** The global configuration for parameter serialization strategy */
   paramSerializationStrategy: ParamSerializationStrategy;
+}
+
+interface ParamSerializationStrategy {
+  query?: QueryParamSerializationStrategy;
+}
+
+interface QueryParamSerializationStrategy {
+  array?: QueryParamArrayStrategy;
 }
