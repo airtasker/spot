@@ -1,5 +1,5 @@
 import { Command, flags } from "@oclif/command";
-import { parse } from "../../../lib/src/neu/parser";
+import { parse } from "../../../lib/src/parser";
 
 const ARG_API = "spot_contract";
 

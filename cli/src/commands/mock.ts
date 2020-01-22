@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command";
-import { runMockServer } from "../../../lib/src/neu/mock-server/server";
-import { parse } from "../../../lib/src/neu/parser";
+import { runMockServer } from "../../../lib/src/mock-server/server";
+import { parse } from "../../../lib/src/parser";
 import inferProxyConfig from "../common/infer-proxy-config";
 
 const ARG_API = "spot_contract";

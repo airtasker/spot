@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command";
-import { hashContract } from "../../../lib/src/neu/checksum/hash";
-import { parse } from "../../../lib/src/neu/parser";
+import { hashContract } from "../../../lib/src/checksum/hash";
+import { parse } from "../../../lib/src/parser";
 
 const ARG_API = "spot_contract";
 

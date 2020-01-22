@@ -1,8 +1,8 @@
 import { Command, flags } from "@oclif/command";
 import express from "express";
 import path from "path";
-import { generateOpenAPI3 } from "../../../lib/src/neu/generators/openapi3/openapi3";
-import { parse } from "../../../lib/src/neu/parser";
+import { generateOpenAPI3 } from "../../../lib/src/generators/openapi3/openapi3";
+import { parse } from "../../../lib/src/parser";
 
 const ARG_API = "spot_contract";
 

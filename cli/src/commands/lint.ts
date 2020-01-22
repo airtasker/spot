@@ -1,6 +1,6 @@
 import { Command, flags } from "@oclif/command";
-import { lint } from "../../../lib/src/neu/linting/linter";
-import { parse } from "../../../lib/src/neu/parser";
+import { lint } from "../../../lib/src/linting/linter";
+import { parse } from "../../../lib/src/parser";
 
 const ARG_API = "spot_contract";
 
