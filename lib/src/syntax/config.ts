@@ -1,4 +1,4 @@
-import { QueryParamArrayStrategy } from "../neu/definitions";
+import { QueryParamArrayStrategy } from "../definitions";
 
 /**
  * Class decorator factory for describing a configuration.

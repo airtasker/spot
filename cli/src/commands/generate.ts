@@ -3,12 +3,12 @@ import { prompt } from "inquirer";
 import YAML from "js-yaml";
 import sortBy from "lodash/sortBy";
 import path from "path";
+import { Contract } from "../../../lib/src/definitions";
+import { generateJsonSchema } from "../../../lib/src/generators/json-schema/json-schema";
+import { generateOpenAPI2 } from "../../../lib/src/generators/openapi2/openapi2";
+import { generateOpenAPI3 } from "../../../lib/src/generators/openapi3/openapi3";
 import { outputFile } from "../../../lib/src/io/output";
-import { Contract } from "../../../lib/src/neu/definitions";
-import { generateJsonSchema } from "../../../lib/src/neu/generators/json-schema/json-schema";
-import { generateOpenAPI2 } from "../../../lib/src/neu/generators/openapi2/openapi2";
-import { generateOpenAPI3 } from "../../../lib/src/neu/generators/openapi3/openapi3";
-import { parse } from "../../../lib/src/neu/parser";
+import { parse } from "../../../lib/src/parser";
 
 export default class Generate extends Command {
   static description =

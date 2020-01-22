@@ -1,4 +1,4 @@
-import { HttpMethod } from "../neu/definitions";
+import { HttpMethod } from "../definitions";
 
 /**
  * Endpoint decorator factory for describing an API.
