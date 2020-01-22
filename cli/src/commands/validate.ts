@@ -1,5 +1,5 @@
 import { Command, flags } from "@oclif/command";
-import { safeParse } from "../common/safe-parse";
+import { parse } from "../../../lib/src/neu/parser";
 
 const ARG_API = "spot_contract";
 
@@ -26,7 +26,11 @@ export default class Validate extends Command {
 
   async run() {
     const { args } = this.parse(Validate);
-    const contract = safeParse.call(this, args[ARG_API]).definition;
-    this.log("Contract is valid");
+    try {
+      parse(args[ARG_API]);
+      this.log("Contract is valid");
+    } catch (e) {
+      this.error(e);
+    }
   }
 }
