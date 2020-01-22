@@ -305,11 +305,11 @@ export class ContractMismatcher {
     contractHeaders: Header[],
     inputHeaders: UserInputHeader[],
     strict: boolean = false
-  ): Array<
+  ): (
     | RequiredHeaderMissingMismatch
     | UndefinedHeaderMismatch
     | HeaderTypeDisparityMismatch
-  > {
+  )[] {
     const mismatches = [];
 
     for (const header of contractHeaders) {
@@ -402,7 +402,7 @@ export class ContractMismatcher {
     contractBody: Body | undefined,
     inputBody: UserInputBody,
     strict: boolean = false
-  ): Array<UndefinedBodyMismatch | BodyTypeDisparityMismatch> {
+  ): (UndefinedBodyMismatch | BodyTypeDisparityMismatch)[] {
     if (contractBody === undefined) {
       if (inputBody === undefined) {
         return [];
@@ -469,11 +469,11 @@ export class ContractMismatcher {
   private findQueryParamMismatches(
     contractEndpoint: Endpoint,
     inputPath: string
-  ): Array<
+  ): (
     | RequiredQueryParamMissingMismatch
     | UndefinedQueryParamMismatch
     | QueryParamTypeDisparityMismatch
-  > {
+  )[] {
     const contractQueryParams =
       (contractEndpoint.request && contractEndpoint.request.queryParams) || [];
 

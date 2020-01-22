@@ -4,7 +4,7 @@ export interface Contract {
   name: string;
   description?: string;
   config: Config;
-  types: Array<{ name: string; type: Type }>;
+  types: { name: string; type: Type }[];
   security?: SecurityHeader;
   endpoints: Endpoint[];
 }

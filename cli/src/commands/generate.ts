@@ -1,7 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import { prompt } from "inquirer";
 import YAML from "js-yaml";
-import sortBy from "lodash/sortBy";
 import path from "path";
 import { Contract } from "../../../lib/src/definitions";
 import { generateJsonSchema } from "../../../lib/src/generators/json-schema/json-schema";
@@ -52,7 +51,7 @@ export default class Generate extends Command {
         }>({
           name: "Generator",
           type: "list",
-          choices: sortBy(availableGenerators())
+          choices: availableGenerators()
         })
       ).Generator;
     }
@@ -75,7 +74,7 @@ export default class Generate extends Command {
         }>({
           name: "Language",
           type: "list",
-          choices: sortBy(availableFormats(generator))
+          choices: availableFormats(generator)
         })
       ).Language;
     }
@@ -118,11 +117,13 @@ export default class Generate extends Command {
 }
 
 function availableGenerators() {
-  return Object.keys(generators);
+  return Object.keys(generators).sort((a, b) => (a > b ? 1 : -1));
 }
 
 function availableFormats(generator: string) {
-  return Object.keys(generators[generator].formats);
+  return Object.keys(generators[generator].formats).sort((a, b) =>
+    a > b ? 1 : -1
+  );
 }
 
 interface Generators {

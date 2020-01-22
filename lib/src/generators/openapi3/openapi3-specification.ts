@@ -66,7 +66,7 @@ export interface PathItemObject {
   patch?: OperationObject;
   trace?: OperationObject;
   servers?: ServerObject[];
-  parameters?: Array<ParameterObject | ReferenceObject>;
+  parameters?: (ParameterObject | ReferenceObject)[];
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#operationObject
@@ -76,7 +76,7 @@ export interface OperationObject {
   description?: string;
   externalDocs?: ExternalDocumentationObject;
   operationId?: string;
-  parameters?: Array<ParameterObject | ReferenceObject>;
+  parameters?: (ParameterObject | ReferenceObject)[];
   requestBody?: RequestBodyObject | ReferenceObject;
   responses: ResponsesObject;
   callbacks?: { [callback: string]: CallbackObject | ReferenceObject };
@@ -177,7 +177,7 @@ interface NumberSchemaObjectBase {
   minimum?: number;
   exclusiveMinimum?: boolean;
   multipleOf?: number;
-  enum?: Array<number | null>;
+  enum?: (number | null)[];
   default?: number;
 }
 
@@ -191,13 +191,13 @@ export interface StringSchemaObject extends SchemaObjectBase {
    */
   format?: "date" | "date-time" | "password" | "byte" | "binary";
   pattern?: string;
-  enum?: Array<string | null>;
+  enum?: (string | null)[];
   default?: string;
 }
 
 export interface BooleanSchemaObject extends SchemaObjectBase {
   type: "boolean";
-  enum?: Array<boolean | null>;
+  enum?: (boolean | null)[];
   default?: boolean;
 }
 
@@ -237,17 +237,17 @@ export interface AnySchemaObject extends SchemaObjectBase {
 }
 
 export interface AllOfSchemaObject extends SchemaObjectBase {
-  allOf: Array<SchemaObject | ReferenceObject>;
+  allOf: (SchemaObject | ReferenceObject)[];
   discriminator?: DiscriminatorObject;
 }
 
 export interface OneOfSchemaObject extends SchemaObjectBase {
-  oneOf: Array<SchemaObject | ReferenceObject>;
+  oneOf: (SchemaObject | ReferenceObject)[];
   discriminator?: DiscriminatorObject;
 }
 
 export interface AnyOfSchemaObject extends SchemaObjectBase {
-  anyOf: Array<SchemaObject | ReferenceObject>;
+  anyOf: (SchemaObject | ReferenceObject)[];
   discriminator?: DiscriminatorObject;
 }
 

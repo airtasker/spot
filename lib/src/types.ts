@@ -115,12 +115,12 @@ export interface DateTimeType {
 
 export interface ObjectType {
   kind: TypeKind.OBJECT;
-  properties: Array<{
+  properties: {
     name: string;
     description?: string;
     optional: boolean;
     type: Type;
-  }>;
+  }[];
 }
 
 export interface ArrayType {
@@ -224,12 +224,12 @@ export function dateTimeType(): DateTimeType {
 }
 
 export function objectType(
-  properties: Array<{
+  properties: {
     name: string;
     description?: string;
     optional: boolean;
     type: Type;
-  }>
+  }[]
 ): ObjectType {
   return {
     kind: TypeKind.OBJECT,
@@ -462,7 +462,7 @@ export function inferDiscriminator(
 
   const possibleDiscriminators = new Map<
     string,
-    Array<{ value: string; type: Type }>
+    { value: string; type: Type }[]
   >();
 
   for (const type of concreteRootTypesExcludingNull) {
@@ -523,9 +523,9 @@ export class TypeTable {
     return this.types.size;
   }
 
-  static fromArray(types: Array<{ name: string; type: Type }>): TypeTable {
+  static fromArray(types: { name: string; type: Type }[]): TypeTable {
     const entries = types.reduce(
-      (acc: Array<[string, Type]>, t: { name: string; type: Type }) => {
+      (acc: [string, Type][], t: { name: string; type: Type }) => {
         acc.push([t.name, t.type]);
         return acc;
       },
@@ -544,7 +544,7 @@ export class TypeTable {
   /**
    * Return an object representation of the type table.
    */
-  toArray(): Array<{ name: string; type: Type }> {
+  toArray(): { name: string; type: Type }[] {
     const arr = new Array<{ name: string; type: Type }>();
     this.types.forEach((type, key, _) => {
       arr.push({ name: key, type });

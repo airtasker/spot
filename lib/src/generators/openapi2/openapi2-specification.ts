@@ -55,7 +55,7 @@ export interface PathItemObject {
   options?: OperationObject;
   head?: OperationObject;
   patch?: OperationObject;
-  parameters?: Array<ParameterObject | ReferenceObject>;
+  parameters?: (ParameterObject | ReferenceObject)[];
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#operationObject
@@ -67,7 +67,7 @@ export interface OperationObject {
   operationId?: string;
   consumes?: string[];
   produces?: string[];
-  parameters?: Array<ParameterObject | ReferenceObject>;
+  parameters?: (ParameterObject | ReferenceObject)[];
   responses: ResponsesObject;
   schemes?: Schemes[];
   deprecated?: boolean;
@@ -418,7 +418,7 @@ interface NumberSchemaObjectBase {
   exclusiveMaximum?: boolean;
   minimum?: number;
   exclusiveMinimum?: boolean;
-  enum?: Array<number | null>;
+  enum?: (number | null)[];
 }
 
 export interface StringSchemaObject extends SchemaObjectBase {
@@ -432,12 +432,12 @@ export interface StringSchemaObject extends SchemaObjectBase {
    */
   format?: "date" | "date-time" | "password" | "byte" | "binary";
   pattern?: string;
-  enum?: Array<string | null>;
+  enum?: (string | null)[];
 }
 
 export interface BooleanSchemaObject extends SchemaObjectBase {
   type: "boolean";
-  enum?: Array<boolean | null>;
+  enum?: (boolean | null)[];
   default?: boolean;
 }
 
