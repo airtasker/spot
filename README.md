@@ -122,7 +122,7 @@ npx @airtasker/spot generate --contract api.ts
 
 ## `spot checksum SPOT_CONTRACT`
 
-Generate a version tag based on a Spot contract
+Generate a checksum for a Spot contract
 
 ```
 USAGE
@@ -135,7 +135,7 @@ OPTIONS
   -h, --help  show CLI help
 
 EXAMPLE
-  $ spot mock api.ts
+  $ spot checksum api.ts
 ```
 
 _See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v0.3.1/build/cli/src/commands/checksum.js)_
