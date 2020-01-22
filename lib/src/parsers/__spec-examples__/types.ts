@@ -34,6 +34,7 @@ interface TypeInterface {
     propertyB?: boolean;
   };
   array: boolean[];
+  // tslint:disable-next-line: array-type
   arrayConstructor: Array<{ a: boolean }>;
   union: boolean | Date | null;
   unionDiscriminated: DiscriminatedUnionElementA | DiscriminatedUnionElementB;

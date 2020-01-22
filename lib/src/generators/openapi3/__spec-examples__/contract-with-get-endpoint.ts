@@ -9,5 +9,5 @@ class Contract {}
 })
 class GetEndpoint {
   @response({ status: 200 })
-  successResponse(@body body: Array<{ id: String; name: String }>) {}
+  successResponse(@body body: { id: String; name: String }[]) {}
 }

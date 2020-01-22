@@ -32,7 +32,7 @@ export function hasResponsePayload(contract: Contract): LintingRuleViolation[] {
   return violations;
 }
 
-function findResponses(endpoint: Endpoint): Array<DefaultResponse | Response> {
+function findResponses(endpoint: Endpoint): (DefaultResponse | Response)[] {
   return [
     ...endpoint.responses,
     ...(endpoint.defaultResponse ? [endpoint.defaultResponse] : [])

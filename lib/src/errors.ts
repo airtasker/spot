@@ -1,9 +1,9 @@
 export class ParserError extends Error {
-  readonly locations: Array<{ file: string; position: number }>;
+  readonly locations: { file: string; position: number }[];
 
   constructor(
     readonly message: string,
-    ...locations: Array<{ file: string; position: number }>
+    ...locations: { file: string; position: number }[]
   ) {
     super(message); // 'Error' breaks prototype chain here
     Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
