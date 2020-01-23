@@ -6,7 +6,7 @@ orbs:
 executors:
   node-executor:
     docker:
-      - image: circleci/node:10-stretch
+      - image: circleci/node:12-stretch
     working_directory: ~/repo
 
 commands:
