@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  node: circleci/node@1.1.6
+
 executors:
   node-executor:
     docker:
@@ -25,11 +28,20 @@ jobs:
   test:
     executor: node-executor
     resource_class: xlarge
+    parallelism: 2
     steps:
       - prepare-repository
-      - run:
-          name: Run tests
-          command: yarn test
+      - node/with-splitting:
+          glob-path: lib/**/*.spec.ts
+          steps:
+            - run:
+                name: Run tests
+                command: yarn ci:test $TESTFILES
+                environment:
+                  JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
+                  JEST_JUNIT_OUTPUT_NAME: results.xml
+      - store_test_results:
+          path: ./test-reports
 
   lint-check:
     executor: node-executor
