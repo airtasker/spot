@@ -35,6 +35,7 @@ jobs:
       - prepare-repository
       - node/with-splitting:
           glob-path: lib/**/*.spec.ts
+          timings-type: classname
           steps:
             - run:
                 name: Run tests
@@ -42,7 +43,7 @@ jobs:
                 environment:
                   JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
                   JEST_JUNIT_OUTPUT_NAME: results.xml
-                  JEST_JUNIT_SUITE_NAME: "{filepath}"
+                  JEST_JUNIT_CLASSNAME: "{filepath}"
       - store_test_results:
           path: ./test-reports
 
