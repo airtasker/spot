@@ -90,7 +90,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc && oclif-dev manifest && yarn build-docs && oclif-dev readme",
     "test": "jest",
-    "ci:test": "jest --config=jest.ci.config.js --ci",
+    "ci:test": "jest --config=jest.ci.config.js --ci -w 2",
     "lint:check": "yarn prettier:check && yarn tslint:check",
     "tslint:check": "tslint -p .",
     "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",
