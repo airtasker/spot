@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="33" failures="0" time="0.672">
+  <testsuite name="JSON schema generator" errors="0" failures="0" skipped="0" timestamp="2020-01-23T04:49:01" time="0.619" tests="33">
+    <testcase classname="JSON schema generator Null type converts to null schema" name="JSON schema generator Null type converts to null schema" time="0.002">
+    </testcase>
+    <testcase classname="JSON schema generator Boolean type converts to boolean schema" name="JSON schema generator Boolean type converts to boolean schema" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Boolean literal type converts to boolean schema with true const for true value" name="JSON schema generator Boolean literal type converts to boolean schema with true const for true value" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Boolean literal type converts to boolean schema with false const for false value" name="JSON schema generator Boolean literal type converts to boolean schema with false const for false value" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator String type converts to string schema" name="JSON schema generator String type converts to string schema" time="0.001">
+    </testcase>
+    <testcase classname="JSON schema generator String literal type converts to string schema with const" name="JSON schema generator String literal type converts to string schema with const" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Float type converts to number schema with float format" name="JSON schema generator Float type converts to number schema with float format" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Double type converts to number schema with double format" name="JSON schema generator Double type converts to number schema with double format" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Float literal type converts to number schema with float format and const" name="JSON schema generator Float literal type converts to number schema with float format and const" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Int32 type converts to integer schema with int32 format" name="JSON schema generator Int32 type converts to integer schema with int32 format" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Int64 type converts to integer schema with int64 format" name="JSON schema generator Int64 type converts to integer schema with int64 format" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Int literal type converts to integer schema with int32 format and const" name="JSON schema generator Int literal type converts to integer schema with int32 format and const" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Date type converts to string schema with date format" name="JSON schema generator Date type converts to string schema with date format" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Date time type converts to string schema with date-time format" name="JSON schema generator Date time type converts to string schema with date-time format" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Object type converts to object schema" name="JSON schema generator Object type converts to object schema" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Array type converts to array schema" name="JSON schema generator Array type converts to array schema" time="0.001">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals true | false" name="JSON schema generator Union type multiple single type literals true | false" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals true | false | null" name="JSON schema generator Union type multiple single type literals true | false | null" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals &quot;one&quot; | &quot;two&quot; | &quot;three&quot;" name="JSON schema generator Union type multiple single type literals &quot;one&quot; | &quot;two&quot; | &quot;three&quot;" time="0.001">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals &quot;one&quot; | &quot;two&quot; | &quot;three&quot; | null" name="JSON schema generator Union type multiple single type literals &quot;one&quot; | &quot;two&quot; | &quot;three&quot; | null" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals 1.1 | 1.2 | 1.3" name="JSON schema generator Union type multiple single type literals 1.1 | 1.2 | 1.3" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals 1.1 | 1.2 | 1.3 | null" name="JSON schema generator Union type multiple single type literals 1.1 | 1.2 | 1.3 | null" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals 1 | 2 | 3" name="JSON schema generator Union type multiple single type literals 1 | 2 | 3" time="0.001">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple single type literals 1 | 2 | 3 | null" name="JSON schema generator Union type multiple single type literals 1 | 2 | 3 | null" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types string | boolean" name="JSON schema generator Union type multiple unique types string | boolean" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types string | boolean | null" name="JSON schema generator Union type multiple unique types string | boolean | null" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types 1 | true" name="JSON schema generator Union type multiple unique types 1 | true" time="0.001">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types 1 | 2 | true" name="JSON schema generator Union type multiple unique types 1 | 2 | true" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types { type: &quot;a&quot;; a: string; } | { type: &quot;b&quot;, b: string; }" name="JSON schema generator Union type multiple unique types { type: &quot;a&quot;; a: string; } | { type: &quot;b&quot;, b: string; }" time="0.001">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types { type: &quot;a&quot;, a: string; } | CustomObjectTypeB" name="JSON schema generator Union type multiple unique types { type: &quot;a&quot;, a: string; } | CustomObjectTypeB" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types CustomObjectTypeA | CustomObjectTypeB" name="JSON schema generator Union type multiple unique types CustomObjectTypeA | CustomObjectTypeB" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator Union type multiple unique types CustomType | string" name="JSON schema generator Union type multiple unique types CustomType | string" time="0">
+    </testcase>
+    <testcase classname="JSON schema generator referenceType converts to reference object" name="JSON schema generator referenceType converts to reference object" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>

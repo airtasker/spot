@@ -33,6 +33,7 @@ jobs:
       - prepare-repository
       - node/with-splitting:
           glob-path: lib/**/*.spec.ts
+          timings-type: classname
           steps:
             - run:
                 name: Run tests
