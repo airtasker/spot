@@ -28,7 +28,7 @@ jobs:
   test:
     executor: node-executor
     resource_class: xlarge
-    parallelism: 2
+    parallelism: 4
     steps:
       - prepare-repository
       - node/with-splitting:
