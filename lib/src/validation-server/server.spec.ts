@@ -6,6 +6,7 @@ import {
   recordedResponseToUserInputResponse,
   runValidationServer
 } from "./server";
+import { parse } from "../parser";
 
 const DUMMY_BODY = { dummy: "helloworld" };
 const DUMMY_PORT = 5907;
@@ -141,6 +142,12 @@ describe("Validation Server", () => {
           expect(response.body.type).toEqual("internal_server");
           expect(response.body.error_messages).toHaveLength(1);
         });
+    });
+  });
+
+  describe("SPOT contract", () => {
+    it("should be valid", () => {
+      expect(() => parse(`${__dirname}/spots/api.ts`)).not.toThrowError();
     });
   });
 });

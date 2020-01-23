@@ -43,6 +43,7 @@
     "css-loader": "^3.4.2",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.9.0",
+    "jest-junit": "^10.0.0",
     "mini-css-extract-plugin": "^0.9.0",
     "mobx": "^5.15.2",
     "nock": "^11.7.2",
@@ -60,7 +61,7 @@
     "webpack-cli": "^3.3.10"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "bin",
@@ -88,7 +89,8 @@
     "build:watch": "tsc --watch",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf build; tsc && oclif-dev manifest && yarn build-docs && oclif-dev readme",
-    "test": "jest -w 2 --testPathIgnorePatterns '<rootDir>/node_modules/'",
+    "test": "jest -w 4",
+    "ci:test": "jest --config=jest.ci.config.js --ci -w 4",
     "lint:check": "yarn prettier:check && yarn tslint:check",
     "tslint:check": "tslint -p .",
     "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",

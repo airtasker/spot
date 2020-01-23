@@ -1,97 +1,75 @@
 version: 2.1
-job_configuration: &job_configuration
-  docker:
-    - image: circleci/node:10-stretch
-  working_directory: ~/repo
-jobs:
-  build-and-test:
-    <<: *job_configuration
-    resource_class: xlarge
+
+orbs:
+  node: circleci/node@1.1.6
+
+executors:
+  node-executor:
+    docker:
+      - image: circleci/node:13-buster
+    working_directory: ~/repo
+
+commands:
+  prepare-repository:
+    description: Convenience command to checkout the repository and install dependencies
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
             - v3-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v3-dependencies-
-
-      - run: yarn install --frozen-lockfile
-
+            - v3-dependencies
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - node_modules
           key: v3-dependencies-{{ checksum "package.json" }}
 
-      - run:
-          name: Run tests
-          command: yarn test
-
-      - run:
-          name: Compile
-          command: yarn pack
-
-      - run: ./bin/run --version
-
-      - run: ./bin/run --help
+jobs:
+  test:
+    executor: node-executor
+    resource_class: xlarge
+    parallelism: 8
+    steps:
+      - prepare-repository
+      - node/with-splitting:
+          glob-path: lib/**/*.spec.ts
+          timings-type: classname
+          steps:
+            - run:
+                name: Run tests
+                command: yarn ci:test $TESTFILES
+                environment:
+                  JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
+                  JEST_JUNIT_OUTPUT_NAME: results.xml
+                  JEST_JUNIT_CLASSNAME: "{filepath}"
+      - store_test_results:
+          path: ./test-reports
 
   lint-check:
-    <<: *job_configuration
+    executor: node-executor
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: yarn lint:check
-
-  validate-contracts:
-    <<: *job_configuration
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: yarn build
-      - run: ./bin/run validate ./lib/src/validation-server/spots/api.ts
+      - prepare-repository
+      - run:
+          name: Run lint checker
+          command: yarn lint:check
 
   publish:
-    <<: *job_configuration
+    executor: node-executor
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+      - prepare-repository
       - run:
-          name: Authenticate with registry
+          name: Authenticate with NPM registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
-      - run:
+      - deploy:
           name: Publish
-          command: |
-            npm publish --access=public
+          command: npm publish --access=public
 
 workflows:
   build-and-test:
     jobs:
-      - build-and-test:
+      - test:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
@@ -99,13 +77,9 @@ workflows:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-      - validate-contracts:
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
       - publish:
           requires:
-            - build-and-test
+            - test
             - lint-check
           filters:
             tags:
