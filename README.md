@@ -40,7 +40,13 @@ interface CreateUserResponse {
 }
 ```
 
-For available methods, please check [here](https://github.com/airtasker/spot/wiki/Spot-available-methods)
+## Getting Started
+
+Get started with writing Spot contracts - [Spot Guide](https://github.com/airtasker/spot/wiki/Spot-Guide)
+
+For all available syntax, see [Spot Syntax](https://github.com/airtasker/spot/wiki/Spot-Syntax)
+
+### Installation
 
 With [yarn](https://yarnpkg.com/en/docs/usage) installed and initialized add `@airtasker/spot` to your project:
 
@@ -87,11 +93,12 @@ We built Spot with this in mind. Instead of having to juggle various API format 
 [![License](https://img.shields.io/npm/l/@airtasker/spot.svg)](https://github.com/airtasker/spot/blob/master/package.json)
 
 <!-- toc -->
-* [Spot](#spot)
-* [Why we built Spot](#why-we-built-spot)
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+
+- [Spot](#spot)
+- [Why we built Spot](#why-we-built-spot)
+- [Usage](#usage)
+- [Commands](#commands)
+  <!-- tocstop -->
 
 # Usage
 
@@ -110,15 +117,16 @@ npx @airtasker/spot generate --contract api.ts
 # Commands
 
 <!-- commands -->
-* [`spot checksum SPOT_CONTRACT`](#spot-checksum-spot_contract)
-* [`spot docs SPOT_CONTRACT`](#spot-docs-spot_contract)
-* [`spot generate`](#spot-generate)
-* [`spot help [COMMAND]`](#spot-help-command)
-* [`spot init`](#spot-init)
-* [`spot lint SPOT_CONTRACT`](#spot-lint-spot_contract)
-* [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
-* [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
-* [`spot validation-server SPOT_CONTRACT`](#spot-validation-server-spot_contract)
+
+- [`spot checksum SPOT_CONTRACT`](#spot-checksum-spot_contract)
+- [`spot docs SPOT_CONTRACT`](#spot-docs-spot_contract)
+- [`spot generate`](#spot-generate)
+- [`spot help [COMMAND]`](#spot-help-command)
+- [`spot init`](#spot-init)
+- [`spot lint SPOT_CONTRACT`](#spot-lint-spot_contract)
+- [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
+- [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
+- [`spot validation-server SPOT_CONTRACT`](#spot-validation-server-spot_contract)
 
 ## `spot checksum SPOT_CONTRACT`
 
@@ -305,4 +313,5 @@ EXAMPLE
 ```
 
 _See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v0.3.1/build/cli/src/commands/validation-server.js)_
+
 <!-- commandsstop -->
