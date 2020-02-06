@@ -8,7 +8,7 @@
   "bugs": "https://github.com/airtasker/spot/issues",
   "dependencies": {
     "@oclif/command": "^1.5.19",
-    "@oclif/config": "^1.13.3",
+    "@oclif/config": "^1.14.0",
     "@oclif/plugin-help": "^2.2.3",
     "ajv": "^6.11.0",
     "assert-never": "^1.2.0",
