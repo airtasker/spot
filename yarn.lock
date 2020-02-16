@@ -5333,10 +5333,10 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
-nock@^11.9.0:
-  version "11.9.0"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-11.9.0.tgz#012adc21e534a95a127808c5addd696695db293a"
-  integrity sha512-2ml3A1pqTLapa4US4sv5n5XtIuaTNMd0hQNDG4EtTUY38TQroIf3EIEl8aA6mvY9Dtt8gofCtJZElRLfhW7/Hg==
+nock@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-12.0.0.tgz#f405309bbf305d9a5bba2e9718aab4463edc9572"
+  integrity sha512-aTzDlXFH/Xq4m2V5x5nV13RTvYX8RXXcurCx6z4+y8IsloFMizZsDe/189GX1pSMJ99HBFZAokS5sMiMX/qfaQ==
   dependencies:
     debug "^4.1.0"
     json-stringify-safe "^5.0.1"
