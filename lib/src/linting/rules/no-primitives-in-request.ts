@@ -11,6 +11,7 @@ export function noPrimitivesInRequest(
   contract: Contract
 ): LintingRuleViolation[] {
   const violations: LintingRuleViolation[] = [];
+  const typeTable = TypeTable.fromArray(contract.types);
 
   contract.endpoints.forEach(endpoint => {
     const { request } = endpoint;
@@ -18,7 +19,6 @@ export function noPrimitivesInRequest(
     if (!body) {
       return;
     }
-    const typeTable = TypeTable.fromArray(contract.types);
     const bodyType = dereferenceType(body.type, typeTable);
 
     if (bodyType.kind !== "object") {
