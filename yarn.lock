@@ -642,10 +642,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.0.tgz#da2282352a4eb23c09d5106b9d1650d30a9ca2ad"
   integrity sha512-t74/MHMgmFVMQhdQ/2Q766GryNTIW8McH8+vB25oeoBhYKTOrJ/wPDt+OCxIWHPUlcSi2fTWa4FKQ8qgmP2jVA==
 
-"@stoplight/spectral@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.0.0.tgz#696b2d9732709a96a1d61527808e6bd1520325c4"
-  integrity sha512-kOK/wGCNGuajiDp+ZwIc4xOrcJwMNZa0QQqOgZoGGp/0l3qCmCEhcLaLdCh4MYOt8MD4ENZJmB6l0PTDGaNo7A==
+"@stoplight/spectral@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.1.0.tgz#1abb3b377f9e17e10950da0e69e4a5acc63042eb"
+  integrity sha512-Uwm5ZGE5dqsc6lsAMAnA2VKOHw7ey77SLluu52hyCBPfYZN/WmPfO6AaWbM38cR84TnuDnvvwoOjRzLWDOCdBA==
   dependencies:
     "@stoplight/json" "^3.4.0"
     "@stoplight/json-ref-readers" "^1.1.1"
