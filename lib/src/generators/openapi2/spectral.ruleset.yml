@@ -13,6 +13,7 @@ rules:
   path-declarations-must-exist: true
   path-keys-no-trailing-slash: true
   path-not-include-query: true
+  typed-enum: true
   oas2-operation-formData-consume-check: true
   oas2-operation-security-defined: true
   oas2-valid-example: true
