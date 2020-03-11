@@ -2,7 +2,7 @@
 
 Spot linters are a set of functions whose goal is to ensure a contract definition conforms with our API guidelines.
 
-Linting rules can be found in files inside the spot directory (under [lib/src/neu/linting/rules](/lib/src/neu/linting/rules). Each file corresponds to a specific rule and holds the logic to validate a subset of a contract (e.g. headers definition, request/response types, etc).
+Linting rules can be found in files inside the spot directory (under [lib/src/linting/rules](/lib/src/linting/rules). Each file corresponds to a specific rule and holds the logic to validate a subset of a contract (e.g. headers definition, request/response types, etc).
 
 ## Anatomy of a linting rule
 
@@ -34,11 +34,11 @@ To do so, we define a function that takes an in-memory representation of a contr
 
 As we use JavaScript, the main data structures we leverage are objects and arrays. Objects can be used to describe nodes such as endpoints or types. Arrays are mainly used for composition and therefore to define collections of nodes (e.g. list of endpoints, list of types, etc).
 
-Refer to [lib/src/neu/definitions.ts](lib/src/neu/definitions.ts) to find out all the internal types Spot uses to represent a contract object.
+Refer to [lib/src/definitions.ts](lib/src/definitions.ts) to find out all the internal types Spot uses to represent a contract object.
 
 ## Write a linting rule
 
-Create a new file inside `lib/src/neu/linting/rules` and give it a name that reflects what the rule is supposed to verify (see API guidelines)
+Create a new file inside `lib/src/linting/rules` and give it a name that reflects what the rule is supposed to verify (see API guidelines)
 
 In that file, create a new function with the same name as the file newly created (in camelCase) e.g.
 
@@ -56,7 +56,7 @@ interface LintingRuleViolation {
 
 Writing logic for a linter requires parsing a contract and recursively traversing its nodes to search for inconsistencies.
 
-Then, open `lib/src/neu/linting/rules.ts`, import the previous function from your linting rule file and add it to the hash of linting rules, so it can be applied when the linter is run.
+Then, open `lib/src/linting/rules.ts`, import the previous function from your linting rule file and add it to the hash of linting rules, so it can be applied when the linter is run.
 
 Something along the lines of:
 
@@ -123,7 +123,7 @@ test("valid for correct usage", () => { ... } });
 In every test case, we create an example contract representing the scenarios:
 
 ```typescript
-// lib/src/neu/linting/rules/__spec-examples__/your-new-linting-rule-name/your-scenario.ts
+// lib/src/linting/rules/__spec-examples__/your-new-linting-rule-name/your-scenario.ts
 
 import { api, body, defaultResponse, endpoint, String } from "@airtasker/spot";
 
