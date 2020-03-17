@@ -50,7 +50,7 @@
     "prettier": "^1.19.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "redoc": "^2.0.0-rc.23",
+    "redoc": "^2.0.0-rc.24",
     "styled-components": "^4.4.1",
     "supertest": "^4.0.2",
     "ts-jest": "^25.2.1",
