@@ -47,7 +47,7 @@
     "mini-css-extract-plugin": "^0.9.0",
     "mobx": "^5.15.4",
     "nock": "^12.0.3",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.0",
     "redoc": "^2.0.0-rc.24",
