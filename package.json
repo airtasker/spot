@@ -54,7 +54,7 @@
     "styled-components": "^4.4.1",
     "supertest": "^4.0.2",
     "ts-jest": "^25.2.1",
-    "ts-loader": "^6.2.1",
+    "ts-loader": "^6.2.2",
     "tslint": "^6.1.0",
     "tslint-config-prettier": "^1.18.0",
     "webpack": "^4.42.0",
