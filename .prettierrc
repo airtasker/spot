@@ -1,1 +1,2 @@
-{}
+trailingComma: "none"
+arrowParens: "avoid"
