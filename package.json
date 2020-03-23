@@ -93,9 +93,9 @@
     "ci:test": "jest --config=jest.ci.config.js --ci -w 4",
     "lint:check": "yarn prettier:check && yarn tslint:check",
     "tslint:check": "tslint -p .",
-    "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",
+    "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
     "lint:fix": "yarn prettier:fix && yarn tslint:fix",
     "tslint:fix": "tslint -p . --fix",
-    "prettier:fix": "prettier --write \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\""
+    "prettier:fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\""
   }
 }
