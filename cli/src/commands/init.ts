@@ -22,7 +22,6 @@ Generated the following files:
   async run(): Promise<void> {
     if (fs.existsSync("api.ts")) {
       this.error(`There is already an API here!`);
-      this.exit(1);
     }
     outputFile(
       ".",
