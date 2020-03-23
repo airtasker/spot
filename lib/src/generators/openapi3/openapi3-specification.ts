@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#openapi-object
 export interface OpenApiV3 {
   openapi: "3.0.2";

@@ -30,7 +30,7 @@ export default class ValidationServer extends Command {
     })
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { args, flags } = this.parse(ValidationServer);
     const contractPath = args[ARG_API];
     const { port } = flags;
@@ -40,7 +40,7 @@ export default class ValidationServer extends Command {
       const contract = parse(contractPath);
 
       this.log("Starting validation server...");
-      await runValidationServer(port, contract, this).defer();
+      await runValidationServer(port, contract).defer();
       this.log(`Validation server running on port ${port}`);
     } catch (e) {
       this.error(e, { exit: 1 });

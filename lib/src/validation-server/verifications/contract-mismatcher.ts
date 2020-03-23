@@ -527,8 +527,8 @@ export class ContractMismatcher {
     }
 
     Object.entries(verifiedQueryParams)
-      .filter(([_, value]) => !value)
-      .map(([key, _]) => key)
+      .filter(([, value]) => !value)
+      .map(([key]) => key)
       .forEach(key => {
         mismatches.push(undefinedQueryParamMismatch(key));
       });
@@ -575,7 +575,7 @@ export class ContractMismatcher {
   ): Endpoint | null {
     const userInputRequestPath = userInputRequest.path.split("?")[0];
 
-    const endpoint = this.contract.endpoints.find((value, _0, _1) => {
+    const endpoint = this.contract.endpoints.find(value => {
       return (
         value.method === userInputRequest.method.toUpperCase() &&
         pathMatchesVariablePath(value.path, userInputRequestPath)
@@ -588,7 +588,7 @@ export class ContractMismatcher {
 
 // Transform /a/:b/c/:d/e -> /^/a/.+/c/.+/e$/
 const regexForVariablePath = (path: string): RegExp => {
-  const regexp = path.replace(/:[^\/]+/g, ".+");
+  const regexp = path.replace(/:[^/]+/g, ".+");
   return new RegExp(`^${regexp}$`);
 };
 

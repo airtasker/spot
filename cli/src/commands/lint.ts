@@ -25,7 +25,7 @@ export default class Lint extends Command {
     help: flags.help({ char: "h" })
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { args } = this.parse(Lint);
     const contractPath = args[ARG_API];
     const contract = parse(contractPath);

@@ -193,7 +193,7 @@ const queryParamArrayTypeToParameterArrayTypeObject = (
   type: ArrayType,
   typeTable: TypeTable,
   config: Config
-) =>
+): ArrayMultiParameterObjectType =>
   arrayTypeToParameterArrayMultiTypeObject(
     type,
     typeTable,

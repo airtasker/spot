@@ -24,7 +24,7 @@ export default class Validate extends Command {
     help: flags.help({ char: "h" })
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { args } = this.parse(Validate);
     try {
       parse(args[ARG_API]);

@@ -12,7 +12,7 @@ export function proxyRequest({
   response: Response;
   protocol: "http" | "https";
   proxyBaseUrl: string;
-}) {
+}): void {
   const requestHandler = protocol === "http" ? http : https;
 
   const options = {

@@ -105,7 +105,7 @@ export function typeToJsonSchemaType(
           objectAdditionalProperties
         )
       };
-    case TypeKind.UNION:
+    case TypeKind.UNION: {
       const elements = type.types;
       if (elements.length === 0) throw new Error("Union type has no elements");
       if (elements.length === 1) return typeToJsonSchemaType(elements[0]);
@@ -148,6 +148,7 @@ export function typeToJsonSchemaType(
           oneOf: oneOfElements
         };
       }
+    }
     case TypeKind.REFERENCE:
       return {
         $ref: `#/definitions/${type.name}`

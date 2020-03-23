@@ -441,7 +441,7 @@ function parseUnionType(
     case 1:
       // not a union
       return parseType(allowedTargetTypes[0], typeTable, lociTable);
-    default:
+    default: {
       const types = [];
       for (const tn of allowedTargetTypes) {
         const typeResult = parseType(tn, typeTable, lociTable);
@@ -449,6 +449,7 @@ function parseUnionType(
         types.push(typeResult.unwrap());
       }
       return ok(unionType(types, inferDiscriminator(types, typeTable)));
+    }
   }
 }
 

@@ -38,10 +38,10 @@ export default class Generate extends Command {
     })
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { flags } = this.parse(Generate);
-    // tslint:disable-next-line:prefer-const
-    let { contract: contractPath, language, generator, out: outDir } = flags;
+    const { contract: contractPath } = flags;
+    let { language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
 
     if (!generator) {
@@ -116,11 +116,11 @@ export default class Generate extends Command {
   }
 }
 
-function availableGenerators() {
+function availableGenerators(): string[] {
   return Object.keys(generators).sort((a, b) => (a > b ? 1 : -1));
 }
 
-function availableFormats(generator: string) {
+function availableFormats(generator: string): string[] {
   return Object.keys(generators[generator].formats).sort((a, b) =>
     a > b ? 1 : -1
   );
@@ -131,31 +131,36 @@ interface Generators {
 }
 
 interface Generator {
-  transformer: (contract: Contract) => Object;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transformer: (contract: Contract) => Record<string, any>;
   formats: {
     [name: string]: Format;
   };
 }
 
 interface Format {
-  formatter: (generatedObject: Object) => string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formatter: (generatedObject: Record<string, any>) => string;
   extension: string;
 }
 
 const jsonFormat: Format = {
-  formatter: (obj: Object) => JSON.stringify(obj, null, 2),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formatter: (obj: Record<string, any>) => JSON.stringify(obj, null, 2),
   extension: "json"
 };
 
 const yamlFormat: Format = {
-  formatter: (obj: Object) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formatter: (obj: Record<string, any>) =>
     YAML.safeDump(obj, { skipInvalid: true /* for undefined */ }),
   extension: "yml"
 };
 
 const generators: Generators = {
   raw: {
-    transformer: (contract: Contract) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    transformer: (contract: Contract): Record<string, any> => {
       return contract;
     },
     formats: {

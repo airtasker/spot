@@ -4,55 +4,55 @@ import { Node } from "ts-morph";
  * Loci table is a lookup table for syntax location data.
  */
 export class LociTable {
-  static apiClassKey() {
+  static apiClassKey(): string {
     return "api_class";
   }
 
-  static apiDecoratorKey() {
+  static apiDecoratorKey(): string {
     return "api_decorator";
   }
 
-  static apiNameKey() {
+  static apiNameKey(): string {
     return "api_name";
   }
 
-  static apiDescriptionKey() {
+  static apiDescriptionKey(): string {
     return "api_description";
   }
 
-  static endpointClassKey(endpointName: string) {
+  static endpointClassKey(endpointName: string): string {
     return `endpoint_<${endpointName}>_class`;
   }
 
-  static endpointDecoratorKey(endpointName: string) {
+  static endpointDecoratorKey(endpointName: string): string {
     return `endpoint_<${endpointName}>_decorator`;
   }
 
-  static endpointMethodKey(endpointName: string) {
+  static endpointMethodKey(endpointName: string): string {
     return `endpoint_<${endpointName}>_method`;
   }
 
-  static endpointPathKey(endpointName: string) {
+  static endpointPathKey(endpointName: string): string {
     return `endpoint_<${endpointName}>_path`;
   }
 
-  static endpointTagsKey(endpointName: string) {
+  static endpointTagsKey(endpointName: string): string {
     return `endpoint_<${endpointName}>_tags`;
   }
 
-  static endpointTagKey(endpointName: string, tag: string) {
+  static endpointTagKey(endpointName: string, tag: string): string {
     return `endpoint_<${endpointName}>_tag_<${tag}>`;
   }
 
-  static endpointRequestKey(endpointName: string) {
+  static endpointRequestKey(endpointName: string): string {
     return `endpoint_<${endpointName}>_request`;
   }
 
-  static endpointDescriptionKey(endpointName: string) {
+  static endpointDescriptionKey(endpointName: string): string {
     return `endpoint_<${endpointName}>_description`;
   }
 
-  static typeKey(typeName: string) {
+  static typeKey(typeName: string): string {
     return `type_<${typeName}>`;
   }
 

@@ -109,6 +109,7 @@ export class StringValidator {
       case TypeKind.ARRAY:
         return this.validateArray(input, type);
       case TypeKind.UNION:
+        // eslint-disable-next-line no-case-declarations
         const anyValid = type.types.some(t => {
           const unionStringValidator = new StringValidator(this.typeTable);
           return unionStringValidator.run(input, t, isMandatory);
@@ -137,7 +138,7 @@ export class StringValidator {
   }
 
   private validateObject(input: StringInput, type: ObjectType): boolean {
-    const validateProps = () =>
+    const validateProps = (): boolean =>
       !type.properties
         .map(p =>
           this.run(
@@ -155,7 +156,7 @@ export class StringValidator {
   }
 
   private validateArray(input: StringInput, type: ArrayType): boolean {
-    const validateItems = () =>
+    const validateItems = (): boolean =>
       !(input.value as [])
         .map((v, index) =>
           this.run(
