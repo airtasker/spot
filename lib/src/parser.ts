@@ -54,7 +54,7 @@ function createProject(): Project {
  *
  * @param project an AST project
  */
-function validateProject(project: Project) {
+function validateProject(project: Project): void {
   const diagnostics = project.getPreEmitDiagnostics();
   if (diagnostics.length > 0) {
     throw new Error(

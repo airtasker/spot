@@ -19,10 +19,9 @@ Generated the following files:
     help: flags.help({ char: "h" })
   };
 
-  async run() {
+  async run(): Promise<void> {
     if (fs.existsSync("api.ts")) {
       this.error(`There is already an API here!`);
-      this.exit(1);
     }
     outputFile(
       ".",

@@ -152,7 +152,7 @@ interface SchemaObjectBase {
   not?: SchemaObject | ReferenceObject;
   title?: string;
   description?: string;
-  example?: any;
+  example?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   externalDocs?: ExternalDocumentationObject;
   deprecated?: boolean;
 }
@@ -207,7 +207,7 @@ export interface ArraySchemaObject extends SchemaObjectBase {
   minItems?: number;
   maxItems?: number;
   uniqueItems?: boolean;
-  default?: any[];
+  default?: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface ObjectSchemaObject extends SchemaObjectBase {
@@ -217,7 +217,7 @@ export interface ObjectSchemaObject extends SchemaObjectBase {
   additionalProperties?: SchemaObject | ReferenceObject | boolean;
   maxProperties?: number;
   minProperties?: number;
-  default?: any;
+  default?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface ObjectPropertiesSchemaObject {
@@ -362,13 +362,13 @@ export interface XmlObject {
 export type ExampleObject = {
   summary?: string;
   description?: string;
-  value?: any;
+  value?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   externalValue?: string;
 } & MutuallyExclusiveExampleObjectValue;
 
 type MutuallyExclusiveExampleObjectValue =
   | {
-      value: any;
+      value: any; // eslint-disable-line @typescript-eslint/no-explicit-any
       externalValue?: never;
     }
   | {
@@ -459,8 +459,8 @@ export interface CallbackObject {
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#linkObject
 type LinkObject = {
-  parameters?: { [name: string]: any };
-  requestBody?: any;
+  parameters?: { [name: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
+  requestBody?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   description?: string;
   server?: ServerObject;
 } & MutuallyExclusiveLinkObjectOperation;
@@ -492,7 +492,7 @@ export interface ExternalDocumentationObject {
 
 type MutuallyExclusiveExample =
   | {
-      example?: any;
+      example?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
       examples?: never;
     }
   | {

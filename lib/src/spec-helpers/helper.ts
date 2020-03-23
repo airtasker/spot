@@ -1,4 +1,4 @@
-import { Project, ts } from "ts-morph";
+import { Project, SourceFile, ts } from "ts-morph";
 
 /**
  * Create an AST source file. Any files imported from the main file must also be provided.
@@ -11,7 +11,7 @@ import { Project, ts } from "ts-morph";
 export function createSourceFile(
   mainFile: FileDetail,
   ...referencedFiles: FileDetail[]
-) {
+): SourceFile {
   const project = createProject();
   referencedFiles.forEach(fileDetail => {
     project.createSourceFile(`test/${fileDetail.path}.ts`, fileDetail.content);
@@ -36,7 +36,7 @@ interface FileDetail {
 /**
  * Create an AST project with the `@airtasker/spot` depedency loaded.
  */
-export function createProject() {
+export function createProject(): Project {
   return new Project({
     compilerOptions: {
       target: ts.ScriptTarget.ESNext,
@@ -60,7 +60,9 @@ export function createProject() {
   });
 }
 
-export function createProjectFromExistingSourceFile(filePath: string) {
+export function createProjectFromExistingSourceFile(
+  filePath: string
+): { project: Project; file: SourceFile } {
   const project = createProject();
   const file = project.addSourceFileAtPath(filePath);
   project.resolveSourceFileDependencies();
@@ -73,7 +75,7 @@ export function createProjectFromExistingSourceFile(filePath: string) {
  *
  * @param project an AST project
  */
-export function validateProject(project: Project) {
+export function validateProject(project: Project): void {
   const diagnostics = project.getPreEmitDiagnostics();
   if (diagnostics.length > 0) {
     throw new Error(

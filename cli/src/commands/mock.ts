@@ -39,7 +39,7 @@ export default class Mock extends Command {
     })
   };
 
-  async run() {
+  async run(): Promise<void> {
     const {
       args,
       flags: { port, pathPrefix, proxyBaseUrl = "" }

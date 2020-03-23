@@ -15,6 +15,7 @@ export interface ProxyConfig {
 /**
  * Runs a mock server that returns dummy data that conforms to an API definition.
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function runMockServer(
   api: Contract,
   {
@@ -73,6 +74,7 @@ export function runMockServer(
   });
   return {
     app,
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     defer: () => new Promise(resolve => app.listen(port, resolve))
   };
 }

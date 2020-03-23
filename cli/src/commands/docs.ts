@@ -30,7 +30,7 @@ export default class Docs extends Command {
     })
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { args, flags } = this.parse(Docs);
     const { port } = flags;
 
@@ -49,7 +49,7 @@ export default class Docs extends Command {
       res.send(openApiObj);
     });
 
-    const start = async () => {
+    const start = async (): Promise<void> => {
       try {
         this.log(`Documentation server started on port ${port}`);
         this.log(`Open http://localhost:${port} to view documentation`);

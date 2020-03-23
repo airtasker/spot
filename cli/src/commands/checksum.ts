@@ -25,7 +25,7 @@ export default class Checksum extends Command {
     help: flags.help({ char: "h" })
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { args } = this.parse(Checksum);
     try {
       const contract = parse(args[ARG_API]);

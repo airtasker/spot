@@ -72,7 +72,7 @@ function findOmittableFieldViolation(
     case TypeKind.DATE:
     case TypeKind.DATE_TIME:
       return [];
-    case TypeKind.OBJECT:
+    case TypeKind.OBJECT: {
       const violationsInObjectPropTypes = type.properties.reduce<string[]>(
         (acc, prop) => {
           return acc.concat(
@@ -94,6 +94,7 @@ function findOmittableFieldViolation(
         []
       );
       return violationsInObjectProps.concat(violationsInObjectPropTypes);
+    }
     case TypeKind.ARRAY:
       return findOmittableFieldViolation(
         type.elementType,

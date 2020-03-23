@@ -1,6 +1,5 @@
 import express from "express";
 import { Contract } from "../definitions";
-import { Logger } from "../utilities/logger";
 import { InternalServerError } from "./spots/utils";
 import {
   RecordedRequest,
@@ -14,11 +13,8 @@ import {
   UserInputResponse
 } from "./verifications/user-input-models";
 
-export function runValidationServer(
-  port: number,
-  contract: Contract,
-  logger: Logger
-) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function runValidationServer(port: number, contract: Contract) {
   const app = express();
 
   app.use(express.json());
@@ -61,6 +57,7 @@ export function runValidationServer(
 
   return {
     app,
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     defer: () => new Promise(resolve => app.listen(port, resolve))
   };
 }

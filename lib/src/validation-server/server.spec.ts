@@ -12,11 +12,6 @@ const DUMMY_BODY = { dummy: "helloworld" };
 const DUMMY_PORT = 5907;
 
 describe("Validation Server", () => {
-  const mockLogger = {
-    log: (message: string) => message,
-    error: (message: string) => message
-  };
-
   const file = createProjectFromExistingSourceFile(
     `${__dirname}/__spec-examples__/contract/contract.ts`
   ).file;
@@ -25,7 +20,7 @@ describe("Validation Server", () => {
 
   describe("/health", () => {
     it("should return 200", async () => {
-      const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
+      const { app } = runValidationServer(DUMMY_PORT, contract);
 
       await request(app).get("/health").expect(200);
     });
@@ -33,7 +28,7 @@ describe("Validation Server", () => {
 
   describe("/validate", () => {
     it("should return no violations for valid request/response pair", async () => {
-      const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
+      const { app } = runValidationServer(DUMMY_PORT, contract);
 
       const validRequestAndResponse = {
         request: {
@@ -82,7 +77,7 @@ describe("Validation Server", () => {
     });
 
     it("should return violations for invalid request/response pair", async () => {
-      const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
+      const { app } = runValidationServer(DUMMY_PORT, contract);
 
       const requestAndResponseWithViolations = {
         request: {
@@ -127,7 +122,7 @@ describe("Validation Server", () => {
     });
 
     it("should return 500 for invalid body", async () => {
-      const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
+      const { app } = runValidationServer(DUMMY_PORT, contract);
 
       await request(app)
         .post("/validate")

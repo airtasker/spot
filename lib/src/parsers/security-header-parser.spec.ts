@@ -21,7 +21,7 @@ describe("security header parser", () => {
 
   test("parses @securityHeader decorated property", () => {
     const result = parseSecurityHeader(
-      klass.getPropertyOrThrow(`\"security-header\"`),
+      klass.getPropertyOrThrow(`"security-header"`),
       typeTable,
       lociTable
     ).unwrapOrThrow();
@@ -37,7 +37,7 @@ describe("security header parser", () => {
 
   test("fails to parse optional @securityHeader decorated property", () => {
     const err = parseSecurityHeader(
-      klass.getPropertyOrThrow(`\"optional-security-header\"`),
+      klass.getPropertyOrThrow(`"optional-security-header"`),
       typeTable,
       lociTable
     ).unwrapErrOrThrow();
@@ -48,7 +48,7 @@ describe("security header parser", () => {
   test("fails to parse non-@securityHeader decorated property", () => {
     expect(() =>
       parseSecurityHeader(
-        klass.getPropertyOrThrow(`\"not-security-header\"`),
+        klass.getPropertyOrThrow(`"not-security-header"`),
         typeTable,
         lociTable
       )
@@ -57,7 +57,7 @@ describe("security header parser", () => {
 
   test("fails to parse @securityHeader decorated property with a field name containing illegal characters", () => {
     const err = parseSecurityHeader(
-      klass.getPropertyOrThrow(`\"illegal-field-name-security-header%$\"`),
+      klass.getPropertyOrThrow(`"illegal-field-name-security-header%$"`),
       typeTable,
       lociTable
     ).unwrapErrOrThrow();
@@ -67,7 +67,7 @@ describe("security header parser", () => {
 
   test("fails to parse @securityHeader decorated property with an empty field name", () => {
     const err = parseSecurityHeader(
-      klass.getPropertyOrThrow(`\"\"`),
+      klass.getPropertyOrThrow(`""`),
       typeTable,
       lociTable
     ).unwrapErrOrThrow();
@@ -77,7 +77,7 @@ describe("security header parser", () => {
 
   test("fails to parse @securityHeader decorated property with a non-string type", () => {
     const err = parseSecurityHeader(
-      klass.getPropertyOrThrow(`\"not-string-security-header\"`),
+      klass.getPropertyOrThrow(`"not-string-security-header"`),
       typeTable,
       lociTable
     ).unwrapErrOrThrow();

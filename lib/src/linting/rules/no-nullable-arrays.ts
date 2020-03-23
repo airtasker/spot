@@ -143,7 +143,7 @@ function findNullableArrayViolations(
         typeTable,
         typePath.concat("[]")
       );
-    case TypeKind.UNION:
+    case TypeKind.UNION: {
       const violationsInUnionTypes = type.types.reduce<string[]>((acc, t) => {
         return acc.concat(
           findNullableArrayViolations(t, typeTable, typePath.concat())
@@ -155,6 +155,7 @@ function findNullableArrayViolations(
       return concreteTypes.some(isArrayType) && concreteTypes.some(isNullType)
         ? violationsInUnionTypes.concat(typePath.join("/"))
         : violationsInUnionTypes;
+    }
     case TypeKind.REFERENCE:
       return findNullableArrayViolations(
         dereferenceType(type, typeTable),

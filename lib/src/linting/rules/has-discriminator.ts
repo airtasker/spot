@@ -143,7 +143,7 @@ function findDisriminatorViolations(
         typeTable,
         typePath.concat("[]")
       );
-    case TypeKind.UNION:
+    case TypeKind.UNION: {
       const violationsInUnionTypes = type.types.reduce<string[]>((acc, t) => {
         return acc.concat(
           findDisriminatorViolations(t, typeTable, typePath.concat())
@@ -170,6 +170,7 @@ function findDisriminatorViolations(
       return type.discriminator === undefined
         ? violationsInUnionTypes.concat(typePath.join("/"))
         : violationsInUnionTypes;
+    }
     case TypeKind.REFERENCE:
       return findDisriminatorViolations(
         dereferenceType(type, typeTable),
