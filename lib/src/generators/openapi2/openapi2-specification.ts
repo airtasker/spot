@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#swagger-object
 export interface OpenApiV2 {
   swagger: "2.0";
@@ -242,7 +240,7 @@ export interface ArrayMultiParameterObjectType
 interface ArrayParameterObjectTypeBase {
   type: "array";
   items: ItemsObject;
-  default?: any[];
+  default?: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
   maxItems?: number;
   minItems?: number;
   uniqueItems?: boolean;
@@ -370,7 +368,7 @@ export interface ExternalDocumentationObject {
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#exampleObject
 export interface ExampleObject {
-  [mimeType: string]: any;
+  [mimeType: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
@@ -395,7 +393,7 @@ interface SchemaObjectBase {
   "x-nullable"?: boolean;
   title?: string;
   description?: string;
-  example?: any;
+  example?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   externalDocs?: ExternalDocumentationObject;
 }
 
@@ -445,7 +443,7 @@ export interface BooleanSchemaObject extends SchemaObjectBase {
 
 export interface ArraySchemaObject extends SchemaObjectBase {
   type: "array";
-  default?: any[];
+  default?: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
   maxItems?: number;
   minItems?: number;
   uniqueItems?: boolean;
@@ -454,7 +452,7 @@ export interface ArraySchemaObject extends SchemaObjectBase {
 
 export interface ObjectSchemaObject extends SchemaObjectBase {
   type: "object";
-  default?: any;
+  default?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   required?: string[];
   maxProperties?: number;
   minProperties?: number;
