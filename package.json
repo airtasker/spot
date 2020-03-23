@@ -47,7 +47,7 @@
     "mini-css-extract-plugin": "^0.9.0",
     "mobx": "^5.15.4",
     "nock": "^12.0.3",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "redoc": "^2.0.0-rc.24",
@@ -93,9 +93,9 @@
     "ci:test": "jest --config=jest.ci.config.js --ci -w 4",
     "lint:check": "yarn prettier:check && yarn tslint:check",
     "tslint:check": "tslint -p .",
-    "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\"",
+    "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
     "lint:fix": "yarn prettier:fix && yarn tslint:fix",
     "tslint:fix": "tslint -p . --fix",
-    "prettier:fix": "prettier --write \"**/*.js\" \"**/*.jsx\" \"**/*.ts\" \"**/*.tsx\""
+    "prettier:fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\""
   }
 }

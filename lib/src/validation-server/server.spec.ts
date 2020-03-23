@@ -27,9 +27,7 @@ describe("Validation Server", () => {
     it("should return 200", async () => {
       const { app } = runValidationServer(DUMMY_PORT, contract, mockLogger);
 
-      await request(app)
-        .get("/health")
-        .expect(200);
+      await request(app).get("/health").expect(200);
     });
   });
 

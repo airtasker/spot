@@ -77,11 +77,9 @@ describe("Server", () => {
   const data = { name: "This is the real response", private: true };
 
   // Set up mock proxy server
-  nock(proxyBaseUrl)
-    .get("/api/companies")
-    .reply(200, data, {
-      "Content-Type": "application/json"
-    });
+  nock(proxyBaseUrl).get("/api/companies").reply(200, data, {
+    "Content-Type": "application/json"
+  });
 
   const mockLogger = {
     log: (message: string) => message,

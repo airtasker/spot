@@ -298,10 +298,7 @@ export function getPropValueAsObjectOrThrow(
 export function getPropertyName(
   property: PropertyDeclaration | PropertySignature
 ): string {
-  return property
-    .getNameNode()
-    .getSymbolOrThrow()
-    .getEscapedName();
+  return property.getNameNode().getSymbolOrThrow().getEscapedName();
 }
 
 // JSDOC HELPERS

@@ -443,8 +443,9 @@ export class ContractMismatcher {
     }
 
     const bodyTypeMismatches = validateFn.errors.map(e => {
-      return `#${e.dataPath} ${e.message ||
-        "JsonSchemaValidator encountered an unexpected error"}`;
+      return `#${e.dataPath} ${
+        e.message || "JsonSchemaValidator encountered an unexpected error"
+      }`;
     });
 
     if (bodyTypeMismatches.length > 0) {
