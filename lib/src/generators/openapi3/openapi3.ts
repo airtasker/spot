@@ -119,7 +119,7 @@ function endpointToOperationObject(
   config: Config
 ): OperationObject {
   const endpointRequest = endpoint.request;
-  const endpointRequestBody = endpointRequest && endpointRequest.body;
+  const endpointRequestBody = endpointRequest?.body;
 
   return {
     tags: endpoint.tags.length > 0 ? endpoint.tags : undefined,

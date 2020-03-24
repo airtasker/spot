@@ -7,7 +7,7 @@ export default function inferProxyConfig(
     return null;
   }
 
-  const [protocol] = proxyBaseUrl && proxyBaseUrl.split("://");
+  const [protocol] = proxyBaseUrl.split("://");
 
   if (protocol !== "http" && protocol !== "https") {
     throw new Error(

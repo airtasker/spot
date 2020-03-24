@@ -27,17 +27,16 @@ export function noOmittableFieldsWithinResponseBodies(
         );
       }
     });
-    if (endpoint.defaultResponse) {
-      if (endpoint.defaultResponse.body) {
-        findOmittableFieldViolation(
-          endpoint.defaultResponse.body.type,
-          typeTable
-        ).forEach(path => {
-          violations.push({
-            message: `Endpoint (${endpoint.name}) response (default) body contains an omittable field: #/${path}`
-          });
+
+    if (endpoint.defaultResponse?.body) {
+      findOmittableFieldViolation(
+        endpoint.defaultResponse.body.type,
+        typeTable
+      ).forEach(path => {
+        violations.push({
+          message: `Endpoint (${endpoint.name}) response (default) body contains an omittable field: #/${path}`
         });
-      }
+      });
     }
   });
 

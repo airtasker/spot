@@ -29,7 +29,6 @@ export function parseResponse(
   const statusLiteral = getPropValueAsNumberOrThrow(statusProp);
   const headersParam = getParamWithDecorator(method, "headers");
   const bodyParam = getParamWithDecorator(method, "body");
-  const descriptionDoc = getJsDoc(method);
 
   const headers = [];
   if (headersParam) {
@@ -48,7 +47,7 @@ export function parseResponse(
   return ok({
     status: statusLiteral.getLiteralValue(),
     headers,
-    description: descriptionDoc && descriptionDoc.getDescription().trim(),
+    description: getJsDoc(method)?.getDescription().trim(),
     body
   });
 }

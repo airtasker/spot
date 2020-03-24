@@ -340,11 +340,9 @@ function parseObjectLiteralType(
 
     if (propTypeResult.isErr()) return propTypeResult;
 
-    const psDescription = getJsDoc(ps);
-
     const prop = {
       name: getPropertyName(ps),
-      description: psDescription && psDescription.getDescription().trim(),
+      description: getJsDoc(ps)?.getDescription().trim(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };
@@ -399,11 +397,9 @@ function parseInterfaceDeclaration(
 
     if (propTypeResult.isErr()) return propTypeResult;
 
-    const psDescription = getJsDoc(ps);
-
     const prop = {
       name: getPropertyName(ps),
-      description: psDescription && psDescription.getDescription().trim(),
+      description: getJsDoc(ps)?.getDescription().trim(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };

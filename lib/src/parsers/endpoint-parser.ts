@@ -51,8 +51,7 @@ export function parseEndpoint(
   const tags = tagsResult.unwrap();
 
   // Handle jsdoc
-  const descriptionDoc = getJsDoc(klass);
-  const description = descriptionDoc && descriptionDoc.getDescription().trim();
+  const description = getJsDoc(klass)?.getDescription().trim();
 
   // Handle draft
   const draft = klass.getDecorator("draft") !== undefined;
@@ -88,9 +87,8 @@ export function parseEndpoint(
 
   // Check request path params cover the path dynamic components
   const pathParamsInPath = getDynamicPathComponents(path);
-  const pathParamsInRequest = request
-    ? request.pathParams.map(pathParam => pathParam.name)
-    : [];
+  const pathParamsInRequest =
+    request?.pathParams.map(pathParam => pathParam.name) || [];
 
   const exclusivePathParamsInPath = pathParamsInPath.filter(
     pathParam => !pathParamsInRequest.includes(pathParam)

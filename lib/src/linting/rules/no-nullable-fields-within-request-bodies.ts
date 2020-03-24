@@ -16,17 +16,14 @@ export function noNullableFieldsWithinRequestBodies(
   const violations: LintingRuleViolation[] = [];
 
   contract.endpoints.forEach(endpoint => {
-    if (endpoint.request) {
-      if (endpoint.request.body) {
-        findNullableFieldViolation(
-          endpoint.request.body.type,
-          typeTable
-        ).forEach(path => {
+    if (endpoint.request?.body) {
+      findNullableFieldViolation(endpoint.request.body.type, typeTable).forEach(
+        path => {
           violations.push({
             message: `Endpoint (${endpoint.name}) request body contains a nullable field: #/${path}`
           });
-        });
-      }
+        }
+      );
     }
   });
 
