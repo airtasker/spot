@@ -57,7 +57,7 @@ export function parseContract(
 
   // Handle description
   const descriptionDoc = getJsDoc(klass);
-  const description = descriptionDoc && descriptionDoc.getDescription().trim();
+  const description = descriptionDoc?.getDescription().trim();
 
   // Handle config
   const configResult = resolveConfig(klass);
@@ -70,7 +70,7 @@ export function parseContract(
     securityHeaderProp &&
     parseSecurityHeader(securityHeaderProp, typeTable, lociTable);
   if (securityResult && securityResult.isErr()) return securityResult;
-  const security = securityResult && securityResult.unwrap();
+  const security = securityResult?.unwrap();
 
   // Add location data
   lociTable.addMorphNode(LociTable.apiClassKey(), klass);

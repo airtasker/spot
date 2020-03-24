@@ -49,7 +49,7 @@ export default class Mock extends Command {
       const contract = parse(args[ARG_API]);
       await runMockServer(contract, {
         port,
-        pathPrefix: pathPrefix || "",
+        pathPrefix: pathPrefix ?? "",
         ...proxyConfig,
         logger: this
       }).defer();

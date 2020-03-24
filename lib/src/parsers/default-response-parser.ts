@@ -16,7 +16,6 @@ export function parseDefaultResponse(
   method.getDecoratorOrThrow("defaultResponse");
   const headersParam = getParamWithDecorator(method, "headers");
   const bodyParam = getParamWithDecorator(method, "body");
-  const descriptionDoc = getJsDoc(method);
 
   const headers = [];
   if (headersParam) {
@@ -34,7 +33,7 @@ export function parseDefaultResponse(
 
   return ok({
     headers,
-    description: descriptionDoc && descriptionDoc.getDescription().trim(),
+    description: getJsDoc(method)?.getDescription().trim(),
     body
   });
 }

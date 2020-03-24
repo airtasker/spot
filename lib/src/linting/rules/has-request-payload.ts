@@ -16,7 +16,7 @@ export function hasRequestPayload(contract: Contract): LintingRuleViolation[] {
   contract.endpoints.forEach(endpoint => {
     switch (endpoint.method) {
       case "GET":
-        if (endpoint.request && endpoint.request.body) {
+        if (endpoint.request?.body) {
           violations.push({
             message: `Endpoint (${endpoint.name}) with HTTP method ${endpoint.method} must not contain a request body`
           });
@@ -25,7 +25,7 @@ export function hasRequestPayload(contract: Contract): LintingRuleViolation[] {
       case "POST":
       case "PATCH":
       case "PUT":
-        if (!(endpoint.request && endpoint.request.body)) {
+        if (!endpoint.request?.body) {
           violations.push({
             message: `Endpoint (${endpoint.name}) with HTTP method ${endpoint.method} must contain a request body`
           });
