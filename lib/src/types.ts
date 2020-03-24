@@ -484,7 +484,7 @@ export function inferDiscriminator(
         const current = possibleDiscriminators.get(property.name);
         possibleDiscriminators.set(
           property.name,
-          (current || []).concat({
+          (current ?? []).concat({
             value: dereferencedPropertyType.value,
             type
           })

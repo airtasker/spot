@@ -23,7 +23,7 @@ export function proxyRequest({
 
   const proxyRequest = requestHandler.request(proxyBaseUrl, options, res => {
     // Forward headers
-    response.writeHead(res.statusCode || response.statusCode, res.headers);
+    response.writeHead(res.statusCode ?? response.statusCode, res.headers);
     res.pipe(response);
   });
 

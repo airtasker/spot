@@ -101,8 +101,7 @@ function endpointsToPathsObject(
       )
       .join("/");
 
-    // Note: acc[pathName] || {} breaks type safety, ternary operation is type safe
-    acc[pathName] = acc[pathName] ? acc[pathName] : {};
+    acc[pathName] = acc[pathName] ?? {};
     const pathItemMethod = httpMethodToPathItemMethod(endpoint.method);
     acc[pathName][pathItemMethod] = endpointToOperationObject(
       endpoint,
@@ -263,7 +262,7 @@ function endpointResponseToResponseObject(
   typeTable: TypeTable
 ): ResponseObject {
   const description =
-    response.description ||
+    response.description ??
     (isSpecificResponse(response)
       ? `${response.status} response`
       : "default response");

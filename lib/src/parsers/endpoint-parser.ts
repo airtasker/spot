@@ -88,7 +88,7 @@ export function parseEndpoint(
   // Check request path params cover the path dynamic components
   const pathParamsInPath = getDynamicPathComponents(path);
   const pathParamsInRequest =
-    request?.pathParams.map(pathParam => pathParam.name) || [];
+    request?.pathParams.map(pathParam => pathParam.name) ?? [];
 
   const exclusivePathParamsInPath = pathParamsInPath.filter(
     pathParam => !pathParamsInRequest.includes(pathParam)

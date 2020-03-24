@@ -53,7 +53,7 @@ export function runMockServer(
         }
 
         logger.log(`Request hit for ${endpoint.name} registered.`);
-        const response = endpoint.responses[0] || endpoint.defaultResponse;
+        const response = endpoint.responses[0] ?? endpoint.defaultResponse;
         if (!response) {
           logger.error(`No response defined for endpoint ${endpoint.name}`);
           return;

@@ -110,7 +110,7 @@ export class ContractMismatcher {
 
     // Find request header mismatches
     const requestHeaderMismatches = this.findHeaderMismatches(
-      expectedRequest?.headers || [],
+      expectedRequest?.headers ?? [],
       userInputRequest.headers,
       true
     );
@@ -354,7 +354,7 @@ export class ContractMismatcher {
     contractEndpoint: Endpoint,
     inputPath: string
   ): PathParamTypeDisparityMismatch[] {
-    const contractPathParams = contractEndpoint.request?.pathParams || [];
+    const contractPathParams = contractEndpoint.request?.pathParams ?? [];
 
     const contractPathArray = contractEndpoint.path.split("/");
     const inputPathArray = inputPath.split("?")[0].split("/");
@@ -443,7 +443,7 @@ export class ContractMismatcher {
 
     const bodyTypeMismatches = validateFn.errors.map(e => {
       return `#${e.dataPath} ${
-        e.message || "JsonSchemaValidator encountered an unexpected error"
+        e.message ?? "JsonSchemaValidator encountered an unexpected error"
       }`;
     });
 
@@ -474,9 +474,9 @@ export class ContractMismatcher {
     | UndefinedQueryParamMismatch
     | QueryParamTypeDisparityMismatch
   )[] {
-    const contractQueryParams = contractEndpoint.request?.queryParams || [];
+    const contractQueryParams = contractEndpoint.request?.queryParams ?? [];
 
-    const queryStringComponent = url.parse(inputPath).query || "";
+    const queryStringComponent = url.parse(inputPath).query ?? "";
 
     const inputQueryParams = qs.parse(queryStringComponent, {
       ...this.getQueryParamsArraySerializationStrategy()
@@ -580,7 +580,7 @@ export class ContractMismatcher {
       );
     });
 
-    return endpoint || null;
+    return endpoint ?? null;
   }
 }
 
