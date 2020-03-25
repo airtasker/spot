@@ -17,10 +17,9 @@ describe("validators", () => {
 
   beforeEach(() => {
     const typeTable = new TypeTable();
-    typeTable.add(
-      "obj1",
-      objectType([{ name: "id", type: int64Type(), optional: false }])
-    );
+    typeTable.add("obj1", {
+      type: objectType([{ name: "id", type: int64Type(), optional: false }])
+    });
     validator = new StringValidator(typeTable);
   });
 

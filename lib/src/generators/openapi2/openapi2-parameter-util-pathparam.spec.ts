@@ -228,7 +228,7 @@ describe("OpenAPI 2 parameter util: path param", () => {
       type: referenceType("CustomType")
     };
     const typeTable = new TypeTable();
-    typeTable.add("CustomType", stringType());
+    typeTable.add("CustomType", { type: stringType() });
 
     const result = pathParamToPathParameterObject(pathParam, typeTable);
     expect(result).toEqual({

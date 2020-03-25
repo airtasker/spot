@@ -95,7 +95,7 @@ describe("Dummy", () => {
     });
     test("type reference", () => {
       const types = new TypeTable();
-      types.add("other", stringLiteralType("other constant"));
+      types.add("other", { type: stringLiteralType("other constant") });
       expect(generateData(types, referenceType("other"))).toBe(
         "other constant"
       );
