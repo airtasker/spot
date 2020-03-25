@@ -35,7 +35,10 @@ import {
   ResponseObject,
   ResponsesObject
 } from "./openapi3-specification";
-import { typeToSchemaOrReferenceObject } from "./openapi3-type-util";
+import {
+  typeToSchemaOrReferenceObject,
+  isReferenceObject
+} from "./openapi3-type-util";
 
 const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
 
@@ -303,7 +306,11 @@ function contractTypesToComponentsObjectSchemas(
   typeTable: TypeTable
 ): ComponentsObject["schemas"] {
   return types.reduce<Required<ComponentsObject>["schemas"]>((acc, t) => {
-    acc[t.name] = typeToSchemaOrReferenceObject(t.type, typeTable);
+    const typeObject = typeToSchemaOrReferenceObject(t.typeDef.type, typeTable);
+    if (!isReferenceObject(typeObject)) {
+      typeObject.description = t.typeDef.description;
+    }
+    acc[t.name] = typeObject;
     return acc;
   }, {});
 }

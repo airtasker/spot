@@ -139,7 +139,11 @@ function objectTypeToSchema(
     type.properties.length > 0
       ? type.properties.reduce<ObjectPropertiesSchemaObject>(
           (acc, property) => {
-            acc[property.name] = typeToSchemaObject(property.type, typeTable);
+            const propType = typeToSchemaObject(property.type, typeTable);
+            if (!isReferenceSchemaObject(propType)) {
+              propType.description = property.description;
+            }
+            acc[property.name] = propType;
             return acc;
           },
           {}
@@ -249,4 +253,10 @@ function createEnum<T>(
 ): (T | null)[] | undefined {
   if (!values) return;
   return nullable ? [...values, null] : values;
+}
+
+export function isReferenceSchemaObject(
+  typeObject: SchemaObject
+): typeObject is ReferenceSchemaObject {
+  return "$ref" in typeObject;
 }

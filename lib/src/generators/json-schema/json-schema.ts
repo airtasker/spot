@@ -8,7 +8,7 @@ export function generateJsonSchema(contract: Contract): JsonSchema {
     definitions: contract.types.reduce<{
       [typeName: string]: JsonSchemaType;
     }>((acc, typeNode) => {
-      acc[typeNode.name] = typeToJsonSchemaType(typeNode.type);
+      acc[typeNode.name] = typeToJsonSchemaType(typeNode.typeDef.type);
       return acc;
     }, {})
   };

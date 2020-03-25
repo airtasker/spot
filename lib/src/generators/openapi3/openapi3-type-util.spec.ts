@@ -158,7 +158,12 @@ describe("OpenAPI 3 type util", () => {
     test("converts to object schema", () => {
       const result = typeToSchemaOrReferenceObject(
         objectType([
-          { name: "a", type: stringType(), optional: false },
+          {
+            name: "a",
+            type: stringType(),
+            optional: false,
+            description: "description"
+          },
           { name: "b", type: stringType(), optional: true }
         ]),
         new TypeTable()
@@ -166,7 +171,7 @@ describe("OpenAPI 3 type util", () => {
       expect(result).toEqual({
         type: "object",
         properties: {
-          a: { type: "string" },
+          a: { type: "string", description: "description" },
           b: { type: "string" }
         },
         required: ["a"]
@@ -375,7 +380,7 @@ describe("OpenAPI 3 type util", () => {
 
       test("CustomType | null", () => {
         const typeTable = new TypeTable();
-        typeTable.add("CustomType", stringType());
+        typeTable.add("CustomType", { type: stringType() });
 
         const result = typeToSchemaOrReferenceObject(
           unionType([referenceType("CustomType"), nullType()]),
@@ -592,13 +597,12 @@ describe("OpenAPI 3 type util", () => {
 
       test('{ type: "a", a: string; } | CustomObjectTypeB', () => {
         const typeTable = new TypeTable();
-        typeTable.add(
-          "CustomObjectTypeB",
-          objectType([
+        typeTable.add("CustomObjectTypeB", {
+          type: objectType([
             { name: "type", type: stringLiteralType("b"), optional: false },
             { name: "b", type: stringType(), optional: false }
           ])
-        );
+        });
 
         const result = typeToSchemaOrReferenceObject(
           unionType(
@@ -633,20 +637,18 @@ describe("OpenAPI 3 type util", () => {
 
       test("CustomObjectTypeA | CustomObjectTypeB", () => {
         const typeTable = new TypeTable();
-        typeTable.add(
-          "CustomObjectTypeA",
-          objectType([
+        typeTable.add("CustomObjectTypeA", {
+          type: objectType([
             { name: "type", type: stringLiteralType("a"), optional: false },
             { name: "a", type: stringType(), optional: false }
           ])
-        );
-        typeTable.add(
-          "CustomObjectTypeB",
-          objectType([
+        });
+        typeTable.add("CustomObjectTypeB", {
+          type: objectType([
             { name: "type", type: stringLiteralType("b"), optional: false },
             { name: "b", type: stringType(), optional: false }
           ])
-        );
+        });
 
         const result = typeToSchemaOrReferenceObject(
           unionType(
@@ -675,7 +677,7 @@ describe("OpenAPI 3 type util", () => {
 
       test("CustomType | boolean", () => {
         const typeTable = new TypeTable();
-        typeTable.add("CustomType", stringType());
+        typeTable.add("CustomType", { type: stringType() });
 
         const result = typeToSchemaOrReferenceObject(
           unionType([referenceType("CustomType"), booleanType()]),
@@ -691,10 +693,10 @@ describe("OpenAPI 3 type util", () => {
     });
   });
 
-  describe("referenceType", () => {
+  describe("Reference type", () => {
     test("converts to reference object", () => {
       const typeTable = new TypeTable();
-      typeTable.add("CustomType", stringType());
+      typeTable.add("CustomType", { type: stringType() });
 
       const result = typeToSchemaOrReferenceObject(
         referenceType("CustomType"),

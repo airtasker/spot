@@ -423,7 +423,7 @@ export function possibleRootTypes(
   typeTable: TypeTable
 ): ConcreteType[] {
   if (isReferenceType(type)) {
-    return possibleRootTypes(typeTable.getOrError(type.name), typeTable);
+    return possibleRootTypes(typeTable.getOrError(type.name).type, typeTable);
   }
   if (isUnionType(type)) {
     return type.types.reduce<ConcreteType[]>(
@@ -439,7 +439,7 @@ export function dereferenceType(
   typeTable: TypeTable
 ): Exclude<Type, ReferenceType> {
   if (isReferenceType(type)) {
-    return dereferenceType(typeTable.getOrError(type.name), typeTable);
+    return dereferenceType(typeTable.getOrError(type.name).type, typeTable);
   }
   return type;
 }
@@ -521,13 +521,15 @@ export class TypeTable {
    * Retrieve the number of entries in the type table.
    */
   get size(): number {
-    return this.types.size;
+    return this.typeDefs.size;
   }
 
-  static fromArray(types: { name: string; type: Type }[]): TypeTable {
-    const entries = types.reduce(
-      (acc: [string, Type][], t: { name: string; type: Type }) => {
-        acc.push([t.name, t.type]);
+  static fromArray(
+    typeTableArr: { name: string; typeDef: TypeDef }[]
+  ): TypeTable {
+    const entries = typeTableArr.reduce(
+      (acc: [string, TypeDef][], t: { name: string; typeDef: TypeDef }) => {
+        acc.push([t.name, t.typeDef]);
         return acc;
       },
       []
@@ -536,19 +538,19 @@ export class TypeTable {
     return new TypeTable(new Map(entries));
   }
 
-  private types: Map<string, Type>;
+  private typeDefs: Map<string, TypeDef>;
 
-  constructor(types: Map<string, Type> = new Map<string, Type>()) {
-    this.types = types;
+  constructor(types: Map<string, TypeDef> = new Map<string, TypeDef>()) {
+    this.typeDefs = types;
   }
 
   /**
    * Return an object representation of the type table.
    */
-  toArray(): { name: string; type: Type }[] {
-    const arr = new Array<{ name: string; type: Type }>();
-    this.types.forEach((type, key) => {
-      arr.push({ name: key, type });
+  toArray(): { name: string; typeDef: TypeDef }[] {
+    const arr = new Array<{ name: string; typeDef: TypeDef }>();
+    this.typeDefs.forEach((typeDef, key) => {
+      arr.push({ name: key, typeDef });
     });
     return arr.sort((a, b) => (b.name > a.name ? -1 : 1));
   }
@@ -557,13 +559,13 @@ export class TypeTable {
    * Add a type to the type table. If the type key is already present, `add` will throw an error.
    *
    * @param key lookup key
-   * @param locus target locus
+   * @param typeDef target type definition
    */
-  add(key: string, type: Type): void {
-    if (this.types.has(key)) {
+  add(key: string, typeDef: TypeDef): void {
+    if (this.typeDefs.has(key)) {
       throw new Error(`Key already present in type table: ${key}`);
     }
-    this.types.set(key, type);
+    this.typeDefs.set(key, typeDef);
   }
 
   /**
@@ -571,8 +573,8 @@ export class TypeTable {
    *
    * @param key lookup key
    */
-  get(key: string): Type | undefined {
-    return this.types.get(key);
+  get(key: string): TypeDef | undefined {
+    return this.typeDefs.get(key);
   }
 
   /**
@@ -580,12 +582,12 @@ export class TypeTable {
    *
    * @param key lookup key
    */
-  getOrError(key: string): Type {
-    const type = this.get(key);
-    if (type === undefined) {
+  getOrError(key: string): TypeDef {
+    const typeDef = this.get(key);
+    if (typeDef === undefined) {
       throw new Error(`Key not present in type table: ${key}`);
     }
-    return type;
+    return typeDef;
   }
 
   /**
@@ -594,6 +596,11 @@ export class TypeTable {
    * @param key lookup key
    */
   exists(key: string): boolean {
-    return this.types.has(key);
+    return this.typeDefs.has(key);
   }
+}
+
+export interface TypeDef {
+  type: Type;
+  description?: string;
 }

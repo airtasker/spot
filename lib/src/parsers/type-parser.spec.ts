@@ -219,7 +219,7 @@ describe("type parser", () => {
         kind: TypeKind.OBJECT,
         properties: [
           {
-            description: undefined,
+            description: "Property description",
             name: "propertyA",
             optional: false,
             type: {
@@ -361,7 +361,8 @@ describe("type parser", () => {
     );
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasString")).toStrictEqual({
-      kind: TypeKind.STRING
+      description: undefined,
+      type: { kind: TypeKind.STRING }
     });
   });
 
@@ -378,10 +379,29 @@ describe("type parser", () => {
     );
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasArray")).toStrictEqual({
-      kind: TypeKind.ARRAY,
-      elementType: {
-        kind: TypeKind.STRING
+      description: undefined,
+      type: {
+        kind: TypeKind.ARRAY,
+        elementType: { kind: TypeKind.STRING }
       }
+    });
+  });
+
+  test("parses aliases with descriptions", () => {
+    const type = interphace
+      .getPropertyOrThrow("aliasWithDescription")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.REFERENCE,
+        name: "AliasWithDescription"
+      }
+    );
+    expect(typeTable.size).toBe(1);
+    expect(typeTable.getOrError("AliasWithDescription")).toStrictEqual({
+      description: "Alias description",
+      type: { kind: TypeKind.STRING }
     });
   });
 
@@ -398,17 +418,50 @@ describe("type parser", () => {
     );
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("Interface")).toStrictEqual({
-      kind: TypeKind.OBJECT,
-      properties: [
-        {
-          description: undefined,
-          name: "interfaceProperty",
-          optional: false,
-          type: {
-            kind: TypeKind.BOOLEAN
+      description: undefined,
+      type: {
+        kind: TypeKind.OBJECT,
+        properties: [
+          {
+            description: undefined,
+            name: "interfaceProperty",
+            optional: false,
+            type: {
+              kind: TypeKind.BOOLEAN
+            }
           }
-        }
-      ]
+        ]
+      }
+    });
+  });
+
+  test("parses interfaces with descriptions", () => {
+    const type = interphace
+      .getPropertyOrThrow("interfaceWithDescription")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: TypeKind.REFERENCE,
+        name: "InterfaceWithDescription"
+      }
+    );
+    expect(typeTable.size).toBe(1);
+    expect(typeTable.getOrError("InterfaceWithDescription")).toStrictEqual({
+      description: "Interface description",
+      type: {
+        kind: TypeKind.OBJECT,
+        properties: [
+          {
+            description: undefined,
+            name: "interfaceProperty",
+            optional: false,
+            type: {
+              kind: TypeKind.BOOLEAN
+            }
+          }
+        ]
+      }
     });
   });
 
@@ -425,25 +478,28 @@ describe("type parser", () => {
     );
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("InterfaceExtends")).toStrictEqual({
-      kind: TypeKind.OBJECT,
-      properties: [
-        {
-          description: undefined,
-          name: "interfaceExtendsProperty",
-          optional: false,
-          type: {
-            kind: TypeKind.BOOLEAN
+      description: undefined,
+      type: {
+        kind: TypeKind.OBJECT,
+        properties: [
+          {
+            description: undefined,
+            name: "interfaceExtendsProperty",
+            optional: false,
+            type: {
+              kind: TypeKind.BOOLEAN
+            }
+          },
+          {
+            description: undefined,
+            name: "interfaceProperty",
+            optional: false,
+            type: {
+              kind: TypeKind.BOOLEAN
+            }
           }
-        },
-        {
-          description: undefined,
-          name: "interfaceProperty",
-          optional: false,
-          type: {
-            kind: TypeKind.BOOLEAN
-          }
-        }
-      ]
+        ]
+      }
     });
   });
 

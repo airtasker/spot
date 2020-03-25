@@ -57,7 +57,7 @@ export function generateData(types: TypeTable, type: Type): any {
         type.types[randomInteger(type.types.length - 1)]
       );
     case TypeKind.REFERENCE: {
-      const referencedType = types.get(type.name);
+      const referencedType = types.get(type.name)?.type;
       if (!referencedType) {
         throw new Error(`Missing referenced type: ${type.name}`);
       }

@@ -355,7 +355,7 @@ describe("OpenAPI 2 parameter util: query param", () => {
         optional: false
       };
       const typeTable = new TypeTable();
-      typeTable.add("CustomType", stringType());
+      typeTable.add("CustomType", { type: stringType() });
 
       const result = queryParamToQueryParameterObject(
         queryParam,

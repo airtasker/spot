@@ -234,7 +234,7 @@ describe("OpenAPI 2 parameter util: response header", () => {
         optional: false
       };
       const typeTable = new TypeTable();
-      typeTable.add("CustomType", stringType());
+      typeTable.add("CustomType", { type: stringType() });
 
       const result = responseHeaderToHeaderObject(header, typeTable);
       expect(result).toEqual({
