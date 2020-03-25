@@ -11,6 +11,7 @@ export function parseBody(
   typeTable: TypeTable,
   lociTable: LociTable
 ): Result<Body, ParserError> {
+  // TODO: retrieve JsDoc as body description https://github.com/dsherret/ts-morph/issues/753
   parameter.getDecoratorOrThrow("body");
   if (parameter.hasQuestionToken()) {
     return err(

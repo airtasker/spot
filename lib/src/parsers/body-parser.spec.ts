@@ -34,6 +34,20 @@ describe("body parser", () => {
     });
   });
 
+  test("parses @body decorated parameter with description", () => {
+    const result = parseBody(
+      method.getParameterOrThrow("bodyWithDescription"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+
+    expect(result).toStrictEqual({
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+  });
+
   test("fails to parse optional @body decorated parameter", () => {
     expect(
       parseBody(

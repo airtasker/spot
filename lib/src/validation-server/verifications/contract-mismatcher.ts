@@ -423,7 +423,7 @@ export class ContractMismatcher {
         [key: string]: JsonSchemaType;
       }>((defAcc, typeNode) => {
         return {
-          [typeNode.name]: typeToJsonSchemaType(typeNode.type, !strict),
+          [typeNode.name]: typeToJsonSchemaType(typeNode.typeDef.type, !strict),
           ...defAcc
         };
       }, {})

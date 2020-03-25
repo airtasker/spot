@@ -1,10 +1,10 @@
-import { Type } from "./types";
+import { Type, TypeDef } from "./types";
 
 export interface Contract {
   name: string;
   description?: string;
   config: Config;
-  types: { name: string; type: Type }[];
+  types: { name: string; typeDef: TypeDef }[];
   security?: SecurityHeader;
   endpoints: Endpoint[];
 }

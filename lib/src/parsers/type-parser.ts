@@ -136,6 +136,7 @@ function parseTypeReference(
 
   const declaration = declarationResult.unwrap();
   const name = declaration.getName();
+  const description = getJsDoc(declaration)?.getDescription().trim();
 
   if (TypeGuards.isTypeAliasDeclaration(declaration)) {
     const decTypeNode = declaration.getTypeNodeOrThrow();
@@ -181,7 +182,7 @@ function parseTypeReference(
       } else {
         const targetTypeResult = parseType(decTypeNode, typeTable, lociTable);
         if (targetTypeResult.isErr()) return targetTypeResult;
-        typeTable.add(name, targetTypeResult.unwrap());
+        typeTable.add(name, { type: targetTypeResult.unwrap(), description });
         lociTable.addMorphNode(LociTable.typeKey(name), decTypeNode);
       }
       return ok(referenceType(name));
@@ -201,7 +202,7 @@ function parseTypeReference(
           lociTable
         );
         if (targetTypeResult.isErr()) return targetTypeResult;
-        typeTable.add(name, targetTypeResult.unwrap());
+        typeTable.add(name, { type: targetTypeResult.unwrap(), description });
         lociTable.addMorphNode(LociTable.typeKey(name), declaration);
       }
       return ok(referenceType(name));
@@ -520,7 +521,7 @@ function resolveIndexedAccessType(
     );
   }
   if (currentType.kind === TypeKind.REFERENCE) {
-    const referencedType = typeTable.getOrError(currentType.name);
+    const referencedType = typeTable.getOrError(currentType.name).type;
     return resolveIndexedAccessType(propertyChain, referencedType, typeTable);
   }
   throw new Error("Indexed type error");

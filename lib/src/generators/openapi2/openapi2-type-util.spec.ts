@@ -348,7 +348,7 @@ describe("OpenAPI 2 type util", () => {
 
       test("CustomType | null", () => {
         const typeTable = new TypeTable();
-        typeTable.add("CustomType", stringType());
+        typeTable.add("CustomType", { type: stringType() });
 
         const result = typeToSchemaObject(
           unionType([referenceType("CustomType"), nullType()]),
@@ -501,7 +501,7 @@ describe("OpenAPI 2 type util", () => {
   describe("referenceType", () => {
     test("converts to reference object", () => {
       const typeTable = new TypeTable();
-      typeTable.add("CustomType", stringType());
+      typeTable.add("CustomType", { type: stringType() });
 
       const result = typeToSchemaObject(referenceType("CustomType"), typeTable);
       expect(result).toEqual({

@@ -30,6 +30,7 @@ interface TypeInterface {
   Date: Date;
   DateTime: DateTime;
   literalObject: {
+    /** Property description */
     propertyA: string;
     propertyB?: boolean;
   };
@@ -43,7 +44,9 @@ interface TypeInterface {
     | null;
   aliasString: AliasString;
   aliasArray: AliasArray;
+  aliasWithDescription: AliasWithDescription;
   interface: Interface;
+  interfaceWithDescription: InterfaceWithDescription;
   interfaceExtends: InterfaceExtends;
   indexedAccess: IndexedAccess["root"];
   indexedAccessNested: IndexedAccess["child"]["nested"]["secondNest"];
@@ -70,7 +73,15 @@ type AliasString = string;
 
 type AliasArray = string[];
 
+/** Alias description */
+type AliasWithDescription = string;
+
 interface Interface {
+  interfaceProperty: boolean;
+}
+
+/** Interface description */
+interface InterfaceWithDescription {
   interfaceProperty: boolean;
 }
 

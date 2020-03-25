@@ -33,7 +33,10 @@ import {
   ResponsesObject,
   SecurityDefinitionsObject
 } from "./openapi2-specification";
-import { typeToSchemaObject } from "./openapi2-type-util";
+import {
+  typeToSchemaObject,
+  isReferenceSchemaObject
+} from "./openapi2-type-util";
 
 const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
 
@@ -76,7 +79,11 @@ function contractTypesToDefinitionsObject(
   }
 
   return types.reduce<DefinitionsObject>((acc, t) => {
-    acc[t.name] = typeToSchemaObject(t.type, typeTable);
+    const schemaObject = typeToSchemaObject(t.typeDef.type, typeTable);
+    if (!isReferenceSchemaObject(schemaObject)) {
+      schemaObject.description = t.typeDef.description;
+    }
+    acc[t.name] = schemaObject;
     return acc;
   }, {});
 }
