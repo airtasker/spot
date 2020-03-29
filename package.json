@@ -19,7 +19,7 @@
     "js-yaml": "^3.13.1",
     "qs": "^6.9.3",
     "randomstring": "^1.1.5",
-    "ts-morph": "^7.0.0",
+    "ts-morph": "^7.0.1",
     "typescript": "^3.8.3",
     "validator": "^13.0.0"
   },
