@@ -77,7 +77,7 @@ describe("handle lint violations", () => {
     });
   });
 
-  describe("lint violation when rule is specificed as a error", () => {
+  describe("lint violation when rule is specified as a error", () => {
     beforeEach(() => {
       errorMock = jest.fn();
       warnMock = jest.fn();
