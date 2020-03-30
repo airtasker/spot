@@ -12,9 +12,9 @@ export interface SpotConfig {
 // TODO: Make it possible to specify with a config file
 const spotConfig: SpotConfig = {
   rules: {
-    'no-omitable-fields-within-response-bodies': 'warn'
+    "no-omitable-fields-within-response-bodies": "warn"
   }
-}
+};
 
 /**
  * oclif command to lint a spot contract
@@ -43,14 +43,10 @@ export default class Lint extends Command {
     const contract = parse(contractPath);
     const groupedLintErrors = lint(contract);
 
-    const deferExit = handleLintViolations(
-      groupedLintErrors,
-      spotConfig,
-      {
-        error: this.error,
-        warn: this.warn
-      }
-    )
+    const deferExit = handleLintViolations(groupedLintErrors, spotConfig, {
+      error: this.error,
+      warn: this.warn
+    });
 
     if (deferExit) {
       process.exit(1);

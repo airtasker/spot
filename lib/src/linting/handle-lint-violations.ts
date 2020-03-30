@@ -12,52 +12,58 @@ import { SpotConfig } from "cli/src/commands/lint";
  * error or an unknown rule setting is found. Otherwise it is false.
  */
 interface HandleLintViolationsDependencies {
-    error: (msg: string, options: {
-        code?: string;
-        exit: false;
-    }) => void;
-    warn: (msg: string) => void;
+  error: (
+    msg: string,
+    options: {
+      code?: string;
+      exit: false;
+    }
+  ) => void;
+  warn: (msg: string) => void;
 }
 
 export const handleLintViolations = (
-    groupedLintErrors: GroupedLintRuleViolations[],
-    spotConfig: SpotConfig,
-    { error, warn }: HandleLintViolationsDependencies
-) => {
-    let deferExit = false;
+  groupedLintErrors: GroupedLintRuleViolations[],
+  spotConfig: SpotConfig,
+  { error, warn }: HandleLintViolationsDependencies
+): boolean => {
+  let deferExit = false;
 
-    groupedLintErrors.forEach((lintingErrors) => {
-      let ruleSetting = spotConfig['rules'][lintingErrors.name]
-      if (ruleSetting === undefined) {
-        ruleSetting = 'error'
+  groupedLintErrors.forEach(lintingErrors => {
+    let ruleSetting = spotConfig["rules"][lintingErrors.name];
+    if (ruleSetting === undefined) {
+      ruleSetting = "error";
+    }
+
+    switch (ruleSetting) {
+      case "error": {
+        lintingErrors.violations.forEach(lintError => {
+          error(lintError.message, { exit: false });
+        });
+        deferExit = true;
+        break;
       }
 
-      switch (ruleSetting) {
-        case ('error'): {
-            lintingErrors.violations.forEach((lintError) => {
-                error(lintError.message, { exit: false });
-            });
-            deferExit = true
-          break;
-        }
-
-        case ('warn'): {
-          lintingErrors.violations.forEach((lintWarning) => {
-            warn(lintWarning.message);
-          });
-          break;
-        }
-
-        case ('off'): {
-          break;
-        }
-
-        default: {
-          error(`Unknown lint rule setting for ${lintingErrors.name}: ${ruleSetting}`, { exit: false });
-          deferExit = true
-        }
+      case "warn": {
+        lintingErrors.violations.forEach(lintWarning => {
+          warn(lintWarning.message);
+        });
+        break;
       }
-    })
 
-    return deferExit;
-}
+      case "off": {
+        break;
+      }
+
+      default: {
+        error(
+          `Unknown lint rule setting for ${lintingErrors.name}: ${ruleSetting}`,
+          { exit: false }
+        );
+        deferExit = true;
+      }
+    }
+  });
+
+  return deferExit;
+};
