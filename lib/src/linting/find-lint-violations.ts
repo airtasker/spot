@@ -1,5 +1,5 @@
 import { GroupedLintRuleViolations } from "./rule";
-import { SpotConfig } from "cli/src/commands/lint";
+import { LintConfig } from "cli/src/commands/lint";
 
 interface FindLintViolationsDependencies {
   error: (
@@ -21,22 +21,19 @@ export interface FindLintViolationsResult {
  * Responsible for triggering error or warn depending on whether the lint rule
  * violation setting is 'off', 'warn' or 'error'.
  *
- * By default, if a lint rule setting is not set in spotConfig,
+ * By default, if a lint rule setting is not set in lintConfig,
  * then it will be considered a error.
- *
- * Returns the deferExit value which will be true if there is a lint violation
- * error or an unknown rule setting is found. Otherwise it is false.
  */
 export const findLintViolations = (
   groupedLintErrors: GroupedLintRuleViolations[],
-  spotConfig: SpotConfig,
+  lintConfig: LintConfig,
   { error, warn }: FindLintViolationsDependencies
 ): FindLintViolationsResult => {
   let errorCount = 0;
   let warningCount = 0;
 
   groupedLintErrors.forEach(lintingErrors => {
-    const ruleSetting = spotConfig["rules"][lintingErrors.name] ?? "error";
+    const ruleSetting = lintConfig["rules"][lintingErrors.name] ?? "error";
 
     switch (ruleSetting) {
       case "error": {

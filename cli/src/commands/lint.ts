@@ -5,12 +5,12 @@ import { findLintViolations } from "lib/src/linting/find-lint-violations";
 
 const ARG_API = "spot_contract";
 
-export interface SpotConfig {
+export interface LintConfig {
   rules: Record<string, string>;
 }
 
-// TODO: Make it possible to specify with a config file
-const spotConfig: SpotConfig = {
+// TODO: Make it possible to specify by reading a config file
+const lintConfig: LintConfig = {
   rules: {
     "no-omitable-fields-within-response-bodies": "warn"
   }
@@ -43,7 +43,7 @@ export default class Lint extends Command {
     const contract = parse(contractPath);
     const groupedLintErrors = lint(contract);
 
-    const { errorCount } = findLintViolations(groupedLintErrors, spotConfig, {
+    const { errorCount } = findLintViolations(groupedLintErrors, lintConfig, {
       error: this.error,
       warn: this.warn
     });
