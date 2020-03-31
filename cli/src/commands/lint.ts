@@ -44,7 +44,9 @@ export default class Lint extends Command {
     const groupedLintErrors = lint(contract);
 
     const { errorCount } = findLintViolations(groupedLintErrors, lintConfig, {
-      error: this.error,
+      error: (msg: string) => {
+        this.error(msg, { exit: false });
+      },
       warn: this.warn
     });
 

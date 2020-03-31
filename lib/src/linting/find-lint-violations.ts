@@ -2,13 +2,7 @@ import { GroupedLintRuleViolations } from "./rule";
 import { LintConfig } from "cli/src/commands/lint";
 
 interface FindLintViolationsDependencies {
-  error: (
-    msg: string,
-    options: {
-      code?: string;
-      exit: false;
-    }
-  ) => void;
+  error: (msg: string) => void;
   warn: (msg: string) => void;
 }
 
@@ -38,7 +32,7 @@ export const findLintViolations = (
     switch (ruleSetting) {
       case "error": {
         lintingErrors.violations.forEach(lintError => {
-          error(lintError.message, { exit: false });
+          error(lintError.message);
         });
         errorCount++;
         break;
@@ -58,8 +52,7 @@ export const findLintViolations = (
 
       default: {
         error(
-          `Unknown lint rule setting for ${lintingErrors.name}: ${ruleSetting}`,
-          { exit: false }
+          `Unknown lint rule setting for ${lintingErrors.name}: ${ruleSetting}`
         );
         errorCount++;
       }
