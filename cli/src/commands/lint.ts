@@ -12,7 +12,7 @@ export interface LintConfig {
 // TODO: Make it possible to specify by reading a config file
 const lintConfig: LintConfig = {
   rules: {
-    "no-omitable-fields-within-response-bodies": "warn"
+    "no-omittable-fields-within-response-bodies": "warn"
   }
 };
 
