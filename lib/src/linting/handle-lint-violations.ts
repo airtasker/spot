@@ -1,16 +1,6 @@
 import { GroupedLintRuleViolations } from "./rule";
 import { SpotConfig } from "cli/src/commands/lint";
 
-/**
- * Responsible for triggering error or warn depending on whether the lint rule
- * violation setting is 'off', 'warn' or 'error'.
- *
- * By default, if a lint rule setting is not set in spotConfig,
- * then it will be considered a error.
- *
- * Returns the deferExit value which will be true if there is a lint violation
- * error or an unknown rule setting is found. Otherwise it is false.
- */
 interface HandleLintViolationsDependencies {
   error: (
     msg: string,
@@ -22,6 +12,16 @@ interface HandleLintViolationsDependencies {
   warn: (msg: string) => void;
 }
 
+/**
+ * Responsible for triggering error or warn depending on whether the lint rule
+ * violation setting is 'off', 'warn' or 'error'.
+ *
+ * By default, if a lint rule setting is not set in spotConfig,
+ * then it will be considered a error.
+ *
+ * Returns the deferExit value which will be true if there is a lint violation
+ * error or an unknown rule setting is found. Otherwise it is false.
+ */
 export const handleLintViolations = (
   groupedLintErrors: GroupedLintRuleViolations[],
   spotConfig: SpotConfig,
