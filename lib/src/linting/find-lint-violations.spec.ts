@@ -1,4 +1,7 @@
-import { findLintViolations, FindLintViolationsResult } from "./find-lint-violations";
+import {
+  findLintViolations,
+  FindLintViolationsResult
+} from "./find-lint-violations";
 
 describe("find lint violations", () => {
   let findLintViolationsResult: FindLintViolationsResult;
@@ -8,7 +11,7 @@ describe("find lint violations", () => {
   beforeEach(() => {
     errorMock = jest.fn();
     warnMock = jest.fn();
-  })
+  });
 
   describe("when rule not specified", () => {
     beforeEach(() => {
@@ -23,10 +26,14 @@ describe("find lint violations", () => {
         rules: {}
       };
 
-      findLintViolationsResult  = findLintViolations(groupedLintErrors, spotConfig, {
-        error: errorMock,
-        warn: warnMock
-      });
+      findLintViolationsResult = findLintViolations(
+        groupedLintErrors,
+        spotConfig,
+        {
+          error: errorMock,
+          warn: warnMock
+        }
+      );
     });
 
     it("should only trigger an error", () => {
@@ -52,10 +59,14 @@ describe("find lint violations", () => {
         }
       };
 
-      findLintViolationsResult = findLintViolations(groupedLintErrors, spotConfig, {
-        error: errorMock,
-        warn: warnMock
-      });
+      findLintViolationsResult = findLintViolations(
+        groupedLintErrors,
+        spotConfig,
+        {
+          error: errorMock,
+          warn: warnMock
+        }
+      );
     });
 
     it("should only trigger a warning", () => {
@@ -81,10 +92,14 @@ describe("find lint violations", () => {
         }
       };
 
-      findLintViolationsResult = findLintViolations(groupedLintErrors, spotConfig, {
-        error: errorMock,
-        warn: warnMock
-      });
+      findLintViolationsResult = findLintViolations(
+        groupedLintErrors,
+        spotConfig,
+        {
+          error: errorMock,
+          warn: warnMock
+        }
+      );
     });
 
     it("should only trigger a error", () => {
@@ -110,10 +125,14 @@ describe("find lint violations", () => {
         }
       };
 
-      findLintViolationsResult = findLintViolations(groupedLintErrors, spotConfig, {
-        error: errorMock,
-        warn: warnMock
-      });
+      findLintViolationsResult = findLintViolations(
+        groupedLintErrors,
+        spotConfig,
+        {
+          error: errorMock,
+          warn: warnMock
+        }
+      );
     });
 
     it("should trigger no errors and no warnings", () => {
@@ -139,10 +158,14 @@ describe("find lint violations", () => {
         }
       };
 
-      findLintViolationsResult = findLintViolations(groupedLintErrors, spotConfig, {
-        error: errorMock,
-        warn: warnMock
-      });
+      findLintViolationsResult = findLintViolations(
+        groupedLintErrors,
+        spotConfig,
+        {
+          error: errorMock,
+          warn: warnMock
+        }
+      );
     });
 
     it("should trigger only a error", () => {
@@ -197,7 +220,7 @@ describe("find lint violations", () => {
         {
           name: "warn2",
           violations: [{ message: "warn_msg" }]
-        },
+        }
       ];
 
       const spotConfig = {
@@ -207,10 +230,14 @@ describe("find lint violations", () => {
         }
       };
 
-      findLintViolationsResult = findLintViolations(groupedLintErrors, spotConfig, {
-        error: errorMock,
-        warn: warnMock
-      });
+      findLintViolationsResult = findLintViolations(
+        groupedLintErrors,
+        spotConfig,
+        {
+          error: errorMock,
+          warn: warnMock
+        }
+      );
     });
 
     it("should trigger 3 errors and 2 warnings", () => {
