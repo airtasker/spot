@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import { lint } from "../../../lib/src/linting/linter";
 import { parse } from "../../../lib/src/parser";
-import { handleLintViolations } from "lib/src/linting/handle-lint-violations";
+import { findLintViolations } from "lib/src/linting/find-lint-violations";
 
 const ARG_API = "spot_contract";
 
@@ -43,12 +43,12 @@ export default class Lint extends Command {
     const contract = parse(contractPath);
     const groupedLintErrors = lint(contract);
 
-    const deferExit = handleLintViolations(groupedLintErrors, spotConfig, {
+    const { errorCount } = findLintViolations(groupedLintErrors, spotConfig, {
       error: this.error,
       warn: this.warn
     });
 
-    if (deferExit) {
+    if (errorCount > 0) {
       process.exit(1);
     }
   }

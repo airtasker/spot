@@ -1,7 +1,7 @@
 import { GroupedLintRuleViolations } from "./rule";
 import { SpotConfig } from "cli/src/commands/lint";
 
-interface HandleLintViolationsDependencies {
+interface FindLintViolationsDependencies {
   error: (
     msg: string,
     options: {
@@ -10,6 +10,11 @@ interface HandleLintViolationsDependencies {
     }
   ) => void;
   warn: (msg: string) => void;
+}
+
+export interface FindLintViolationsResult {
+  errorCount: number;
+  warningCount: number;
 }
 
 /**
@@ -22,25 +27,23 @@ interface HandleLintViolationsDependencies {
  * Returns the deferExit value which will be true if there is a lint violation
  * error or an unknown rule setting is found. Otherwise it is false.
  */
-export const handleLintViolations = (
+export const findLintViolations = (
   groupedLintErrors: GroupedLintRuleViolations[],
   spotConfig: SpotConfig,
-  { error, warn }: HandleLintViolationsDependencies
-): boolean => {
-  let deferExit = false;
+  { error, warn }: FindLintViolationsDependencies
+): FindLintViolationsResult => {
+  let errorCount = 0;
+  let warningCount = 0;
 
   groupedLintErrors.forEach(lintingErrors => {
-    let ruleSetting = spotConfig["rules"][lintingErrors.name];
-    if (ruleSetting === undefined) {
-      ruleSetting = "error";
-    }
+    const ruleSetting = spotConfig["rules"][lintingErrors.name] ?? "error";
 
     switch (ruleSetting) {
       case "error": {
         lintingErrors.violations.forEach(lintError => {
           error(lintError.message, { exit: false });
         });
-        deferExit = true;
+        errorCount++;
         break;
       }
 
@@ -48,6 +51,7 @@ export const handleLintViolations = (
         lintingErrors.violations.forEach(lintWarning => {
           warn(lintWarning.message);
         });
+        warningCount++;
         break;
       }
 
@@ -60,10 +64,13 @@ export const handleLintViolations = (
           `Unknown lint rule setting for ${lintingErrors.name}: ${ruleSetting}`,
           { exit: false }
         );
-        deferExit = true;
+        errorCount++;
       }
     }
   });
 
-  return deferExit;
+  return {
+    errorCount,
+    warningCount
+  };
 };
