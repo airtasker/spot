@@ -1,8 +1,20 @@
 import { Command, flags } from "@oclif/command";
 import { lint } from "../../../lib/src/linting/linter";
 import { parse } from "../../../lib/src/parser";
+import { findLintViolations } from "lib/src/linting/find-lint-violations";
 
 const ARG_API = "spot_contract";
+
+export interface LintConfig {
+  rules: Record<string, string>;
+}
+
+// TODO: Make it possible to specify by reading a config file
+const lintConfig: LintConfig = {
+  rules: {
+    "no-omittable-fields-within-response-bodies": "warn"
+  }
+};
 
 /**
  * oclif command to lint a spot contract
@@ -29,15 +41,16 @@ export default class Lint extends Command {
     const { args } = this.parse(Lint);
     const contractPath = args[ARG_API];
     const contract = parse(contractPath);
-    // TODO: Make it possible to specify with a config file which lint rules to enable.
-    const lintingErrors = lint(contract);
-    const deferExit = lintingErrors.length > 0;
+    const groupedLintErrors = lint(contract);
 
-    lintingErrors.forEach(error => {
-      this.error(error.message, { exit: false });
+    const { errorCount } = findLintViolations(groupedLintErrors, lintConfig, {
+      error: (msg: string) => {
+        this.error(msg, { exit: false });
+      },
+      warn: this.warn
     });
 
-    if (deferExit) {
+    if (errorCount > 0) {
       process.exit(1);
     }
   }

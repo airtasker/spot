@@ -9,3 +9,8 @@ export type LintingRule = (contract: Contract) => LintingRuleViolation[];
 export interface LintingRuleViolation {
   message: string;
 }
+
+export interface GroupedLintRuleViolations {
+  name: string;
+  violations: LintingRuleViolation[];
+}

@@ -1,10 +1,14 @@
 import { Contract } from "../definitions";
-import { LintingRuleViolation } from "./rule";
+import { GroupedLintRuleViolations } from "./rule";
 import { availableRules } from "./rules";
 
-export function lint(contract: Contract): LintingRuleViolation[] {
-  return Object.keys(availableRules).reduce<LintingRuleViolation[]>(
-    (acc, ruleName) => acc.concat(availableRules[ruleName](contract)),
+export function lint(contract: Contract): GroupedLintRuleViolations[] {
+  return Object.keys(availableRules).reduce<GroupedLintRuleViolations[]>(
+    (acc, ruleName) =>
+      acc.concat({
+        name: ruleName,
+        violations: availableRules[ruleName](contract)
+      }),
     []
   );
 }
