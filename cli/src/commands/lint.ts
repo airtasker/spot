@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import { lint } from "../../../lib/src/linting/linter";
 import { parse } from "../../../lib/src/parser";
-import { findLintViolations } from "lib/src/linting/find-lint-violations";
+import { findLintViolations } from "../../../lib/src/linting/find-lint-violations";
 
 const ARG_API = "spot_contract";
 

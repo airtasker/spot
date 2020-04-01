@@ -1,5 +1,5 @@
 import { GroupedLintRuleViolations } from "./rule";
-import { LintConfig } from "cli/src/commands/lint";
+import { LintConfig } from "../../../cli/src/commands/lint";
 
 interface FindLintViolationsDependencies {
   error: (msg: string) => void;
