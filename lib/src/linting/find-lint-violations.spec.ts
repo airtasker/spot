@@ -176,15 +176,40 @@ describe("find lint violations", () => {
     });
   });
 
-  describe("when there are no lint violations", () => {
+  describe("when there are no lint rules", () => {
     beforeEach(() => {
       const spotConfig = {
-        rules: {
-          error: "invalid"
-        }
+        rules: {}
       };
 
       findLintViolationsResult = findLintViolations([], spotConfig, {
+        error: errorMock,
+        warn: warnMock
+      });
+    });
+
+    it("should trigger no errors and no warnings", () => {
+      expect(findLintViolationsResult.errorCount).toBe(0);
+      expect(findLintViolationsResult.warningCount).toBe(0);
+      expect(errorMock).not.toBeCalled();
+      expect(warnMock).not.toBeCalled();
+    });
+  });
+
+  describe("when there are no lint violations", () => {
+    beforeEach(() => {
+      const groupedLintErrors = [
+        {
+          name: "error",
+          violations: []
+        }
+      ];
+
+      const spotConfig = {
+        rules: {}
+      };
+
+      findLintViolationsResult = findLintViolations(groupedLintErrors, spotConfig, {
         error: errorMock,
         warn: warnMock
       });

@@ -33,16 +33,16 @@ export const findLintViolations = (
       case "error": {
         lintingErrors.violations.forEach(lintError => {
           error(lintError.message);
+          errorCount++;
         });
-        errorCount++;
         break;
       }
 
       case "warn": {
         lintingErrors.violations.forEach(lintWarning => {
           warn(lintWarning.message);
+          warningCount++;
         });
-        warningCount++;
         break;
       }
 
