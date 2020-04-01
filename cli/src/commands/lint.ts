@@ -54,7 +54,7 @@ export default class Lint extends Command {
       }
     );
 
-    console.log(`Found ${errorCount} errors and ${warningCount} warnings`);
+    this.log(`Found ${errorCount} errors and ${warningCount} warnings`);
 
     if (errorCount > 0) {
       process.exit(1);
