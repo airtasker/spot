@@ -43,12 +43,18 @@ export default class Lint extends Command {
     const contract = parse(contractPath);
     const groupedLintErrors = lint(contract);
 
-    const { errorCount } = findLintViolations(groupedLintErrors, lintConfig, {
-      error: (msg: string) => {
-        this.error(msg, { exit: false });
-      },
-      warn: this.warn
-    });
+    const { errorCount, warningCount } = findLintViolations(
+      groupedLintErrors,
+      lintConfig,
+      {
+        error: (msg: string) => {
+          this.error(msg, { exit: false });
+        },
+        warn: this.warn
+      }
+    );
+
+    this.log(`Found ${errorCount} errors and ${warningCount} warnings`);
 
     if (errorCount > 0) {
       process.exit(1);
