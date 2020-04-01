@@ -209,10 +209,14 @@ describe("find lint violations", () => {
         rules: {}
       };
 
-      findLintViolationsResult = findLintViolations(groupedLintErrors, spotConfig, {
-        error: errorMock,
-        warn: warnMock
-      });
+      findLintViolationsResult = findLintViolations(
+        groupedLintErrors,
+        spotConfig,
+        {
+          error: errorMock,
+          warn: warnMock
+        }
+      );
     });
 
     it("should trigger no errors and no warnings", () => {
