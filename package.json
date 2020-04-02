@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
-    "@stoplight/spectral": "^5.2.0",
+    "@stoplight/spectral": "^5.3.0",
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.4",
     "@types/fs-extra": "^8.1.0",
