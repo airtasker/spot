@@ -1,6 +1,6 @@
 import { Contract } from "../../definitions";
 import { LintingRuleViolation } from "../rule";
-import { dereferenceType, TypeTable } from "../../types";
+import { dereferenceType, TypeTable, isObjectType } from "../../types";
 
 /**
  * Request types should always be object types
@@ -21,7 +21,7 @@ export function noPrimitivesInRequest(
     }
     const bodyType = dereferenceType(body.type, typeTable);
 
-    if (bodyType.kind !== "object") {
+    if (isObjectType(bodyType) === false) {
       violations.push({
         message: `Endpoint (${endpoint.name}) must contain a request as an object`
       });
