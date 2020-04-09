@@ -21,7 +21,7 @@ export function noPrimitivesInRequest(
     }
     const bodyType = dereferenceType(body.type, typeTable);
 
-    if (isObjectType(bodyType) === false) {
+    if (!isObjectType(bodyType)) {
       violations.push({
         message: `Endpoint (${endpoint.name}) must contain a request as an object`
       });
