@@ -588,10 +588,10 @@
     debug "^4.1.1"
     semver "^5.6.0"
 
-"@oclif/config@^1", "@oclif/config@^1.12.12", "@oclif/config@^1.14.0":
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.14.0.tgz#0af93facd5c5087f804489f1603c4f3bc0c45014"
-  integrity sha512-KsOP/mx9lzTah+EtGqLUXN3PDL0J3zb9/dTneFyiUK2K6T7vFEGhV6OasmqTh4uMZHGYTGrNPV8x/Yw6qZNL6A==
+"@oclif/config@^1", "@oclif/config@^1.12.12", "@oclif/config@^1.15.0":
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.15.0.tgz#b68f316e25556fb3660c74ed44422eb922f25853"
+  integrity sha512-MLA5yGJwJRIY1YJWbikAGV/ZELkmzi5BQVbudvQjnvDMnccWtZKZmPr2dkWU0kh/q5XLh4OQdiaVYpqtdteuKw==
   dependencies:
     "@oclif/errors" "^1.0.0"
     "@oclif/parser" "^3.8.0"
