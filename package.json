@@ -56,7 +56,7 @@
     "redoc": "^2.0.0-rc.26",
     "styled-components": "^4.4.1",
     "supertest": "^4.0.2",
-    "ts-jest": "^25.3.1",
+    "ts-jest": "^25.4.0",
     "ts-loader": "^7.0.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
