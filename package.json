@@ -17,7 +17,7 @@
     "fs-extra": "^9.0.0",
     "inquirer": "^7.1.0",
     "js-yaml": "^3.13.1",
-    "qs": "^6.9.3",
+    "qs": "^6.9.4",
     "randomstring": "^1.1.5",
     "ts-morph": "^7.0.3",
     "typescript": "^3.8.3",
