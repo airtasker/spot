@@ -1012,10 +1012,10 @@
   dependencies:
     axios "^0.19.0"
 
-"@types/node@*":
-  version "13.1.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.8.tgz#1d590429fe8187a02707720ecf38a6fe46ce294b"
-  integrity sha512-6XzyyNM9EKQW4HKuzbo/CkOIjn/evtCmsU+MUM1xDfJ+3/rNjBttM1NgN7AOQvN6tP1Sl1D1PIKMreTArnxM9A==
+"@types/node@*", "@types/node@^13.11.1":
+  version "13.13.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.5.tgz#96ec3b0afafd64a4ccea9107b75bf8489f0e5765"
+  integrity sha512-3ySmiBYJPqgjiHA7oEaIo2Rzz0HrOZ7yrNO5HWyaE5q0lQ3BppDZ3N53Miz8bw2I7gh1/zir2MGVZBvpb1zq9g==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -6859,11 +6859,12 @@ redeyed@~2.1.0:
   dependencies:
     esprima "~4.0.0"
 
-redoc@^2.0.0-rc.28:
-  version "2.0.0-rc.28"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.28.tgz#f08f7f30d6cd4237aed148e409c9b31abb8886bc"
-  integrity sha512-gIc4QxXYDv5/U2QILP1WzSMfUGYNYHIUFq0f9u7F8vGdwhpCdIxqoYEMJu6kZyhrwiNjF1tbi22OoSPQ9/ye8A==
+redoc@^2.0.0-rc.29:
+  version "2.0.0-rc.29"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.29.tgz#533153c1f71522493b4fb245c4c781c5802be64f"
+  integrity sha512-G2PX4QG/XdNKqRvxPpszJdPPRcODJjkuGidjNr4m/eP04aoNjWpytcH1XxZUC7fVW6zBUtJTaktv1HnVF+2GmA==
   dependencies:
+    "@types/node" "^13.11.1"
     classnames "^2.2.6"
     decko "^1.2.0"
     dompurify "^2.0.8"
