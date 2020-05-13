@@ -20,7 +20,7 @@
     "qs": "^6.9.4",
     "randomstring": "^1.1.5",
     "ts-morph": "^7.0.3",
-    "typescript": "^3.8.3",
+    "typescript": "^3.9.2",
     "validator": "^13.0.0"
   },
   "devDependencies": {
