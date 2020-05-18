@@ -9,7 +9,7 @@
   "dependencies": {
     "@oclif/command": "^1.6.1",
     "@oclif/config": "^1.15.1",
-    "@oclif/plugin-help": "^3.0.0",
+    "@oclif/plugin-help": "^3.0.1",
     "ajv": "^6.12.2",
     "assert-never": "^1.2.1",
     "cors": "^2.8.5",
