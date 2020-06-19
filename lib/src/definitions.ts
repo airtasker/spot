@@ -3,6 +3,7 @@ import { Type, TypeDef } from "./types";
 export interface Contract {
   name: string;
   description?: string;
+  version?: string
   config: Config;
   types: { name: string; typeDef: TypeDef }[];
   security?: SecurityHeader;

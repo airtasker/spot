@@ -60,7 +60,8 @@ describe("contract parser", () => {
       endpoints: [],
       name: "contract",
       security: undefined,
-      types: []
+      types: [],
+      version: "0.0.0"
     });
   });
 
