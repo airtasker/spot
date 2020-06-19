@@ -277,7 +277,7 @@ exports[`OpenAPI 2 generator HTTP verbs PUT endpoint 1`] = `
 }"
 `;
 
-exports[`OpenAPI 2 generator contract with version produces a versioned OpenAPI 2 contract 1`] = `
+exports[`OpenAPI 2 generator contract with version produces a versioned OpenAPI 2 1`] = `
 "{
   \\"swagger\\": \\"2.0\\",
   \\"info\\": {
