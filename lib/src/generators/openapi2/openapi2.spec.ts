@@ -28,7 +28,7 @@ describe("OpenAPI 2 generator", () => {
     expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
     const spectralResult = await spectral.run(result);
     expect(spectralResult).toHaveLength(0);
-  })
+  });
 
   describe("security", () => {
     test("contract with security header", async () => {

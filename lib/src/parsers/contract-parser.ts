@@ -10,7 +10,8 @@ import { parseEndpoint } from "./endpoint-parser";
 import {
   getClassWithDecoratorOrThrow,
   getDecoratorConfigOrThrow,
-  getJsDoc, getObjLiteralProp,
+  getJsDoc,
+  getObjLiteralProp,
   getObjLiteralPropOrThrow,
   getPropertyWithDecorator,
   getPropValueAsStringOrThrow,
@@ -61,8 +62,8 @@ export function parseContract(
 
   // Handle Version
   let version = "0.0.0";
-  const versionProp = getObjLiteralProp<ApiConfig>(decoratorConfig, "version")
-  if(versionProp) {
+  const versionProp = getObjLiteralProp<ApiConfig>(decoratorConfig, "version");
+  if (versionProp) {
     version = getPropValueAsStringOrThrow(versionProp)?.getLiteralText().trim();
   }
 
@@ -111,7 +112,15 @@ export function parseContract(
   // Handle Types
   const types = typeTable.toArray();
 
-  const contract = { name, description, types, config, security, endpoints, version };
+  const contract = {
+    name,
+    description,
+    types,
+    config,
+    security,
+    endpoints,
+    version
+  };
   return ok({ contract, lociTable });
 }
 
