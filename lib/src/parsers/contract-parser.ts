@@ -61,11 +61,10 @@ export function parseContract(
   const description = descriptionDoc?.getDescription().trim();
 
   // Handle Version
-  let version = "0.0.0";
   const versionProp = getObjLiteralProp<ApiConfig>(decoratorConfig, "version");
-  if (versionProp) {
-    version = getPropValueAsStringOrThrow(versionProp)?.getLiteralText().trim();
-  }
+  const version = versionProp
+    ? getPropValueAsStringOrThrow(versionProp).getLiteralText().trim()
+    : undefined;
 
   // Handle config
   const configResult = resolveConfig(klass);

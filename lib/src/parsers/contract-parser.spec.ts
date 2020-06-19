@@ -61,7 +61,7 @@ describe("contract parser", () => {
       name: "contract",
       security: undefined,
       types: [],
-      version: "0.0.0"
+      version: undefined
     });
   });
 
