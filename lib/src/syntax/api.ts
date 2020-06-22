@@ -15,4 +15,6 @@ export function api(config: ApiConfig) {
 export interface ApiConfig {
   /** Name of the API. This should be the name of the service that is being documented */
   name: string;
+  /** Version of this document */
+  version?: string;
 }

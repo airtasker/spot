@@ -47,7 +47,7 @@ export function generateOpenAPI2(contract: Contract): OpenApiV2 {
     info: {
       title: contract.name,
       description: contract.description,
-      version: "0.0.0"
+      version: contract.version ?? "0.0.0"
     },
     consumes: ["application/json"],
     produces: ["application/json"],

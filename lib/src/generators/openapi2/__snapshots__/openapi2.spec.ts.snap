@@ -277,6 +277,23 @@ exports[`OpenAPI 2 generator HTTP verbs PUT endpoint 1`] = `
 }"
 `;
 
+exports[`OpenAPI 2 generator contract with version produces a versioned OpenAPI 2 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"versioned-contract\\",
+    \\"version\\": \\"0.1.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {}
+}"
+`;
+
 exports[`OpenAPI 2 generator headers endpoint with request headers 1`] = `
 "{
   \\"swagger\\": \\"2.0\\",

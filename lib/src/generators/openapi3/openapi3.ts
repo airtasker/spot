@@ -49,7 +49,7 @@ export function generateOpenAPI3(contract: Contract): OpenApiV3 {
     info: {
       title: contract.name,
       description: contract.description,
-      version: "0.0.0"
+      version: contract.version ?? "0.0.0"
     },
     paths: endpointsToPathsObject(
       contract.endpoints,

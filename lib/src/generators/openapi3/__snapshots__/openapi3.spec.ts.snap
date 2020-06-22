@@ -881,3 +881,14 @@ exports[`OpenAPI 3 generator security contract with security header 1`] = `
   ]
 }"
 `;
+
+exports[`OpenAPI 3 generator versioned contract produces a versioned OpenAPI 3 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"versioned-contract\\",
+    \\"version\\": \\"0.1.0\\"
+  },
+  \\"paths\\": {}
+}"
+`;

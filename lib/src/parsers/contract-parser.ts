@@ -11,6 +11,7 @@ import {
   getClassWithDecoratorOrThrow,
   getDecoratorConfigOrThrow,
   getJsDoc,
+  getObjLiteralProp,
   getObjLiteralPropOrThrow,
   getPropertyWithDecorator,
   getPropValueAsStringOrThrow,
@@ -59,6 +60,12 @@ export function parseContract(
   const descriptionDoc = getJsDoc(klass);
   const description = descriptionDoc?.getDescription().trim();
 
+  // Handle Version
+  const versionProp = getObjLiteralProp<ApiConfig>(decoratorConfig, "version");
+  const version = versionProp
+    ? getPropValueAsStringOrThrow(versionProp).getLiteralText().trim()
+    : undefined;
+
   // Handle config
   const configResult = resolveConfig(klass);
   if (configResult.isErr()) return configResult;
@@ -104,7 +111,15 @@ export function parseContract(
   // Handle Types
   const types = typeTable.toArray();
 
-  const contract = { name, description, types, config, security, endpoints };
+  const contract = {
+    name,
+    description,
+    types,
+    config,
+    security,
+    endpoints,
+    version
+  };
   return ok({ contract, lociTable });
 }
 
