@@ -15,7 +15,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
-    "inquirer": "^7.1.0",
+    "inquirer": "^7.2.0",
     "js-yaml": "^3.14.0",
     "qs": "^6.9.4",
     "randomstring": "^1.1.5",
