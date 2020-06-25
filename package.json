@@ -31,7 +31,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^26.0.0",
-    "@types/js-yaml": "^3.12.4",
+    "@types/js-yaml": "^3.12.5",
     "@types/moxios": "^0.4.8",
     "@types/qs": "^6.9.3",
     "@types/randomstring": "^1.1.6",
