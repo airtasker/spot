@@ -63,6 +63,7 @@ export interface PathParam {
   name: string;
   description?: string;
   type: Type;
+  example?: string;
 }
 
 export interface QueryParam {

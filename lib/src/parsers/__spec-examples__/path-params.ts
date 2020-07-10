@@ -11,6 +11,14 @@ class PathParamsClass {
       /** property description */
       "property-with-description": string;
       arrayProperty: string[];
+      /** property description
+       * @example property-example */
+      "property-with-example": string;
+    },
+    @pathParams
+    paramsWithEmptyExample: {
+      /**@example */
+      property: string;
     },
     @pathParams
     pathParamsWithOptionalProperty: {

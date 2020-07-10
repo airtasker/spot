@@ -70,7 +70,20 @@ function extractPathParam(
 
   const description = getJsDoc(propertySignature)?.getDescription().trim();
 
-  return ok({ name, type, description });
+  const example = getJsDoc(propertySignature)
+    ?.getTags()
+    .find(tag => tag.getTagName() === "example");
+
+  if (example && !example.getComment()) {
+    return err(
+      new ParserError("@pathParams example must not be empty", {
+        file: propertySignature.getSourceFile().getFilePath(),
+        position: propertySignature.getPos()
+      })
+    );
+  }
+
+  return ok({ name, type, description, example: example?.getComment() });
 }
 
 function extractPathParamName(
