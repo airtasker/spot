@@ -87,7 +87,7 @@ describe("Server", () => {
   };
 
   describe("Run", () => {
-    it("Proxy request and return real data if endpoint is not in a draft state", done => {
+    it("Proxy request and return real data if endpoint is not in a draft state", async () => {
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
@@ -98,16 +98,15 @@ describe("Server", () => {
         }
       });
 
-      request(app)
+      await request(app)
         .get("/api/companies")
         .expect(200)
         .then(response => {
           expect(response.body.name).toBe("This is the real response");
-          done();
         });
     });
 
-    it("Return mock data if endpoint is in draft state", done => {
+    it("Return mock data if endpoint is in draft state", async () => {
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
@@ -118,34 +117,32 @@ describe("Server", () => {
         }
       });
 
-      request(app)
+      await request(app)
         .post("/api/companies")
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
           expect(typeof response.body.name).toBe(TypeKind.STRING);
-          done();
         });
     });
 
-    it("Return mock data if no proxy config is provided", done => {
+    it("Return mock data if no proxy config is provided", async () => {
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
         port: 8085
       });
 
-      request(app)
+      await request(app)
         .post("/api/companies")
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
           expect(typeof response.body.name).toBe(TypeKind.STRING);
-          done();
         });
     });
 
-    it("Strip draft in request paths", done => {
+    it("Strip draft in request paths", async () => {
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
@@ -156,13 +153,12 @@ describe("Server", () => {
         }
       });
 
-      request(app)
+      await request(app)
         .post("/api/_draft/companies")
         .expect(201)
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
           expect(typeof response.body.name).toBe(TypeKind.STRING);
-          done();
         });
     });
   });
