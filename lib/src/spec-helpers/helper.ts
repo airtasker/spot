@@ -1,3 +1,4 @@
+import * as path from "path";
 import { Project, SourceFile, ts } from "ts-morph";
 
 /**
@@ -34,7 +35,7 @@ interface FileDetail {
 }
 
 /**
- * Create an AST project with the `@airtasker/spot` depedency loaded.
+ * Create an AST project with the `@airtasker/spot` dependency loaded.
  */
 export function createProject(): Project {
   return new Project({
@@ -54,7 +55,7 @@ export function createProject(): Project {
       experimentalDecorators: true,
       baseUrl: "./",
       paths: {
-        "@airtasker/spot": ["./lib/src/lib"]
+        "@airtasker/spot": [path.join(__dirname, "../lib")]
       }
     }
   });
