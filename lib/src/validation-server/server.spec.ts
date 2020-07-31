@@ -21,8 +21,8 @@ describe("Validation Server", () => {
   describe("/health", () => {
     it("should return 200", async () => {
       const { app } = runValidationServer(DUMMY_PORT, contract);
-
-      await request(app).get("/health").expect(200);
+      const response = await request(app).get("/health");
+      expect(response.status).toEqual(200);
     });
   });
 
