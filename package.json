@@ -46,7 +46,7 @@
     "eslint": "^7.5.0",
     "eslint-plugin-jest": "^23.19.0",
     "html-webpack-plugin": "^4.3.0",
-    "jest": "^25.5.4",
+    "jest": "^26.2.1",
     "jest-junit": "^11.1.0",
     "mini-css-extract-plugin": "^0.9.0",
     "mobx": "^5.15.4",
@@ -57,7 +57,7 @@
     "redoc": "^2.0.0-rc.35",
     "styled-components": "^4.4.1",
     "supertest": "^4.0.2",
-    "ts-jest": "^25.5.1",
+    "ts-jest": "^26.1.4",
     "ts-loader": "^8.0.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
