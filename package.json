@@ -44,7 +44,7 @@
     "core-js": "^3.6.5",
     "css-loader": "^4.1.1",
     "eslint": "^7.5.0",
-    "eslint-plugin-jest": "^23.19.0",
+    "eslint-plugin-jest": "^23.20.0",
     "html-webpack-plugin": "^4.3.0",
     "jest": "^26.2.1",
     "jest-junit": "^11.1.0",
