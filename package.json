@@ -50,7 +50,7 @@
     "jest-junit": "^11.1.0",
     "mini-css-extract-plugin": "^0.10.0",
     "mobx": "^5.15.5",
-    "nock": "^13.0.3",
+    "nock": "^13.0.4",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
