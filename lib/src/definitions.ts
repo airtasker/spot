@@ -63,7 +63,7 @@ export interface PathParam {
   name: string;
   description?: string;
   type: Type;
-  example?: string;
+  examples?: Record<string, string>;
 }
 
 export interface QueryParam {

@@ -3,6 +3,7 @@ import { LociTable } from "../locations";
 import { createProjectFromExistingSourceFile } from "../spec-helpers/helper";
 import { TypeKind, TypeTable } from "../types";
 import { parsePathParams } from "./path-params-parser";
+import { Type } from "ts-morph";
 
 describe("path params parser", () => {
   const exampleFile = createProjectFromExistingSourceFile(
@@ -26,10 +27,9 @@ describe("path params parser", () => {
       typeTable,
       lociTable
     ).unwrapOrThrow();
-    expect(result).toHaveLength(4);
+    expect(result).toHaveLength(5);
     expect(result[0]).toStrictEqual({
       description: undefined,
-      example: undefined,
       name: "arrayProperty",
       type: {
         kind: TypeKind.ARRAY,
@@ -40,7 +40,6 @@ describe("path params parser", () => {
     });
     expect(result[1]).toStrictEqual({
       description: undefined,
-      example: undefined,
       name: "property",
       type: {
         kind: TypeKind.STRING
@@ -49,17 +48,27 @@ describe("path params parser", () => {
     expect(result[2]).toStrictEqual({
       description: "property description",
       name: "property-with-description",
-      example: undefined,
       type: {
         kind: TypeKind.STRING
       }
     });
     expect(result[3]).toStrictEqual({
-      description: "property description",
-      example: "property-example",
+      description: "property-example description",
+      examples: { "property-example": "property-example-value" },
       name: "property-with-example",
       type: {
         kind: TypeKind.STRING
+      }
+    });
+    expect(result[4]).toStrictEqual({
+      description: "property-two-examples description",
+      examples: {
+        "property-example-one": "property-example-one-value",
+        "property-example-two": "property-example-two-value"
+      },
+      name: "property-with-examples",
+      type: {
+        kind: TypeKind.ARRAY
       }
     });
   });
@@ -147,6 +156,26 @@ describe("path params parser", () => {
   test("fails to parse empty @example decorator", () => {
     const err = parsePathParams(
       method.getParameterOrThrow("paramsWithEmptyExample"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @example decorator with duplicate name", () => {
+    const err = parsePathParams(
+      method.getParameterOrThrow("paramsWithDuplicateExampleName"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @example decorator without value", () => {
+    const err = parsePathParams(
+      method.getParameterOrThrow("paramsWithExampleWithoutValue"),
       typeTable,
       lociTable
     ).unwrapErrOrThrow();

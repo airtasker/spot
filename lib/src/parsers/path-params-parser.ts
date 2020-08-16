@@ -70,11 +70,35 @@ function extractPathParam(
 
   const description = getJsDoc(propertySignature)?.getDescription().trim();
 
-  const example = getJsDoc(propertySignature)
-    ?.getTags()
-    .find(tag => tag.getTagName() === "example");
+  const examples = extractPathParamExamples(propertySignature);
+  if (examples && examples.isErr()) return examples;
 
-  if (example && !example.getComment()) {
+  if (examples) {
+    return ok({
+      name,
+      type,
+      description,
+      examples: examples.unwrap()
+    });
+  }
+
+  return ok({
+    name,
+    type,
+    description
+  });
+}
+
+function extractPathParamExamples(
+  propertySignature: PropertySignature
+): Result<Record<string, string>, ParserError> | undefined {
+  // TODO: example has to match type of param
+  const examples = getJsDoc(propertySignature)
+    ?.getTags()
+    .filter(tag => tag.getTagName() === "example")
+    .map(example => example.getComment());
+
+  if (examples && examples.indexOf(undefined) !== -1) {
     return err(
       new ParserError("@pathParams example must not be empty", {
         file: propertySignature.getSourceFile().getFilePath(),
@@ -83,9 +107,38 @@ function extractPathParam(
     );
   }
 
-  return ok({ name, type, description, example: example?.getComment() });
+  if (examples && examples.length > 0) {
+    const examplesMap: Record<string, string> = {};
+    let exampleError;
+    examples.every(example => {
+      const exampleName = example?.split("\n")[0]?.trim();
+      const exampleValue = example?.split("\n")[1]?.trim();
+      if (!exampleName || !exampleValue) {
+        exampleError = err(
+          new ParserError("@pathParams malformed example", {
+            file: propertySignature.getSourceFile().getFilePath(),
+            position: propertySignature.getPos()
+          })
+        );
+        return false;
+      } else {
+        if (Object.keys(examplesMap).indexOf(exampleName) !== -1) {
+          exampleError = err(
+            new ParserError("@pathParams duplicate example name", {
+              file: propertySignature.getSourceFile().getFilePath(),
+              position: propertySignature.getPos()
+            })
+          );
+          return false;
+        }
+        examplesMap[exampleName] = exampleValue;
+        return true;
+      }
+    });
+    return exampleError || ok(examplesMap);
+  }
+  return;
 }
-
 function extractPathParamName(
   propertySignature: PropertySignature
 ): Result<string, ParserError> {
