@@ -68,7 +68,7 @@ describe("path params parser", () => {
       },
       name: "property-with-examples",
       type: {
-        kind: TypeKind.ARRAY
+        kind: TypeKind.INT32
       }
     });
   });
