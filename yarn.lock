@@ -7154,10 +7154,10 @@ redeyed@~2.1.0:
   dependencies:
     esprima "~4.0.0"
 
-redoc@^2.0.0-rc.36:
-  version "2.0.0-rc.36"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.36.tgz#c6c06ca026fd31b9b5b2cb47e85c925e3bdd76bf"
-  integrity sha512-vTK1slMn1FcV4QwiBxFL6adIzYoOPzrkRsVyedGj4SrqjIJXuQ5HWVsxpMGoru45tgp3bs7Jy3TBOcEdOYjbbg==
+redoc@^2.0.0-rc.37:
+  version "2.0.0-rc.37"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.37.tgz#e64b4bc6747c45bcb4a236a14ef4bd002c015f72"
+  integrity sha512-He6cyXcySZkX6hz3aMxA+zKUb3LbClEwyBF6mKi4wk3h9A7zmavtFut/QvMwrOg3LqCbd3M9tiSouLgJJnN5QA==
   dependencies:
     "@types/node" "^13.11.1"
     classnames "^2.2.6"
