@@ -47,7 +47,8 @@ import {
   Type,
   TypeKind,
   TypeTable,
-  unionType
+  unionType,
+  NullType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
@@ -67,8 +68,6 @@ export function parseType(
       return parseArrayConstructorType(typeNode, typeTable, lociTable);
     }
     return parseTypeReference(typeNode, typeTable, lociTable);
-  } else if (TypeGuards.isNullLiteral(typeNode)) {
-    return ok(nullType());
     // TODO: discourage native boolean keyword?
   } else if (TypeGuards.isBooleanKeyword(typeNode)) {
     return ok(booleanType());
@@ -218,7 +217,11 @@ function parseTypeReference(
 function parseLiteralType(
   typeNode: LiteralTypeNode
 ): Result<
-  BooleanLiteralType | StringLiteralType | FloatLiteralType | IntLiteralType,
+  | BooleanLiteralType
+  | StringLiteralType
+  | FloatLiteralType
+  | IntLiteralType
+  | NullType,
   ParserError
 > {
   const literal = typeNode.getLiteral();
@@ -233,6 +236,8 @@ function parseLiteralType(
         ? intLiteralType(numericValue)
         : floatLiteralType(numericValue)
     );
+  } else if (TypeGuards.isNullLiteral(literal)) {
+    return ok(nullType());
   } else {
     return err(
       new TypeNotAllowedError("unexpected literal type", {
