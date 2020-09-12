@@ -1,4 +1,4 @@
-import { ParameterDeclaration, PropertySignature } from "ts-morph";
+import { ParameterDeclaration, PropertySignature, TypeNode } from "ts-morph";
 import { PathParam } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isPathParamTypeSafe } from "../http";
@@ -70,7 +70,7 @@ function extractPathParam(
 
   const description = getJsDoc(propertySignature)?.getDescription().trim();
 
-  const examples = extractPathParamExamples(propertySignature);
+  const examples = extractPathParamExamples(propertySignature, type, typeTable, lociTable);
   if (examples && examples.isErr()) return examples;
 
   if (examples) {
@@ -90,9 +90,11 @@ function extractPathParam(
 }
 
 function extractPathParamExamples(
-  propertySignature: PropertySignature
+  propertySignature: PropertySignature,
+  type: Type,
+  typeTable: TypeTable,
+  lociTable: LociTable
 ): Result<Record<string, string>, ParserError> | undefined {
-  // TODO: example has to match type of param
   const examples = getJsDoc(propertySignature)
     ?.getTags()
     .filter(tag => tag.getTagName() === "example")
@@ -135,7 +137,32 @@ function extractPathParamExamples(
         return true;
       }
     });
-    return exampleError || ok(examplesMap);
+    if (exampleError) {
+      return exampleError;
+    }
+
+    // TODO: compare type of example with 'type'
+
+    const typeOfExamples: Type[] = Object.keys(examplesMap).map(key => {
+      const typeNode: TypeNode = // TODO:
+      return parseType(typeNode, typeTable, lociTable)
+    });
+
+    if (
+      typeOfExamples.some(typeOfExample => typeOfExample.kind !== type.kind)
+    ) {
+      return err(
+        new ParserError(
+          "@pathParams type of example must match type of param",
+          {
+            file: propertySignature.getSourceFile().getFilePath(),
+            position: propertySignature.getPos()
+          }
+        )
+      );
+    }
+
+    return ok(examplesMap);
   }
   return;
 }

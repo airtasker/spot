@@ -1,4 +1,4 @@
-import { pathParams } from "@airtasker/spot";
+import { pathParams, Integer } from "@airtasker/spot";
 import { TypeKind, FloatType, Int32Type } from "../../types";
 
 class PathParamsClass {
@@ -18,12 +18,12 @@ class PathParamsClass {
        *  */
       "property-with-example": string;
       /** property-two-examples description
-       * @example property-example-one 
+       * @example property-example-one
        * property-example-one-value
-       * @example property-example-two 
+       * @example property-example-two
        * property-example-two-value
        * */
-      "property-with-examples": Int32Type;
+      "property-with-examples": Integer;
     },
     @pathParams
     paramsWithEmptyExample: {
@@ -36,13 +36,20 @@ class PathParamsClass {
        * 123
        * @example name
        * 456
-      */
+       */
       property: string;
     },
     @pathParams
     paramsWithExampleWithoutValue: {
       /**@example name*/
       property: string;
+    },
+    @pathParams
+    paramsWithNonMatchingExampleType: {
+      /**@example name
+       * This_is_not_an_integer
+       */
+      property: Integer;
     },
     @pathParams
     pathParamsWithOptionalProperty: {

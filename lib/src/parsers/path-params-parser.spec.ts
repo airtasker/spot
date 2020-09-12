@@ -182,4 +182,14 @@ describe("path params parser", () => {
 
     expect(err).toBeInstanceOf(ParserError);
   });
+
+  test("fails to parse @example decorator with a different example type", () => {
+    const err = parsePathParams(
+      method.getParameterOrThrow("paramsWithNonMatchingExampleType"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
 });
