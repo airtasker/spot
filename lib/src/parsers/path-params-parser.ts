@@ -3,7 +3,7 @@ import { PathParam } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isPathParamTypeSafe } from "../http";
 import { LociTable } from "../locations";
-import { Type, TypeTable } from "../types";
+import { Type, TypeKind, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
@@ -70,7 +70,7 @@ function extractPathParam(
 
   const description = getJsDoc(propertySignature)?.getDescription().trim();
 
-  const examples = extractPathParamExamples(propertySignature, type, typeTable, lociTable);
+  const examples = extractPathParamExamples(propertySignature, type);
   if (examples && examples.isErr()) return examples;
 
   if (examples) {
@@ -91,9 +91,7 @@ function extractPathParam(
 
 function extractPathParamExamples(
   propertySignature: PropertySignature,
-  type: Type,
-  typeTable: TypeTable,
-  lociTable: LociTable
+  type: Type
 ): Result<Record<string, string>, ParserError> | undefined {
   const examples = getJsDoc(propertySignature)
     ?.getTags()
@@ -141,16 +139,31 @@ function extractPathParamExamples(
       return exampleError;
     }
 
-    // TODO: compare type of example with 'type'
+    const typeOf = (value: string): string => {
+      if (/^-?\d+$/.test(value)) {
+        return "number";
+      }
 
-    const typeOfExamples: Type[] = Object.keys(examplesMap).map(key => {
-      const typeNode: TypeNode = // TODO:
-      return parseType(typeNode, typeTable, lociTable)
+      if (value.toLowerCase() === "false" || value.toLowerCase() === "true") {
+        return "boolean";
+      }
+
+      return "string";
+    };
+
+    const typeOfExamples: string[] = Object.keys(examplesMap).map(key => {
+      return typeOf(examplesMap[key]);
     });
 
-    if (
-      typeOfExamples.some(typeOfExample => typeOfExample.kind !== type.kind)
-    ) {
+    const spotTypesToJSTypesMap = new Map()
+    spotTypesToJSTypesMap.set(TypeKind.INT32, "number")
+    spotTypesToJSTypesMap.set(TypeKind.INT64, "number")
+    spotTypesToJSTypesMap.set(TypeKind.FLOAT, "number")
+    spotTypesToJSTypesMap.set(TypeKind.DOUBLE, "number")
+
+    const typeSpecified: string = spotTypesToJSTypesMap.get(type.kind) || type.kind;
+
+    if (typeOfExamples.some(typeOfExample => typeOfExample !== typeSpecified)) {
       return err(
         new ParserError(
           "@pathParams type of example must match type of param",

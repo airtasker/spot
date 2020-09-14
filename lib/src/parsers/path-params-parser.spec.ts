@@ -63,8 +63,8 @@ describe("path params parser", () => {
     expect(result[4]).toStrictEqual({
       description: "property-two-examples description",
       examples: {
-        "property-example-one": "property-example-one-value",
-        "property-example-two": "property-example-two-value"
+        "property-example-one": "123",
+        "property-example-two": "456"
       },
       name: "property-with-examples",
       type: {

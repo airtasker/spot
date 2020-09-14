@@ -19,9 +19,9 @@ class PathParamsClass {
       "property-with-example": string;
       /** property-two-examples description
        * @example property-example-one
-       * property-example-one-value
+       * 123
        * @example property-example-two
-       * property-example-two-value
+       * 456
        * */
       "property-with-examples": Integer;
     },
