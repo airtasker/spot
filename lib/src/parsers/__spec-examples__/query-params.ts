@@ -17,6 +17,12 @@ class QueryParamsClass {
       arrayProperty: string[];
     },
     @queryParams
+    interfaceQueryParams: IQueryParams,
+    @queryParams
+    typeAliasTypeLiteralQueryParams: TypeAliasTypeLiteral,
+    @queryParams
+    typeAliasTypeReferenceQueryParams: TypeAliasTypeReference,
+    @queryParams
     nonObjectQueryParams: string,
     @queryParams
     queryParamsWithIllegalPropertyName: {
@@ -48,3 +54,15 @@ class QueryParamsClass {
     }
   ) {}
 }
+
+interface IQueryParams {
+  /** property description */
+  "property-with-description": string;
+}
+
+type TypeAliasTypeLiteral = {
+  /** property description */
+  "property-with-description": string;
+};
+
+type TypeAliasTypeReference = IQueryParams;

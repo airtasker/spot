@@ -13,6 +13,12 @@ class PathParamsClass {
       arrayProperty: string[];
     },
     @pathParams
+    interfacePathParams: IPathParams,
+    @pathParams
+    typeAliasTypeLiteralPathParams: TypeAliasTypeLiteral,
+    @pathParams
+    typeAliasTypeReferencePathParams: TypeAliasTypeReference,
+    @pathParams
     pathParamsWithOptionalProperty: {
       property?: string;
     },
@@ -40,3 +46,15 @@ class PathParamsClass {
     }
   ) {}
 }
+
+interface IPathParams {
+  /** property description */
+  "property-with-description": string;
+}
+
+type TypeAliasTypeLiteral = {
+  /** property description */
+  "property-with-description": string;
+};
+
+type TypeAliasTypeReference = IPathParams;

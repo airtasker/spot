@@ -53,6 +53,50 @@ describe("path params parser", () => {
     });
   });
 
+  test("parses @pathParams as interface parameter", () => {
+    const result = parsePathParams(
+      method.getParameterOrThrow("interfacePathParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toStrictEqual({
+      description: "property description",
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+  });
+
+  test("parses @pathParams as type alias type literal parameter", () => {
+    const result = parsePathParams(
+      method.getParameterOrThrow("typeAliasTypeLiteralPathParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toStrictEqual({
+      description: "property description",
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+  });
+
+  test("fails to parse @pathParams as type alias interface parameters", () => {
+    expect(() =>
+      parsePathParams(
+        method.getParameterOrThrow("typeAliasTypeReferencePathParams"),
+        typeTable,
+        lociTable
+      )
+    ).toThrowError(
+      "expected parameter value to be an type literal or interface object"
+    );
+  });
+
   test("fails to parse @pathParams decorated non-object parameter", () => {
     expect(() =>
       parsePathParams(
@@ -60,7 +104,9 @@ describe("path params parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("expected parameter value to be an type literal object");
+    ).toThrowError(
+      "expected parameter value to be an type literal or interface object"
+    );
   });
 
   test("fails to parse @pathParams with optional param", () => {

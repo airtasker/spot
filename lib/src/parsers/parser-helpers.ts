@@ -2,6 +2,7 @@ import {
   ArrayLiteralExpression,
   ClassDeclaration,
   Decorator,
+  InterfaceDeclaration,
   JSDoc,
   JSDocableNode,
   MethodDeclaration,
@@ -15,9 +16,13 @@ import {
   StringLiteral,
   ts,
   TypeGuards,
-  TypeLiteralNode
+  TypeLiteralNode,
+  TypeReferenceNode
 } from "ts-morph";
 import { HttpMethod, QueryParamArrayStrategy } from "../definitions";
+import { getTargetDeclarationFromTypeReference } from "./type-parser";
+import { Result } from "../util";
+import { ParserError } from "../errors";
 
 // FILE HELPERS
 
@@ -148,18 +153,45 @@ export function getParamWithDecorator(
 // PARAMETER HELPERS
 
 /**
- * Retrieve a parameter's type as a type literal or throw.
+ * Retrieve a parameter's property signatures or throw.
  *
  * @param parameter a parameter declaration
  */
-export function getParameterTypeAsTypeLiteralOrThrow(
+export function getParameterPropertySignaturesOrThrow(
   parameter: ParameterDeclaration
-): TypeLiteralNode {
+): PropertySignature[] {
   const typeNode = parameter.getTypeNodeOrThrow();
-  if (!TypeGuards.isTypeLiteralNode(typeNode)) {
-    throw new Error("expected parameter value to be an type literal object");
+  if (TypeGuards.isTypeReferenceNode(typeNode)) {
+    // TODO: Support multi-layer type nodes as well
+    return parseTypeReferencePropertySignaturesOrThrow(typeNode);
+  } else if (TypeGuards.isTypeLiteralNode(typeNode)) {
+    return typeNode.getProperties();
   }
-  return typeNode;
+  throw new Error(
+    "expected parameter value to be an type literal or interface object"
+  );
+}
+
+function parseTypeReferencePropertySignaturesOrThrow(
+  typeNode: TypeReferenceNode
+): PropertySignature[] {
+  const typeReferenceNode = getTargetDeclarationFromTypeReference(typeNode);
+  if (typeReferenceNode.isErr()) throw typeReferenceNode;
+  const declaration = typeReferenceNode.unwrap();
+  // return early if  this is an interface
+  if (TypeGuards.isInterfaceDeclaration(declaration)) {
+    return declaration.getProperties();
+  }
+  const typeAliasDeclaration = declaration.getTypeNodeOrThrow();
+  // If the type of the node is a type literal, then ts-morph
+  // provides the property signatures which are required for header
+  // declaration
+  if (TypeGuards.isTypeLiteralNode(typeAliasDeclaration)) {
+    return typeAliasDeclaration.getProperties();
+  }
+  throw new Error(
+    "expected parameter value to be an type literal or interface object"
+  );
 }
 
 // DECORATOR HELPERS

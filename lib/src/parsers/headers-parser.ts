@@ -1,4 +1,4 @@
-import { ParameterDeclaration, PropertySignature } from "ts-morph";
+import { ParameterDeclaration, PropertySignature, TypeGuards } from "ts-morph";
 import { Header } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isHeaderTypeSafe } from "../http";
@@ -7,7 +7,7 @@ import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
-  getParameterTypeAsTypeLiteralOrThrow,
+  getParameterPropertySignaturesOrThrow,
   getPropertyName
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
@@ -27,10 +27,13 @@ export function parseHeaders(
       })
     );
   }
-  const headerTypeLiteral = getParameterTypeAsTypeLiteralOrThrow(parameter);
+
+  const headerPropertySignatures = getParameterPropertySignaturesOrThrow(
+    parameter
+  );
 
   const headers = [];
-  for (const propertySignature of headerTypeLiteral.getProperties()) {
+  for (const propertySignature of headerPropertySignatures) {
     const nameResult = extractHeaderName(propertySignature);
     if (nameResult.isErr()) return nameResult;
     const name = nameResult.unwrap();

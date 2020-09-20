@@ -7,7 +7,7 @@ import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
-  getParameterTypeAsTypeLiteralOrThrow,
+  getParameterPropertySignaturesOrThrow,
   getPropertyName
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
@@ -26,10 +26,12 @@ export function parseQueryParams(
       })
     );
   }
-  const queryParamTypeLiteral = getParameterTypeAsTypeLiteralOrThrow(parameter);
+  const queryParamPropertySignatures = getParameterPropertySignaturesOrThrow(
+    parameter
+  );
 
   const queryParams = [];
-  for (const propertySignature of queryParamTypeLiteral.getProperties()) {
+  for (const propertySignature of queryParamPropertySignatures) {
     const nameResult = extractQueryParamName(propertySignature);
     if (nameResult.isErr()) return nameResult;
     const name = nameResult.unwrap();

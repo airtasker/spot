@@ -13,6 +13,12 @@ class HeadersClass {
       optionalProperty?: Int64;
     },
     @headers
+    interfaceHeaders: IHeader,
+    @headers
+    typeAliasTypeLiteralHeaders: TypeAliasTypeLiteral,
+    @headers
+    typeAliasTypeReferenceHeaders: TypeAliasTypeReference,
+    @headers
     nonObjectHeaders: string,
     @headers
     headersWithIllegalPropertyName: {
@@ -32,3 +38,15 @@ class HeadersClass {
     }
   ) {}
 }
+
+interface IHeader {
+  /** property description */
+  "property-with-description": string;
+}
+
+type TypeAliasTypeLiteral = {
+  /** property description */
+  "property-with-description": string;
+};
+
+type TypeAliasTypeReference = IHeader;

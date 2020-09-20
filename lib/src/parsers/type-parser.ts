@@ -596,7 +596,7 @@ function resolveIndexAccessPropertyAccessChain(
  *
  * @param typeReference AST type reference node
  */
-function getTargetDeclarationFromTypeReference(
+export function getTargetDeclarationFromTypeReference(
   typeReference: TypeReferenceNode
 ): Result<TypeAliasDeclaration | InterfaceDeclaration, ParserError> {
   // TODO: check logic
