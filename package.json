@@ -59,7 +59,7 @@
     "supertest": "^4.0.2",
     "ts-jest": "^26.3.0",
     "ts-loader": "^8.0.3",
-    "webpack": "^4.44.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
   "engines": {
