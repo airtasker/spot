@@ -162,26 +162,24 @@ export function getParameterPropertySignaturesOrThrow(
   parameter: ParameterDeclaration
 ): PropertySignature[] {
   const typeNode = parameter.getTypeNodeOrThrow();
-  return extractPropertySignaturesFromTypeNode(typeNode);
+  return parseTypeReferencePropertySignaturesOrThrow(typeNode);
 }
 
 function parseTypeReferencePropertySignaturesOrThrow(
-  typeNode: TypeReferenceNode
+  typeNode: TypeNode
 ): PropertySignature[] {
-  const typeReferenceNode = getTargetDeclarationFromTypeReference(typeNode);
-  if (typeReferenceNode.isErr()) throw typeReferenceNode;
-  const declaration = typeReferenceNode.unwrap();
-  // return early if  this is an interface
-  if (TypeGuards.isInterfaceDeclaration(declaration)) {
-    return declaration.getProperties();
-  }
-  const declarationAliasTypeNode = declaration.getTypeNodeOrThrow();
-  return extractPropertySignaturesFromTypeNode(declarationAliasTypeNode);
-}
-
-function extractPropertySignaturesFromTypeNode(typeNode: TypeNode) {
   if (TypeGuards.isTypeReferenceNode(typeNode)) {
-    return parseTypeReferencePropertySignaturesOrThrow(typeNode);
+    const typeReferenceNode = getTargetDeclarationFromTypeReference(typeNode);
+    if (typeReferenceNode.isErr()) throw typeReferenceNode;
+    const declaration = typeReferenceNode.unwrap();
+    // return early if the declaration is an interface
+    if (TypeGuards.isInterfaceDeclaration(declaration)) {
+      return declaration.getProperties();
+    }
+    const declarationAliasTypeNode = declaration.getTypeNodeOrThrow();
+    return parseTypeReferencePropertySignaturesOrThrow(
+      declarationAliasTypeNode
+    );
   } else if (TypeGuards.isTypeLiteralNode(typeNode)) {
     return typeNode.getProperties();
   }
