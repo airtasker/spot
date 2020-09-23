@@ -58,7 +58,7 @@
     "styled-components": "^4.4.1",
     "supertest": "^4.0.2",
     "ts-jest": "^26.4.0",
-    "ts-loader": "^8.0.3",
+    "ts-loader": "^8.0.4",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
