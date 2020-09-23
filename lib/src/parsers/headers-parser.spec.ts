@@ -87,16 +87,21 @@ describe("headers parser", () => {
     });
   });
 
-  test("fails to parse @headers as type alias interface parameters", () => {
-    expect(() =>
-      parseHeaders(
-        method.getParameterOrThrow("typeAliasTypeReferenceHeaders"),
-        typeTable,
-        lociTable
-      )
-    ).toThrowError(
-      "expected parameter value to be an type literal or interface object"
-    );
+  test("parses @headers as type alias interface parameters", () => {
+    const result = parseHeaders(
+      method.getParameterOrThrow("typeAliasTypeReferenceHeaders"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toStrictEqual({
+      description: "property description",
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
   });
 
   test("fails to parse @headers decorated non-object parameter", () => {

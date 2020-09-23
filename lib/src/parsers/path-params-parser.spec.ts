@@ -85,16 +85,20 @@ describe("path params parser", () => {
     });
   });
 
-  test("fails to parse @pathParams as type alias interface parameters", () => {
-    expect(() =>
-      parsePathParams(
-        method.getParameterOrThrow("typeAliasTypeReferencePathParams"),
-        typeTable,
-        lociTable
-      )
-    ).toThrowError(
-      "expected parameter value to be an type literal or interface object"
-    );
+  test("parses @pathParams as type alias interface parameters", () => {
+    const result = parsePathParams(
+      method.getParameterOrThrow("typeAliasTypeReferencePathParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toStrictEqual({
+      description: "property description",
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
   });
 
   test("fails to parse @pathParams decorated non-object parameter", () => {

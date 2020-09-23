@@ -17,6 +17,7 @@ import {
   ts,
   TypeGuards,
   TypeLiteralNode,
+  TypeNode,
   TypeReferenceNode
 } from "ts-morph";
 import { HttpMethod, QueryParamArrayStrategy } from "../definitions";
@@ -161,15 +162,7 @@ export function getParameterPropertySignaturesOrThrow(
   parameter: ParameterDeclaration
 ): PropertySignature[] {
   const typeNode = parameter.getTypeNodeOrThrow();
-  if (TypeGuards.isTypeReferenceNode(typeNode)) {
-    // TODO: Support multi-layer type nodes as well
-    return parseTypeReferencePropertySignaturesOrThrow(typeNode);
-  } else if (TypeGuards.isTypeLiteralNode(typeNode)) {
-    return typeNode.getProperties();
-  }
-  throw new Error(
-    "expected parameter value to be an type literal or interface object"
-  );
+  return extractPropertySignaturesFromTypeNode(typeNode);
 }
 
 function parseTypeReferencePropertySignaturesOrThrow(
@@ -182,12 +175,15 @@ function parseTypeReferencePropertySignaturesOrThrow(
   if (TypeGuards.isInterfaceDeclaration(declaration)) {
     return declaration.getProperties();
   }
-  const typeAliasDeclaration = declaration.getTypeNodeOrThrow();
-  // If the type of the node is a type literal, then ts-morph
-  // provides the property signatures which are required for header
-  // declaration
-  if (TypeGuards.isTypeLiteralNode(typeAliasDeclaration)) {
-    return typeAliasDeclaration.getProperties();
+  const declarationAliasTypeNode = declaration.getTypeNodeOrThrow();
+  return extractPropertySignaturesFromTypeNode(declarationAliasTypeNode);
+}
+
+function extractPropertySignaturesFromTypeNode(typeNode: TypeNode) {
+  if (TypeGuards.isTypeReferenceNode(typeNode)) {
+    return parseTypeReferencePropertySignaturesOrThrow(typeNode);
+  } else if (TypeGuards.isTypeLiteralNode(typeNode)) {
+    return typeNode.getProperties();
   }
   throw new Error(
     "expected parameter value to be an type literal or interface object"
