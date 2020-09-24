@@ -82,6 +82,57 @@ describe("query params parser", () => {
     });
   });
 
+  test("parses @queryParams as interface parameter", () => {
+    const result = parseQueryParams(
+      method.getParameterOrThrow("interfaceQueryParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toStrictEqual({
+      description: "property description",
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
+  });
+
+  test("parses @queryParams as type alias type literal parameter", () => {
+    const result = parseQueryParams(
+      method.getParameterOrThrow("typeAliasTypeLiteralQueryParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toStrictEqual({
+      description: "property description",
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
+  });
+
+  test("parses @queryParams as type alias interface parameter", () => {
+    const result = parseQueryParams(
+      method.getParameterOrThrow("typeAliasTypeReferenceQueryParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toStrictEqual({
+      description: "property description",
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
+  });
+
   test("fails to parse @queryParams decorated non-object parameter", () => {
     expect(() =>
       parseQueryParams(
@@ -89,7 +140,9 @@ describe("query params parser", () => {
         typeTable,
         lociTable
       ).unwrapErrOrThrow()
-    ).toThrowError("expected parameter value to be an type literal object");
+    ).toThrowError(
+      "expected parameter value to be an type literal or interface object"
+    );
   });
 
   test("fails to parse optional @queryParams decorated parameter", () => {

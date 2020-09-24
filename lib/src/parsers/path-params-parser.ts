@@ -7,7 +7,7 @@ import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
-  getParameterTypeAsTypeLiteralOrThrow,
+  getParameterPropertySignaturesOrThrow,
   getPropertyName
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
@@ -26,10 +26,12 @@ export function parsePathParams(
       })
     );
   }
-  const pathParamTypeLiteral = getParameterTypeAsTypeLiteralOrThrow(parameter);
+  const pathParamPropertySignatures = getParameterPropertySignaturesOrThrow(
+    parameter
+  );
 
   const pathParams = [];
-  for (const propertySignature of pathParamTypeLiteral.getProperties()) {
+  for (const propertySignature of pathParamPropertySignatures) {
     const pathParamResult = extractPathParam(
       propertySignature,
       typeTable,
