@@ -56,7 +56,7 @@
     "react-dom": "^16.13.1",
     "redoc": "^2.0.0-rc.40",
     "styled-components": "^4.4.1",
-    "supertest": "^4.0.2",
+    "supertest": "^5.0.0",
     "ts-jest": "^26.4.0",
     "ts-loader": "^8.0.4",
     "webpack": "^4.44.2",
