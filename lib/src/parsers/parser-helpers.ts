@@ -2,7 +2,6 @@ import {
   ArrayLiteralExpression,
   ClassDeclaration,
   Decorator,
-  InterfaceDeclaration,
   JSDoc,
   JSDocableNode,
   MethodDeclaration,
@@ -16,14 +15,10 @@ import {
   StringLiteral,
   ts,
   TypeGuards,
-  TypeLiteralNode,
-  TypeNode,
-  TypeReferenceNode
+  TypeNode
 } from "ts-morph";
 import { HttpMethod, QueryParamArrayStrategy } from "../definitions";
 import { getTargetDeclarationFromTypeReference } from "./type-parser";
-import { Result } from "../util";
-import { ParserError } from "../errors";
 
 // FILE HELPERS
 

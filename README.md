@@ -113,6 +113,31 @@ You can then run a generator with:
 npx @airtasker/spot generate --contract api.ts
 ```
 
+## In Memory Usage
+
+```ts
+import { Spot } from "@airtasker/spot";
+
+const contract = Spot.parseContract("./api.ts")
+const openApi = Spot.OpenApi3.generateOpenAPI3(contract);
+
+console.log(openApi);
+
+/*
+{
+  openapi: '3.0.2',
+  info: { title: 'my-api', description: undefined, version: '0.0.0' },
+  paths: { '/users': { post: [Object] } },
+  components: {
+    schemas: { CreateUserRequest: [Object], CreateUserResponse: [Object] },
+    securitySchemes: undefined
+  },
+  security: undefined
+}
+*/
+
+```
+
 # Commands
 
 <!-- commands -->
@@ -203,7 +228,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.1.0/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0/src/commands/help.ts)_
 
 ## `spot init`
 

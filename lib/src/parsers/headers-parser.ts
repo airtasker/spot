@@ -1,4 +1,4 @@
-import { ParameterDeclaration, PropertySignature, TypeGuards } from "ts-morph";
+import { ParameterDeclaration, PropertySignature } from "ts-morph";
 import { Header } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isHeaderTypeSafe } from "../http";
