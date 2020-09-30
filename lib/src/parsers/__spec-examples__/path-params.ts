@@ -33,9 +33,9 @@ class PathParamsClass {
     @pathParams
     paramsWithDuplicateExampleName: {
       /**@example name
-       * 123
+       * "123"
        * @example name
-       * 456
+       * "456"
        */
       property: string;
     },
