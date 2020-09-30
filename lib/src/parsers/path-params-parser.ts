@@ -1,5 +1,5 @@
 import { ParameterDeclaration, PropertySignature, TypeNode } from "ts-morph";
-import { PathParam } from "../definitions";
+import { Example, PathParam } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isPathParamTypeSafe } from "../http";
 import { LociTable } from "../locations";
@@ -92,13 +92,13 @@ function extractPathParam(
 function extractPathParamExamples(
   propertySignature: PropertySignature,
   type: Type
-): Result<Record<string, string>, ParserError> | undefined {
-  const examples = getJsDoc(propertySignature)
+): Result<Example[], ParserError> | undefined {
+  const rawExamples = getJsDoc(propertySignature)
     ?.getTags()
     .filter(tag => tag.getTagName() === "example")
     .map(example => example.getComment());
 
-  if (examples && examples.indexOf(undefined) !== -1) {
+  if (rawExamples && rawExamples.indexOf(undefined) !== -1) {
     return err(
       new ParserError("@pathParams example must not be empty", {
         file: propertySignature.getSourceFile().getFilePath(),
@@ -107,10 +107,10 @@ function extractPathParamExamples(
     );
   }
 
-  if (examples && examples.length > 0) {
-    const examplesMap: Record<string, string> = {};
+  if (rawExamples && rawExamples.length > 0) {
+    const examples: Example[] = [];
     let exampleError;
-    examples.every(example => {
+    rawExamples.every(example => {
       const exampleName = example?.split("\n")[0]?.trim();
       const exampleValue = example?.split("\n")[1]?.trim();
       if (!exampleName || !exampleValue) {
@@ -122,7 +122,7 @@ function extractPathParamExamples(
         );
         return false;
       } else {
-        if (Object.keys(examplesMap).indexOf(exampleName) !== -1) {
+        if (examples.some(ex => ex.name === exampleName)) {
           exampleError = err(
             new ParserError("@pathParams duplicate example name", {
               file: propertySignature.getSourceFile().getFilePath(),
@@ -131,7 +131,7 @@ function extractPathParamExamples(
           );
           return false;
         }
-        examplesMap[exampleName] = exampleValue;
+        examples.push({ name: exampleName, value: exampleValue });
         return true;
       }
     });
@@ -151,17 +151,18 @@ function extractPathParamExamples(
       return "string";
     };
 
-    const typeOfExamples: string[] = Object.keys(examplesMap).map(key => {
-      return typeOf(examplesMap[key]);
+    const typeOfExamples: string[] = examples.map(ex => {
+      return typeOf(ex.value);
     });
 
-    const spotTypesToJSTypesMap = new Map()
-    spotTypesToJSTypesMap.set(TypeKind.INT32, "number")
-    spotTypesToJSTypesMap.set(TypeKind.INT64, "number")
-    spotTypesToJSTypesMap.set(TypeKind.FLOAT, "number")
-    spotTypesToJSTypesMap.set(TypeKind.DOUBLE, "number")
+    const spotTypesToJSTypesMap = new Map();
+    spotTypesToJSTypesMap.set(TypeKind.INT32, "number");
+    spotTypesToJSTypesMap.set(TypeKind.INT64, "number");
+    spotTypesToJSTypesMap.set(TypeKind.FLOAT, "number");
+    spotTypesToJSTypesMap.set(TypeKind.DOUBLE, "number");
 
-    const typeSpecified: string = spotTypesToJSTypesMap.get(type.kind) || type.kind;
+    const typeSpecified: string =
+      spotTypesToJSTypesMap.get(type.kind) || type.kind;
 
     if (typeOfExamples.some(typeOfExample => typeOfExample !== typeSpecified)) {
       return err(
@@ -175,7 +176,7 @@ function extractPathParamExamples(
       );
     }
 
-    return ok(examplesMap);
+    return ok(examples);
   }
   return;
 }

@@ -54,7 +54,7 @@ describe("path params parser", () => {
     });
     expect(result[3]).toStrictEqual({
       description: "property-example description",
-      examples: { "property-example": "property-example-value" },
+      examples: [{ name: "property-example", value: "property-example-value" }],
       name: "property-with-example",
       type: {
         kind: TypeKind.STRING
@@ -62,10 +62,16 @@ describe("path params parser", () => {
     });
     expect(result[4]).toStrictEqual({
       description: "property-two-examples description",
-      examples: {
-        "property-example-one": "123",
-        "property-example-two": "456"
-      },
+      examples: [
+        {
+          name: "property-example-one",
+          value: "123"
+        },
+        {
+          name: "property-example-two",
+          value: "456"
+        }
+      ],
       name: "property-with-examples",
       type: {
         kind: TypeKind.INT32
