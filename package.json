@@ -73,8 +73,8 @@
     "npm-shrinkwrap.json",
     "oclif.manifest.json"
   ],
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "homepage": "https://github.com/airtasker/spot",
   "license": "MIT",
   "oclif": {
