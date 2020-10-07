@@ -13,7 +13,7 @@ class PathParamsClass {
       arrayProperty: string[];
       /** property-example description
        * @example property-example
-       * property-example-value
+       * "property-example-value"
        *  */
       "property-with-example": string;
       /** property-two-examples description
@@ -71,6 +71,13 @@ class PathParamsClass {
     @pathParams
     pathParamsWithIllegalPropertyArrayType: {
       property: null[];
+    },
+    @pathParams
+    paramsWithUnquotedStringExample: {
+      /**@example
+       * invalid-property-example
+       */
+      property: string;
     },
     @pathParams
     optionalPathParams?: {

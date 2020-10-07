@@ -3,7 +3,7 @@ import { Example, PathParam } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isPathParamTypeSafe } from "../http";
 import { LociTable } from "../locations";
-import { Type, TypeKind, TypeTable } from "../types";
+import { stringType, Type, TypeKind, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
@@ -131,7 +131,32 @@ function extractPathParamExamples(
           );
           return false;
         }
-        examples.push({ name: exampleName, value: exampleValue });
+
+        if (
+          type.kind === TypeKind.STRING &&
+          (!exampleValue.startsWith('"') || !exampleValue.endsWith('"'))
+        ) {
+          return err(
+            new ParserError("@pathParams string examples must be quoted", {
+              file: propertySignature.getSourceFile().getFilePath(),
+              position: propertySignature.getPos()
+            })
+          );
+        }
+
+        try {
+          const parsedValue = JSON.parse(exampleValue);
+          examples.push({ name: exampleName, value: parsedValue });
+        } catch (e) {
+          exampleError = err(
+            new ParserError("could not parse @pathParams example", {
+              file: propertySignature.getSourceFile().getFilePath(),
+              position: propertySignature.getPos()
+            })
+          );
+          return false;
+        }
+
         return true;
       }
     });
@@ -144,7 +169,7 @@ function extractPathParamExamples(
         return "number";
       }
 
-      if (value.toLowerCase() === "false" || value.toLowerCase() === "true") {
+      if (typeof value === "boolean") {
         return "boolean";
       }
 

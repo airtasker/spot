@@ -65,11 +65,11 @@ describe("path params parser", () => {
       examples: [
         {
           name: "property-example-one",
-          value: "123"
+          value: 123
         },
         {
           name: "property-example-two",
-          value: "456"
+          value: 456
         }
       ],
       name: "property-with-examples",
@@ -192,6 +192,16 @@ describe("path params parser", () => {
   test("fails to parse @example decorator with a different example type", () => {
     const err = parsePathParams(
       method.getParameterOrThrow("paramsWithNonMatchingExampleType"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @example decorator with unquoted example string", () => {
+    const err = parsePathParams(
+      method.getParameterOrThrow("paramsWithUnquotedStringExample"),
       typeTable,
       lociTable
     ).unwrapErrOrThrow();
