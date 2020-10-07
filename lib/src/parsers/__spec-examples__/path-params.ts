@@ -1,5 +1,4 @@
 import { pathParams, Integer } from "@airtasker/spot";
-import { TypeKind, FloatType, Int32Type } from "../../types";
 
 class PathParamsClass {
   pathParamsMethod(

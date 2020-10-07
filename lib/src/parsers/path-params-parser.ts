@@ -1,4 +1,4 @@
-import { ParameterDeclaration, PropertySignature, TypeNode } from "ts-morph";
+import { ParameterDeclaration, PropertySignature } from "ts-morph";
 import { Example, PathParam } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isPathParamTypeSafe } from "../http";
