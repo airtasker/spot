@@ -54,7 +54,13 @@ export function parseHeaders(
     if (examples && examples.isErr()) return examples;
     const optional = propertySignature.hasQuestionToken();
 
-    headers.push({ name, type, description, optional, examples: examples?.unwrap() });
+    headers.push({
+      name,
+      type,
+      description,
+      optional,
+      examples: examples?.unwrap()
+    });
   }
 
   return ok(headers.sort((a, b) => (b.name > a.name ? -1 : 1)));

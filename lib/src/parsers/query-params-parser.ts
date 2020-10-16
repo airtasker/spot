@@ -53,7 +53,13 @@ export function parseQueryParams(
 
     const optional = propertySignature.hasQuestionToken();
 
-    queryParams.push({ name, type, description, optional, examples: examples?.unwrap() });
+    queryParams.push({
+      name,
+      type,
+      description,
+      optional,
+      examples: examples?.unwrap()
+    });
   }
 
   // TODO: add loci information

@@ -61,7 +61,7 @@ describe("headers parser", () => {
       type: {
         kind: TypeKind.STRING
       },
-      optional: false,
+      optional: false
     });
     expect(result[4]).toStrictEqual({
       description: "property-two-examples description",
@@ -79,7 +79,7 @@ describe("headers parser", () => {
       type: {
         kind: TypeKind.INT32
       },
-      optional: false,
+      optional: false
     });
   });
 

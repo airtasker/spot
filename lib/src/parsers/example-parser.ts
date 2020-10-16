@@ -12,7 +12,8 @@ export function extractJSDocExamples(
   if (!jsDoc) {
     return;
   }
-  const rawExamples = jsDoc.getTags()
+  const rawExamples = jsDoc
+    .getTags()
     .filter(tag => tag.getTagName() === "example")
     .map(example => example.getComment());
 
@@ -54,7 +55,7 @@ export function extractJSDocExamples(
 
         if (
           type.kind === TypeKind.STRING &&
-          (!exampleValue.startsWith("\"") || !exampleValue.endsWith("\""))
+          (!exampleValue.startsWith('"') || !exampleValue.endsWith('"'))
         ) {
           exampleError = err(
             new ParserError("string examples must be quoted", {
@@ -112,13 +113,10 @@ export function extractJSDocExamples(
 
     if (typeOfExamples.some(typeOfExample => typeOfExample !== typeSpecified)) {
       return err(
-        new ParserError(
-          "type of example must match type of param",
-          {
-            file: parentJsDocNode.getSourceFile().getFilePath(),
-            position: parentJsDocNode.getPos()
-          }
-        )
+        new ParserError("type of example must match type of param", {
+          file: parentJsDocNode.getSourceFile().getFilePath(),
+          position: parentJsDocNode.getPos()
+        })
       );
     }
 

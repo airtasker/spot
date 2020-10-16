@@ -33,6 +33,7 @@ describe("endpoint parser", () => {
         headers: [
           {
             description: undefined,
+            examples: undefined,
             name: "property",
             optional: false,
             type: { kind: TypeKind.STRING }
@@ -51,6 +52,7 @@ describe("endpoint parser", () => {
         headers: [
           {
             description: undefined,
+            examples: undefined,
             name: "property",
             optional: false,
             type: { kind: TypeKind.STRING }
@@ -59,6 +61,7 @@ describe("endpoint parser", () => {
         pathParams: [
           {
             description: undefined,
+            examples: undefined,
             name: "pathParam",
             type: { kind: TypeKind.STRING }
           }
@@ -66,6 +69,7 @@ describe("endpoint parser", () => {
         queryParams: [
           {
             description: undefined,
+            examples: undefined,
             name: "property",
             optional: false,
             type: { kind: TypeKind.STRING }
@@ -81,6 +85,7 @@ describe("endpoint parser", () => {
           headers: [
             {
               description: undefined,
+              examples: undefined,
               name: "property",
               optional: false,
               type: { kind: TypeKind.STRING }

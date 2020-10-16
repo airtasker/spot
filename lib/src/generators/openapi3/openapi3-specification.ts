@@ -490,7 +490,9 @@ export interface ExternalDocumentationObject {
 
 // Common
 
-export type ExamplesSet = { [example: string]: ExampleObject | ReferenceObject };
+export type ExamplesSet = {
+  [example: string]: ExampleObject | ReferenceObject;
+};
 
 type MutuallyExclusiveExample =
   | {

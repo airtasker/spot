@@ -26,7 +26,7 @@ type MismatchedExampleAndIntegerType = {
    * This_is_not_an_integer
    */
   property: Integer;
-}
+};
 
 type MismatchedExampleAndStringWithQuotesType = {
   /**
@@ -34,4 +34,4 @@ type MismatchedExampleAndStringWithQuotesType = {
    * This_is_not_a_string_in_quotes
    */
   property: string;
-}
+};

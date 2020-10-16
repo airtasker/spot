@@ -31,6 +31,7 @@ describe("request parser", () => {
       headers: [
         {
           description: undefined,
+          examples: undefined,
           name: "property",
           optional: false,
           type: { kind: TypeKind.STRING }
@@ -39,6 +40,7 @@ describe("request parser", () => {
       pathParams: [
         {
           description: undefined,
+          examples: undefined,
           name: "property",
           type: { kind: TypeKind.STRING }
         }
@@ -46,6 +48,7 @@ describe("request parser", () => {
       queryParams: [
         {
           description: undefined,
+          examples: undefined,
           name: "property",
           optional: false,
           type: { kind: TypeKind.STRING }

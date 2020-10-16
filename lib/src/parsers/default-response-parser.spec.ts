@@ -32,6 +32,7 @@ describe("default response parser", () => {
       headers: [
         {
           description: undefined,
+          examples: undefined,
           name: "property",
           optional: false,
           type: { kind: TypeKind.STRING }

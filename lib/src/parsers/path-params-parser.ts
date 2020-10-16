@@ -5,7 +5,11 @@ import { isPathParamTypeSafe } from "../http";
 import { LociTable } from "../locations";
 import { Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
-import { getJsDoc, getParameterPropertySignaturesOrThrow, getPropertyName } from "./parser-helpers";
+import {
+  getJsDoc,
+  getParameterPropertySignaturesOrThrow,
+  getPropertyName
+} from "./parser-helpers";
 import { parseType } from "./type-parser";
 import { extractJSDocExamples } from "./example-parser";
 

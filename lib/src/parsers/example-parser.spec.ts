@@ -1,6 +1,9 @@
 import { extractJSDocExamples } from "./example-parser";
 import { createProjectFromExistingSourceFile } from "../spec-helpers/helper";
-import { getJsDoc, parseTypeReferencePropertySignaturesOrThrow } from "./parser-helpers";
+import {
+  getJsDoc,
+  parseTypeReferencePropertySignaturesOrThrow
+} from "./parser-helpers";
 import { JSDoc, TypeAliasDeclaration } from "ts-morph";
 import { StringType, Type, TypeKind } from "../types";
 
@@ -12,14 +15,16 @@ type JSDocNodeMapping = {
 };
 describe("example-parser", () => {
   describe("extractJSDocExamples", () => {
-    let jsDocs: JSDocNodeMapping = {} as JSDocNodeMapping;
+    const jsDocs: JSDocNodeMapping = {} as JSDocNodeMapping;
     const sourceFile = createProjectFromExistingSourceFile(
       `${__dirname}/__spec-examples__/examples.ts`
     ).file;
     const typeValues = sourceFile.getTypeAliases();
 
     typeValues.forEach((typeAlias: TypeAliasDeclaration) => {
-      const properties = parseTypeReferencePropertySignaturesOrThrow(typeAlias.getTypeNodeOrThrow());
+      const properties = parseTypeReferencePropertySignaturesOrThrow(
+        typeAlias.getTypeNodeOrThrow()
+      );
       const name = typeAlias.getName();
       jsDocs[name] = [];
       for (const property of properties) {
@@ -38,7 +43,9 @@ describe("example-parser", () => {
       });
       expect(retrieveStringExample).toBeDefined();
       expect(retrieveStringExample!.isOk).toBeTruthy();
-      expect(retrieveStringExample!.unwrapOrThrow()).toStrictEqual([{"name": "property-example", "value": "property-example-value"}]);
+      expect(retrieveStringExample!.unwrapOrThrow()).toStrictEqual([
+        { name: "property-example", value: "property-example-value" }
+      ]);
     });
 
     test("successfully parses integer examples on properties on type ParsedExamples", () => {
@@ -49,7 +56,10 @@ describe("example-parser", () => {
       });
       expect(retrieveIntegerExample).toBeDefined();
       expect(retrieveIntegerExample!.isOk).toBeTruthy();
-      expect(retrieveIntegerExample!.unwrapOrThrow()).toStrictEqual([{"name": "property-example-one", "value": 123}, {"name": "property-example-two", "value": 456}]);
+      expect(retrieveIntegerExample!.unwrapOrThrow()).toStrictEqual([
+        { name: "property-example-one", value: 123 },
+        { name: "property-example-two", value: 456 }
+      ]);
     });
 
     test("successfully parses boolean examples on properties on type ParsedExamples", () => {
@@ -60,31 +70,30 @@ describe("example-parser", () => {
       });
       expect(retrieveBooleanExample).toBeDefined();
       expect(retrieveBooleanExample!.isOk).toBeTruthy();
-      expect(retrieveBooleanExample!.unwrapOrThrow()).toStrictEqual([{"name": "property-example", "value": false}]);
+      expect(retrieveBooleanExample!.unwrapOrThrow()).toStrictEqual([
+        { name: "property-example", value: false }
+      ]);
     });
 
     test("errors examples on properties on type MismatchedExampleAndIntegerType", () => {
       expect(jsDocs.MismatchedExampleAndIntegerType.length).toEqual(1);
       const integerExampleNode = jsDocs.MismatchedExampleAndIntegerType[0];
-      try {
+      expect(
         extractJSDocExamples(integerExampleNode, {
           kind: TypeKind.INT32
-        });
-      } catch (e) {
-        expect(e.message).toEqual('could not parse example')
-      }
+        })!.unwrapErrOrThrow().message
+      ).toEqual("could not parse example");
     });
 
     test("errors examples on properties on type MismatchedExampleAndStringWithQuotesType", () => {
       expect(jsDocs.MismatchedExampleAndStringWithQuotesType.length).toEqual(1);
-      const stringExampleNode = jsDocs.MismatchedExampleAndStringWithQuotesType[0];
-      try {
+      const stringExampleNode =
+        jsDocs.MismatchedExampleAndStringWithQuotesType[0];
+      expect(
         extractJSDocExamples(stringExampleNode, {
           kind: TypeKind.STRING
-        });
-      } catch (e) {
-        expect(e.message).toEqual('string examples must be quoted')
-      }
+        })!.unwrapErrOrThrow().message
+      ).toEqual("string examples must be quoted");
     });
   });
 });
