@@ -4,7 +4,7 @@ import {
   Config,
   Contract,
   DefaultResponse,
-  Endpoint,
+  Endpoint, Example,
   Header,
   HttpMethod,
   isSpecificResponse,
@@ -33,7 +33,7 @@ import {
   QueryParameterObject,
   RequestBodyObject,
   ResponseObject,
-  ResponsesObject
+  ResponsesObject, ExamplesSet
 } from "./openapi3-specification";
 import {
   typeToSchemaOrReferenceObject,
@@ -153,7 +153,8 @@ function endpointRequestToParameterObjects(
     in: "path",
     description: p.description,
     required: true,
-    schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+    schema: typeToSchemaOrReferenceObject(p.type, typeTable),
+    examples: exampleToOpenApiExampleModel(p.examples),
   }));
 
   const queryParameters: QueryParameterObject[] = request.queryParams.map(
@@ -163,7 +164,8 @@ function endpointRequestToParameterObjects(
       description: p.description,
       ...typeToQueryParameterSerializationStrategy(p.type, typeTable, config),
       required: !p.optional,
-      schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+      schema: typeToSchemaOrReferenceObject(p.type, typeTable),
+      examples: exampleToOpenApiExampleModel(p.examples),
     })
   );
 
@@ -172,7 +174,8 @@ function endpointRequestToParameterObjects(
     in: "header",
     description: p.description,
     required: !p.optional,
-    schema: typeToSchemaOrReferenceObject(p.type, typeTable)
+    schema: typeToSchemaOrReferenceObject(p.type, typeTable),
+    examples: exampleToOpenApiExampleModel(p.examples),
   }));
 
   const parameters: ParameterObject[] = [];
@@ -332,4 +335,15 @@ function httpMethodToPathItemMethod(
     default:
       assertNever(method);
   }
+}
+
+function exampleToOpenApiExampleModel(examples?: Example[]): ExamplesSet | undefined {
+  return examples?.reduce<ExamplesSet>((acc, example: Example) => {
+      acc[example.name] = {
+        value: example.value
+      };
+      return acc;
+    },
+    {}
+  );
 }

@@ -11,6 +11,7 @@ import {
   getPropertyName
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
+import { extractJSDocExamples } from "./example-parser";
 
 export function parseHeaders(
   parameter: ParameterDeclaration,
@@ -32,7 +33,7 @@ export function parseHeaders(
     parameter
   );
 
-  const headers = [];
+  const headers: Array<Header> = [];
   for (const propertySignature of headerPropertySignatures) {
     const nameResult = extractHeaderName(propertySignature);
     if (nameResult.isErr()) return nameResult;
@@ -46,11 +47,14 @@ export function parseHeaders(
     if (typeResult.isErr()) return typeResult;
     const type = typeResult.unwrap();
 
-    const description = getJsDoc(propertySignature)?.getDescription().trim();
+    const jsDocNode = getJsDoc(propertySignature);
+    const description = jsDocNode?.getDescription().trim();
 
+    const examples = extractJSDocExamples(jsDocNode, type);
+    if (examples && examples.isErr()) return examples;
     const optional = propertySignature.hasQuestionToken();
 
-    headers.push({ name, type, description, optional });
+    headers.push({ name, type, description, optional, examples: examples?.unwrap() });
   }
 
   return ok(headers.sort((a, b) => (b.name > a.name ? -1 : 1)));

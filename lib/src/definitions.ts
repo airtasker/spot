@@ -57,6 +57,7 @@ export interface Header {
   description?: string;
   type: Type;
   optional: boolean;
+  examples?: Example[];
 }
 
 export interface PathParam {
@@ -76,6 +77,7 @@ export interface QueryParam {
   description?: string;
   type: Type;
   optional: boolean;
+  examples?: Example[];
 }
 
 export interface Body {

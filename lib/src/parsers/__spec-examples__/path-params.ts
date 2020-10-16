@@ -44,7 +44,14 @@ class PathParamsClass {
       property: string;
     },
     @pathParams
-    paramsWithNonMatchingExampleType: {
+      paramsWithNonMatchingStringExampleType: {
+      /**@example name
+       * This_is_not_a_string_in_quotes
+       */
+      property: string;
+    },
+    @pathParams
+    paramsWithNonMatchingIntegerExampleType: {
       /**@example name
        * This_is_not_an_integer
        */

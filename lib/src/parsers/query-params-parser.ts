@@ -11,6 +11,7 @@ import {
   getPropertyName
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
+import { extractJSDocExamples } from "./example-parser";
 
 export function parseQueryParams(
   parameter: ParameterDeclaration,
@@ -30,7 +31,7 @@ export function parseQueryParams(
     parameter
   );
 
-  const queryParams = [];
+  const queryParams: Array<QueryParam> = [];
   for (const propertySignature of queryParamPropertySignatures) {
     const nameResult = extractQueryParamName(propertySignature);
     if (nameResult.isErr()) return nameResult;
@@ -44,11 +45,15 @@ export function parseQueryParams(
     if (typeResult.isErr()) return typeResult;
     const type = typeResult.unwrap();
 
-    const description = getJsDoc(propertySignature)?.getDescription().trim();
+    const jsDocNode = getJsDoc(propertySignature);
+    const description = jsDocNode?.getDescription().trim();
+
+    const examples = extractJSDocExamples(jsDocNode, type);
+    if (examples && examples.isErr()) return examples;
 
     const optional = propertySignature.hasQuestionToken();
 
-    queryParams.push({ name, type, description, optional });
+    queryParams.push({ name, type, description, optional, examples: examples?.unwrap() });
   }
 
   // TODO: add loci information

@@ -1,4 +1,4 @@
-import { queryParams } from "@airtasker/spot";
+import { Integer, queryParams } from "@airtasker/spot";
 
 class QueryParamsClass {
   queryParamsMethod(
@@ -10,6 +10,18 @@ class QueryParamsClass {
       property: string;
       /** property description */
       "property-with-description": string;
+      /** property-example description
+       * @example property-example
+       * "property-example-value"
+       *  */
+      "property-with-example": string;
+      /** property-two-examples description
+       * @example property-example-one
+       * 123
+       * @example property-example-two
+       * 456
+       * */
+      "property-with-examples": Integer;
       optionalProperty?: string;
       objectProperty: {
         objectProp: string;
