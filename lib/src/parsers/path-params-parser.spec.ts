@@ -3,7 +3,6 @@ import { LociTable } from "../locations";
 import { createProjectFromExistingSourceFile } from "../spec-helpers/helper";
 import { TypeKind, TypeTable } from "../types";
 import { parsePathParams } from "./path-params-parser";
-import { Type } from "ts-morph";
 
 describe("path params parser", () => {
   const exampleFile = createProjectFromExistingSourceFile(
@@ -30,6 +29,7 @@ describe("path params parser", () => {
     expect(result).toHaveLength(5);
     expect(result[0]).toStrictEqual({
       description: undefined,
+      examples: undefined,
       name: "arrayProperty",
       type: {
         kind: TypeKind.ARRAY,
@@ -40,6 +40,7 @@ describe("path params parser", () => {
     });
     expect(result[1]).toStrictEqual({
       description: undefined,
+      examples: undefined,
       name: "property",
       type: {
         kind: TypeKind.STRING
@@ -47,6 +48,7 @@ describe("path params parser", () => {
     });
     expect(result[2]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -88,6 +90,7 @@ describe("path params parser", () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -104,6 +107,7 @@ describe("path params parser", () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -120,6 +124,7 @@ describe("path params parser", () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -239,9 +244,19 @@ describe("path params parser", () => {
     expect(err).toBeInstanceOf(ParserError);
   });
 
-  test("fails to parse @example decorator with a different example type", () => {
+  test("fails to parse @example decorator with a different example type for a string property", () => {
     const err = parsePathParams(
-      method.getParameterOrThrow("paramsWithNonMatchingExampleType"),
+      method.getParameterOrThrow("paramsWithNonMatchingStringExampleType"),
+      typeTable,
+      lociTable
+    ).unwrapErrOrThrow();
+
+    expect(err).toBeInstanceOf(ParserError);
+  });
+
+  test("fails to parse @example decorator with a different example type for an Integer property", () => {
+    const err = parsePathParams(
+      method.getParameterOrThrow("paramsWithNonMatchingIntegerExampleType"),
       typeTable,
       lociTable
     ).unwrapErrOrThrow();

@@ -274,6 +274,66 @@ exports[`OpenAPI 3 generator HTTP verbs PUT endpoint 1`] = `
 }"
 `;
 
+exports[`OpenAPI 3 generator examples contract with examples parses correctly to an openapi specification 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithExampleOnHeaders\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"Accept-Language\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-example description\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\"
+            },
+            \\"examples\\": {
+              \\"property-example\\": {
+                \\"value\\": \\"property-example-value\\"
+              }
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3 generator headers endpoint with request headers 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",

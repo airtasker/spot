@@ -324,6 +324,31 @@ describe("OpenAPI 3 generator", () => {
       expect(spectralResult).toHaveLength(0);
     });
   });
+
+  describe("examples", () => {
+    test("contract with examples parses correctly to an openapi specification", async () => {
+      const contract = generateContract("contract-with-examples.ts");
+      const result = generateOpenAPI3(contract);
+
+      expect(result.paths["/users"].get).toHaveProperty("parameters", [
+        {
+          description: "property-example description",
+          examples: {
+            "property-example": {
+              value: "property-example-value"
+            }
+          },
+          name: "Accept-Language",
+          in: "header",
+          required: true,
+          schema: expect.anything()
+        }
+      ]);
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
+  });
 });
 
 /**

@@ -160,7 +160,7 @@ export function getParameterPropertySignaturesOrThrow(
   return parseTypeReferencePropertySignaturesOrThrow(typeNode);
 }
 
-function parseTypeReferencePropertySignaturesOrThrow(
+export function parseTypeReferencePropertySignaturesOrThrow(
   typeNode: TypeNode
 ): PropertySignature[] {
   if (TypeGuards.isTypeReferenceNode(typeNode)) {

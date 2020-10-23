@@ -26,9 +26,10 @@ describe("query params parser", () => {
       typeTable,
       lociTable
     ).unwrapOrThrow();
-    expect(result).toHaveLength(5);
+    expect(result).toHaveLength(7);
     expect(result[0]).toStrictEqual({
       description: undefined,
+      examples: undefined,
       name: "arrayProperty",
       type: {
         kind: TypeKind.ARRAY,
@@ -40,6 +41,7 @@ describe("query params parser", () => {
     });
     expect(result[1]).toStrictEqual({
       description: undefined,
+      examples: undefined,
       name: "objectProperty",
       type: {
         kind: TypeKind.OBJECT,
@@ -58,6 +60,7 @@ describe("query params parser", () => {
     });
     expect(result[2]).toStrictEqual({
       description: undefined,
+      examples: undefined,
       name: "optionalProperty",
       type: {
         kind: TypeKind.STRING
@@ -66,6 +69,7 @@ describe("query params parser", () => {
     });
     expect(result[3]).toStrictEqual({
       description: undefined,
+      examples: undefined,
       name: "property",
       type: {
         kind: TypeKind.STRING
@@ -74,9 +78,37 @@ describe("query params parser", () => {
     });
     expect(result[4]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
+      },
+      optional: false
+    });
+    expect(result[5]).toStrictEqual({
+      description: "property-example description",
+      examples: [{ name: "property-example", value: "property-example-value" }],
+      name: "property-with-example",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
+    expect(result[6]).toStrictEqual({
+      description: "property-two-examples description",
+      examples: [
+        {
+          name: "property-example-one",
+          value: 123
+        },
+        {
+          name: "property-example-two",
+          value: 456
+        }
+      ],
+      name: "property-with-examples",
+      type: {
+        kind: TypeKind.INT32
       },
       optional: false
     });
@@ -91,6 +123,7 @@ describe("query params parser", () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -108,6 +141,7 @@ describe("query params parser", () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -125,6 +159,7 @@ describe("query params parser", () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toStrictEqual({
       description: "property description",
+      examples: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING

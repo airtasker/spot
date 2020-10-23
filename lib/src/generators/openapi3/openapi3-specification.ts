@@ -490,6 +490,10 @@ export interface ExternalDocumentationObject {
 
 // Common
 
+export type ExamplesSet = {
+  [example: string]: ExampleObject | ReferenceObject;
+};
+
 type MutuallyExclusiveExample =
   | {
       example?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -497,5 +501,5 @@ type MutuallyExclusiveExample =
     }
   | {
       example?: never;
-      examples?: { [example: string]: ExampleObject | ReferenceObject };
+      examples?: ExamplesSet;
     };
