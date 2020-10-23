@@ -69,7 +69,7 @@ export interface PathParam {
 
 export interface Example {
   name: string;
-  value: string; // TODO: encapsulate type information
+  value: any; // TODO: encapsulate type information
 }
 
 export interface QueryParam {

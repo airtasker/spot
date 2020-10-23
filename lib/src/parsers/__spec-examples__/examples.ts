@@ -1,6 +1,6 @@
 import { Integer } from "../../syntax";
 
-type ParsedExamples = {
+type ExampleTests = {
   /** property-example description
    * @example property-example
    * "property-example-value"
@@ -18,20 +18,14 @@ type ParsedExamples = {
    * false
    *  */
   "property-with-boolean": boolean;
-};
-
-type MismatchedExampleAndIntegerType = {
   /**
    * @example name
    * This_is_not_an_integer
    */
-  property: Integer;
-};
-
-type MismatchedExampleAndStringWithQuotesType = {
+  "property-with-mistyped-example": Integer;
   /**
    * @example name
    * This_is_not_a_string_in_quotes
    */
-  property: string;
+  "property-with-no-string-in-quotes": string;
 };

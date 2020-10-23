@@ -156,7 +156,7 @@ function endpointRequestToParameterObjects(
     description: p.description,
     required: true,
     schema: typeToSchemaOrReferenceObject(p.type, typeTable),
-    examples: exampleToOpenApiExampleModel(p.examples)
+    examples: exampleToOpenApiExampleSet(p.examples)
   }));
 
   const queryParameters: QueryParameterObject[] = request.queryParams.map(
@@ -167,7 +167,7 @@ function endpointRequestToParameterObjects(
       ...typeToQueryParameterSerializationStrategy(p.type, typeTable, config),
       required: !p.optional,
       schema: typeToSchemaOrReferenceObject(p.type, typeTable),
-      examples: exampleToOpenApiExampleModel(p.examples)
+      examples: exampleToOpenApiExampleSet(p.examples)
     })
   );
 
@@ -177,7 +177,7 @@ function endpointRequestToParameterObjects(
     description: p.description,
     required: !p.optional,
     schema: typeToSchemaOrReferenceObject(p.type, typeTable),
-    examples: exampleToOpenApiExampleModel(p.examples)
+    examples: exampleToOpenApiExampleSet(p.examples)
   }));
 
   const parameters: ParameterObject[] = [];
@@ -339,7 +339,7 @@ function httpMethodToPathItemMethod(
   }
 }
 
-function exampleToOpenApiExampleModel(
+function exampleToOpenApiExampleSet(
   examples?: Example[]
 ): ExamplesSet | undefined {
   return examples?.reduce<ExamplesSet>((acc, example: Example) => {

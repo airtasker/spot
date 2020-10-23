@@ -4,40 +4,38 @@ import {
   getJsDoc,
   parseTypeReferencePropertySignaturesOrThrow
 } from "./parser-helpers";
-import { JSDoc, TypeAliasDeclaration } from "ts-morph";
-import { StringType, Type, TypeKind } from "../types";
+import { JSDoc, PropertySignature } from "ts-morph";
+import { TypeKind } from "../types";
 
-type JSDocNodeMapping = {
-  ParsedExamples: JSDoc[];
-  MismatchedExampleAndIntegerType: JSDoc[];
-  MismatchedExampleAndStringWithQuotesType: JSDoc[];
-  [typeName: string]: JSDoc[];
-};
+function getJsDocsFromPropertySignatures(
+  propertySignatures: PropertySignature[],
+  propertyName: string
+): JSDoc | undefined {
+  const property = propertySignatures.find(p => p.getName() === propertyName);
+  if (!property) {
+    throw new Error(`PropertySignature "${propertyName}" not found`);
+  }
+  return getJsDoc(property);
+}
+
 describe("example-parser", () => {
   describe("extractJSDocExamples", () => {
-    const jsDocs: JSDocNodeMapping = {} as JSDocNodeMapping;
     const sourceFile = createProjectFromExistingSourceFile(
       `${__dirname}/__spec-examples__/examples.ts`
     ).file;
-    const typeValues = sourceFile.getTypeAliases();
-
-    typeValues.forEach((typeAlias: TypeAliasDeclaration) => {
-      const properties = parseTypeReferencePropertySignaturesOrThrow(
-        typeAlias.getTypeNodeOrThrow()
-      );
-      const name = typeAlias.getName();
-      jsDocs[name] = [];
-      for (const property of properties) {
-        const jsDocNode = getJsDoc(property);
-        if (jsDocNode) {
-          jsDocs[name].push(jsDocNode);
-        }
-      }
-    });
+    const typeAlias = sourceFile.getTypeAlias("ExampleTests");
+    if (!typeAlias) {
+      throw new Error('TypeAlias "ExampleTests" not found');
+    }
+    const properties = parseTypeReferencePropertySignaturesOrThrow(
+      typeAlias.getTypeNodeOrThrow()
+    );
 
     test("successfully parses string examples on properties on type ParsedExamples", () => {
-      expect(jsDocs.ParsedExamples.length).toEqual(3);
-      const stringExampleNode = jsDocs.ParsedExamples[0];
+      const stringExampleNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-example"'
+      );
       const retrieveStringExample = extractJSDocExamples(stringExampleNode, {
         kind: TypeKind.STRING
       });
@@ -49,8 +47,10 @@ describe("example-parser", () => {
     });
 
     test("successfully parses integer examples on properties on type ParsedExamples", () => {
-      expect(jsDocs.ParsedExamples.length).toEqual(3);
-      const integerExampleNode = jsDocs.ParsedExamples[1];
+      const integerExampleNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-examples"'
+      );
       const retrieveIntegerExample = extractJSDocExamples(integerExampleNode, {
         kind: TypeKind.INT32
       });
@@ -63,8 +63,10 @@ describe("example-parser", () => {
     });
 
     test("successfully parses boolean examples on properties on type ParsedExamples", () => {
-      expect(jsDocs.ParsedExamples.length).toEqual(3);
-      const booleanExampleNode = jsDocs.ParsedExamples[2];
+      const booleanExampleNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-boolean"'
+      );
       const retrieveBooleanExample = extractJSDocExamples(booleanExampleNode, {
         kind: TypeKind.BOOLEAN
       });
@@ -76,8 +78,10 @@ describe("example-parser", () => {
     });
 
     test("errors examples on properties on type MismatchedExampleAndIntegerType", () => {
-      expect(jsDocs.MismatchedExampleAndIntegerType.length).toEqual(1);
-      const integerExampleNode = jsDocs.MismatchedExampleAndIntegerType[0];
+      const integerExampleNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-mistyped-example"'
+      );
       expect(
         extractJSDocExamples(integerExampleNode, {
           kind: TypeKind.INT32
@@ -86,9 +90,10 @@ describe("example-parser", () => {
     });
 
     test("errors examples on properties on type MismatchedExampleAndStringWithQuotesType", () => {
-      expect(jsDocs.MismatchedExampleAndStringWithQuotesType.length).toEqual(1);
-      const stringExampleNode =
-        jsDocs.MismatchedExampleAndStringWithQuotesType[0];
+      const stringExampleNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-no-string-in-quotes"'
+      );
       expect(
         extractJSDocExamples(stringExampleNode, {
           kind: TypeKind.STRING
