@@ -42,7 +42,7 @@
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.6.0",
     "core-js": "^3.6.5",
-    "css-loader": "^4.3.0",
+    "css-loader": "^5.0.0",
     "eslint": "^7.12.0",
     "eslint-plugin-jest": "^24.1.0",
     "html-webpack-plugin": "^4.5.0",
