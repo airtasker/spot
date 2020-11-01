@@ -6830,10 +6830,10 @@ redeyed@~2.1.0:
   dependencies:
     esprima "~4.0.0"
 
-redoc@^2.0.0-rc.40:
-  version "2.0.0-rc.40"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.40.tgz#4dd7d095265bd2af464069e684863a5b17f7a507"
-  integrity sha512-f1na5vWCr37R5+G4xhbD1TjH6j6b/he8nEMGGJOwDcIMMcDK88S0YEWuhplhdVuZdc4c61CoxZqGXqcDRp5m0w==
+redoc@^2.0.0-rc.41:
+  version "2.0.0-rc.41"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.41.tgz#b8b71a6b636b46ef404eac9109686c3ca55c080a"
+  integrity sha512-WqY4Qo3mxBvSVTqzBUAvRJ5Sq8rEDCd3I6Rs03WriPJZVG65qcf7eCnBaMEdppq+VG8nJNBebu4RC5T+QRLMIQ==
   dependencies:
     "@redocly/react-dropdown-aria" "^2.0.11"
     "@types/node" "^13.11.1"
