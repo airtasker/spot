@@ -50,7 +50,7 @@ export function parseHeaders(
     const jsDocNode = getJsDoc(propertySignature);
     const description = jsDocNode?.getDescription().trim();
 
-    const examples = extractJSDocExamples(jsDocNode, type);
+    const examples = jsDocNode && extractJSDocExamples(jsDocNode, type);
     if (examples && examples.isErr()) return examples;
     const optional = propertySignature.hasQuestionToken();
 

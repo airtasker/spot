@@ -5,13 +5,9 @@ import { Example } from "../definitions";
 import { ParserError } from "../errors";
 
 export function extractJSDocExamples(
-  jsDoc: JSDoc | undefined,
+  jsDoc: JSDoc,
   type: Type
-): Result<Example[], ParserError> | undefined {
-  // return early if there is no jsDoc available
-  if (!jsDoc) {
-    return;
-  }
+): Result<Example[], ParserError> {
   const rawExamples = jsDoc
     .getTags()
     .filter(tag => tag.getTagName() === "example")
@@ -122,5 +118,5 @@ export function extractJSDocExamples(
 
     return ok(examples);
   }
-  return;
+  return ok([]);
 }

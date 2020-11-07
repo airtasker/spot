@@ -69,6 +69,7 @@ export interface PathParam {
 
 export interface Example {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any; // TODO: encapsulate type information
 }
 

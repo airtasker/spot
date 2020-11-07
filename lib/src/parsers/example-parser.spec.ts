@@ -10,12 +10,15 @@ import { TypeKind } from "../types";
 function getJsDocsFromPropertySignatures(
   propertySignatures: PropertySignature[],
   propertyName: string
-): JSDoc | undefined {
+): JSDoc {
   const property = propertySignatures.find(p => p.getName() === propertyName);
   if (!property) {
     throw new Error(`PropertySignature "${propertyName}" not found`);
   }
-  return getJsDoc(property);
+  const jsDocNode = getJsDoc(property);
+  if (jsDocNode === undefined)
+    throw new Error(`JSDoc not found on property "${propertyName}"`);
+  return jsDocNode;
 }
 
 describe("example-parser", () => {
@@ -39,9 +42,8 @@ describe("example-parser", () => {
       const retrieveStringExample = extractJSDocExamples(stringExampleNode, {
         kind: TypeKind.STRING
       });
-      expect(retrieveStringExample).toBeDefined();
-      expect(retrieveStringExample!.isOk).toBeTruthy();
-      expect(retrieveStringExample!.unwrapOrThrow()).toStrictEqual([
+      expect(retrieveStringExample.isOk()).toBeTruthy();
+      expect(retrieveStringExample.unwrapOrThrow()).toStrictEqual([
         { name: "property-example", value: "property-example-value" }
       ]);
     });
@@ -54,9 +56,8 @@ describe("example-parser", () => {
       const retrieveIntegerExample = extractJSDocExamples(integerExampleNode, {
         kind: TypeKind.INT32
       });
-      expect(retrieveIntegerExample).toBeDefined();
-      expect(retrieveIntegerExample!.isOk).toBeTruthy();
-      expect(retrieveIntegerExample!.unwrapOrThrow()).toStrictEqual([
+      expect(retrieveIntegerExample.isOk()).toBeTruthy();
+      expect(retrieveIntegerExample.unwrapOrThrow()).toStrictEqual([
         { name: "property-example-one", value: 123 },
         { name: "property-example-two", value: 456 }
       ]);
@@ -70,9 +71,8 @@ describe("example-parser", () => {
       const retrieveBooleanExample = extractJSDocExamples(booleanExampleNode, {
         kind: TypeKind.BOOLEAN
       });
-      expect(retrieveBooleanExample).toBeDefined();
-      expect(retrieveBooleanExample!.isOk).toBeTruthy();
-      expect(retrieveBooleanExample!.unwrapOrThrow()).toStrictEqual([
+      expect(retrieveBooleanExample.isOk()).toBeTruthy();
+      expect(retrieveBooleanExample.unwrapOrThrow()).toStrictEqual([
         { name: "property-example", value: false }
       ]);
     });
@@ -85,7 +85,7 @@ describe("example-parser", () => {
       expect(
         extractJSDocExamples(integerExampleNode, {
           kind: TypeKind.INT32
-        })!.unwrapErrOrThrow().message
+        }).unwrapErrOrThrow().message
       ).toEqual("could not parse example");
     });
 
@@ -97,7 +97,7 @@ describe("example-parser", () => {
       expect(
         extractJSDocExamples(stringExampleNode, {
           kind: TypeKind.STRING
-        })!.unwrapErrOrThrow().message
+        }).unwrapErrOrThrow().message
       ).toEqual("string examples must be quoted");
     });
   });
