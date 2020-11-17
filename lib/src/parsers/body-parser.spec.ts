@@ -57,7 +57,8 @@ describe("body parser", () => {
 
     expect(result).toStrictEqual({
       type: {
-        kind: TypeKind.STRING
+        kind: "reference",
+        name: "TypeAliasIntersection"
       }
     });
   });
