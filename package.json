@@ -19,7 +19,7 @@
     "js-yaml": "^3.14.0",
     "qs": "^6.9.4",
     "randomstring": "^1.1.5",
-    "ts-morph": "^8.1.2",
+    "ts-morph": "^8.2.0",
     "typescript": "^4.0.5",
     "validator": "^13.1.17"
   },
@@ -28,7 +28,7 @@
     "@stoplight/spectral": "^5.7.0",
     "@types/cors": "^2.8.8",
     "@types/express": "^4.17.8",
-    "@types/fs-extra": "^9.0.3",
+    "@types/fs-extra": "^9.0.4",
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.15",
     "@types/js-yaml": "^3.12.5",
@@ -58,7 +58,7 @@
     "styled-components": "^4.4.1",
     "supertest": "^6.0.1",
     "ts-jest": "^26.4.4",
-    "ts-loader": "^8.0.7",
+    "ts-loader": "^8.0.11",
     "webpack": "^5.4.0",
     "webpack-cli": "^4.2.0"
   },
