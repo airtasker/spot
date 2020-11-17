@@ -51,6 +51,8 @@ export function generateData(types: TypeTable, type: Type): any {
       }
       return array;
     }
+    case TypeKind.INTERSECTION:
+      return type.types.map(type => generateData(types, type));
     case TypeKind.UNION:
       return generateData(
         types,

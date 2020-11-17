@@ -13,6 +13,7 @@ import {
   isStringLiteralType,
   ObjectType,
   ReferenceType,
+  IntersectionType,
   Type,
   TypeKind,
   TypeTable,
@@ -69,6 +70,8 @@ export function typeToSchemaOrReferenceObject(
       return arrayTypeToSchema(type, typeTable, nullable);
     case TypeKind.UNION:
       return unionTypeToSchema(type, typeTable);
+    case TypeKind.INTERSECTION:
+      return intersectionTypeToSchema(type, typeTable);
     case TypeKind.REFERENCE:
       return referenceTypeToSchema(type, nullable);
     default:
@@ -298,6 +301,26 @@ function unionTypeToDiscrimintorObject(
   return {
     propertyName: unionType.discriminator,
     mapping
+  };
+}
+
+function intersectionTypeToSchema(
+  type: IntersectionType,
+  typeTable: TypeTable
+): SchemaObject | ReferenceObject {
+  // Sanity check: This should not be possible
+  if (type.types.length === 0) {
+    throw new Error("Unexpected type: intersection type with no types");
+  }
+
+  const nullable = type.types.some(isNullType);
+  const nonNullTypes = type.types.filter(isNotNullType);
+
+  return {
+    nullable: nullable || undefined,
+    allOf: nonNullTypes.map((t: Type) =>
+      typeToSchemaOrReferenceObject(t, typeTable)
+    )
   };
 }
 

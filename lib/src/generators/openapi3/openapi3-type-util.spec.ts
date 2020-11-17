@@ -9,6 +9,7 @@ import {
   floatType,
   int32Type,
   int64Type,
+  intersectionType,
   intLiteralType,
   nullType,
   objectType,
@@ -704,6 +705,44 @@ describe("OpenAPI 3 type util", () => {
       );
       expect(result).toEqual({
         $ref: "#/components/schemas/CustomType"
+      });
+    });
+  });
+
+  describe("intersectionType", () => {
+    test("converts to an allOf schema object", () => {
+      const typeTable = new TypeTable();
+      typeTable.add("CustomType", { type: stringType() });
+
+      const result = typeToSchemaOrReferenceObject(
+        intersectionType([
+          objectType([
+            { name: "type", type: stringLiteralType("a"), optional: false },
+            { name: "a", type: stringType(), optional: false }
+          ]),
+          referenceType("CustomObjectTypeB")
+        ]),
+        typeTable
+      );
+      expect(result).toEqual({
+        allOf: [
+          {
+            properties: {
+              a: {
+                type: "string"
+              },
+              type: {
+                enum: ["a"],
+                type: "string"
+              }
+            },
+            required: ["type", "a"],
+            type: "object"
+          },
+          {
+            $ref: "#/components/schemas/CustomObjectTypeB"
+          }
+        ]
       });
     });
   });

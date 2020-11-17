@@ -75,6 +75,7 @@ function findNullableFieldViolation(
         typeTable,
         typePath.concat("[]")
       );
+    case TypeKind.INTERSECTION:
     case TypeKind.UNION:
       return type.types.reduce<string[]>((acc, t) => {
         return acc.concat(

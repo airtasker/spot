@@ -126,6 +126,7 @@ function findDisriminatorViolations(
     case TypeKind.INT_LITERAL:
     case TypeKind.DATE:
     case TypeKind.DATE_TIME:
+    case TypeKind.INTERSECTION:
       return [];
     case TypeKind.OBJECT:
       return type.properties.reduce<string[]>((acc, prop) => {

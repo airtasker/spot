@@ -9,6 +9,7 @@ export type JsonSchemaType =
   | JsonSchemaObject
   | JsonSchemaArray
   | JsonSchemaOneOf
+  | JsonSchemaAllOf
   | JsonSchemaNull
   | JsonSchemaString
   | JsonSchemaNumber
@@ -38,6 +39,10 @@ export interface JsonSchemaOneOf {
       [value: string]: JsonSchemaType;
     };
   };
+}
+
+export interface JsonSchemaAllOf {
+  allOf: JsonSchemaType[];
 }
 
 export interface JsonSchemaNull {

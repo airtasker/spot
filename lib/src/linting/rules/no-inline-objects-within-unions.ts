@@ -156,6 +156,7 @@ function findInlineObjectInUnionViolations(
         typeTable,
         typePath.concat("[]")
       );
+    case TypeKind.INTERSECTION:
     case TypeKind.UNION: {
       const violationsInUnionTypes = type.types.reduce<string[]>((acc, t) => {
         return acc.concat(

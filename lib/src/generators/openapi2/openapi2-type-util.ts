@@ -5,6 +5,7 @@ import {
   areIntLiteralTypes,
   areStringLiteralTypes,
   ArrayType,
+  IntersectionType,
   isNotNullType,
   isNullType,
   ObjectType,
@@ -65,6 +66,8 @@ export function typeToSchemaObject(
       return arrayTypeToSchema(type, typeTable, nullable);
     case TypeKind.UNION:
       return unionTypeToSchema(type, typeTable);
+    case TypeKind.INTERSECTION:
+      return intersectionTypeToSchema(type, typeTable);
     case TypeKind.REFERENCE:
       return referenceTypeToSchema(type, nullable);
     default:
@@ -224,6 +227,22 @@ function unionTypeToSchema(
         throw new Error(`Unions are not supported in OpenAPI 2`);
       }
   }
+}
+
+function intersectionTypeToSchema(
+  type: IntersectionType,
+  typeTable: TypeTable
+): AllOfSchemaObject {
+  // Sanity check: This should not be possible
+  if (type.types.length === 0) {
+    throw new Error("Unexpected type: intersection type with no types");
+  }
+
+  const nonNullTypes = type.types.filter(isNotNullType);
+
+  return {
+    allOf: nonNullTypes.map((t: Type) => typeToSchemaObject(t, typeTable))
+  };
 }
 
 function referenceTypeToSchema(

@@ -470,6 +470,58 @@ exports[`OpenAPI 3 generator headers endpoint with response headers 1`] = `
 }"
 `;
 
+exports[`OpenAPI 3 generator intersection types evaluates intersection type 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"IntersectionType\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"allOf\\": [
+                    {
+                      \\"type\\": \\"object\\",
+                      \\"properties\\": {
+                        \\"id\\": {
+                          \\"type\\": \\"string\\"
+                        }
+                      },
+                      \\"required\\": [
+                        \\"id\\"
+                      ]
+                    },
+                    {
+                      \\"type\\": \\"object\\",
+                      \\"properties\\": {
+                        \\"name\\": {
+                          \\"type\\": \\"string\\"
+                        }
+                      },
+                      \\"required\\": [
+                        \\"name\\"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3 generator minimal contract produces minimal OpenAPI 3 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",

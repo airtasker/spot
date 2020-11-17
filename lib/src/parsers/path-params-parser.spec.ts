@@ -115,6 +115,56 @@ describe("path params parser", () => {
     });
   });
 
+  test("parses @pathParams as type alias intersection parameter", () => {
+    const result = parsePathParams(
+      method.getParameterOrThrow("typeAliasIntersectionPathParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(2);
+    expect(result[1]).toEqual({
+      description: "property description",
+      examples: undefined,
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+    expect(result[0]).toEqual({
+      description: "property description",
+      examples: undefined,
+      name: "property-2-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+  });
+
+  test("parses @pathParams as type alias and literal intersection parameter", () => {
+    const result = parsePathParams(
+      method.getParameterOrThrow("typeAliasAndLiteralIntersectionPathParams"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+    expect(result).toHaveLength(2);
+    expect(result[1]).toEqual({
+      description: "property description",
+      examples: undefined,
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+    expect(result[0]).toEqual({
+      description: "property description",
+      examples: undefined,
+      name: "property-2-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+  });
+
   test("parses @pathParams as type alias interface parameters", () => {
     const result = parsePathParams(
       method.getParameterOrThrow("typeAliasTypeReferencePathParams"),

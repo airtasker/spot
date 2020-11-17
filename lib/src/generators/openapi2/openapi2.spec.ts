@@ -284,6 +284,21 @@ describe("OpenAPI 2 generator", () => {
       expect(spectralResult).toHaveLength(0);
     });
   });
+
+  describe("intersection types", () => {
+    test("evaluates intersection type", async () => {
+      const contract = generateContract("contract-with-intersection-types.ts");
+      const result = generateOpenAPI2(contract);
+
+      expect(result.paths["/users"]).toMatchObject({
+        get: expect.anything()
+      });
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
+  });
+
 });
 
 /**

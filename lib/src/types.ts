@@ -17,7 +17,8 @@ export enum TypeKind {
   OBJECT = "object",
   ARRAY = "array",
   UNION = "union",
-  REFERENCE = "reference"
+  REFERENCE = "reference",
+  INTERSECTION = "intersection"
 }
 
 export type Type =
@@ -37,7 +38,8 @@ export type Type =
   | ObjectType
   | ArrayType
   | UnionType
-  | ReferenceType;
+  | ReferenceType
+  | IntersectionType;
 
 /**
  * A concrete type is any type that is not a union of types or reference to a type.
@@ -132,6 +134,11 @@ export interface UnionType {
   kind: TypeKind.UNION;
   types: Type[];
   discriminator?: string;
+}
+
+export interface IntersectionType {
+  kind: TypeKind.INTERSECTION;
+  types: Type[];
 }
 
 export interface ReferenceType {
@@ -252,6 +259,13 @@ export function unionType(
     kind: TypeKind.UNION,
     types: unionTypes,
     discriminator
+  };
+}
+
+export function intersectionType(intersectionTypes: Type[]): IntersectionType {
+  return {
+    kind: TypeKind.INTERSECTION,
+    types: intersectionTypes
   };
 }
 
@@ -386,6 +400,7 @@ export function isPrimitiveType(type: Type): type is PrimitiveType {
     case TypeKind.ARRAY:
     case TypeKind.UNION:
     case TypeKind.REFERENCE:
+    case TypeKind.INTERSECTION:
       return false;
     default:
       throw assertNever(type);

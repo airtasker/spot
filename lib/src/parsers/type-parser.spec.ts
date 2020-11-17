@@ -533,6 +533,46 @@ describe("type parser", () => {
     ).toStrictEqual({ kind: "boolean" });
   });
 
+  test("parses intersection type", () => {
+    const type = interphace
+      .getPropertyOrThrow("intersectionType")
+      .getTypeNodeOrThrow();
+
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      {
+        kind: "intersection",
+        types: [
+          {
+            kind: TypeKind.OBJECT,
+            properties: [
+              {
+                description: undefined,
+                name: "typeA",
+                optional: false,
+                type: {
+                  kind: TypeKind.STRING
+                }
+              }
+            ]
+          },
+          {
+            kind: TypeKind.OBJECT,
+            properties: [
+              {
+                description: undefined,
+                name: "typeB",
+                optional: false,
+                type: {
+                  kind: TypeKind.BOOLEAN
+                }
+              }
+            ]
+          }
+        ]
+      }
+    );
+  });
+
   test("fails to parse inlined indexed accessing", () => {
     const type = interphace
       .getPropertyOrThrow("indexedAccessInline")

@@ -2,6 +2,7 @@ import {
   ArrayTypeNode,
   IndexedAccessTypeNode,
   InterfaceDeclaration,
+  IntersectionTypeNode,
   LiteralTypeNode,
   TypeAliasDeclaration,
   TypeGuards,
@@ -48,7 +49,8 @@ import {
   TypeKind,
   TypeTable,
   unionType,
-  NullType
+  NullType,
+  intersectionType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
@@ -87,6 +89,8 @@ export function parseType(
     return parseUnionType(typeNode, typeTable, lociTable);
   } else if (TypeGuards.isIndexedAccessTypeNode(typeNode)) {
     return parseIndexedAccessType(typeNode, typeTable, lociTable);
+  } else if (TypeGuards.isIntersectionTypeNode(typeNode)) {
+    return parseIntersectionTypeNode(typeNode, typeTable, lociTable);
   } else {
     throw new TypeNotAllowedError("unknown type", {
       file: typeNode.getSourceFile().getFilePath(),
@@ -453,6 +457,30 @@ function parseUnionType(
       return ok(unionType(types, inferDiscriminator(types, typeTable)));
     }
   }
+}
+
+/**
+ * Parse an intersection type node.
+ *
+ * @param typeNode union type node
+ * @param typeTable a TypeTable
+ * @param lociTable a LociTable
+ */
+function parseIntersectionTypeNode(
+  typeNode: IntersectionTypeNode,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<Type, ParserError> {
+  const allowedTargetTypes = typeNode
+    .getTypeNodes()
+    .filter(type => !type.getType().isUndefined());
+  const types: Type[] = [];
+  for (const tn of allowedTargetTypes) {
+    const typeResult = parseType(tn, typeTable, lociTable);
+    if (typeResult.isErr()) return typeResult;
+    types.push(typeResult.unwrap());
+  }
+  return ok(intersectionType(types));
 }
 
 /**

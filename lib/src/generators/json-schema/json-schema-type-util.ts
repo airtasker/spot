@@ -153,6 +153,16 @@ export function typeToJsonSchemaType(
       return {
         $ref: `#/definitions/${type.name}`
       };
+    case TypeKind.INTERSECTION: {
+      const elements = type.types;
+      if (elements.length === 1) return typeToJsonSchemaType(elements[0]);
+
+      return {
+        allOf: elements
+          .filter(isNotLiteralType)
+          .map(t => typeToJsonSchemaType(t, objectAdditionalProperties))
+      };
+    }
     default:
       throw assertNever(type);
   }
