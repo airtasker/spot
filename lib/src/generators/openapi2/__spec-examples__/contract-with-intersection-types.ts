@@ -9,5 +9,5 @@ class Contract {}
 })
 class IntersectionType {
   @response({ status: 200 })
-  successResponse(@body body: { id: String; } & { name: String }) {}
+  successResponse(@body body: { id: String } & { name: String }) {}
 }

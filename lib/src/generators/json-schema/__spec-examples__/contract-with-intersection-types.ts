@@ -9,7 +9,7 @@ class Contract {}
 })
 class IntersectionType {
   @response({ status: 200 })
-  successResponse(@body body: IntersectionResponse ) {}
+  successResponse(@body body: IntersectionResponse) {}
 }
 
-type IntersectionResponse = { id: String; } & { name: String; }
+type IntersectionResponse = { id: String } & { name: String };

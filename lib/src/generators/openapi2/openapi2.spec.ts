@@ -298,7 +298,6 @@ describe("OpenAPI 2 generator", () => {
       expect(spectralResult).toHaveLength(0);
     });
   });
-
 });
 
 /**
