@@ -171,5 +171,5 @@ function extractEndpoints(
     if (endpointResult.isErr()) return endpointResult;
     endpoints.push(endpointResult.unwrap());
   }
-  return ok(endpoints.sort((a, b) => (b.name > a.name ? -1 : 1)));
+  return ok(endpoints);
 }

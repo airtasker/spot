@@ -552,7 +552,7 @@ export class TypeTable {
     this.typeDefs.forEach((typeDef, key) => {
       arr.push({ name: key, typeDef });
     });
-    return arr.sort((a, b) => (b.name > a.name ? -1 : 1));
+    return arr;
   }
 
   /**
