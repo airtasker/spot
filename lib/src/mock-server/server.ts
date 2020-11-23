@@ -75,6 +75,6 @@ export function runMockServer(
   return {
     app,
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    defer: () => new Promise(resolve => app.listen(port, resolve))
+    defer: () => new Promise<void>(resolve => app.listen(port, resolve))
   };
 }
