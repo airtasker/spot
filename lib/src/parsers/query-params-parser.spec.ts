@@ -30,16 +30,58 @@ describe("query params parser", () => {
     expect(result[0]).toStrictEqual({
       description: undefined,
       examples: undefined,
-      name: "arrayProperty",
+      name: "property",
       type: {
-        kind: TypeKind.ARRAY,
-        elementType: {
-          kind: TypeKind.STRING
-        }
+        kind: TypeKind.STRING
       },
       optional: false
     });
     expect(result[1]).toStrictEqual({
+      description: "property description",
+      examples: undefined,
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
+    expect(result[2]).toStrictEqual({
+      description: "property-example description",
+      examples: [{ name: "property-example", value: "property-example-value" }],
+      name: "property-with-example",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
+    expect(result[3]).toStrictEqual({
+      description: "property-two-examples description",
+      examples: [
+        {
+          name: "property-example-one",
+          value: 123
+        },
+        {
+          name: "property-example-two",
+          value: 456
+        }
+      ],
+      name: "property-with-examples",
+      type: {
+        kind: TypeKind.INT32
+      },
+      optional: false
+    });
+    expect(result[4]).toStrictEqual({
+      description: undefined,
+      examples: undefined,
+      name: "optionalProperty",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: true
+    });
+    expect(result[5]).toStrictEqual({
       description: undefined,
       examples: undefined,
       name: "objectProperty",
@@ -58,57 +100,15 @@ describe("query params parser", () => {
       },
       optional: false
     });
-    expect(result[2]).toStrictEqual({
-      description: undefined,
-      examples: undefined,
-      name: "optionalProperty",
-      type: {
-        kind: TypeKind.STRING
-      },
-      optional: true
-    });
-    expect(result[3]).toStrictEqual({
-      description: undefined,
-      examples: undefined,
-      name: "property",
-      type: {
-        kind: TypeKind.STRING
-      },
-      optional: false
-    });
-    expect(result[4]).toStrictEqual({
-      description: "property description",
-      examples: undefined,
-      name: "property-with-description",
-      type: {
-        kind: TypeKind.STRING
-      },
-      optional: false
-    });
-    expect(result[5]).toStrictEqual({
-      description: "property-example description",
-      examples: [{ name: "property-example", value: "property-example-value" }],
-      name: "property-with-example",
-      type: {
-        kind: TypeKind.STRING
-      },
-      optional: false
-    });
     expect(result[6]).toStrictEqual({
-      description: "property-two-examples description",
-      examples: [
-        {
-          name: "property-example-one",
-          value: 123
-        },
-        {
-          name: "property-example-two",
-          value: 456
-        }
-      ],
-      name: "property-with-examples",
+      description: undefined,
+      examples: undefined,
+      name: "arrayProperty",
       type: {
-        kind: TypeKind.INT32
+        kind: TypeKind.ARRAY,
+        elementType: {
+          kind: TypeKind.STRING
+        }
       },
       optional: false
     });

@@ -430,14 +430,14 @@ exports[`OpenAPI 3 generator headers endpoint with response headers 1`] = `
           \\"201\\": {
             \\"description\\": \\"201 response\\",
             \\"headers\\": {
-              \\"Link\\": {
-                \\"required\\": false,
+              \\"Location\\": {
+                \\"required\\": true,
                 \\"schema\\": {
                   \\"type\\": \\"string\\"
                 }
               },
-              \\"Location\\": {
-                \\"required\\": true,
+              \\"Link\\": {
+                \\"required\\": false,
                 \\"schema\\": {
                   \\"type\\": \\"string\\"
                 }

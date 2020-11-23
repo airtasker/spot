@@ -30,28 +30,28 @@ describe("path params parser", () => {
     expect(result[0]).toStrictEqual({
       description: undefined,
       examples: undefined,
+      name: "property",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+    expect(result[1]).toStrictEqual({
+      description: "property description",
+      examples: undefined,
+      name: "property-with-description",
+      type: {
+        kind: TypeKind.STRING
+      }
+    });
+    expect(result[2]).toStrictEqual({
+      description: undefined,
+      examples: undefined,
       name: "arrayProperty",
       type: {
         kind: TypeKind.ARRAY,
         elementType: {
           kind: TypeKind.STRING
         }
-      }
-    });
-    expect(result[1]).toStrictEqual({
-      description: undefined,
-      examples: undefined,
-      name: "property",
-      type: {
-        kind: TypeKind.STRING
-      }
-    });
-    expect(result[2]).toStrictEqual({
-      description: "property description",
-      examples: undefined,
-      name: "property-with-description",
-      type: {
-        kind: TypeKind.STRING
       }
     });
     expect(result[3]).toStrictEqual({

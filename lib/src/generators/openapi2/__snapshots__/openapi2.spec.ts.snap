@@ -393,10 +393,10 @@ exports[`OpenAPI 2 generator headers endpoint with response headers 1`] = `
           \\"201\\": {
             \\"description\\": \\"201 response\\",
             \\"headers\\": {
-              \\"Link\\": {
+              \\"Location\\": {
                 \\"type\\": \\"string\\"
               },
-              \\"Location\\": {
+              \\"Link\\": {
                 \\"type\\": \\"string\\"
               }
             },

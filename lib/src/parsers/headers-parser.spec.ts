@@ -30,22 +30,13 @@ describe("headers parser", () => {
     expect(result[0]).toStrictEqual({
       description: undefined,
       examples: undefined,
-      name: "optionalProperty",
-      type: {
-        kind: TypeKind.INT64
-      },
-      optional: true
-    });
-    expect(result[1]).toStrictEqual({
-      description: undefined,
-      examples: undefined,
       name: "property",
       type: {
         kind: TypeKind.STRING
       },
       optional: false
     });
-    expect(result[2]).toStrictEqual({
+    expect(result[1]).toStrictEqual({
       description: "property description",
       examples: undefined,
       name: "property-with-description",
@@ -54,7 +45,7 @@ describe("headers parser", () => {
       },
       optional: false
     });
-    expect(result[3]).toStrictEqual({
+    expect(result[2]).toStrictEqual({
       description: "property-example description",
       examples: [{ name: "property-example", value: "property-example-value" }],
       name: "property-with-example",
@@ -63,7 +54,7 @@ describe("headers parser", () => {
       },
       optional: false
     });
-    expect(result[4]).toStrictEqual({
+    expect(result[3]).toStrictEqual({
       description: "property-two-examples description",
       examples: [
         {
@@ -80,6 +71,15 @@ describe("headers parser", () => {
         kind: TypeKind.INT32
       },
       optional: false
+    });
+    expect(result[4]).toStrictEqual({
+      description: undefined,
+      examples: undefined,
+      name: "optionalProperty",
+      type: {
+        kind: TypeKind.INT64
+      },
+      optional: true
     });
   });
 

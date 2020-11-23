@@ -63,7 +63,7 @@ export function parseHeaders(
     });
   }
 
-  return ok(headers.sort((a, b) => (b.name > a.name ? -1 : 1)));
+  return ok(headers);
 }
 
 function extractHeaderName(

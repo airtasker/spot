@@ -63,7 +63,7 @@ export function parseQueryParams(
   }
 
   // TODO: add loci information
-  return ok(queryParams.sort((a, b) => (b.name > a.name ? -1 : 1)));
+  return ok(queryParams);
 }
 
 function extractQueryParamName(

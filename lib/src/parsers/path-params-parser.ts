@@ -42,7 +42,7 @@ export function parsePathParams(
     pathParams.push(pathParamResult.unwrap());
   }
 
-  return ok(pathParams.sort((a, b) => (b.name > a.name ? -1 : 1)));
+  return ok(pathParams);
 }
 
 function extractPathParam(
