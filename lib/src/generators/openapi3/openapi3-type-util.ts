@@ -34,7 +34,8 @@ import {
 export function typeToSchemaOrReferenceObject(
   type: Type,
   typeTable: TypeTable,
-  nullable?: boolean
+  nullable?: boolean,
+  description?: string
 ): SchemaObject | ReferenceObject {
   switch (type.kind) {
     case TypeKind.NULL:
@@ -69,8 +70,18 @@ export function typeToSchemaOrReferenceObject(
       return arrayTypeToSchema(type, typeTable, nullable);
     case TypeKind.UNION:
       return unionTypeToSchema(type, typeTable);
-    case TypeKind.REFERENCE:
+    case TypeKind.REFERENCE: {
+      const referencedType = type.name ? typeTable.get(type.name) : null;
+      if (referencedType && description) {
+        return typeToSchemaOrReferenceObject(
+          referencedType.type,
+          typeTable,
+          nullable,
+          description
+        );
+      }
       return referenceTypeToSchema(type, nullable);
+    }
     default:
       assertNever(type);
   }
@@ -145,7 +156,9 @@ function objectTypeToSchema(
           (acc, property) => {
             const propType = typeToSchemaOrReferenceObject(
               property.type,
-              typeTable
+              typeTable,
+              undefined,
+              property.description
             );
             if (!isReferenceObject(propType)) {
               propType.description = property.description;
