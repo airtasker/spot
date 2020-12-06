@@ -21,7 +21,7 @@
     "randomstring": "^1.1.5",
     "ts-morph": "^8.2.0",
     "typescript": "^4.0.5",
-    "validator": "^13.1.17"
+    "validator": "^13.5.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.24.1",
