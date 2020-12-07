@@ -66,7 +66,7 @@ export function generateOpenAPI3(contract: Contract): OpenApiV3 {
     ]
   };
 
-  return openapi;
+  return filterOutUnusedSchemas(openapi);
 }
 
 function contractToComponentsObject(
@@ -348,4 +348,28 @@ function exampleToOpenApiExampleSet(
     };
     return acc;
   }, {});
+}
+
+function filterOutUnusedSchemas(openapi: OpenApiV3): OpenApiV3 {
+  const json = JSON.stringify(openapi);
+  const schemaRefs = json.match(
+    /(?<="\$ref":"#\/components\/schemas\/)(.*?)(?=")/g
+  );
+  const allSchemas = openapi.components ? openapi.components.schemas : null;
+  if (!schemaRefs || !allSchemas) {
+    return openapi;
+  }
+
+  return {
+    ...openapi,
+    components: {
+      ...openapi.components,
+      schemas: schemaRefs.reduce((usedComponents, typeName) => {
+        const type = allSchemas[typeName];
+        return type
+          ? { ...usedComponents, [typeName]: allSchemas[typeName] }
+          : usedComponents;
+      }, {})
+    }
+  };
 }
