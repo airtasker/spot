@@ -34,9 +34,12 @@ import {
 export function typeToSchemaOrReferenceObject(
   type: Type,
   typeTable: TypeTable,
-  nullable?: boolean,
-  description?: string
+  options: {
+    nullable?: boolean;
+    inlineReference?: boolean;
+  } = {}
 ): SchemaObject | ReferenceObject {
+  const { nullable } = options;
   switch (type.kind) {
     case TypeKind.NULL:
       throw new Error("Null must be part of a union for OpenAPI 3");
@@ -69,15 +72,14 @@ export function typeToSchemaOrReferenceObject(
     case TypeKind.ARRAY:
       return arrayTypeToSchema(type, typeTable, nullable);
     case TypeKind.UNION:
-      return unionTypeToSchema(type, typeTable);
+      return unionTypeToSchema(type, typeTable, options);
     case TypeKind.REFERENCE: {
       const referencedType = type.name ? typeTable.get(type.name) : null;
-      if (referencedType && description) {
+      if (referencedType && options.inlineReference) {
         return typeToSchemaOrReferenceObject(
           referencedType.type,
           typeTable,
-          nullable,
-          description
+          options
         );
       }
       return referenceTypeToSchema(type, nullable);
@@ -157,8 +159,7 @@ function objectTypeToSchema(
             const propType = typeToSchemaOrReferenceObject(
               property.type,
               typeTable,
-              undefined,
-              property.description
+              { inlineReference: Boolean(property.description) }
             );
             if (!isReferenceObject(propType)) {
               propType.description = property.description;
@@ -201,25 +202,28 @@ function arrayTypeToSchema(
  */
 function unionTypeToSchema(
   type: UnionType,
-  typeTable: TypeTable
+  typeTable: TypeTable,
+  options: {
+    nullable?: boolean;
+    inlineReference?: boolean;
+  } = {}
 ): SchemaObject | ReferenceObject {
   // Sanity check
   if (type.types.length === 0) {
     throw new Error("Unexpected type: union with no types");
   }
 
-  const nullable = type.types.some(isNullType);
+  const nullable = options.nullable || type.types.some(isNullType);
   const nonNullTypes = type.types.filter(isNotNullType);
 
   switch (nonNullTypes.length) {
     case 0: // previous guard guarantees only null was present
       throw new Error("Null must be part of a union for OpenAPI 3");
     case 1: // not an OpenAPI union, but a single type, possibly nullable
-      return typeToSchemaOrReferenceObject(
-        nonNullTypes[0],
-        typeTable,
-        nullable
-      );
+      return typeToSchemaOrReferenceObject(nonNullTypes[0], typeTable, {
+        nullable,
+        inlineReference: Boolean(options.inlineReference)
+      });
     default:
       if (areBooleanLiteralTypes(nonNullTypes)) {
         return booleanSchema({

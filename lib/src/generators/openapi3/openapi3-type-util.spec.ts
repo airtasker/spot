@@ -391,6 +391,21 @@ describe("OpenAPI 3 type util", () => {
           nullable: true
         });
       });
+
+      test("inlined CustomType | null", () => {
+        const typeTable = new TypeTable();
+        typeTable.add("CustomType", { type: stringType() });
+
+        const result = typeToSchemaOrReferenceObject(
+          unionType([referenceType("CustomType"), nullType()]),
+          typeTable,
+          { inlineReference: true }
+        );
+        expect(result).toEqual({
+          type: "string",
+          nullable: true
+        });
+      });
     });
 
     describe("multiple single type literals", () => {
@@ -704,6 +719,35 @@ describe("OpenAPI 3 type util", () => {
       );
       expect(result).toEqual({
         $ref: "#/components/schemas/CustomType"
+      });
+    });
+
+    test("inlines a non-nullable referenced type", () => {
+      const typeTable = new TypeTable();
+      typeTable.add("CustomType", { type: stringType() });
+
+      const result = typeToSchemaOrReferenceObject(
+        referenceType("CustomType"),
+        typeTable,
+        { inlineReference: true }
+      );
+      expect(result).toEqual({
+        type: "string"
+      });
+    });
+
+    test("inlines a nullable referenced type when a description override is provided", () => {
+      const typeTable = new TypeTable();
+      typeTable.add("CustomType", { type: stringType() });
+
+      const result = typeToSchemaOrReferenceObject(
+        referenceType("CustomType"),
+        typeTable,
+        { nullable: true, inlineReference: true }
+      );
+      expect(result).toEqual({
+        type: "string",
+        nullable: true
       });
     });
   });
