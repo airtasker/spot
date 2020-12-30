@@ -42,15 +42,18 @@ export type Type =
   | IntersectionType;
 
 /**
- * A concrete type is any type that is not a union of types or reference to a type.
+ * A concrete type is any type that is not a union of types, intersection or reference to a type.
  */
-export type ConcreteType = Exclude<Type, UnionType | ReferenceType>;
+export type ConcreteType = Exclude<
+  Type,
+  UnionType | ReferenceType | IntersectionType
+>;
 /**
- * A concrete type is any type that is not a
+ * A primitive type is any type that is not an object, array, union, reference or intersection
  */
 export type PrimitiveType = Exclude<
   Type,
-  ObjectType | ArrayType | UnionType | ReferenceType
+  ObjectType | ArrayType | UnionType | ReferenceType | IntersectionType
 >;
 
 export type LiteralType =
@@ -115,14 +118,16 @@ export interface DateTimeType {
   kind: TypeKind.DATE_TIME;
 }
 
+export interface ObjectPropertiesType {
+  name: string;
+  description?: string;
+  optional: boolean;
+  type: Type;
+}
+
 export interface ObjectType {
   kind: TypeKind.OBJECT;
-  properties: {
-    name: string;
-    description?: string;
-    optional: boolean;
-    type: Type;
-  }[];
+  properties: Array<ObjectPropertiesType>;
 }
 
 export interface ArrayType {
@@ -139,6 +144,7 @@ export interface UnionType {
 export interface IntersectionType {
   kind: TypeKind.INTERSECTION;
   types: Type[];
+  discriminator?: string;
 }
 
 export interface ReferenceType {
@@ -262,10 +268,14 @@ export function unionType(
   };
 }
 
-export function intersectionType(intersectionTypes: Type[]): IntersectionType {
+export function intersectionType(
+  intersectionTypes: Type[],
+  discriminator?: string
+): IntersectionType {
   return {
     kind: TypeKind.INTERSECTION,
-    types: intersectionTypes
+    types: intersectionTypes,
+    discriminator
   };
 }
 
@@ -376,6 +386,10 @@ export function isUnionType(type: Type): type is UnionType {
   return type.kind === TypeKind.UNION;
 }
 
+export function isIntersectionType(type: Type): type is IntersectionType {
+  return type.kind === TypeKind.INTERSECTION;
+}
+
 export function isReferenceType(type: Type): type is ReferenceType {
   return type.kind === TypeKind.REFERENCE;
 }
@@ -445,6 +459,28 @@ export function possibleRootTypes(
       (acc, curr) => acc.concat(possibleRootTypes(curr, typeTable)),
       []
     );
+  }
+
+  if (isIntersectionType(type)) {
+    const concreteTypes = type.types.reduce<ConcreteType[]>((acc, curr) => {
+      return acc.concat(possibleRootTypes(curr, typeTable));
+    }, []);
+    // if they are all objects then reduce them into one object
+    // to allow for proper serialization
+    if (concreteTypes.every(isObjectType)) {
+      return [
+        {
+          kind: TypeKind.OBJECT,
+          properties: concreteTypes.reduce<ObjectPropertiesType[]>(
+            (acc, curr) => {
+              return acc.concat(...curr.properties);
+            },
+            []
+          )
+        }
+      ];
+    }
+    return concreteTypes;
   }
   return [type];
 }

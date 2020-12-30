@@ -745,5 +745,54 @@ describe("OpenAPI 3 type util", () => {
         ]
       });
     });
+    test("handles a union with an intersection", () => {
+      const typeTable = new TypeTable();
+      typeTable.add("CustomObjectTypeA", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("a"), optional: false },
+          { name: "a", type: stringType(), optional: false }
+        ])
+      });
+      typeTable.add("CustomObjectTypeB", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("b"), optional: false },
+          { name: "b", type: stringType(), optional: false }
+        ])
+      });
+      typeTable.add("CustomObjectTypeC", {
+        type: intersectionType([
+          objectType([
+            { name: "type", type: stringLiteralType("c"), optional: false }
+          ]),
+          objectType([{ name: "c", type: stringType(), optional: false }])
+        ])
+      });
+      const result = typeToSchemaOrReferenceObject(
+        unionType(
+          [
+            referenceType("CustomObjectTypeA"),
+            referenceType("CustomObjectTypeB"),
+            referenceType("CustomObjectTypeC")
+          ],
+          "type"
+        ),
+        typeTable
+      );
+      expect(result).toEqual({
+        oneOf: [
+          { $ref: "#/components/schemas/CustomObjectTypeA" },
+          { $ref: "#/components/schemas/CustomObjectTypeB" },
+          { $ref: "#/components/schemas/CustomObjectTypeC" }
+        ],
+        discriminator: {
+          propertyName: "type",
+          mapping: {
+            a: "#/components/schemas/CustomObjectTypeA",
+            b: "#/components/schemas/CustomObjectTypeB",
+            c: "#/components/schemas/CustomObjectTypeC"
+          }
+        }
+      });
+    });
   });
 });

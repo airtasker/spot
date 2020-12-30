@@ -17,7 +17,9 @@ import {
   Type,
   TypeKind,
   TypeTable,
-  UnionType
+  UnionType,
+  possibleRootTypes,
+  ObjectPropertiesType
 } from "../../types";
 import {
   ArraySchemaObject,
@@ -254,9 +256,15 @@ function unionTypeToDiscrimintorObject(
   const nonNullTypes = unionType.types.filter(isNotNullType);
 
   // Discriminator mapping is only supported for reference types
-  const objectReferenceOnly = nonNullTypes.every(
-    t => isReferenceType(t) && isObjectType(dereferenceType(t, typeTable))
-  );
+  // however reference can even point to union or
+  // intersection types. This ensures those also meet the
+  // requirement
+  const objectReferenceOnly = nonNullTypes.every(t => {
+    return (
+      isReferenceType(t) && possibleRootTypes(t, typeTable).every(isObjectType)
+    );
+  });
+
   if (!objectReferenceOnly) return { propertyName: unionType.discriminator };
 
   const mapping = nonNullTypes.reduce<{ [key: string]: string }>((acc, t) => {
@@ -265,18 +273,33 @@ function unionTypeToDiscrimintorObject(
       throw new Error("Unexpected error: expected reference type");
     }
 
-    const concreteType = dereferenceType(t, typeTable);
+    const concreteTypes = possibleRootTypes(t, typeTable);
 
     // Sanity check and type cast
-    if (!isObjectType(concreteType)) {
+    if (!concreteTypes.every(isObjectType)) {
       throw new Error("Unexpected error: expected object reference type");
     }
 
     // Retrieve the discriminator property
     // Discriminator properties cannot be optional - we assume this is handled by the type parser
-    const discriminatorProp = concreteType.properties.find(
+    // We first determine the object which contains the discriminator
+    // followed by which we identify the prop itself.
+    // This helps us identify discriminators even if one of the unions is an intersection or is
+    // a union of unions
+    const discriminatorObject = concreteTypes.find(object => {
+      return object.properties.find(p => p.name === unionType.discriminator);
+    });
+
+    if (discriminatorObject === undefined) {
+      throw new Error(
+        "Unexpected error: could not find expected discriminator property in objects"
+      );
+    }
+
+    const discriminatorProp = discriminatorObject.properties.find(
       p => p.name === unionType.discriminator
     );
+
     if (discriminatorProp === undefined) {
       throw new Error(
         "Unexpected error: could not find expected discriminator property"

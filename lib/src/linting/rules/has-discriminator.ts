@@ -126,7 +126,6 @@ function findDisriminatorViolations(
     case TypeKind.INT_LITERAL:
     case TypeKind.DATE:
     case TypeKind.DATE_TIME:
-    case TypeKind.INTERSECTION:
       return [];
     case TypeKind.OBJECT:
       return type.properties.reduce<string[]>((acc, prop) => {
@@ -144,6 +143,12 @@ function findDisriminatorViolations(
         typeTable,
         typePath.concat("[]")
       );
+    case TypeKind.INTERSECTION:
+      return type.types.reduce<string[]>((acc, t) => {
+        return acc.concat(
+          findDisriminatorViolations(t, typeTable, typePath.concat())
+        );
+      }, []);
     case TypeKind.UNION: {
       const violationsInUnionTypes = type.types.reduce<string[]>((acc, t) => {
         return acc.concat(

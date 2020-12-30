@@ -50,7 +50,9 @@ import {
   TypeTable,
   unionType,
   NullType,
-  intersectionType
+  intersectionType,
+  isPrimitiveType,
+  isArrayType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
@@ -462,7 +464,7 @@ function parseUnionType(
 /**
  * Parse an intersection type node.
  *
- * @param typeNode union type node
+ * @param typeNode intersection type node
  * @param typeTable a TypeTable
  * @param lociTable a LociTable
  */
@@ -478,9 +480,22 @@ function parseIntersectionTypeNode(
   for (const tn of allowedTargetTypes) {
     const typeResult = parseType(tn, typeTable, lociTable);
     if (typeResult.isErr()) return typeResult;
-    types.push(typeResult.unwrap());
+    // Only allow objects, unions, intersections and references
+    const typeResultType = typeResult.unwrap();
+    if (isPrimitiveType(typeResultType) || isArrayType(typeResultType)) {
+      return err(
+        new TypeNotAllowedError(
+          "Cannot use primitive types in an intersection type",
+          {
+            file: typeNode.getSourceFile().getFilePath(),
+            position: typeNode.getPos()
+          }
+        )
+      );
+    }
+    types.push(typeResultType);
   }
-  return ok(intersectionType(types));
+  return ok(intersectionType(types, inferDiscriminator(types, typeTable)));
 }
 
 /**
