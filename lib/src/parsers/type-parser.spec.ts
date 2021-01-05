@@ -541,7 +541,6 @@ describe("type parser", () => {
     expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
       {
         kind: "intersection",
-        discriminator: undefined,
         types: [
           {
             kind: TypeKind.OBJECT,
