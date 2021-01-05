@@ -50,6 +50,11 @@ interface TypeInterface {
   } & {
     typeB: boolean;
   };
+  illegalIntersection: {
+    typeA: string;
+  } & {
+    typeA: boolean;
+  };
   interface: Interface;
   interfaceWithDescription: InterfaceWithDescription;
   interfaceExtends: InterfaceExtends;

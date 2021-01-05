@@ -52,7 +52,7 @@ import {
   NullType,
   intersectionType,
   isPrimitiveType,
-  isArrayType
+  isArrayType, doesInterfaceEvaluatesToNever, possibleRootTypes, isObjectType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
@@ -482,7 +482,8 @@ function parseIntersectionTypeNode(
     if (typeResult.isErr()) return typeResult;
     // Only allow objects, unions, intersections and references
     const typeResultType = typeResult.unwrap();
-    if (isPrimitiveType(typeResultType) || isArrayType(typeResultType)) {
+    const concreteTypes = possibleRootTypes(typeResultType, typeTable);
+    if (!concreteTypes.every(isObjectType)) {
       return err(
         new TypeNotAllowedError(
           "Cannot use primitive types in an intersection type",
@@ -495,7 +496,18 @@ function parseIntersectionTypeNode(
     }
     types.push(typeResultType);
   }
-  return ok(intersectionType(types, inferDiscriminator(types, typeTable)));
+  if (doesInterfaceEvaluatesToNever(types, typeTable)) {
+    return err(
+      new TypeNotAllowedError(
+        "intersection evaluates to never and is an illegal argument",
+        {
+          file: typeNode.getSourceFile().getFilePath(),
+          position: typeNode.getPos()
+        }
+      )
+    );
+  }
+  return ok(intersectionType(types));
 }
 
 /**

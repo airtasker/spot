@@ -574,6 +574,16 @@ describe("type parser", () => {
     );
   });
 
+  test("fails when intersection type definition is an illegal", () => {
+    const type = interphace
+      .getPropertyOrThrow("illegalIntersection")
+      .getTypeNodeOrThrow();
+
+    expect(
+      parseType(type, typeTable, lociTable).unwrapErrOrThrow()
+    ).toBeInstanceOf(TypeNotAllowedError);
+  });
+
   test("fails to parse inlined indexed accessing", () => {
     const type = interphace
       .getPropertyOrThrow("indexedAccessInline")

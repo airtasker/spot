@@ -1,4 +1,5 @@
 import assertNever from "assert-never";
+import { TypeNotAllowedError } from "./errors";
 
 export enum TypeKind {
   NULL = "null",
@@ -144,7 +145,6 @@ export interface UnionType {
 export interface IntersectionType {
   kind: TypeKind.INTERSECTION;
   types: Type[];
-  discriminator?: string;
 }
 
 export interface ReferenceType {
@@ -270,12 +270,10 @@ export function unionType(
 
 export function intersectionType(
   intersectionTypes: Type[],
-  discriminator?: string
 ): IntersectionType {
   return {
     kind: TypeKind.INTERSECTION,
     types: intersectionTypes,
-    discriminator
   };
 }
 
@@ -480,7 +478,7 @@ export function possibleRootTypes(
         }
       ];
     }
-    return concreteTypes;
+    throw new Error('Intersection type does not evaluate only object types')
   }
   return [type];
 }
@@ -563,6 +561,55 @@ export function inferDiscriminator(
     ? candidateDiscriminators[0]
     : undefined;
 }
+
+
+/**
+ * Given a list of types, try to find if the intersection evaluates to
+ * a `never` type
+ *
+ * @param types list of types
+ * @param typeTable a TypeTable
+ */
+export function doesInterfaceEvaluatesToNever(
+  types: Array<Type>,
+  typeTable: TypeTable
+): boolean {
+
+  // the types on an intersection will always be an object at its root
+  // this way we make sure we get an Object Type
+  const concreteRootTypesExcludingNull = types
+    .reduce<ConcreteType[]>((acc, type) => {
+      return acc.concat(...possibleRootTypes(type, typeTable));
+    }, [])
+    .filter(isNotNullType)
+    .filter(isObjectType);
+
+  const possibleDiscriminators = new Map<
+    string,
+    Type[]
+    >();
+
+  for (const type of concreteRootTypesExcludingNull) {
+    for (const property of type.properties) {
+      const current = possibleDiscriminators.get(property.name);
+      possibleDiscriminators.set(
+        property.name,
+        (current ?? []).concat(type)
+      );
+    }
+  }
+
+  for (const candidate of possibleDiscriminators.keys()) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const values = possibleDiscriminators.get(candidate)!;
+    if (values.length > 1) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 /**
  * Loci table is a lookup table for types.
