@@ -52,7 +52,10 @@ import {
   NullType,
   intersectionType,
   isPrimitiveType,
-  isArrayType, doesInterfaceEvaluatesToNever, possibleRootTypes, isObjectType
+  isArrayType,
+  doesInterfaceEvaluatesToNever,
+  possibleRootTypes,
+  isObjectType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";

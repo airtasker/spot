@@ -268,12 +268,10 @@ export function unionType(
   };
 }
 
-export function intersectionType(
-  intersectionTypes: Type[],
-): IntersectionType {
+export function intersectionType(intersectionTypes: Type[]): IntersectionType {
   return {
     kind: TypeKind.INTERSECTION,
-    types: intersectionTypes,
+    types: intersectionTypes
   };
 }
 
@@ -478,7 +476,7 @@ export function possibleRootTypes(
         }
       ];
     }
-    throw new Error('Intersection type does not evaluate only object types')
+    throw new Error("Intersection type does not evaluate only object types");
   }
   return [type];
 }
@@ -562,7 +560,6 @@ export function inferDiscriminator(
     : undefined;
 }
 
-
 /**
  * Given a list of types, try to find if the intersection evaluates to
  * a `never` type
@@ -574,7 +571,6 @@ export function doesInterfaceEvaluatesToNever(
   types: Array<Type>,
   typeTable: TypeTable
 ): boolean {
-
   // the types on an intersection will always be an object at its root
   // this way we make sure we get an Object Type
   const concreteRootTypesExcludingNull = types
@@ -584,18 +580,12 @@ export function doesInterfaceEvaluatesToNever(
     .filter(isNotNullType)
     .filter(isObjectType);
 
-  const possibleDiscriminators = new Map<
-    string,
-    Type[]
-    >();
+  const possibleDiscriminators = new Map<string, Type[]>();
 
   for (const type of concreteRootTypesExcludingNull) {
     for (const property of type.properties) {
       const current = possibleDiscriminators.get(property.name);
-      possibleDiscriminators.set(
-        property.name,
-        (current ?? []).concat(type)
-      );
+      possibleDiscriminators.set(property.name, (current ?? []).concat(type));
     }
   }
 
@@ -609,7 +599,6 @@ export function doesInterfaceEvaluatesToNever(
 
   return false;
 }
-
 
 /**
  * Loci table is a lookup table for types.
