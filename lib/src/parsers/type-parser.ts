@@ -51,12 +51,9 @@ import {
   unionType,
   NullType,
   intersectionType,
-  isPrimitiveType,
-  isArrayType,
   doesInterfaceEvaluatesToNever,
   possibleRootTypes,
-  isObjectType,
-  resolveStringIntersectionToNarrowestType
+  isObjectType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
