@@ -1,5 +1,4 @@
 import assertNever from "assert-never";
-import { TypeNotAllowedError } from "./errors";
 
 export enum TypeKind {
   NULL = "null",
@@ -236,14 +235,7 @@ export function dateTimeType(): DateTimeType {
   };
 }
 
-export function objectType(
-  properties: {
-    name: string;
-    description?: string;
-    optional: boolean;
-    type: Type;
-  }[]
-): ObjectType {
+export function objectType(properties: ObjectPropertiesType[]): ObjectType {
   return {
     kind: TypeKind.OBJECT,
     properties
@@ -580,24 +572,37 @@ export function doesInterfaceEvaluatesToNever(
     .filter(isNotNullType)
     .filter(isObjectType);
 
-  const possibleDiscriminators = new Map<string, Type[]>();
+  const possiblePropertyTypes = new Map<string, Array<Type>>();
 
   for (const type of concreteRootTypesExcludingNull) {
     for (const property of type.properties) {
-      const current = possibleDiscriminators.get(property.name);
-      possibleDiscriminators.set(property.name, (current ?? []).concat(type));
+      const current = possiblePropertyTypes.get(property.name);
+      const dereferencedPropertyType = dereferenceType(
+        property.type,
+        typeTable
+      );
+      possiblePropertyTypes.set(
+        property.name,
+        (current ?? new Array<Type>()).concat(dereferencedPropertyType)
+      );
     }
   }
-
-  for (const candidate of possibleDiscriminators.keys()) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const values = possibleDiscriminators.get(candidate)!;
-    if (values.length > 1) {
-      return true;
+  return Array.from(possiblePropertyTypes.values()).some(propertyTypeList => {
+    const allPropertiesAreStringOrLiteral = propertyTypeList.every(
+      type => isStringType(type) || isStringLiteralType(type)
+    );
+    if (allPropertiesAreStringOrLiteral) {
+      // check for any potential conflicts in string-literal types
+      // StringLiteralType("abc") and StringLiteralType("abc") are compatible.
+      // Similarly StringLiteralType("abc") and StringType are compatible.
+      // However StringLiteralType("abc") and StringLiteralType("def") are not.
+      return (
+        new Set(propertyTypeList.filter(isStringLiteralType).map(v => v.value))
+          .size > 1
+      );
     }
-  }
-
-  return false;
+    return new Set(propertyTypeList.map(v => v.kind)).size > 1;
+  });
 }
 
 /**

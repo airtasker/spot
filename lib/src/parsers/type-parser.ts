@@ -55,7 +55,8 @@ import {
   isArrayType,
   doesInterfaceEvaluatesToNever,
   possibleRootTypes,
-  isObjectType
+  isObjectType,
+  resolveStringIntersectionToNarrowestType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
