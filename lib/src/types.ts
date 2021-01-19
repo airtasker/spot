@@ -350,8 +350,38 @@ export function isIntLiteralType(type: Type): type is IntLiteralType {
   return type.kind === TypeKind.INT_LITERAL;
 }
 
+function areIntTypes(type: Type): type is Int32Type | Int64Type {
+  return isInt64Type(type) || isInt32Type(type);
+}
+
 export function areIntLiteralTypes(types: Type[]): types is IntLiteralType[] {
   return areTypes(types, isIntLiteralType);
+}
+
+export function areIntOrIntLiteralTypes(
+  types: Type[]
+): types is Array<IntLiteralType | Int32Type | Int64Type> {
+  return types.every(
+    type => isInt32Type(type) || isInt64Type(type) || isIntLiteralType(type)
+  );
+}
+
+export function areStringOrStringLiteralTypes(
+  types: Type[]
+): types is Array<StringLiteralType | StringType> {
+  return types.every(type => isStringType(type) || isStringLiteralType(type));
+}
+
+export function areFloatOrFloatLiteralTypes(
+  types: Type[]
+): types is Array<FloatLiteralType | FloatType> {
+  return types.every(type => isFloatType(type) || isFloatLiteralType(type));
+}
+
+export function areBooleanOrBooleanLiteralTypes(
+  types: Type[]
+): types is Array<BooleanLiteralType | BooleanType> {
+  return types.every(type => isBooleanType(type) || isBooleanLiteralType(type));
 }
 
 export function isDateType(type: Type): type is DateType {
@@ -456,17 +486,7 @@ export function possibleRootTypes(
     // if they are all objects then reduce them into one object
     // to allow for proper serialization
     if (concreteTypes.every(isObjectType)) {
-      return [
-        {
-          kind: TypeKind.OBJECT,
-          properties: concreteTypes.reduce<ObjectPropertiesType[]>(
-            (acc, curr) => {
-              return acc.concat(...curr.properties);
-            },
-            []
-          )
-        }
-      ];
+      return resolveIntersectionToNarrowestType(concreteTypes);
     }
     throw new Error("Intersection type does not evaluate only object types");
   }
@@ -552,6 +572,101 @@ export function inferDiscriminator(
     : undefined;
 }
 
+function getPrimitiveOrLiteralType<T extends Type, S extends LiteralType>(
+  propertyTypeList: ObjectPropertiesType[],
+  predicateLiteralFn: (type: Type) => type is S,
+  predicateFn: (type: Type) => type is T
+): ObjectPropertiesType {
+  const literalType = propertyTypeList.find(property =>
+    predicateLiteralFn(property.type)
+  );
+  if (literalType) {
+    return literalType;
+  } else {
+    const primitiveType = propertyTypeList.find(property =>
+      predicateFn(property.type)
+    );
+    return primitiveType!;
+  }
+}
+
+/**
+ * Given a list of types, if any property exists as both a string and
+ * string literal on an intersection, then resolve it to the narrowest type
+ *
+ * @param types list of types
+ */
+export function resolveIntersectionToNarrowestType(
+  types: Array<ObjectType>
+): Array<ObjectType> {
+  const possiblePropertyTypes = new Map<string, Array<ObjectPropertiesType>>();
+
+  for (const type of types) {
+    for (const property of type.properties) {
+      const current = possiblePropertyTypes.get(property.name);
+      possiblePropertyTypes.set(
+        property.name,
+        (current ?? new Array<ObjectPropertiesType>()).concat(property)
+      );
+    }
+  }
+  // console.log(possiblePropertyTypes);
+  const narrowObjectPropertiesType: ObjectPropertiesType[] = [];
+  Array.from(possiblePropertyTypes.values()).forEach(propertyTypeList => {
+    // If there is a conflict of types `doesInterfaceEvaluatesToNever` will catch it, we expect that
+    // this a safe place and only legal arguments can be sent
+    // find the `literal`, only one is a legal literal. If present use
+    // that as the type, else
+    // if they are all string then change the type to the primitive
+    if (
+      areStringOrStringLiteralTypes(
+        propertyTypeList.map(property => property.type)
+      )
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isStringLiteralType,
+        isStringType
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else if (
+      areBooleanOrBooleanLiteralTypes(
+        propertyTypeList.map(property => property.type)
+      )
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isBooleanLiteralType,
+        isBooleanType
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else if (
+      areIntOrIntLiteralTypes(propertyTypeList.map(property => property.type))
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isIntLiteralType,
+        areIntTypes
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else if (
+      areFloatOrFloatLiteralTypes(
+        propertyTypeList.map(property => property.type)
+      )
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isFloatLiteralType,
+        isFloatType
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else {
+      narrowObjectPropertiesType.concat(propertyTypeList);
+    }
+  });
+  return [objectType(narrowObjectPropertiesType)];
+}
+
 /**
  * Given a list of types, try to find if the intersection evaluates to
  * a `never` type
@@ -588,19 +703,33 @@ export function doesInterfaceEvaluatesToNever(
     }
   }
   return Array.from(possiblePropertyTypes.values()).some(propertyTypeList => {
-    const allPropertiesAreStringOrLiteral = propertyTypeList.every(
-      type => isStringType(type) || isStringLiteralType(type)
-    );
-    if (allPropertiesAreStringOrLiteral) {
-      // check for any potential conflicts in string-literal types
-      // StringLiteralType("abc") and StringLiteralType("abc") are compatible.
-      // Similarly StringLiteralType("abc") and StringType are compatible.
-      // However StringLiteralType("abc") and StringLiteralType("def") are not.
+    // check for any potential conflicts in literal types for string,
+    // int, boolean and floats. For example:
+    // StringLiteralType("abc") and StringLiteralType("abc") are compatible.
+    // Similarly StringLiteralType("abc") and StringType are compatible.
+    // However StringLiteralType("abc") and StringLiteralType("def") are not.
+    if (areStringOrStringLiteralTypes(propertyTypeList)) {
       return (
         new Set(propertyTypeList.filter(isStringLiteralType).map(v => v.value))
           .size > 1
       );
+    } else if (areBooleanOrBooleanLiteralTypes(propertyTypeList)) {
+      return (
+        new Set(propertyTypeList.filter(isBooleanLiteralType).map(v => v.value))
+          .size > 1
+      );
+    } else if (areIntOrIntLiteralTypes(propertyTypeList)) {
+      return (
+        new Set(propertyTypeList.filter(isIntLiteralType).map(v => v.value))
+          .size > 1
+      );
+    } else if (areFloatOrFloatLiteralTypes(propertyTypeList)) {
+      return (
+        new Set(propertyTypeList.filter(isFloatLiteralType).map(v => v.value))
+          .size > 1
+      );
     }
+    // Check for all other conflicts
     return new Set(propertyTypeList.map(v => v.kind)).size > 1;
   });
 }
