@@ -423,6 +423,60 @@ exports[`OpenAPI 2 generator headers endpoint with response headers 1`] = `
 }"
 `;
 
+exports[`OpenAPI 2 generator intersection types evaluates intersection type 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"IntersectionType\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"allOf\\": [
+                {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\"
+                  ]
+                },
+                {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"name\\"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 2 generator minimal contract produces minimal OpenAPI 2 1`] = `
 "{
   \\"swagger\\": \\"2.0\\",

@@ -28,6 +28,7 @@ export function isPathParamTypeSafe(type: Type, typeTable: TypeTable): boolean {
     case TypeKind.ARRAY:
       return isParamArrayElementTypeSafe(type.elementType, typeTable);
     case TypeKind.UNION:
+    case TypeKind.INTERSECTION:
       return type.types.every(t => isPathParamTypeSafe(t, typeTable));
     case TypeKind.REFERENCE:
       return isPathParamTypeSafe(dereferenceType(type, typeTable), typeTable);
@@ -69,6 +70,7 @@ export function isQueryParamTypeSafe(
         isParamObjectPropertyTypeSafe(p.type, typeTable)
       );
     case TypeKind.UNION:
+    case TypeKind.INTERSECTION:
       return type.types.every(t => isQueryParamTypeSafe(t, typeTable));
     case TypeKind.REFERENCE:
       return isQueryParamTypeSafe(dereferenceType(type, typeTable), typeTable);
@@ -103,6 +105,7 @@ export function isHeaderTypeSafe(type: Type, typeTable: TypeTable): boolean {
     case TypeKind.OBJECT:
       return false;
     case TypeKind.UNION:
+    case TypeKind.INTERSECTION:
       return type.types.every(t => isHeaderTypeSafe(t, typeTable));
     case TypeKind.REFERENCE:
       return isHeaderTypeSafe(dereferenceType(type, typeTable), typeTable);
@@ -140,6 +143,7 @@ function isParamObjectPropertyTypeSafe(
     case TypeKind.OBJECT:
       return false;
     case TypeKind.UNION:
+    case TypeKind.INTERSECTION:
       return type.types.every(t => isParamObjectPropertyTypeSafe(t, typeTable));
     case TypeKind.REFERENCE:
       return isParamObjectPropertyTypeSafe(
@@ -180,6 +184,7 @@ function isParamArrayElementTypeSafe(
     case TypeKind.OBJECT:
       return false;
     case TypeKind.UNION:
+    case TypeKind.INTERSECTION:
       return type.types.every(t => isParamArrayElementTypeSafe(t, typeTable));
     case TypeKind.REFERENCE:
       return isParamArrayElementTypeSafe(

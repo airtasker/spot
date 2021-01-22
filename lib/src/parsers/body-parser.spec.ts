@@ -48,6 +48,21 @@ describe("body parser", () => {
     });
   });
 
+  test("parses @body decorated parameter with intersection type", () => {
+    const result = parseBody(
+      method.getParameterOrThrow("intersectionTypeBody"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+
+    expect(result).toStrictEqual({
+      type: {
+        kind: "reference",
+        name: "TypeAliasIntersection"
+      }
+    });
+  });
+
   test("fails to parse optional @body decorated parameter", () => {
     expect(
       parseBody(

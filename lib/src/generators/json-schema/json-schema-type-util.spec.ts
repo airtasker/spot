@@ -9,6 +9,7 @@ import {
   floatType,
   int32Type,
   int64Type,
+  intersectionType,
   intLiteralType,
   nullType,
   objectType,
@@ -405,6 +406,41 @@ describe("JSON schema generator", () => {
       const result = typeToJsonSchemaType(referenceType("CustomType"));
       expect(result).toEqual({
         $ref: "#/definitions/CustomType"
+      });
+    });
+  });
+
+  describe("intersectionType", () => {
+    test("converts to an allOf schema object", () => {
+      const result = typeToJsonSchemaType(
+        intersectionType([
+          objectType([
+            { name: "type", type: stringLiteralType("a"), optional: false },
+            { name: "a", type: stringType(), optional: false }
+          ]),
+          referenceType("CustomObjectTypeB")
+        ])
+      );
+      expect(result).toEqual({
+        allOf: [
+          {
+            additionalProperties: true,
+            properties: {
+              a: {
+                type: "string"
+              },
+              type: {
+                const: "a",
+                type: "string"
+              }
+            },
+            required: ["type", "a"],
+            type: "object"
+          },
+          {
+            $ref: "#/definitions/CustomObjectTypeB"
+          }
+        ]
       });
     });
   });

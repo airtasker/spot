@@ -39,4 +39,17 @@ describe("JSON Schema generator", () => {
     const spectralResult = await spectral.run(result);
     expect(spectralResult).toHaveLength(0);
   });
+
+  test("evaluates intersection type", async () => {
+    const file = createProjectFromExistingSourceFile(
+      `${__dirname}/__spec-examples__/contract-with-intersection-types.ts`
+    ).file;
+
+    const { contract } = parseContract(file).unwrapOrThrow();
+    const result = generateJsonSchema(contract);
+
+    expect(result).toMatchSnapshot();
+    const spectralResult = await spectral.run(result);
+    expect(spectralResult).toHaveLength(0);
+  });
 });

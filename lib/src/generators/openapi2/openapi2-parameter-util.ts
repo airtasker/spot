@@ -134,6 +134,10 @@ function basicTypeToParameterBasicTypeObject(
       throw new Error("Object is not supported for parameters in OpenAPI 2");
     case TypeKind.UNION:
       throw new Error("Unions are not supported for parameters in OpenAPI 2");
+    case TypeKind.INTERSECTION:
+      throw new Error(
+        "Intersections are not supported for parameters in OpenAPI 2"
+      );
     default:
       assertNever(type);
   }

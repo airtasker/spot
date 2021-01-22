@@ -34,6 +34,7 @@ function createProject(): Project {
     strictFunctionTypes: true,
     strictPropertyInitialization: true,
     noImplicitThis: true,
+    resolveJsonModule: true,
     alwaysStrict: true,
     noImplicitReturns: true,
     noFallthroughCasesInSwitch: true,

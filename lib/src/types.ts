@@ -17,7 +17,8 @@ export enum TypeKind {
   OBJECT = "object",
   ARRAY = "array",
   UNION = "union",
-  REFERENCE = "reference"
+  REFERENCE = "reference",
+  INTERSECTION = "intersection"
 }
 
 export type Type =
@@ -37,18 +38,22 @@ export type Type =
   | ObjectType
   | ArrayType
   | UnionType
-  | ReferenceType;
+  | ReferenceType
+  | IntersectionType;
 
 /**
- * A concrete type is any type that is not a union of types or reference to a type.
+ * A concrete type is any type that is not a union of types, intersection or reference to a type.
  */
-export type ConcreteType = Exclude<Type, UnionType | ReferenceType>;
+export type ConcreteType = Exclude<
+  Type,
+  UnionType | ReferenceType | IntersectionType
+>;
 /**
- * A concrete type is any type that is not a
+ * A primitive type is any type that is not an object, array, union, reference or intersection
  */
 export type PrimitiveType = Exclude<
   Type,
-  ObjectType | ArrayType | UnionType | ReferenceType
+  ObjectType | ArrayType | UnionType | ReferenceType | IntersectionType
 >;
 
 export type LiteralType =
@@ -113,14 +118,16 @@ export interface DateTimeType {
   kind: TypeKind.DATE_TIME;
 }
 
+export interface ObjectPropertiesType {
+  name: string;
+  description?: string;
+  optional: boolean;
+  type: Type;
+}
+
 export interface ObjectType {
   kind: TypeKind.OBJECT;
-  properties: {
-    name: string;
-    description?: string;
-    optional: boolean;
-    type: Type;
-  }[];
+  properties: Array<ObjectPropertiesType>;
 }
 
 export interface ArrayType {
@@ -132,6 +139,11 @@ export interface UnionType {
   kind: TypeKind.UNION;
   types: Type[];
   discriminator?: string;
+}
+
+export interface IntersectionType {
+  kind: TypeKind.INTERSECTION;
+  types: Type[];
 }
 
 export interface ReferenceType {
@@ -223,14 +235,7 @@ export function dateTimeType(): DateTimeType {
   };
 }
 
-export function objectType(
-  properties: {
-    name: string;
-    description?: string;
-    optional: boolean;
-    type: Type;
-  }[]
-): ObjectType {
+export function objectType(properties: ObjectPropertiesType[]): ObjectType {
   return {
     kind: TypeKind.OBJECT,
     properties
@@ -252,6 +257,13 @@ export function unionType(
     kind: TypeKind.UNION,
     types: unionTypes,
     discriminator
+  };
+}
+
+export function intersectionType(intersectionTypes: Type[]): IntersectionType {
+  return {
+    kind: TypeKind.INTERSECTION,
+    types: intersectionTypes
   };
 }
 
@@ -338,8 +350,38 @@ export function isIntLiteralType(type: Type): type is IntLiteralType {
   return type.kind === TypeKind.INT_LITERAL;
 }
 
+function areIntTypes(type: Type): type is Int32Type | Int64Type {
+  return isInt64Type(type) || isInt32Type(type);
+}
+
 export function areIntLiteralTypes(types: Type[]): types is IntLiteralType[] {
   return areTypes(types, isIntLiteralType);
+}
+
+export function areIntOrIntLiteralTypes(
+  types: Type[]
+): types is Array<IntLiteralType | Int32Type | Int64Type> {
+  return types.every(
+    type => isInt32Type(type) || isInt64Type(type) || isIntLiteralType(type)
+  );
+}
+
+export function areStringOrStringLiteralTypes(
+  types: Type[]
+): types is Array<StringLiteralType | StringType> {
+  return types.every(type => isStringType(type) || isStringLiteralType(type));
+}
+
+export function areFloatOrFloatLiteralTypes(
+  types: Type[]
+): types is Array<FloatLiteralType | FloatType> {
+  return types.every(type => isFloatType(type) || isFloatLiteralType(type));
+}
+
+export function areBooleanOrBooleanLiteralTypes(
+  types: Type[]
+): types is Array<BooleanLiteralType | BooleanType> {
+  return types.every(type => isBooleanType(type) || isBooleanLiteralType(type));
 }
 
 export function isDateType(type: Type): type is DateType {
@@ -360,6 +402,10 @@ export function isArrayType(type: Type): type is ArrayType {
 
 export function isUnionType(type: Type): type is UnionType {
   return type.kind === TypeKind.UNION;
+}
+
+export function isIntersectionType(type: Type): type is IntersectionType {
+  return type.kind === TypeKind.INTERSECTION;
 }
 
 export function isReferenceType(type: Type): type is ReferenceType {
@@ -386,6 +432,7 @@ export function isPrimitiveType(type: Type): type is PrimitiveType {
     case TypeKind.ARRAY:
     case TypeKind.UNION:
     case TypeKind.REFERENCE:
+    case TypeKind.INTERSECTION:
       return false;
     default:
       throw assertNever(type);
@@ -430,6 +477,18 @@ export function possibleRootTypes(
       (acc, curr) => acc.concat(possibleRootTypes(curr, typeTable)),
       []
     );
+  }
+
+  if (isIntersectionType(type)) {
+    const concreteTypes = type.types.reduce<ConcreteType[]>((acc, curr) => {
+      return acc.concat(possibleRootTypes(curr, typeTable));
+    }, []);
+    // if they are all objects then reduce them into one object
+    // to allow for proper serialization
+    if (concreteTypes.every(isObjectType)) {
+      return resolveIntersectionToNarrowestType(concreteTypes);
+    }
+    throw new Error("Intersection type does not evaluate only object types");
   }
   return [type];
 }
@@ -511,6 +570,168 @@ export function inferDiscriminator(
   return candidateDiscriminators.length === 1
     ? candidateDiscriminators[0]
     : undefined;
+}
+
+function getPrimitiveOrLiteralType<T extends Type, S extends LiteralType>(
+  propertyTypeList: ObjectPropertiesType[],
+  predicateLiteralFn: (type: Type) => type is S,
+  predicateFn: (type: Type) => type is T
+): ObjectPropertiesType {
+  const literalType = propertyTypeList.find(property =>
+    predicateLiteralFn(property.type)
+  );
+  if (literalType) {
+    return literalType;
+  } else {
+    const primitiveType = propertyTypeList.find(property =>
+      predicateFn(property.type)
+    );
+    return primitiveType!;
+  }
+}
+
+/**
+ * Given a list of types, if any property exists as both a string and
+ * string literal on an intersection, then resolve it to the narrowest type
+ *
+ * @param types list of types
+ */
+export function resolveIntersectionToNarrowestType(
+  types: Array<ObjectType>
+): Array<ObjectType> {
+  const possiblePropertyTypes = new Map<string, Array<ObjectPropertiesType>>();
+
+  for (const type of types) {
+    for (const property of type.properties) {
+      const current = possiblePropertyTypes.get(property.name);
+      possiblePropertyTypes.set(
+        property.name,
+        (current ?? new Array<ObjectPropertiesType>()).concat(property)
+      );
+    }
+  }
+  // console.log(possiblePropertyTypes);
+  const narrowObjectPropertiesType: ObjectPropertiesType[] = [];
+  Array.from(possiblePropertyTypes.values()).forEach(propertyTypeList => {
+    // If there is a conflict of types `doesInterfaceEvaluatesToNever` will catch it, we expect that
+    // this a safe place and only legal arguments can be sent
+    // find the `literal`, only one is a legal literal. If present use
+    // that as the type, else
+    // if they are all string then change the type to the primitive
+    if (
+      areStringOrStringLiteralTypes(
+        propertyTypeList.map(property => property.type)
+      )
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isStringLiteralType,
+        isStringType
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else if (
+      areBooleanOrBooleanLiteralTypes(
+        propertyTypeList.map(property => property.type)
+      )
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isBooleanLiteralType,
+        isBooleanType
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else if (
+      areIntOrIntLiteralTypes(propertyTypeList.map(property => property.type))
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isIntLiteralType,
+        areIntTypes
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else if (
+      areFloatOrFloatLiteralTypes(
+        propertyTypeList.map(property => property.type)
+      )
+    ) {
+      const objectPropertyType = getPrimitiveOrLiteralType(
+        propertyTypeList,
+        isFloatLiteralType,
+        isFloatType
+      );
+      narrowObjectPropertiesType.push(objectPropertyType);
+    } else {
+      narrowObjectPropertiesType.concat(propertyTypeList);
+    }
+  });
+  return [objectType(narrowObjectPropertiesType)];
+}
+
+/**
+ * Given a list of types, try to find if the intersection evaluates to
+ * a `never` type
+ *
+ * @param types list of types
+ * @param typeTable a TypeTable
+ */
+export function doesInterfaceEvaluatesToNever(
+  types: Array<Type>,
+  typeTable: TypeTable
+): boolean {
+  // the types on an intersection will always be an object at its root
+  // this way we make sure we get an Object Type
+  const concreteRootTypesExcludingNull = types
+    .reduce<ConcreteType[]>((acc, type) => {
+      return acc.concat(...possibleRootTypes(type, typeTable));
+    }, [])
+    .filter(isNotNullType)
+    .filter(isObjectType);
+
+  const possiblePropertyTypes = new Map<string, Array<Type>>();
+
+  for (const type of concreteRootTypesExcludingNull) {
+    for (const property of type.properties) {
+      const current = possiblePropertyTypes.get(property.name);
+      const dereferencedPropertyType = dereferenceType(
+        property.type,
+        typeTable
+      );
+      possiblePropertyTypes.set(
+        property.name,
+        (current ?? new Array<Type>()).concat(dereferencedPropertyType)
+      );
+    }
+  }
+  return Array.from(possiblePropertyTypes.values()).some(propertyTypeList => {
+    // check for any potential conflicts in literal types for string,
+    // int, boolean and floats. For example:
+    // StringLiteralType("abc") and StringLiteralType("abc") are compatible.
+    // Similarly StringLiteralType("abc") and StringType are compatible.
+    // However StringLiteralType("abc") and StringLiteralType("def") are not.
+    if (areStringOrStringLiteralTypes(propertyTypeList)) {
+      return (
+        new Set(propertyTypeList.filter(isStringLiteralType).map(v => v.value))
+          .size > 1
+      );
+    } else if (areBooleanOrBooleanLiteralTypes(propertyTypeList)) {
+      return (
+        new Set(propertyTypeList.filter(isBooleanLiteralType).map(v => v.value))
+          .size > 1
+      );
+    } else if (areIntOrIntLiteralTypes(propertyTypeList)) {
+      return (
+        new Set(propertyTypeList.filter(isIntLiteralType).map(v => v.value))
+          .size > 1
+      );
+    } else if (areFloatOrFloatLiteralTypes(propertyTypeList)) {
+      return (
+        new Set(propertyTypeList.filter(isFloatLiteralType).map(v => v.value))
+          .size > 1
+      );
+    }
+    // Check for all other conflicts
+    return new Set(propertyTypeList.map(v => v.kind)).size > 1;
+  });
 }
 
 /**

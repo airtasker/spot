@@ -2,6 +2,7 @@ import {
   ArrayTypeNode,
   IndexedAccessTypeNode,
   InterfaceDeclaration,
+  IntersectionTypeNode,
   LiteralTypeNode,
   TypeAliasDeclaration,
   TypeGuards,
@@ -48,7 +49,11 @@ import {
   TypeKind,
   TypeTable,
   unionType,
-  NullType
+  NullType,
+  intersectionType,
+  doesInterfaceEvaluatesToNever,
+  possibleRootTypes,
+  isObjectType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
@@ -87,6 +92,8 @@ export function parseType(
     return parseUnionType(typeNode, typeTable, lociTable);
   } else if (TypeGuards.isIndexedAccessTypeNode(typeNode)) {
     return parseIndexedAccessType(typeNode, typeTable, lociTable);
+  } else if (TypeGuards.isIntersectionTypeNode(typeNode)) {
+    return parseIntersectionTypeNode(typeNode, typeTable, lociTable);
   } else {
     throw new TypeNotAllowedError("unknown type", {
       file: typeNode.getSourceFile().getFilePath(),
@@ -453,6 +460,55 @@ function parseUnionType(
       return ok(unionType(types, inferDiscriminator(types, typeTable)));
     }
   }
+}
+
+/**
+ * Parse an intersection type node.
+ *
+ * @param typeNode intersection type node
+ * @param typeTable a TypeTable
+ * @param lociTable a LociTable
+ */
+function parseIntersectionTypeNode(
+  typeNode: IntersectionTypeNode,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Result<Type, ParserError> {
+  const allowedTargetTypes = typeNode
+    .getTypeNodes()
+    .filter(type => !type.getType().isUndefined());
+  const types: Type[] = [];
+  for (const tn of allowedTargetTypes) {
+    const typeResult = parseType(tn, typeTable, lociTable);
+    if (typeResult.isErr()) return typeResult;
+    // Only allow objects, unions, intersections and references
+    const typeResultType = typeResult.unwrap();
+    const concreteTypes = possibleRootTypes(typeResultType, typeTable);
+    if (!concreteTypes.every(isObjectType)) {
+      return err(
+        new TypeNotAllowedError(
+          "Cannot use primitive types in an intersection type",
+          {
+            file: typeNode.getSourceFile().getFilePath(),
+            position: typeNode.getPos()
+          }
+        )
+      );
+    }
+    types.push(typeResultType);
+  }
+  if (doesInterfaceEvaluatesToNever(types, typeTable)) {
+    return err(
+      new TypeNotAllowedError(
+        "intersection evaluates to never and is an illegal argument",
+        {
+          file: typeNode.getSourceFile().getFilePath(),
+          position: typeNode.getPos()
+        }
+      )
+    );
+  }
+  return ok(intersectionType(types));
 }
 
 /**

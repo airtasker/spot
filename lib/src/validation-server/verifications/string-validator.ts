@@ -31,6 +31,7 @@ export class StringValidator {
       case TypeKind.INT64:
       case TypeKind.DATE:
       case TypeKind.DATE_TIME:
+      case TypeKind.INTERSECTION:
         return `"${input}" should be ${type.kind}`;
       case TypeKind.BOOLEAN_LITERAL:
       case TypeKind.STRING_LITERAL:
@@ -108,6 +109,7 @@ export class StringValidator {
         return this.validateObject(input, type);
       case TypeKind.ARRAY:
         return this.validateArray(input, type);
+      case TypeKind.INTERSECTION:
       case TypeKind.UNION:
         // eslint-disable-next-line no-case-declarations
         const anyValid = type.types.some(t => {

@@ -177,6 +177,11 @@ export function parseTypeReferencePropertySignaturesOrThrow(
     );
   } else if (TypeGuards.isTypeLiteralNode(typeNode)) {
     return typeNode.getProperties();
+  } else if (TypeGuards.isIntersectionTypeNode(typeNode)) {
+    return typeNode
+      .getTypeNodes()
+      .map(parseTypeReferencePropertySignaturesOrThrow)
+      .flat();
   }
   throw new Error(
     "expected parameter value to be an type literal or interface object"

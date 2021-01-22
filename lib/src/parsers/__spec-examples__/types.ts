@@ -45,6 +45,16 @@ interface TypeInterface {
   aliasString: AliasString;
   aliasArray: AliasArray;
   aliasWithDescription: AliasWithDescription;
+  intersectionType: {
+    typeA: string;
+  } & {
+    typeB: boolean;
+  };
+  illegalIntersection: {
+    typeA: string;
+  } & {
+    typeA: boolean;
+  };
   interface: Interface;
   interfaceWithDescription: InterfaceWithDescription;
   interfaceExtends: InterfaceExtends;

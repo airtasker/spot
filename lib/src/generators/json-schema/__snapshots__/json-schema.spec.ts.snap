@@ -1,5 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`JSON Schema generator evaluates intersection type 1`] = `
+Object {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": Object {
+    "IntersectionResponse": Object {
+      "allOf": Array [
+        Object {
+          "additionalProperties": true,
+          "properties": Object {
+            "id": Object {
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "id",
+          ],
+          "type": "object",
+        },
+        Object {
+          "additionalProperties": true,
+          "properties": Object {
+            "name": Object {
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "name",
+          ],
+          "type": "object",
+        },
+      ],
+    },
+  },
+}
+`;
+
 exports[`JSON Schema generator produces definitions 1`] = `
 Object {
   "$schema": "http://json-schema.org/draft-07/schema#",

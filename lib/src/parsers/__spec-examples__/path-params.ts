@@ -60,6 +60,10 @@ class PathParamsClass {
     @pathParams
     interfacePathParams: IPathParams,
     @pathParams
+    typeAliasIntersectionPathParams: TypeAliasIntersection,
+    @pathParams
+    typeAliasAndLiteralIntersectionPathParams: TypeAliasAndLiteralIntersection,
+    @pathParams
     typeAliasTypeLiteralPathParams: TypeAliasTypeLiteral,
     @pathParams
     typeAliasTypeReferencePathParams: TypeAliasTypeReference,
@@ -109,4 +113,15 @@ type TypeAliasTypeLiteral = {
   "property-with-description": string;
 };
 
+type TypeAliasTypeLiteral2 = {
+  /** property description */
+  "property-2-with-description": string;
+};
+
 type TypeAliasTypeReference = IPathParams;
+
+type TypeAliasIntersection = TypeAliasTypeLiteral & TypeAliasTypeLiteral2;
+type TypeAliasAndLiteralIntersection = TypeAliasTypeLiteral & {
+  /** property description */
+  "property-2-with-description": string;
+};
