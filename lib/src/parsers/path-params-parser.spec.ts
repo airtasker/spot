@@ -125,7 +125,7 @@ describe("path params parser", () => {
     expect(result[1]).toEqual({
       description: "property description",
       examples: undefined,
-      name: "property-with-description",
+      name: "property-2-with-description",
       type: {
         kind: TypeKind.STRING
       }
@@ -133,7 +133,7 @@ describe("path params parser", () => {
     expect(result[0]).toEqual({
       description: "property description",
       examples: undefined,
-      name: "property-2-with-description",
+      name: "property-with-description",
       type: {
         kind: TypeKind.STRING
       }
@@ -150,7 +150,7 @@ describe("path params parser", () => {
     expect(result[1]).toEqual({
       description: "property description",
       examples: undefined,
-      name: "property-with-description",
+      name: "property-2-with-description",
       type: {
         kind: TypeKind.STRING
       }
@@ -158,7 +158,7 @@ describe("path params parser", () => {
     expect(result[0]).toEqual({
       description: "property description",
       examples: undefined,
-      name: "property-2-with-description",
+      name: "property-with-description",
       type: {
         kind: TypeKind.STRING
       }
