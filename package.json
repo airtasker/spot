@@ -14,7 +14,7 @@
     "assert-never": "^1.2.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "fs-extra": "^9.0.1",
+    "fs-extra": "^9.1.0",
     "inquirer": "^7.3.3",
     "js-yaml": "^4.0.0",
     "qs": "^6.9.6",
