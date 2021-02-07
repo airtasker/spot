@@ -35,7 +35,7 @@
     "@types/moxios": "^0.4.8",
     "@types/qs": "^6.9.5",
     "@types/randomstring": "^1.1.6",
-    "@types/react": "^17.0.0",
+    "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
     "@types/supertest": "^2.0.10",
     "@types/validator": "^13.1.3",
