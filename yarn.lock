@@ -5716,17 +5716,17 @@ mkdirp@^0.5.1, mkdirp@^0.5.3:
   dependencies:
     minimist "^1.2.5"
 
-mobx-react-lite@^2.2.0:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-2.2.2.tgz#87c217dc72b4e47b22493daf155daf3759f868a6"
-  integrity sha512-2SlXALHIkyUPDsV4VTKVR9DW7K3Ksh1aaIv3NrNJygTbhXe2A9GrcKHZ2ovIiOp/BXilOcTYemfHHZubP431dg==
+mobx-react-lite@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-3.2.0.tgz#331d7365a6b053378dfe9c087315b4e41c5df69f"
+  integrity sha512-q5+UHIqYCOpBoFm/PElDuOhbcatvTllgRp3M1s+Hp5j0Z6XNgDbgqxawJ0ZAUEyKM8X1zs70PCuhAIzX1f4Q/g==
 
-mobx-react@^6.2.2:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-6.3.1.tgz#204f9756e42e19d91cb6598837063b7e7de87c52"
-  integrity sha512-IOxdJGnRSNSJrL2uGpWO5w9JH5q5HoxEqwOF4gye1gmZYdjoYkkMzSGMDnRCUpN/BNzZcFoMdHXrjvkwO7KgaQ==
+mobx-react@^7.0.5:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-7.1.0.tgz#d947cada3cfad294b4b6f692e969c242b9c16eaf"
+  integrity sha512-DxvA6VXmnZ+N9f/UTtolWtdRnAAQY2iHWTSPLktfpj8NKlXUe4dabBAjuXrBcZUM8GjLWnxD1ZEjssXq1M0RAw==
   dependencies:
-    mobx-react-lite "^2.2.0"
+    mobx-react-lite "^3.2.0"
 
 mobx@^6.0.4:
   version "6.0.4"
@@ -6129,7 +6129,7 @@ ono@^4.0.11:
   dependencies:
     format-util "^1.0.3"
 
-openapi-sampler@^1.0.0-beta.16:
+openapi-sampler@^1.0.0-beta.18:
   version "1.0.0-beta.18"
   resolved "https://registry.yarnpkg.com/openapi-sampler/-/openapi-sampler-1.0.0-beta.18.tgz#9e0845616a669e048860625ea5c10d0f554f1b53"
   integrity sha512-nG/0kvvSY5FbrU5A+Dbp1xTQN++7pKIh87/atryZlxrzDuok5Y6TCbpxO1jYqpUKLycE4ReKGHCywezngG6xtQ==
@@ -6529,10 +6529,10 @@ pretty-format@^26.0.0, pretty-format@^26.6.2:
     ansi-styles "^4.0.0"
     react-is "^17.0.1"
 
-prismjs@^1.20.0:
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.22.0.tgz#73c3400afc58a823dd7eed023f8e1ce9fd8977fa"
-  integrity sha512-lLJ/Wt9yy0AiSYBf212kK3mM5L8ycwlyTlSxHBAneXLR0nzFMlZ5y7riFPF3E33zXOF2IH95xdY5jIyZbM9z/w==
+prismjs@^1.22.0:
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.23.0.tgz#d3b3967f7d72440690497652a9d40ff046067f33"
+  integrity sha512-c29LVsqOaLbBHuIbsTxaKENh1N2EQBOHaWv7gkHN4dgRbxSREqDnDbtFJYdpPauS4YCplMSNCABQ6Eeor69bAA==
   optionalDependencies:
     clipboard "^2.0.0"
 
@@ -6876,10 +6876,10 @@ redeyed@~2.1.0:
   dependencies:
     esprima "~4.0.0"
 
-redoc@^2.0.0-rc.41:
-  version "2.0.0-rc.45"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.45.tgz#a42301a032582c9fbe1cb81b10f192d289e9467d"
-  integrity sha512-yOgyXFybwBItvY+y9cFEA6X0W6KDdnkdeWK8LMkTxWN4HUecRwPFYPRdzx+SvDUb8ICh4PDtfyDU3Fo1e9N8Iw==
+redoc@^2.0.0-rc.48:
+  version "2.0.0-rc.48"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.48.tgz#5303cff67af5cba8a2b48dc1347a9854d45be835"
+  integrity sha512-shArJWhNG2gQ0XKxW8WcfG8peNOtxbZ86CqxgrR9P7MnE5ESAo559CH/PSlezePeVLpcC0C9tcimOfSN5MaAvA==
   dependencies:
     "@redocly/react-dropdown-aria" "^2.0.11"
     "@types/node" "^13.11.1"
@@ -6893,11 +6893,11 @@ redoc@^2.0.0-rc.41:
     mark.js "^8.11.1"
     marked "^0.7.0"
     memoize-one "~5.1.1"
-    mobx-react "^6.2.2"
-    openapi-sampler "^1.0.0-beta.16"
+    mobx-react "^7.0.5"
+    openapi-sampler "^1.0.0-beta.18"
     perfect-scrollbar "^1.4.0"
     polished "^3.6.5"
-    prismjs "^1.20.0"
+    prismjs "^1.22.0"
     prop-types "^15.7.2"
     react-tabs "^3.1.1"
     slugify "^1.4.4"
