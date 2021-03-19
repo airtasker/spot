@@ -1,5 +1,5 @@
-import { ClassDeclaration, SourceFile } from "ts-morph";
-import { Config, Contract, Endpoint } from "../definitions";
+import {ClassDeclaration, SourceFile} from "ts-morph";
+import {Config, Contract, Endpoint} from "../definitions";
 import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { ApiConfig } from "../syntax/api";
@@ -18,6 +18,8 @@ import {
   getSelfAndLocalDependencies
 } from "./parser-helpers";
 import { parseSecurityHeader } from "./security-header-parser";
+
+import {parseOa3Servers} from "./oa3server-parser";
 
 /**
  * Parse a root source file to return a contract.
@@ -111,6 +113,11 @@ export function parseContract(
   // Handle Types
   const types = typeTable.toArray();
 
+  // Handle Servers
+  const serversResult = parseOa3Servers(klass, typeTable, lociTable);
+  if (serversResult.isErr()) return serversResult;
+  const oa3servers = serversResult.unwrap();
+
   const contract = {
     name,
     description,
@@ -118,7 +125,8 @@ export function parseContract(
     config,
     security,
     endpoints,
-    version
+    version,
+    oa3servers
   };
   return ok({ contract, lociTable });
 }

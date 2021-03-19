@@ -8,6 +8,7 @@ export interface Contract {
   types: { name: string; typeDef: TypeDef }[];
   security?: SecurityHeader;
   endpoints: Endpoint[];
+  oa3servers?: Oa3Server[];
 }
 
 export interface Config {
@@ -84,6 +85,18 @@ export interface Body {
   type: Type;
 }
 
+export interface Oa3Server {
+  url: string;
+  description?: string;
+  oa3ServerVariables: Oa3ServerVariable[]
+}
+
+export interface Oa3ServerVariable {
+  type: Type;
+  description?: string;
+  defaultValue: string;
+  parameterName: string;
+}
 /**
  * Supported serialization strategies for arrays in query parameters
  *

@@ -30,6 +30,24 @@ describe("OpenAPI 3 generator", () => {
     expect(spectralResult).toHaveLength(0);
   });
 
+  test("contract with one server OpenAPI 3", async () => {
+    const contract = generateContract("contract-with-one-server.ts");
+    const result = generateOpenAPI3(contract);
+
+    expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+    const spectralResult = await spectral.run(result);
+    expect(spectralResult).toHaveLength(0);
+  });
+
+  test("contract with multiple servers OpenAPI 3", async () => {
+    const contract = generateContract("contract-with-multiple-servers.ts");
+    const result = generateOpenAPI3(contract);
+
+    expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+    const spectralResult = await spectral.run(result);
+    expect(spectralResult).toHaveLength(0);
+  });
+
   describe("security", () => {
     test("contract with security header", async () => {
       const contract = generateContract("contract-with-security-header.ts");
