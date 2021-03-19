@@ -97,6 +97,7 @@ export interface Oa3ServerVariable {
   defaultValue: string;
   parameterName: string;
 }
+
 /**
  * Supported serialization strategies for arrays in query parameters
  *

@@ -21,7 +21,7 @@
  ```
  */
 export declare function oa3serverVariable(
-    target: any,
-    propertyKey: string,
-    parameterIndex: number
+  target: any,
+  propertyKey: string,
+  parameterIndex: number
 ): void;

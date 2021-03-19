@@ -8,7 +8,8 @@ import {
   Example,
   Header,
   HttpMethod,
-  isSpecificResponse, Oa3ServerVariable,
+  isSpecificResponse,
+  Oa3ServerVariable,
   Request,
   Response
 } from "../../definitions";
@@ -36,7 +37,9 @@ import {
   RequestBodyObject,
   ResponseObject,
   ResponsesObject,
-  ExamplesSet, ServerObject, ServerVariableObject
+  ExamplesSet,
+  ServerObject,
+  ServerVariableObject
 } from "./openapi3-specification";
 import {
   typeToSchemaOrReferenceObject,
@@ -358,7 +361,7 @@ function contractToOa3ServerObject(contract: Contract): ServerObject[] | undefin
     return undefined;
   }
   const servers = contract.oa3servers;
-  const serversObject : ServerObject[] = [];
+  const serversObject: ServerObject[] = [];
   if (servers) {
     for (const server of servers) {
 
@@ -372,7 +375,7 @@ function contractToOa3ServerObject(contract: Contract): ServerObject[] | undefin
             {}
           )
           : undefined;
-      serversObject.push({url: server.url, description: server.description, variables: serverVariables})
+      serversObject.push({ url: server.url, description: server.description, variables: serverVariables });
     }
   }
 

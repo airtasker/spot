@@ -1,5 +1,5 @@
-import {ClassDeclaration, SourceFile} from "ts-morph";
-import {Config, Contract, Endpoint} from "../definitions";
+import { ClassDeclaration, SourceFile } from "ts-morph";
+import { Config, Contract, Endpoint } from "../definitions";
 import { ParserError } from "../errors";
 import { LociTable } from "../locations";
 import { ApiConfig } from "../syntax/api";
@@ -19,7 +19,7 @@ import {
 } from "./parser-helpers";
 import { parseSecurityHeader } from "./security-header-parser";
 
-import {parseOa3Servers} from "./oa3server-parser";
+import { parseOa3Servers } from "./oa3server-parser";
 
 /**
  * Parse a root source file to return a contract.
@@ -154,9 +154,7 @@ function extractEndpoints(
     )
   ];
   if (duplicateEndpointNames.length !== 0) {
-    const locations = duplicateEndpointNames.reduce<
-      { file: string; position: number }[]
-    >((acc, name) => {
+    const locations = duplicateEndpointNames.reduce<{ file: string; position: number }[]>((acc, name) => {
       const nameLocations = endpointClasses
         .filter(k => k.getNameOrThrow() === name)
         .map(k => {
