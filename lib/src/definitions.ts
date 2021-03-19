@@ -88,7 +88,7 @@ export interface Body {
 export interface Oa3Server {
   url: string;
   description?: string;
-  oa3ServerVariables: Oa3ServerVariable[]
+  oa3ServerVariables: Oa3ServerVariable[];
 }
 
 export interface Oa3ServerVariable {

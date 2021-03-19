@@ -5,7 +5,8 @@ import {
 } from "ts-morph";
 import { Oa3Server, Oa3ServerVariable } from "../definitions";
 import {
-  getDecoratorConfigOrThrow, getJsDoc,
+  getDecoratorConfigOrThrow,
+  getJsDoc,
   getObjLiteralPropOrThrow,
   getPropValueAsStringOrThrow
 } from "./parser-helpers";
@@ -19,8 +20,8 @@ import { OptionalNotAllowedError, ParserError } from "../errors";
 export function parseOa3Servers(
   klass: ClassDeclaration,
   typeTable: TypeTable,
-  lociTable: LociTable): Result<Oa3Server[], ParserError> {
-
+  lociTable: LociTable
+): Result<Oa3Server[], ParserError> {
   const serverMethods = klass
     .getMethods()
     .filter(m => m.getDecorator("oa3server") !== undefined);
@@ -33,7 +34,11 @@ export function parseOa3Servers(
   return ok(servers);
 }
 
-export function parseOa3Server(serverMethod: MethodDeclaration, typeTable: TypeTable, lociTable: LociTable): Oa3Server {
+export function parseOa3Server(
+  serverMethod: MethodDeclaration,
+  typeTable: TypeTable,
+  lociTable: LociTable
+): Oa3Server {
   const decorator = serverMethod.getDecoratorOrThrow("oa3server");
   const decoratorConfig = getDecoratorConfigOrThrow(decorator);
   const urlProp = getObjLiteralPropOrThrow<Oa3serverConfig>(
@@ -65,16 +70,19 @@ export function parseOa3Server(serverMethod: MethodDeclaration, typeTable: TypeT
 export function parseOa3Variables(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
-  lociTable: LociTable)
-  : Result<Oa3ServerVariable, ParserError> {
+  lociTable: LociTable
+): Result<Oa3ServerVariable, ParserError> {
   // TODO: retrieve JsDoc as server variable description https://github.com/dsherret/ts-morph/issues/753
   parameter.getDecoratorOrThrow("oa3serverVariable");
   if (parameter.hasQuestionToken()) {
     return err(
-      new OptionalNotAllowedError("@oa3serverVariable parameter cannot be optional", {
-        file: parameter.getSourceFile().getFilePath(),
-        position: parameter.getQuestionTokenNodeOrThrow().getPos()
-      })
+      new OptionalNotAllowedError(
+        "@oa3serverVariable parameter cannot be optional",
+        {
+          file: parameter.getSourceFile().getFilePath(),
+          position: parameter.getQuestionTokenNodeOrThrow().getPos()
+        }
+      )
     );
   }
 
@@ -90,5 +98,9 @@ export function parseOa3Variables(
 
   const defaultValue = parameter.getInitializerOrThrow().getText().trim();
 
-  return ok({ type: typeResult.unwrap(), defaultValue: defaultValue, parameterName: parameterName });
+  return ok({
+    type: typeResult.unwrap(),
+    defaultValue: defaultValue,
+    parameterName: parameterName
+  });
 }

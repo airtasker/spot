@@ -154,7 +154,9 @@ function extractEndpoints(
     )
   ];
   if (duplicateEndpointNames.length !== 0) {
-    const locations = duplicateEndpointNames.reduce<{ file: string; position: number }[]>((acc, name) => {
+    const locations = duplicateEndpointNames.reduce<
+      { file: string; position: number }[]
+    >((acc, name) => {
       const nameLocations = endpointClasses
         .filter(k => k.getNameOrThrow() === name)
         .map(k => {

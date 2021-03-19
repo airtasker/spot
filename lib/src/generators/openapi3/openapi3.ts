@@ -17,7 +17,8 @@ import {
   areStringLiteralTypes,
   isArrayType,
   isNotNullType,
-  isObjectType, isUnionType,
+  isObjectType,
+  isUnionType,
   possibleRootTypes,
   Type,
   TypeTable
@@ -284,12 +285,12 @@ function endpointResponseToResponseObject(
   const headers =
     response.headers.length > 0
       ? response.headers.reduce<{ [name: string]: HeaderObject }>(
-      (acc, header) => {
-        acc[header.name] = headerToHeaderObject(header, typeTable);
-        return acc;
-      },
-      {}
-      )
+          (acc, header) => {
+            acc[header.name] = headerToHeaderObject(header, typeTable);
+            return acc;
+          },
+          {}
+        )
       : undefined;
 
   const content = response.body && {
@@ -356,7 +357,9 @@ function exampleToOpenApiExampleSet(
   }, {});
 }
 
-function contractToOa3ServerObject(contract: Contract): ServerObject[] | undefined {
+function contractToOa3ServerObject(
+  contract: Contract
+): ServerObject[] | undefined {
   if (contract.oa3servers?.length === 0) {
     return undefined;
   }
@@ -364,25 +367,31 @@ function contractToOa3ServerObject(contract: Contract): ServerObject[] | undefin
   const serversObject: ServerObject[] = [];
   if (servers) {
     for (const server of servers) {
-
       const serverVariables =
-        server.oa3ServerVariables.length > 0 ?
-          server.oa3ServerVariables.reduce<{ [serverVariable: string]: ServerVariableObject }>(
-            (acc, serverVariable) => {
-              acc[serverVariable.parameterName] = oa3ServerVariableToServerVariableObject(serverVariable);
+        server.oa3ServerVariables.length > 0
+          ? server.oa3ServerVariables.reduce<{
+              [serverVariable: string]: ServerVariableObject;
+            }>((acc, serverVariable) => {
+              acc[
+                serverVariable.parameterName
+              ] = oa3ServerVariableToServerVariableObject(serverVariable);
               return acc;
-            },
-            {}
-          )
+            }, {})
           : undefined;
-      serversObject.push({ url: server.url, description: server.description, variables: serverVariables });
+      serversObject.push({
+        url: server.url,
+        description: server.description,
+        variables: serverVariables
+      });
     }
   }
 
   return serversObject;
 }
 
-function oa3ServerVariableToServerVariableObject(oa3ServerVariable: Oa3ServerVariable): ServerVariableObject {
+function oa3ServerVariableToServerVariableObject(
+  oa3ServerVariable: Oa3ServerVariable
+): ServerVariableObject {
   if (isUnionType(oa3ServerVariable.type)) {
     const nonNullTypes = oa3ServerVariable.type.types.filter(isNotNullType);
     if (areStringLiteralTypes(nonNullTypes)) {

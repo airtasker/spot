@@ -9,8 +9,7 @@
  * @param config configuration
  */
 export function oa3server(config: Oa3serverConfig): any {
-  return (target: any) => {
-  };
+  return (target: any) => {};
 }
 
 export interface Oa3serverConfig {

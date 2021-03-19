@@ -8,17 +8,18 @@ class Contract {
   /**
    * Production server
    */
-  @oa3server({ url: "https://{username}.gigantic-server.com:{port}/{basePath}" })
+  @oa3server({
+    url: "https://{username}.gigantic-server.com:{port}/{basePath}"
+  })
   productionServer(
     /**
      * this value is assigned by the service provider, in this example `gigantic-server.com`
      */
     @oa3serverVariable
-      username: String = "demo",
+    username: String = "demo",
     @oa3serverVariable
-      port: "8443" | "443" = "8443",
+    port: "8443" | "443" = "8443",
     @oa3serverVariable
-      basePath: String = "v2"
-  ) {
-  }
+    basePath: String = "v2"
+  ) {}
 }
