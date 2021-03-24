@@ -1,7 +1,8 @@
 import {
   ClassDeclaration,
   MethodDeclaration,
-  ParameterDeclaration
+  ParameterDeclaration,
+  ts
 } from "ts-morph";
 import { Oa3Server, Oa3ServerVariable } from "../definitions";
 import {
@@ -96,11 +97,11 @@ export function parseOa3Variables(
 
   const parameterName = parameter.getName();
 
-  const defaultValue = parameter.getInitializerOrThrow().getText().trim();
+  const defaultValue = parameter.getInitializerIfKindOrThrow(ts.SyntaxKind.StringLiteral);
 
   return ok({
     type: typeResult.unwrap(),
-    defaultValue: defaultValue,
+    defaultValue: defaultValue.getLiteralValue(),
     parameterName: parameterName
   });
 }
