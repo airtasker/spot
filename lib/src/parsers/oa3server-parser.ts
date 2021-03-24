@@ -97,7 +97,9 @@ export function parseOa3Variables(
 
   const parameterName = parameter.getName();
 
-  const defaultValue = parameter.getInitializerIfKindOrThrow(ts.SyntaxKind.StringLiteral);
+  const defaultValue = parameter.getInitializerIfKindOrThrow(
+    ts.SyntaxKind.StringLiteral
+  );
 
   return ok({
     type: typeResult.unwrap(),
