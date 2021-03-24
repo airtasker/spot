@@ -287,17 +287,17 @@ exports[`OpenAPI 3 generator contract with multiple servers OpenAPI 3 1`] = `
       \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
       \\"variables\\": {
         \\"username\\": {
-          \\"default\\": \\"\\\\\\"demo\\\\\\"\\"
+          \\"default\\": \\"demo\\"
         },
         \\"port\\": {
-          \\"default\\": \\"\\\\\\"8443\\\\\\"\\",
+          \\"default\\": \\"8443\\",
           \\"enum\\": [
             \\"8443\\",
             \\"443\\"
           ]
         },
         \\"basePath\\": {
-          \\"default\\": \\"\\\\\\"v2\\\\\\"\\"
+          \\"default\\": \\"v2\\"
         }
       }
     },
@@ -305,17 +305,17 @@ exports[`OpenAPI 3 generator contract with multiple servers OpenAPI 3 1`] = `
       \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
       \\"variables\\": {
         \\"username\\": {
-          \\"default\\": \\"\\\\\\"dev\\\\\\"\\"
+          \\"default\\": \\"dev\\"
         },
         \\"port\\": {
-          \\"default\\": \\"\\\\\\"8080\\\\\\"\\",
+          \\"default\\": \\"8080\\",
           \\"enum\\": [
             \\"8080\\",
             \\"80\\"
           ]
         },
         \\"basePath\\": {
-          \\"default\\": \\"\\\\\\"v2\\\\\\"\\"
+          \\"default\\": \\"v2\\"
         }
       }
     }
@@ -337,17 +337,17 @@ exports[`OpenAPI 3 generator contract with one server OpenAPI 3 1`] = `
       \\"description\\": \\"Production server\\",
       \\"variables\\": {
         \\"username\\": {
-          \\"default\\": \\"\\\\\\"demo\\\\\\"\\"
+          \\"default\\": \\"demo\\"
         },
         \\"port\\": {
-          \\"default\\": \\"\\\\\\"8443\\\\\\"\\",
+          \\"default\\": \\"8443\\",
           \\"enum\\": [
             \\"8443\\",
             \\"443\\"
           ]
         },
         \\"basePath\\": {
-          \\"default\\": \\"\\\\\\"v2\\\\\\"\\"
+          \\"default\\": \\"v2\\"
         }
       }
     }
