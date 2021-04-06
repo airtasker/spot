@@ -12,6 +12,7 @@ import {
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
 import { extractJSDocExamples } from "./example-parser";
+import { extractJSDocSchemaProps } from "./schemaprop-parser";
 
 export function parsePathParams(
   parameter: ParameterDeclaration,
@@ -77,11 +78,15 @@ function extractPathParam(
   const examples = extractJSDocExamples(jsDocNode, type);
   if (examples && examples.isErr()) return examples;
 
+  const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
+  if (schemaProps && schemaProps.isErr()) return schemaProps;
+
   return ok({
     name,
     type,
     description,
-    examples: examples?.unwrap()
+    examples: examples?.unwrap(),
+    schemaProps: schemaProps?.unwrap()
   });
 }
 

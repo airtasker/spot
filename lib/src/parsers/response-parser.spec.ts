@@ -33,6 +33,7 @@ describe("response parser", () => {
         {
           description: undefined,
           examples: undefined,
+          schemaProps: undefined,
           name: "property",
           optional: false,
           type: { kind: TypeKind.STRING }

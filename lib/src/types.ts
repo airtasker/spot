@@ -1,4 +1,5 @@
 import assertNever from "assert-never";
+import { SchemaProp } from "./definitions";
 
 export enum TypeKind {
   NULL = "null",
@@ -121,6 +122,7 @@ export interface DateTimeType {
 export interface ObjectPropertiesType {
   name: string;
   description?: string;
+  schemaProps?: SchemaProp[];
   optional: boolean;
   type: Type;
 }
@@ -824,4 +826,5 @@ export class TypeTable {
 export interface TypeDef {
   type: Type;
   description?: string;
+  schemaProps?: SchemaProp[];
 }

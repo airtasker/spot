@@ -12,6 +12,7 @@ import {
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
 import { extractJSDocExamples } from "./example-parser";
+import { extractJSDocSchemaProps } from "./schemaprop-parser";
 
 export function parseQueryParams(
   parameter: ParameterDeclaration,
@@ -53,12 +54,16 @@ export function parseQueryParams(
 
     const optional = propertySignature.hasQuestionToken();
 
+    const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
+    if (schemaProps && schemaProps.isErr()) return schemaProps;
+
     queryParams.push({
       name,
       type,
       description,
       optional,
-      examples: examples?.unwrap()
+      examples: examples?.unwrap(),
+      schemaProps: schemaProps?.unwrap()
     });
   }
 

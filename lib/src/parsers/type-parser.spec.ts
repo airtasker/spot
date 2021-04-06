@@ -221,6 +221,12 @@ describe("type parser", () => {
           {
             description: "Property description",
             name: "propertyA",
+            schemaProps: [
+              {
+                name: "maxLength",
+                value: 42
+              }
+            ],
             optional: false,
             type: {
               kind: TypeKind.STRING
@@ -230,6 +236,7 @@ describe("type parser", () => {
             description: undefined,
             name: "propertyB",
             optional: true,
+            schemaProps: undefined,
             type: {
               kind: TypeKind.BOOLEAN
             }
@@ -267,6 +274,7 @@ describe("type parser", () => {
               description: undefined,
               name: "a",
               optional: false,
+              schemaProps: undefined,
               type: {
                 kind: TypeKind.BOOLEAN
               }
@@ -362,6 +370,7 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasString")).toStrictEqual({
       description: undefined,
+      schemaProps: undefined,
       type: { kind: TypeKind.STRING }
     });
   });
@@ -380,6 +389,7 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasArray")).toStrictEqual({
       description: undefined,
+      schemaProps: undefined,
       type: {
         kind: TypeKind.ARRAY,
         elementType: { kind: TypeKind.STRING }
@@ -401,6 +411,12 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasWithDescription")).toStrictEqual({
       description: "Alias description",
+      schemaProps: [
+        {
+          name: "pattern",
+          value: "^[a-z]+$"
+        }
+      ],
       type: { kind: TypeKind.STRING }
     });
   });
@@ -419,12 +435,14 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("Interface")).toStrictEqual({
       description: undefined,
+      schemaProps: undefined,
       type: {
         kind: TypeKind.OBJECT,
         properties: [
           {
             description: undefined,
             name: "interfaceProperty",
+            schemaProps: undefined,
             optional: false,
             type: {
               kind: TypeKind.BOOLEAN
@@ -449,13 +467,20 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("InterfaceWithDescription")).toStrictEqual({
       description: "Interface description",
+      schemaProps: undefined,
       type: {
         kind: TypeKind.OBJECT,
         properties: [
           {
-            description: undefined,
+            description: "InterfaceProperty description",
             name: "interfaceProperty",
             optional: false,
+            schemaProps: [
+              {
+                name: "example",
+                value: true
+              }
+            ],
             type: {
               kind: TypeKind.BOOLEAN
             }
@@ -479,6 +504,7 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("InterfaceExtends")).toStrictEqual({
       description: undefined,
+      schemaProps: undefined,
       type: {
         kind: TypeKind.OBJECT,
         properties: [
@@ -486,6 +512,7 @@ describe("type parser", () => {
             description: undefined,
             name: "interfaceExtendsProperty",
             optional: false,
+            schemaProps: undefined,
             type: {
               kind: TypeKind.BOOLEAN
             }
@@ -494,6 +521,7 @@ describe("type parser", () => {
             description: undefined,
             name: "interfaceProperty",
             optional: false,
+            schemaProps: undefined,
             type: {
               kind: TypeKind.BOOLEAN
             }
@@ -549,6 +577,7 @@ describe("type parser", () => {
                 description: undefined,
                 name: "typeA",
                 optional: false,
+                schemaProps: undefined,
                 type: {
                   kind: TypeKind.STRING
                 }
@@ -562,6 +591,7 @@ describe("type parser", () => {
                 description: undefined,
                 name: "typeB",
                 optional: false,
+                schemaProps: undefined,
                 type: {
                   kind: TypeKind.BOOLEAN
                 }

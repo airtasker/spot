@@ -30,7 +30,10 @@ interface TypeInterface {
   Date: Date;
   DateTime: DateTime;
   literalObject: {
-    /** Property description */
+    /** Property description
+     * @schemaprop maxLength
+     * 42
+     */
     propertyA: string;
     propertyB?: boolean;
   };
@@ -83,7 +86,10 @@ type AliasString = string;
 
 type AliasArray = string[];
 
-/** Alias description */
+/** Alias description
+ * @schemaprop pattern
+ * "^[a-z]+$"
+ */
 type AliasWithDescription = string;
 
 interface Interface {
@@ -92,6 +98,10 @@ interface Interface {
 
 /** Interface description */
 interface InterfaceWithDescription {
+  /** InterfaceProperty description
+   * @schemaprop example
+   * true
+   */
   interfaceProperty: boolean;
 }
 

@@ -6,6 +6,7 @@ import {
   DefaultResponse,
   Endpoint,
   Example,
+  SchemaProp,
   Header,
   HttpMethod,
   isSpecificResponse,
@@ -40,11 +41,13 @@ import {
   ResponsesObject,
   ExamplesSet,
   ServerObject,
-  ServerVariableObject
+  ServerVariableObject,
+  SchemaPropsSet
 } from "./openapi3-specification";
 import {
   typeToSchemaOrReferenceObject,
-  isReferenceObject
+  isReferenceObject,
+  schemaPropToOpenApi
 } from "./openapi3-type-util";
 
 const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
@@ -162,7 +165,11 @@ function endpointRequestToParameterObjects(
     in: "path",
     description: p.description,
     required: true,
-    schema: typeToSchemaOrReferenceObject(p.type, typeTable),
+    schema: typeToSchemaOrReferenceObject(
+      p.type,
+      typeTable,
+      schemaPropToOpenApi(p.schemaProps)
+    ),
     examples: exampleToOpenApiExampleSet(p.examples)
   }));
 
@@ -173,7 +180,11 @@ function endpointRequestToParameterObjects(
       description: p.description,
       ...typeToQueryParameterSerializationStrategy(p.type, typeTable, config),
       required: !p.optional,
-      schema: typeToSchemaOrReferenceObject(p.type, typeTable),
+      schema: typeToSchemaOrReferenceObject(
+        p.type,
+        typeTable,
+        schemaPropToOpenApi(p.schemaProps)
+      ),
       examples: exampleToOpenApiExampleSet(p.examples)
     })
   );
@@ -183,7 +194,11 @@ function endpointRequestToParameterObjects(
     in: "header",
     description: p.description,
     required: !p.optional,
-    schema: typeToSchemaOrReferenceObject(p.type, typeTable),
+    schema: typeToSchemaOrReferenceObject(
+      p.type,
+      typeTable,
+      schemaPropToOpenApi(p.schemaProps)
+    ),
     examples: exampleToOpenApiExampleSet(p.examples)
   }));
 
@@ -309,7 +324,12 @@ function headerToHeaderObject(
   return {
     description: header.description,
     required: !header.optional,
-    schema: typeToSchemaOrReferenceObject(header.type, typeTable)
+    schema: typeToSchemaOrReferenceObject(
+      header.type,
+      typeTable,
+      schemaPropToOpenApi(header.schemaProps)
+    ),
+    examples: exampleToOpenApiExampleSet(header.examples)
   };
 }
 
@@ -318,7 +338,11 @@ function contractTypesToComponentsObjectSchemas(
   typeTable: TypeTable
 ): ComponentsObject["schemas"] {
   return types.reduce<Required<ComponentsObject>["schemas"]>((acc, t) => {
-    const typeObject = typeToSchemaOrReferenceObject(t.typeDef.type, typeTable);
+    const typeObject = typeToSchemaOrReferenceObject(
+      t.typeDef.type,
+      typeTable,
+      schemaPropToOpenApi(t.typeDef.schemaProps)
+    );
     if (!isReferenceObject(typeObject)) {
       typeObject.description = t.typeDef.description;
     }

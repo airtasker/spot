@@ -12,6 +12,7 @@ import {
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
 import { extractJSDocExamples } from "./example-parser";
+import { extractJSDocSchemaProps } from "./schemaprop-parser";
 
 export function parseHeaders(
   parameter: ParameterDeclaration,
@@ -54,12 +55,16 @@ export function parseHeaders(
     if (examples && examples.isErr()) return examples;
     const optional = propertySignature.hasQuestionToken();
 
+    const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
+    if (schemaProps && schemaProps.isErr()) return schemaProps;
+
     headers.push({
       name,
       type,
       description,
       optional,
-      examples: examples?.unwrap()
+      examples: examples?.unwrap(),
+      schemaProps: schemaProps?.unwrap()
     });
   }
 

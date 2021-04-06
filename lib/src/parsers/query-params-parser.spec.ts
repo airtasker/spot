@@ -30,6 +30,7 @@ describe("query params parser", () => {
     expect(result[0]).toStrictEqual({
       description: undefined,
       examples: undefined,
+      schemaProps: undefined,
       name: "property",
       type: {
         kind: TypeKind.STRING
@@ -39,6 +40,7 @@ describe("query params parser", () => {
     expect(result[1]).toStrictEqual({
       description: "property description",
       examples: undefined,
+      schemaProps: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -48,6 +50,7 @@ describe("query params parser", () => {
     expect(result[2]).toStrictEqual({
       description: "property-example description",
       examples: [{ name: "property-example", value: "property-example-value" }],
+      schemaProps: undefined,
       name: "property-with-example",
       type: {
         kind: TypeKind.STRING
@@ -56,6 +59,7 @@ describe("query params parser", () => {
     });
     expect(result[3]).toStrictEqual({
       description: "property-two-examples description",
+      schemaProps: undefined,
       examples: [
         {
           name: "property-example-one",
@@ -75,6 +79,7 @@ describe("query params parser", () => {
     expect(result[4]).toStrictEqual({
       description: undefined,
       examples: undefined,
+      schemaProps: undefined,
       name: "optionalProperty",
       type: {
         kind: TypeKind.STRING
@@ -84,6 +89,7 @@ describe("query params parser", () => {
     expect(result[5]).toStrictEqual({
       description: undefined,
       examples: undefined,
+      schemaProps: undefined,
       name: "objectProperty",
       type: {
         kind: TypeKind.OBJECT,
@@ -91,6 +97,7 @@ describe("query params parser", () => {
           {
             description: undefined,
             name: "objectProp",
+            schemaProps: undefined,
             optional: false,
             type: {
               kind: TypeKind.STRING
@@ -103,6 +110,7 @@ describe("query params parser", () => {
     expect(result[6]).toStrictEqual({
       description: undefined,
       examples: undefined,
+      schemaProps: undefined,
       name: "arrayProperty",
       type: {
         kind: TypeKind.ARRAY,
@@ -124,6 +132,7 @@ describe("query params parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
+      schemaProps: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -142,6 +151,7 @@ describe("query params parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
+      schemaProps: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING
@@ -160,6 +170,7 @@ describe("query params parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
+      schemaProps: undefined,
       name: "property-with-description",
       type: {
         kind: TypeKind.STRING

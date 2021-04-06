@@ -1017,6 +1017,77 @@ exports[`OpenAPI 3 generator responses endpoint specific and default responses 1
 }"
 `;
 
+exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correctly to an openapi specification 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithExampleOnHeaders\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"status\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-schemaprop description for string\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"string\\",
+              \\"minLength\\": 12,
+              \\"maxLength\\": 20,
+              \\"pattern\\": \\"^[0-9a-z_]+$\\"
+            }
+          },
+          {
+            \\"name\\": \\"size\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-schemaprop description for integer\\",
+            \\"required\\": true,
+            \\"schema\\": {
+              \\"type\\": \\"integer\\",
+              \\"format\\": \\"int32\\",
+              \\"minimum\\": 1,
+              \\"maximum\\": 100,
+              \\"default\\": 42
+            }
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"array\\",
+                  \\"items\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"id\\": {
+                        \\"type\\": \\"string\\"
+                      },
+                      \\"name\\": {
+                        \\"type\\": \\"string\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"id\\",
+                      \\"name\\"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3 generator security contract with security header 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",

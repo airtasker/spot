@@ -1,3 +1,4 @@
+import { string } from "@oclif/command/lib/flags";
 import { isOpenApiv3, Spectral } from "@stoplight/spectral";
 import { Contract } from "../../definitions";
 import { parseContract } from "../../parsers/contract-parser";
@@ -360,6 +361,44 @@ describe("OpenAPI 3 generator", () => {
           in: "header",
           required: true,
           schema: expect.anything()
+        }
+      ]);
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
+  });
+
+  describe("schemaprops", () => {
+    test("contract with schemaprops parses correctly to an openapi specification", async () => {
+      const contract = generateContract("contract-with-schemaprops.ts");
+      const result = generateOpenAPI3(contract);
+
+      expect(result.paths["/users"].get).toHaveProperty("parameters", [
+        {
+          description: "property-schemaprop description for string",
+          name: "status",
+          in: "header",
+          required: true,
+          schema: {
+            type: "string",
+            minLength: 12,
+            maxLength: 20,
+            pattern: "^[0-9a-z_]+$"
+          }
+        },
+        {
+          description: "property-schemaprop description for integer",
+          name: "size",
+          in: "header",
+          required: true,
+          schema: {
+            format: "int32",
+            type: "integer",
+            minimum: 1,
+            maximum: 100,
+            default: 42
+          }
         }
       ]);
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();

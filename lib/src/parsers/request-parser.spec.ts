@@ -32,6 +32,7 @@ describe("request parser", () => {
         {
           description: undefined,
           examples: undefined,
+          schemaProps: undefined,
           name: "property",
           optional: false,
           type: { kind: TypeKind.STRING }
@@ -41,6 +42,7 @@ describe("request parser", () => {
         {
           description: undefined,
           examples: undefined,
+          schemaProps: undefined,
           name: "property",
           type: { kind: TypeKind.STRING }
         }
@@ -49,6 +51,7 @@ describe("request parser", () => {
         {
           description: undefined,
           examples: undefined,
+          schemaProps: undefined,
           name: "property",
           optional: false,
           type: { kind: TypeKind.STRING }

@@ -57,6 +57,7 @@ import {
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
+import { extractJSDocSchemaProps } from "./schemaprop-parser";
 
 export function parseType(
   typeNode: TypeNode,
@@ -142,7 +143,8 @@ function parseTypeReference(
 
   const declaration = declarationResult.unwrap();
   const name = declaration.getName();
-  const description = getJsDoc(declaration)?.getDescription().trim();
+  const jsDocNode = getJsDoc(declaration);
+  const description = jsDocNode?.getDescription().trim();
 
   if (TypeGuards.isTypeAliasDeclaration(declaration)) {
     const decTypeNode = declaration.getTypeNodeOrThrow();
@@ -188,7 +190,14 @@ function parseTypeReference(
       } else {
         const targetTypeResult = parseType(decTypeNode, typeTable, lociTable);
         if (targetTypeResult.isErr()) return targetTypeResult;
-        typeTable.add(name, { type: targetTypeResult.unwrap(), description });
+        const type = targetTypeResult.unwrap();
+        const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
+        if (schemaProps && schemaProps.isErr()) return schemaProps;
+        typeTable.add(name, {
+          type,
+          description,
+          schemaProps: schemaProps?.unwrap()
+        });
         lociTable.addMorphNode(LociTable.typeKey(name), decTypeNode);
       }
       return ok(referenceType(name));
@@ -208,7 +217,14 @@ function parseTypeReference(
           lociTable
         );
         if (targetTypeResult.isErr()) return targetTypeResult;
-        typeTable.add(name, { type: targetTypeResult.unwrap(), description });
+        const type = targetTypeResult.unwrap();
+        const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
+        if (schemaProps && schemaProps.isErr()) return schemaProps;
+        typeTable.add(name, {
+          type,
+          description,
+          schemaProps: schemaProps?.unwrap()
+        });
         lociTable.addMorphNode(LociTable.typeKey(name), declaration);
       }
       return ok(referenceType(name));
@@ -352,10 +368,15 @@ function parseObjectLiteralType(
     );
 
     if (propTypeResult.isErr()) return propTypeResult;
+    const type = propTypeResult.unwrap();
+
+    const schemaProps = extractJSDocSchemaProps(getJsDoc(ps), type);
+    if (schemaProps && schemaProps.isErr()) return schemaProps;
 
     const prop = {
       name: getPropertyName(ps),
       description: getJsDoc(ps)?.getDescription().trim(),
+      schemaProps: schemaProps?.unwrap(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };
@@ -409,10 +430,15 @@ function parseInterfaceDeclaration(
     );
 
     if (propTypeResult.isErr()) return propTypeResult;
+    const type = propTypeResult.unwrap();
+
+    const schemaProps = extractJSDocSchemaProps(getJsDoc(ps), type);
+    if (schemaProps && schemaProps.isErr()) return schemaProps;
 
     const prop = {
       name: getPropertyName(ps),
       description: getJsDoc(ps)?.getDescription().trim(),
+      schemaProps: schemaProps?.unwrap(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };

@@ -59,6 +59,7 @@ export interface Header {
   type: Type;
   optional: boolean;
   examples?: Example[];
+  schemaProps?: SchemaProp[];
 }
 
 export interface PathParam {
@@ -66,9 +67,15 @@ export interface PathParam {
   description?: string;
   type: Type;
   examples?: Example[];
+  schemaProps?: SchemaProp[];
 }
 
 export interface Example {
+  name: string;
+  value: any; // TODO: encapsulate type information
+}
+
+export interface SchemaProp {
   name: string;
   value: any; // TODO: encapsulate type information
 }
@@ -79,6 +86,7 @@ export interface QueryParam {
   type: Type;
   optional: boolean;
   examples?: Example[];
+  schemaProps?: SchemaProp[];
 }
 
 export interface Body {
