@@ -311,7 +311,7 @@ exports[`OpenAPI 3 generator contract with multiple servers OpenAPI 3 1`] = `
           \\"default\\": \\"8080\\",
           \\"enum\\": [
             \\"8080\\",
-            \\"80\\"
+            \\"8081\\"
           ]
         },
         \\"basePath\\": {
