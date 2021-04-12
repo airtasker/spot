@@ -1,14 +1,16 @@
 import {
   ClassDeclaration,
   MethodDeclaration,
-  ParameterDeclaration,
-  ts
+  ParameterDeclaration
 } from "ts-morph";
 import { Oa3Server, Oa3ServerVariable } from "../definitions";
 import {
   getDecoratorConfigOrThrow,
   getJsDoc,
   getObjLiteralPropOrThrow,
+  getParameterPropertySignaturesOrThrow,
+  getParamWithDecorator,
+  getPropertyName,
   getPropValueAsStringOrThrow
 } from "./parser-helpers";
 import { Oa3serverConfig } from "../syntax/oa3server";
@@ -30,7 +32,8 @@ export function parseOa3Servers(
   const servers: Oa3Server[] = [];
   for (const method of serverMethods) {
     const serverResult = parseOa3Server(method, typeTable, lociTable);
-    servers.push(serverResult);
+    if (serverResult.isErr()) return serverResult;
+    servers.push(serverResult.unwrap());
   }
   return ok(servers);
 }
@@ -39,7 +42,7 @@ export function parseOa3Server(
   serverMethod: MethodDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
-): Oa3Server {
+): Result<Oa3Server, ParserError> {
   const decorator = serverMethod.getDecoratorOrThrow("oa3server");
   const decoratorConfig = getDecoratorConfigOrThrow(decorator);
   const urlProp = getObjLiteralPropOrThrow<Oa3serverConfig>(
@@ -50,35 +53,40 @@ export function parseOa3Server(
 
   const jsDocNode = getJsDoc(serverMethod);
   const description = jsDocNode?.getDescription().trim();
-
-  const variables = serverMethod
-    .getParameters()
-    .filter(p => p.getDecorator("oa3serverVariable") !== undefined);
+  const oa3serverVariablesParam = getParamWithDecorator(
+    serverMethod,
+    "oa3serverVariables"
+  );
 
   const serverVariables: Oa3ServerVariable[] = [];
-  for (const variable of variables) {
-    const variablesResult = parseOa3Variables(variable, typeTable, lociTable);
-    serverVariables.push(variablesResult.unwrapOrThrow());
+  if (oa3serverVariablesParam) {
+    const variablesResult = parseOa3Variables(
+      oa3serverVariablesParam,
+      typeTable,
+      lociTable
+    );
+    if (variablesResult.isErr()) return variablesResult;
+    serverVariables.push(...variablesResult.unwrap());
   }
 
-  return {
+  return ok({
     url: urlLiteral.getLiteralValue(),
     description: description,
     oa3ServerVariables: serverVariables
-  };
+  });
 }
 
 export function parseOa3Variables(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
-): Result<Oa3ServerVariable, ParserError> {
+): Result<Oa3ServerVariable[], ParserError> {
   // TODO: retrieve JsDoc as server variable description https://github.com/dsherret/ts-morph/issues/753
-  parameter.getDecoratorOrThrow("oa3serverVariable");
+  parameter.getDecoratorOrThrow("oa3serverVariables");
   if (parameter.hasQuestionToken()) {
     return err(
       new OptionalNotAllowedError(
-        "@oa3serverVariable parameter cannot be optional",
+        "@oa3serverVariables parameter cannot be optional",
         {
           file: parameter.getSourceFile().getFilePath(),
           position: parameter.getQuestionTokenNodeOrThrow().getPos()
@@ -87,23 +95,46 @@ export function parseOa3Variables(
     );
   }
 
-  const typeResult = parseType(
-    parameter.getTypeNodeOrThrow(),
-    typeTable,
-    lociTable
+  const queryParamPropertySignatures = getParameterPropertySignaturesOrThrow(
+    parameter
   );
 
-  if (typeResult.isErr()) return typeResult;
+  const oa3ServerVariableParams: Array<Oa3ServerVariable> = [];
 
-  const parameterName = parameter.getName();
+  for (const propertySignature of queryParamPropertySignatures) {
+    const typeResult = parseType(
+      propertySignature.getTypeNodeOrThrow(),
+      typeTable,
+      lociTable
+    );
 
-  const defaultValue = parameter.getInitializerIfKindOrThrow(
-    ts.SyntaxKind.StringLiteral
-  );
+    if (typeResult.isErr()) return typeResult;
+    const type = typeResult.unwrap();
 
-  return ok({
-    type: typeResult.unwrap(),
-    defaultValue: defaultValue.getLiteralValue(),
-    parameterName: parameterName
-  });
+    const parameterName = getPropertyName(propertySignature);
+    const jsDocNode = getJsDoc(propertySignature);
+    const description = jsDocNode?.getDescription().trim();
+
+    const defaultTagNode = jsDocNode
+      ?.getTags()
+      .find(tag => tag.getTagName() === "default");
+    const defaultTag = defaultTagNode?.getComment();
+    if (!defaultTag) {
+      return err(
+        new ParserError("@default tag is mandatory ! ", {
+          file: propertySignature.getSourceFile().getFilePath(),
+          position: propertySignature.getPos()
+        })
+      );
+    }
+
+    oa3ServerVariableParams.push({
+      type: type,
+      description: description,
+      defaultValue: defaultTag.replace(/^"(.*)"$/, "$1"),
+      parameterName: parameterName
+    });
+  }
+
+  return ok(oa3ServerVariableParams);
 }
