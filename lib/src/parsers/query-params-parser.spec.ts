@@ -121,7 +121,6 @@ describe("query params parser", () => {
       },
       optional: false
     });
-
   });
 
   test("parses @queryParams as interface parameter", () => {
