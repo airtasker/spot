@@ -367,22 +367,23 @@ function contractToOa3ServerObject(
   const serversObject: ServerObject[] = [];
 
   servers?.map(server => {
-    const serverVariables = server.oa3ServerVariables.length > 0
-      ? server.oa3ServerVariables.reduce<{
-        [serverVariable: string]: ServerVariableObject;
-      }>((acc, serverVariable) => {
-        acc[
-          serverVariable.parameterName
-          ] = oa3ServerVariableToServerVariableObject(serverVariable);
-        return acc;
-      }, {})
-      : undefined;
+    const serverVariables =
+      server.oa3ServerVariables.length > 0
+        ? server.oa3ServerVariables.reduce<{
+            [serverVariable: string]: ServerVariableObject;
+          }>((acc, serverVariable) => {
+            acc[
+              serverVariable.parameterName
+            ] = oa3ServerVariableToServerVariableObject(serverVariable);
+            return acc;
+          }, {})
+        : undefined;
     serversObject.push({
       url: server.url,
       description: server.description,
       variables: serverVariables
     });
-  })
+  });
   return serversObject;
 }
 
