@@ -61,7 +61,8 @@ describe("contract parser", () => {
       name: "contract",
       security: undefined,
       types: [],
-      version: undefined
+      version: undefined,
+      oa3servers: []
     });
   });
 
