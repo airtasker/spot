@@ -26,7 +26,7 @@ describe("query params parser", () => {
       typeTable,
       lociTable
     ).unwrapOrThrow();
-    expect(result).toHaveLength(7);
+    expect(result).toHaveLength(8);
     expect(result[0]).toStrictEqual({
       description: undefined,
       examples: undefined,
@@ -112,6 +112,16 @@ describe("query params parser", () => {
       },
       optional: false
     });
+    expect(result[7]).toStrictEqual({
+      description: undefined,
+      examples: undefined,
+      name: "property.with.dots",
+      type: {
+        kind: TypeKind.STRING
+      },
+      optional: false
+    });
+
   });
 
   test("parses @queryParams as interface parameter", () => {

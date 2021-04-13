@@ -21,7 +21,7 @@ class EndpointWithQueryParams {
     @queryParams
     queryParams: {
       country: String;
-      postcode?: String;
+      "post.code"?: String;
     }
   ) {}
 
