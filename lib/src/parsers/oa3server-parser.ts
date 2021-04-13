@@ -38,7 +38,7 @@ export function parseOa3Servers(
   return ok(servers);
 }
 
-export function parseOa3Server(
+function parseOa3Server(
   serverMethod: MethodDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
@@ -76,12 +76,11 @@ export function parseOa3Server(
   });
 }
 
-export function parseOa3Variables(
+function parseOa3Variables(
   parameter: ParameterDeclaration,
   typeTable: TypeTable,
   lociTable: LociTable
 ): Result<Oa3ServerVariable[], ParserError> {
-  // TODO: retrieve JsDoc as server variable description https://github.com/dsherret/ts-morph/issues/753
   parameter.getDecoratorOrThrow("oa3serverVariables");
   if (parameter.hasQuestionToken()) {
     return err(
