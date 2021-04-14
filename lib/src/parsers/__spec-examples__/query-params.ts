@@ -27,6 +27,7 @@ class QueryParamsClass {
         objectProp: string;
       };
       arrayProperty: string[];
+      "property.with.dots": string;
     },
     @queryParams
     interfaceQueryParams: IQueryParams,
