@@ -885,7 +885,7 @@ exports[`OpenAPI 3 generator query params endpoint with query params 1`] = `
             }
           },
           {
-            \\"name\\": \\"postcode\\",
+            \\"name\\": \\"post.code\\",
             \\"in\\": \\"query\\",
             \\"required\\": false,
             \\"schema\\": {

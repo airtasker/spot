@@ -692,7 +692,7 @@ exports[`OpenAPI 2 generator query params endpoint with query params 1`] = `
             \\"type\\": \\"string\\"
           },
           {
-            \\"name\\": \\"postcode\\",
+            \\"name\\": \\"post.code\\",
             \\"in\\": \\"query\\",
             \\"required\\": false,
             \\"type\\": \\"string\\"

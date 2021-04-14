@@ -170,7 +170,7 @@ describe("OpenAPI 3 generator", () => {
           schema: expect.anything()
         },
         {
-          name: "postcode",
+          name: "post.code",
           in: "query",
           required: false,
           schema: expect.anything()
