@@ -274,6 +274,87 @@ exports[`OpenAPI 3 generator HTTP verbs PUT endpoint 1`] = `
 }"
 `;
 
+exports[`OpenAPI 3 generator contract with multiple servers OpenAPI 3 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {},
+  \\"servers\\": [
+    {
+      \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
+      \\"variables\\": {
+        \\"username\\": {
+          \\"default\\": \\"demo\\"
+        },
+        \\"port\\": {
+          \\"default\\": \\"8443\\",
+          \\"enum\\": [
+            \\"8443\\",
+            \\"443\\"
+          ]
+        },
+        \\"basePath\\": {
+          \\"default\\": \\"v2\\"
+        }
+      }
+    },
+    {
+      \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
+      \\"variables\\": {
+        \\"username\\": {
+          \\"default\\": \\"dev\\"
+        },
+        \\"port\\": {
+          \\"default\\": \\"8080\\",
+          \\"enum\\": [
+            \\"8080\\",
+            \\"8081\\"
+          ]
+        },
+        \\"basePath\\": {
+          \\"default\\": \\"v2\\"
+        }
+      }
+    }
+  ]
+}"
+`;
+
+exports[`OpenAPI 3 generator contract with one server OpenAPI 3 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {},
+  \\"servers\\": [
+    {
+      \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
+      \\"description\\": \\"Production server\\",
+      \\"variables\\": {
+        \\"username\\": {
+          \\"default\\": \\"demo\\"
+        },
+        \\"port\\": {
+          \\"default\\": \\"8443\\",
+          \\"enum\\": [
+            \\"8443\\",
+            \\"443\\"
+          ]
+        },
+        \\"basePath\\": {
+          \\"default\\": \\"v2\\"
+        }
+      }
+    }
+  ]
+}"
+`;
+
 exports[`OpenAPI 3 generator examples contract with examples parses correctly to an openapi specification 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",
@@ -804,7 +885,7 @@ exports[`OpenAPI 3 generator query params endpoint with query params 1`] = `
             }
           },
           {
-            \\"name\\": \\"postcode\\",
+            \\"name\\": \\"post.code\\",
             \\"in\\": \\"query\\",
             \\"required\\": false,
             \\"schema\\": {

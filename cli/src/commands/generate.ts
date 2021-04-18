@@ -153,7 +153,7 @@ const jsonFormat: Format = {
 const yamlFormat: Format = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formatter: (obj: Record<string, any>) =>
-    YAML.safeDump(obj, { skipInvalid: true /* for undefined */ }),
+    YAML.dump(obj, { skipInvalid: true /* for undefined */ }),
   extension: "yml"
 };
 

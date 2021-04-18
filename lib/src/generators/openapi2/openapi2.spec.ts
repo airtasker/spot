@@ -152,7 +152,7 @@ describe("OpenAPI 2 generator", () => {
           type: expect.anything()
         },
         {
-          name: "postcode",
+          name: "post.code",
           in: "query",
           required: false,
           type: expect.anything()

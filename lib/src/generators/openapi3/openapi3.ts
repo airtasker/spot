@@ -9,13 +9,16 @@ import {
   Header,
   HttpMethod,
   isSpecificResponse,
+  Oa3ServerVariable,
   Request,
   Response
 } from "../../definitions";
 import {
+  areStringLiteralTypes,
   isArrayType,
   isNotNullType,
   isObjectType,
+  isUnionType,
   possibleRootTypes,
   Type,
   TypeTable
@@ -35,7 +38,9 @@ import {
   RequestBodyObject,
   ResponseObject,
   ResponsesObject,
-  ExamplesSet
+  ExamplesSet,
+  ServerObject,
+  ServerVariableObject
 } from "./openapi3-specification";
 import {
   typeToSchemaOrReferenceObject,
@@ -46,6 +51,7 @@ const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
 
 export function generateOpenAPI3(contract: Contract): OpenApiV3 {
   const typeTable = TypeTable.fromArray(contract.types);
+
   const openapi: OpenApiV3 = {
     openapi: "3.0.2",
     info: {
@@ -63,7 +69,8 @@ export function generateOpenAPI3(contract: Contract): OpenApiV3 {
       {
         [SECURITY_HEADER_SCHEME_NAME]: []
       }
-    ]
+    ],
+    servers: contract.oa3servers && contractToOa3ServerObject(contract)
   };
 
   return openapi;
@@ -348,4 +355,52 @@ function exampleToOpenApiExampleSet(
     };
     return acc;
   }, {});
+}
+
+function contractToOa3ServerObject(
+  contract: Contract
+): ServerObject[] | undefined {
+  if (contract.oa3servers?.length === 0) {
+    return undefined;
+  }
+  const servers = contract.oa3servers;
+  const serversObject: ServerObject[] = [];
+
+  servers?.map(server => {
+    const serverVariables =
+      server.oa3ServerVariables.length > 0
+        ? server.oa3ServerVariables.reduce<{
+            [serverVariable: string]: ServerVariableObject;
+          }>((acc, serverVariable) => {
+            acc[
+              serverVariable.parameterName
+            ] = oa3ServerVariableToServerVariableObject(serverVariable);
+            return acc;
+          }, {})
+        : undefined;
+    serversObject.push({
+      url: server.url,
+      description: server.description,
+      variables: serverVariables
+    });
+  });
+  return serversObject;
+}
+
+function oa3ServerVariableToServerVariableObject(
+  oa3ServerVariable: Oa3ServerVariable
+): ServerVariableObject {
+  if (isUnionType(oa3ServerVariable.type)) {
+    const nonNullTypes = oa3ServerVariable.type.types.filter(isNotNullType);
+    if (areStringLiteralTypes(nonNullTypes)) {
+      const enums = nonNullTypes.map(t => t.value);
+      return {
+        default: oa3ServerVariable.defaultValue,
+        enum: enums
+      };
+    }
+  }
+  return {
+    default: oa3ServerVariable.defaultValue
+  };
 }

@@ -70,10 +70,10 @@ function extractQueryParamName(
   propertySignature: PropertySignature
 ): Result<string, ParserError> {
   const name = getPropertyName(propertySignature);
-  if (!/^[\w-]*$/.test(name)) {
+  if (!/^[\w-.]*$/.test(name)) {
     return err(
       new ParserError(
-        "@queryParams property name may only contain alphanumeric, underscore and hyphen characters",
+        "@queryParams property name may only contain alphanumeric, underscore, dot and hyphen characters",
         {
           file: propertySignature.getSourceFile().getFilePath(),
           position: propertySignature.getPos()
