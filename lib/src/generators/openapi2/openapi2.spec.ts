@@ -3,6 +3,7 @@ import { Contract } from "../../definitions";
 import { parseContract } from "../../parsers/contract-parser";
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import { generateOpenAPI2 } from "./openapi2";
+import { generateOpenAPI3 } from "../openapi3";
 
 describe("OpenAPI 2 generator", () => {
   const spectral = new Spectral();
@@ -292,6 +293,22 @@ describe("OpenAPI 2 generator", () => {
 
       expect(result.paths["/users"]).toMatchObject({
         get: expect.anything()
+      });
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
+  });
+  describe("endpoint metadata", () => {
+    test("contract with endpoint metadata description and summary", async () => {
+      const contract = generateContract("contract-with-endpoint-metadata.ts");
+      const result = generateOpenAPI2(contract);
+
+      expect(result.paths["/users"]).toMatchObject({
+        get: {
+          description: "My description",
+          summary: "My summary"
+        }
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       const spectralResult = await spectral.run(result);

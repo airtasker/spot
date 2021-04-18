@@ -51,7 +51,15 @@ export function parseEndpoint(
   const tags = tagsResult.unwrap();
 
   // Handle jsdoc
-  const description = getJsDoc(klass)?.getDescription().trim();
+  const jsDocNode = getJsDoc(klass);
+  const description = jsDocNode?.getDescription().trim();
+
+  // Handle summary
+  const summaryNode = jsDocNode
+    ?.getTags()
+    .find(tag => tag.getTagName() === "summary");
+
+  const summary = summaryNode?.getComment();
 
   // Handle draft
   const draft = klass.getDecorator("draft") !== undefined;
@@ -131,6 +139,7 @@ export function parseEndpoint(
   return ok({
     name,
     description,
+    summary,
     tags,
     method,
     path,

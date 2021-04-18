@@ -41,6 +41,7 @@ describe("endpoint parser", () => {
         ]
       },
       description: "endpoint description",
+      summary: undefined,
       draft: false,
       method: "POST",
       name: "EndpointClass",
@@ -108,6 +109,7 @@ describe("endpoint parser", () => {
     expect(result).toStrictEqual({
       defaultResponse: undefined,
       description: undefined,
+      summary: undefined,
       draft: false,
       method: "GET",
       name: "MinimalEndpointClass",
@@ -128,6 +130,7 @@ describe("endpoint parser", () => {
     expect(result).toStrictEqual({
       defaultResponse: undefined,
       description: undefined,
+      summary: undefined,
       draft: true,
       method: "GET",
       name: "DraftEndpointClass",
@@ -206,5 +209,26 @@ describe("endpoint parser", () => {
         lociTable
       )
     ).toThrowError("Expected to find decorator named 'endpoint'");
+  });
+
+  test("parses minimal @endpoint decorated class with summary field", () => {
+    const result = parseEndpoint(
+      exampleFile.getClassOrThrow("MinimalEndpointWithSummaryClass"),
+      typeTable,
+      lociTable
+    ).unwrapOrThrow();
+
+    expect(result).toStrictEqual({
+      defaultResponse: undefined,
+      description: "My description",
+      summary: "My summary",
+      draft: false,
+      method: "GET",
+      name: "MinimalEndpointWithSummaryClass",
+      path: "/path",
+      request: undefined,
+      responses: [],
+      tags: []
+    });
   });
 });
