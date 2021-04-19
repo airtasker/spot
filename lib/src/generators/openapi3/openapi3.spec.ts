@@ -381,6 +381,23 @@ describe("OpenAPI 3 generator", () => {
       expect(spectralResult).toHaveLength(0);
     });
   });
+
+  describe("endpoint metadata", () => {
+    test("contract with endpoint metadata description and summary", async () => {
+      const contract = generateContract("contract-with-endpoint-metadata.ts");
+      const result = generateOpenAPI3(contract);
+
+      expect(result.paths["/users"]).toMatchObject({
+        get: {
+          description: "My description",
+          summary: "My summary"
+        }
+      });
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
+  });
 });
 
 /**

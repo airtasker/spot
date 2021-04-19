@@ -137,6 +137,7 @@ function endpointToOperationObject(
   return {
     tags: endpoint.tags.length > 0 ? endpoint.tags : undefined,
     description: endpoint.description,
+    summary: endpoint.summary,
     operationId: endpoint.name,
     parameters:
       endpointRequest &&

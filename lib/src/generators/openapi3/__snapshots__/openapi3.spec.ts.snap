@@ -355,6 +355,49 @@ exports[`OpenAPI 3 generator contract with one server OpenAPI 3 1`] = `
 }"
 `;
 
+exports[`OpenAPI 3 generator endpoint metadata contract with endpoint metadata description and summary 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"description\\": \\"My description\\",
+        \\"summary\\": \\"My summary\\",
+        \\"operationId\\": \\"GetEndpoint\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"content\\": {
+              \\"application/json\\": {
+                \\"schema\\": {
+                  \\"type\\": \\"object\\",
+                  \\"properties\\": {
+                    \\"id\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"name\\": {
+                      \\"type\\": \\"string\\"
+                    }
+                  },
+                  \\"required\\": [
+                    \\"id\\",
+                    \\"name\\"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3 generator examples contract with examples parses correctly to an openapi specification 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",
