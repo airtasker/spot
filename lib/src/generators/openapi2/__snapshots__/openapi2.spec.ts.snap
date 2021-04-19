@@ -294,6 +294,51 @@ exports[`OpenAPI 2 generator contract with version produces a versioned OpenAPI 
 }"
 `;
 
+exports[`OpenAPI 2 generator endpoint metadata contract with endpoint metadata description and summary 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"description\\": \\"My description\\",
+        \\"summary\\": \\"My summary\\",
+        \\"operationId\\": \\"GetEndpoint\\",
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"object\\",
+              \\"properties\\": {
+                \\"id\\": {
+                  \\"type\\": \\"string\\"
+                },
+                \\"name\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"required\\": [
+                \\"id\\",
+                \\"name\\"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 2 generator headers endpoint with request headers 1`] = `
 "{
   \\"swagger\\": \\"2.0\\",

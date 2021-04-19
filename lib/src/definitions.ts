@@ -28,6 +28,7 @@ export interface SecurityHeader {
 export interface Endpoint {
   name: string;
   description?: string;
+  summary?: string;
   tags: string[];
   method: HttpMethod;
   path: string;

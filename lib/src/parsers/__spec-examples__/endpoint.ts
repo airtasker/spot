@@ -133,3 +133,15 @@ class EndpointWithDuplicateResponseStatus {
   })
   responseTwo() {}
 }
+
+/**
+ * My description
+ *
+ * @summary
+ * My summary
+ */
+@endpoint({
+  method: "GET",
+  path: "/path"
+})
+class MinimalEndpointWithSummaryClass {}
