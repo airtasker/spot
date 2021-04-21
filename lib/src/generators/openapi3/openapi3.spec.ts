@@ -1,4 +1,3 @@
-import { string } from "@oclif/command/lib/flags";
 import { isOpenApiv3, Spectral } from "@stoplight/spectral";
 import { Contract } from "../../definitions";
 import { parseContract } from "../../parsers/contract-parser";
