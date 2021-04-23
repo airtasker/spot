@@ -982,10 +982,10 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
-"@types/moxios@^0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@types/moxios/-/moxios-0.4.10.tgz#0762de3157714f8078a3c79ba65dcec4da701bfe"
-  integrity sha512-OGXB0kvKJT4KAdy4OzdGkBhNJ3f1x3FsqUq6elUBLcaBsVMy09hErlyhq2+zwEwcNbv1DGmksASW06XRISnxUQ==
+"@types/moxios@^0.4.11":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/@types/moxios/-/moxios-0.4.11.tgz#f7f582311c0c4f51c29b0cc548a27eac6b7f600f"
+  integrity sha512-731cjysq/Z+8ImvUWrYS/FO6KOKnbqPbeBfe1HBCVTWBegJso62dyjLnnevz9VzSWx2tRAijyEorqv8/8+2n3A==
   dependencies:
     axios "^0.21.1"
 
