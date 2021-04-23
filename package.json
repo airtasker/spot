@@ -32,7 +32,7 @@
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.22",
     "@types/js-yaml": "^4.0.0",
-    "@types/moxios": "^0.4.10",
+    "@types/moxios": "^0.4.11",
     "@types/qs": "^6.9.6",
     "@types/randomstring": "^1.1.6",
     "@types/react": "^17.0.3",
