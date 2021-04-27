@@ -56,14 +56,14 @@ export function parseQueryParams(
 
     const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
     if (schemaProps && schemaProps.isErr()) return schemaProps;
+    type.schemaProps = schemaProps?.unwrap();
 
     queryParams.push({
       name,
       type,
       description,
       optional,
-      examples: examples?.unwrap(),
-      schemaProps: schemaProps?.unwrap()
+      examples: examples?.unwrap()
     });
   }
 

@@ -376,16 +376,6 @@ type MutuallyExclusiveExampleObjectValue =
       externalValue: string;
     };
 
-export type SchemaPropObject = {
-  minLength?: number;
-  maxLength?: number;
-  pattern?: string;
-  minimum?: number;
-  maximum?: number;
-  default?: number;
-  example?: string | number | boolean;
-};
-
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#encoding-object
 export interface EncodingObject {
   contentType?: string;
@@ -502,10 +492,6 @@ export interface ExternalDocumentationObject {
 
 export type ExamplesSet = {
   [example: string]: ExampleObject | ReferenceObject;
-};
-
-export type SchemaPropsSet = {
-  [schemaProp: string]: SchemaPropObject | ReferenceObject;
 };
 
 type MutuallyExclusiveExample =

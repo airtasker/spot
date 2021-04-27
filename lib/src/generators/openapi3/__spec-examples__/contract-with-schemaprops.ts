@@ -22,20 +22,20 @@ class EndpointWithExampleOnHeaders {
     @headers
     headers: {
       /** property-schemaprop description for string
-       * @schemaprop minLength
+       * @oaSchemaProp minLength
        * 12
-       * @schemaprop maxLength
+       * @oaSchemaProp maxLength
        * 20
-       * @schemaprop pattern
+       * @oaSchemaProp pattern
        * "^[0-9a-z_]+$"
        *  */
       status: String;
       /** property-schemaprop description for integer
-       * @schemaprop minimum
+       * @oaSchemaProp minimum
        * 1
-       * @schemaprop maximum
+       * @oaSchemaProp maximum
        * 100
-       * @schemaprop default
+       * @oaSchemaProp default
        * 42
        *  */
       size: Integer;

@@ -193,10 +193,10 @@ function parseTypeReference(
         const type = targetTypeResult.unwrap();
         const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
         if (schemaProps && schemaProps.isErr()) return schemaProps;
+        type.schemaProps = schemaProps?.unwrap();
         typeTable.add(name, {
           type,
-          description,
-          schemaProps: schemaProps?.unwrap()
+          description
         });
         lociTable.addMorphNode(LociTable.typeKey(name), decTypeNode);
       }
@@ -220,10 +220,10 @@ function parseTypeReference(
         const type = targetTypeResult.unwrap();
         const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
         if (schemaProps && schemaProps.isErr()) return schemaProps;
+        type.schemaProps = schemaProps?.unwrap();
         typeTable.add(name, {
           type,
-          description,
-          schemaProps: schemaProps?.unwrap()
+          description
         });
         lociTable.addMorphNode(LociTable.typeKey(name), declaration);
       }
@@ -372,11 +372,11 @@ function parseObjectLiteralType(
 
     const schemaProps = extractJSDocSchemaProps(getJsDoc(ps), type);
     if (schemaProps && schemaProps.isErr()) return schemaProps;
+    type.schemaProps = schemaProps?.unwrap();
 
     const prop = {
       name: getPropertyName(ps),
       description: getJsDoc(ps)?.getDescription().trim(),
-      schemaProps: schemaProps?.unwrap(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };
@@ -434,11 +434,11 @@ function parseInterfaceDeclaration(
 
     const schemaProps = extractJSDocSchemaProps(getJsDoc(ps), type);
     if (schemaProps && schemaProps.isErr()) return schemaProps;
+    type.schemaProps = schemaProps?.unwrap();
 
     const prop = {
       name: getPropertyName(ps),
       description: getJsDoc(ps)?.getDescription().trim(),
-      schemaProps: schemaProps?.unwrap(),
       type: propTypeResult.unwrap(),
       optional: ps.hasQuestionToken()
     };

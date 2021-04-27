@@ -29,31 +29,31 @@ describe("headers parser", () => {
     expect(result).toHaveLength(5);
     expect(result[0]).toStrictEqual({
       description: undefined,
-      schemaProps: undefined,
       examples: undefined,
       name: "property",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
     expect(result[1]).toStrictEqual({
       description: "property description",
       examples: undefined,
-      schemaProps: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
     expect(result[2]).toStrictEqual({
       description: "property-example description",
       examples: [{ name: "property-example", value: "property-example-value" }],
-      schemaProps: undefined,
       name: "property-with-example",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -69,20 +69,20 @@ describe("headers parser", () => {
           value: 456
         }
       ],
-      schemaProps: undefined,
       name: "property-with-examples",
       type: {
-        kind: TypeKind.INT32
+        kind: TypeKind.INT32,
+        schemaProps: undefined
       },
       optional: false
     });
     expect(result[4]).toStrictEqual({
       description: undefined,
       examples: undefined,
-      schemaProps: undefined,
       name: "optionalProperty",
       type: {
-        kind: TypeKind.INT64
+        kind: TypeKind.INT64,
+        schemaProps: undefined
       },
       optional: true
     });
@@ -98,10 +98,10 @@ describe("headers parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
-      schemaProps: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -117,10 +117,10 @@ describe("headers parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
-      schemaProps: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -136,10 +136,10 @@ describe("headers parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
-      schemaProps: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });

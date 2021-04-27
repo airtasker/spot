@@ -57,14 +57,14 @@ export function parseHeaders(
 
     const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
     if (schemaProps && schemaProps.isErr()) return schemaProps;
+    type.schemaProps = schemaProps?.unwrap();
 
     headers.push({
       name,
       type,
       description,
       optional,
-      examples: examples?.unwrap(),
-      schemaProps: schemaProps?.unwrap()
+      examples: examples?.unwrap()
     });
   }
 

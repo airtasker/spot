@@ -1,5 +1,4 @@
 import assertNever from "assert-never";
-import { SchemaProp } from "./definitions";
 
 export enum TypeKind {
   NULL = "null",
@@ -57,6 +56,11 @@ export type PrimitiveType = Exclude<
   ObjectType | ArrayType | UnionType | ReferenceType | IntersectionType
 >;
 
+export interface SchemaProp {
+  name: string;
+  value: boolean | number | string;
+}
+
 export type LiteralType =
   | BooleanLiteralType
   | StringLiteralType
@@ -65,64 +69,76 @@ export type LiteralType =
 
 export interface NullType {
   kind: TypeKind.NULL;
+  schemaProps?: SchemaProp[];
 }
 
 export interface BooleanType {
   kind: TypeKind.BOOLEAN;
+  schemaProps?: SchemaProp[];
 }
 
 export interface BooleanLiteralType {
   kind: TypeKind.BOOLEAN_LITERAL;
   value: boolean;
+  schemaProps?: SchemaProp[];
 }
 
 export interface StringType {
   kind: TypeKind.STRING;
+  schemaProps?: SchemaProp[];
 }
 
 export interface StringLiteralType {
   kind: TypeKind.STRING_LITERAL;
   value: string;
+  schemaProps?: SchemaProp[];
 }
 
 export interface FloatType {
   kind: TypeKind.FLOAT;
+  schemaProps?: SchemaProp[];
 }
 
 export interface DoubleType {
   kind: TypeKind.DOUBLE;
+  schemaProps?: SchemaProp[];
 }
 
 export interface FloatLiteralType {
   kind: TypeKind.FLOAT_LITERAL;
   value: number;
+  schemaProps?: SchemaProp[];
 }
 
 export interface Int32Type {
   kind: TypeKind.INT32;
+  schemaProps?: SchemaProp[];
 }
 
 export interface Int64Type {
   kind: TypeKind.INT64;
+  schemaProps?: SchemaProp[];
 }
 
 export interface IntLiteralType {
   kind: TypeKind.INT_LITERAL;
   value: number;
+  schemaProps?: SchemaProp[];
 }
 
 export interface DateType {
   kind: TypeKind.DATE;
+  schemaProps?: SchemaProp[];
 }
 
 export interface DateTimeType {
   kind: TypeKind.DATE_TIME;
+  schemaProps?: SchemaProp[];
 }
 
 export interface ObjectPropertiesType {
   name: string;
   description?: string;
-  schemaProps?: SchemaProp[];
   optional: boolean;
   type: Type;
 }
@@ -130,27 +146,32 @@ export interface ObjectPropertiesType {
 export interface ObjectType {
   kind: TypeKind.OBJECT;
   properties: Array<ObjectPropertiesType>;
+  schemaProps?: SchemaProp[];
 }
 
 export interface ArrayType {
   kind: TypeKind.ARRAY;
   elementType: Type;
+  schemaProps?: SchemaProp[];
 }
 
 export interface UnionType {
   kind: TypeKind.UNION;
   types: Type[];
   discriminator?: string;
+  schemaProps?: SchemaProp[];
 }
 
 export interface IntersectionType {
   kind: TypeKind.INTERSECTION;
   types: Type[];
+  schemaProps?: SchemaProp[];
 }
 
 export interface ReferenceType {
   kind: TypeKind.REFERENCE;
   name: string;
+  schemaProps?: SchemaProp[];
 }
 
 // Type builders
@@ -826,5 +847,4 @@ export class TypeTable {
 export interface TypeDef {
   type: Type;
   description?: string;
-  schemaProps?: SchemaProp[];
 }

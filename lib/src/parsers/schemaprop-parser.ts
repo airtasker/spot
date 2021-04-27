@@ -1,7 +1,6 @@
 import { JSDoc } from "ts-morph";
-import { Type, TypeKind } from "../types";
+import { SchemaProp, Type, TypeKind } from "../types";
 import { err, ok, Result } from "../util";
-import { SchemaProp } from "../definitions";
 import { ParserError } from "../errors";
 
 export function extractJSDocSchemaProps(
@@ -14,7 +13,7 @@ export function extractJSDocSchemaProps(
   }
   const rawSchemaProps = jsDoc
     .getTags()
-    .filter(tag => tag.getTagName() === "schemaprop")
+    .filter(tag => tag.getTagName() === "oaSchemaProp")
     .map(schemaProp => schemaProp.getComment());
 
   const parentJsDocNode = jsDoc.getParent();
@@ -87,7 +86,7 @@ export function extractJSDocSchemaProps(
       return schemaPropError;
     }
 
-    const typeOf = (value: string): string => {
+    const typeOf = (value: any): string => {
       if (/^-?\d+$/.test(value)) {
         return "number";
       }

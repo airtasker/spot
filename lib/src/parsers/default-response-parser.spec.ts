@@ -33,10 +33,9 @@ describe("default response parser", () => {
         {
           description: undefined,
           examples: undefined,
-          schemaProps: undefined,
           name: "property",
           optional: false,
-          type: { kind: TypeKind.STRING }
+          type: { kind: TypeKind.STRING, schemaProps: undefined }
         }
       ]
     });

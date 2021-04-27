@@ -30,45 +30,45 @@ describe("path params parser", () => {
     expect(result[0]).toStrictEqual({
       description: undefined,
       examples: undefined,
-      schemaProps: undefined,
       name: "property",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       }
     });
     expect(result[1]).toStrictEqual({
       description: "property description",
       examples: undefined,
       name: "property-with-description",
-      schemaProps: undefined,
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       }
     });
     expect(result[2]).toStrictEqual({
       description: undefined,
       examples: undefined,
-      schemaProps: undefined,
       name: "arrayProperty",
       type: {
         kind: TypeKind.ARRAY,
         elementType: {
           kind: TypeKind.STRING
-        }
+        },
+        schemaProps: undefined
       }
     });
     expect(result[3]).toStrictEqual({
       description: "property-example description",
       examples: [{ name: "property-example", value: "property-example-value" }],
-      schemaProps: [
-        {
-          name: "example",
-          value: "property-example-schema"
-        }
-      ],
       name: "property-with-example",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: [
+          {
+            name: "example",
+            value: "property-example-schema"
+          }
+        ]
       }
     });
     expect(result[4]).toStrictEqual({
@@ -84,14 +84,14 @@ describe("path params parser", () => {
         }
       ],
       name: "property-with-examples",
-      schemaProps: [
-        {
-          name: "default",
-          value: 12
-        }
-      ],
       type: {
-        kind: TypeKind.INT32
+        kind: TypeKind.INT32,
+        schemaProps: [
+          {
+            name: "default",
+            value: 12
+          }
+        ]
       }
     });
   });
@@ -106,10 +106,10 @@ describe("path params parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
-      schemaProps: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       }
     });
   });
@@ -124,10 +124,10 @@ describe("path params parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
-      schemaProps: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       }
     });
   });
@@ -192,10 +192,10 @@ describe("path params parser", () => {
     expect(result[0]).toStrictEqual({
       description: "property description",
       examples: undefined,
-      schemaProps: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       }
     });
   });

@@ -2,29 +2,29 @@ import { Integer } from "../../syntax";
 
 type SchemaPropTests = {
   /** property-schemaprop description
-   * @schemaprop pattern
+   * @oaSchemaProp pattern
    * "property-schemaprop-value"
    *  */
   "property-with-schemaprop": string;
   /** property-two-schemaprops description
-   * @schemaprop minimum
+   * @oaSchemaProp minimum
    * 123
-   * @schemaprop default
+   * @oaSchemaProp default
    * 456
    * */
   "property-with-schemaprops": Integer;
   /** property-schemaprop description
-   * @schemaprop example
+   * @oaSchemaProp example
    * false
    *  */
   "property-with-boolean": boolean;
   /**
-   * @schemaprop example
+   * @oaSchemaProp example
    * This_is_not_an_integer
    */
   "property-with-mistyped-schemaprop": Integer;
   /**
-   * @schemaprop example
+   * @oaSchemaProp example
    * This_is_not_a_string_in_quotes
    */
   "property-with-no-string-in-quotes": string;

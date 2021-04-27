@@ -32,29 +32,26 @@ describe("request parser", () => {
         {
           description: undefined,
           examples: undefined,
-          schemaProps: undefined,
           name: "property",
           optional: false,
-          type: { kind: TypeKind.STRING }
+          type: { kind: TypeKind.STRING, schemaProps: undefined }
         }
       ],
       pathParams: [
         {
           description: undefined,
           examples: undefined,
-          schemaProps: undefined,
           name: "property",
-          type: { kind: TypeKind.STRING }
+          type: { kind: TypeKind.STRING, schemaProps: undefined }
         }
       ],
       queryParams: [
         {
           description: undefined,
           examples: undefined,
-          schemaProps: undefined,
           name: "property",
           optional: false,
-          type: { kind: TypeKind.STRING }
+          type: { kind: TypeKind.STRING, schemaProps: undefined }
         }
       ]
     });

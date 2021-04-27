@@ -19,9 +19,10 @@ import {
   TypeTable,
   UnionType,
   possibleRootTypes,
-  ObjectPropertiesType
+  SchemaProp
 } from "../../types";
 import {
+  AllOfSchemaObject,
   ArraySchemaObject,
   BooleanSchemaObject,
   DiscriminatorObject,
@@ -29,18 +30,15 @@ import {
   NumberSchemaObject,
   ObjectPropertiesSchemaObject,
   ObjectSchemaObject,
+  OneOfSchemaObject,
   ReferenceObject,
   SchemaObject,
-  SchemaPropObject,
-  SchemaPropsSet,
   StringSchemaObject
 } from "./openapi3-specification";
-import { SchemaProp } from "../../definitions";
 
 export function typeToSchemaOrReferenceObject(
   type: Type,
   typeTable: TypeTable,
-  schemaProps?: SchemaPropObject,
   nullable?: boolean
 ): SchemaObject | ReferenceObject {
   switch (type.kind) {
@@ -48,108 +46,84 @@ export function typeToSchemaOrReferenceObject(
       throw new Error("Null must be part of a union for OpenAPI 3");
     case TypeKind.BOOLEAN:
       return booleanSchema({
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.BOOLEAN_LITERAL:
       return booleanSchema({
         values: [type.value],
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.STRING:
       return stringSchema({
-        minLength: schemaProps?.minLength,
-        maxLength: schemaProps?.maxLength,
-        pattern: schemaProps?.pattern,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.STRING_LITERAL:
       return stringSchema({
         values: [type.value],
-        minLength: schemaProps?.minLength,
-        maxLength: schemaProps?.maxLength,
-        pattern: schemaProps?.pattern,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.FLOAT:
       return numberSchema({
         format: "float",
-        minimum: schemaProps?.minimum,
-        maximum: schemaProps?.maximum,
-        default: schemaProps?.default,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.DOUBLE:
       return numberSchema({
         format: "double",
-        minimum: schemaProps?.minimum,
-        maximum: schemaProps?.maximum,
-        default: schemaProps?.default,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.FLOAT_LITERAL:
       return numberSchema({
         values: [type.value],
         format: "float",
-        minimum: schemaProps?.minimum,
-        maximum: schemaProps?.maximum,
-        default: schemaProps?.default,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.INT32:
       return integerSchema({
         format: "int32",
-        minimum: schemaProps?.minimum,
-        maximum: schemaProps?.maximum,
-        default: schemaProps?.default,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.INT64:
       return integerSchema({
         format: "int64",
-        minimum: schemaProps?.minimum,
-        maximum: schemaProps?.maximum,
-        default: schemaProps?.default,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.INT_LITERAL:
       return integerSchema({
         values: [type.value],
         format: "int32",
-        minimum: schemaProps?.minimum,
-        maximum: schemaProps?.maximum,
-        default: schemaProps?.default,
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.DATE:
       return stringSchema({
         format: "date",
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.DATE_TIME:
       return stringSchema({
         format: "date-time",
-        example: schemaProps?.example,
+        schemaProps: type.schemaProps,
         nullable
       });
     case TypeKind.OBJECT:
       return objectTypeToSchema(type, typeTable, nullable);
     case TypeKind.ARRAY:
-      return arrayTypeToSchema(type, typeTable, schemaProps, nullable);
+      return arrayTypeToSchema(type, typeTable, nullable);
     case TypeKind.UNION:
-      return unionTypeToSchema(type, typeTable, schemaProps);
+      return unionTypeToSchema(type, typeTable);
     case TypeKind.INTERSECTION:
-      return intersectionTypeToSchema(type, typeTable, schemaProps);
+      return intersectionTypeToSchema(type, typeTable);
     case TypeKind.REFERENCE:
       return referenceTypeToSchema(type, nullable);
     default:
@@ -161,14 +135,16 @@ function booleanSchema(
   opts: {
     values?: boolean[];
     nullable?: boolean;
-    example?: BooleanSchemaObject["example"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): BooleanSchemaObject {
   return {
-    type: "boolean",
-    enum: createEnum(opts.values, opts.nullable),
-    example: opts.example,
-    nullable: opts.nullable || undefined
+    ...{
+      type: "boolean",
+      enum: createEnum(opts.values, opts.nullable),
+      nullable: opts.nullable || undefined
+    },
+    ...(<BooleanSchemaObject>schemaPropToSchemaObject(opts.schemaProps))
   };
 }
 
@@ -177,21 +153,17 @@ function stringSchema(
     values?: string[];
     nullable?: boolean;
     format?: StringSchemaObject["format"];
-    minLength?: StringSchemaObject["minLength"];
-    maxLength?: StringSchemaObject["maxLength"];
-    pattern?: StringSchemaObject["pattern"];
-    example?: StringSchemaObject["example"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): StringSchemaObject {
   return {
-    type: "string",
-    enum: createEnum(opts.values, opts.nullable),
-    format: opts.format,
-    minLength: opts.minLength,
-    maxLength: opts.maxLength,
-    pattern: opts.pattern,
-    example: opts.example,
-    nullable: opts.nullable || undefined
+    ...{
+      type: "string",
+      enum: createEnum(opts.values, opts.nullable),
+      format: opts.format,
+      nullable: opts.nullable || undefined
+    },
+    ...(<StringSchemaObject>schemaPropToSchemaObject(opts.schemaProps))
   };
 }
 
@@ -200,21 +172,17 @@ function numberSchema(
     values?: number[];
     nullable?: boolean;
     format?: NumberSchemaObject["format"];
-    minimum?: NumberSchemaObject["minimum"];
-    maximum?: NumberSchemaObject["maximum"];
-    default?: NumberSchemaObject["default"];
-    example?: NumberSchemaObject["example"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): NumberSchemaObject {
   return {
-    type: "number",
-    enum: createEnum(opts.values, opts.nullable),
-    format: opts.format,
-    minimum: opts.minimum,
-    maximum: opts.maximum,
-    default: opts.default,
-    example: opts.example,
-    nullable: opts.nullable || undefined
+    ...{
+      type: "number",
+      enum: createEnum(opts.values, opts.nullable),
+      format: opts.format,
+      nullable: opts.nullable || undefined
+    },
+    ...(<NumberSchemaObject>schemaPropToSchemaObject(opts.schemaProps))
   };
 }
 
@@ -223,21 +191,17 @@ function integerSchema(
     values?: number[];
     nullable?: boolean;
     format?: IntegerSchemaObject["format"];
-    minimum?: IntegerSchemaObject["minimum"];
-    maximum?: IntegerSchemaObject["maximum"];
-    default?: IntegerSchemaObject["default"];
-    example?: IntegerSchemaObject["example"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): IntegerSchemaObject {
   return {
-    type: "integer",
-    enum: createEnum(opts.values, opts.nullable),
-    format: opts.format,
-    minimum: opts.minimum,
-    maximum: opts.maximum,
-    default: opts.default,
-    example: opts.example,
-    nullable: opts.nullable || undefined
+    ...{
+      type: "integer",
+      enum: createEnum(opts.values, opts.nullable),
+      format: opts.format,
+      nullable: opts.nullable || undefined
+    },
+    ...(<IntegerSchemaObject>schemaPropToSchemaObject(opts.schemaProps))
   };
 }
 
@@ -252,8 +216,7 @@ function objectTypeToSchema(
           (acc, property) => {
             const propType = typeToSchemaOrReferenceObject(
               property.type,
-              typeTable,
-              schemaPropToOpenApi(property.schemaProps)
+              typeTable
             );
             if (!isReferenceObject(propType)) {
               propType.description = property.description;
@@ -270,29 +233,29 @@ function objectTypeToSchema(
     .map(p => p.name);
   const required =
     requiredProperties.length > 0 ? requiredProperties : undefined;
-
   return {
-    type: "object",
-    properties,
-    required,
-    nullable: nullable || undefined
+    ...{
+      type: "object",
+      properties,
+      required,
+      nullable: nullable || undefined
+    },
+    ...(<ObjectSchemaObject>schemaPropToSchemaObject(type.schemaProps))
   };
 }
 
 function arrayTypeToSchema(
   type: ArrayType,
   typeTable: TypeTable,
-  schemaProps?: SchemaPropObject,
   nullable?: boolean
 ): ArraySchemaObject {
   return {
-    type: "array",
-    items: typeToSchemaOrReferenceObject(
-      type.elementType,
-      typeTable,
-      schemaProps
-    ),
-    nullable: nullable || undefined
+    ...{
+      type: "array",
+      items: typeToSchemaOrReferenceObject(type.elementType, typeTable),
+      nullable: nullable || undefined
+    },
+    ...(<ArraySchemaObject>schemaPropToSchemaObject(type.schemaProps))
   };
 }
 
@@ -301,8 +264,7 @@ function arrayTypeToSchema(
  */
 function unionTypeToSchema(
   type: UnionType,
-  typeTable: TypeTable,
-  schemaProps?: SchemaPropObject
+  typeTable: TypeTable
 ): SchemaObject | ReferenceObject {
   // Sanity check
   if (type.types.length === 0) {
@@ -319,52 +281,45 @@ function unionTypeToSchema(
       return typeToSchemaOrReferenceObject(
         nonNullTypes[0],
         typeTable,
-        schemaProps,
         nullable
       );
     default:
       if (areBooleanLiteralTypes(nonNullTypes)) {
         return booleanSchema({
           values: nonNullTypes.map(t => t.value),
-          example: schemaProps?.example,
+          schemaProps: type.schemaProps,
           nullable
         });
       } else if (areStringLiteralTypes(nonNullTypes)) {
         return stringSchema({
           values: nonNullTypes.map(t => t.value),
-          minLength: schemaProps?.minLength,
-          maxLength: schemaProps?.maxLength,
-          pattern: schemaProps?.pattern,
-          example: schemaProps?.example,
+          schemaProps: type.schemaProps,
           nullable
         });
       } else if (areFloatLiteralTypes(nonNullTypes)) {
         return numberSchema({
           values: nonNullTypes.map(t => t.value),
           format: "float",
-          minimum: schemaProps?.minimum,
-          maximum: schemaProps?.maximum,
-          default: schemaProps?.default,
-          example: schemaProps?.example,
+          schemaProps: type.schemaProps,
           nullable
         });
       } else if (areIntLiteralTypes(nonNullTypes)) {
         return integerSchema({
           values: nonNullTypes.map(t => t.value),
           format: "int32",
-          minimum: schemaProps?.minimum,
-          maximum: schemaProps?.maximum,
-          default: schemaProps?.default,
-          example: schemaProps?.example,
+          schemaProps: type.schemaProps,
           nullable
         });
       } else {
         return {
-          nullable: nullable || undefined,
-          oneOf: nonNullTypes.map(t =>
-            typeToSchemaOrReferenceObject(t, typeTable, schemaProps)
-          ),
-          discriminator: unionTypeToDiscrimintorObject(type, typeTable)
+          ...{
+            nullable: nullable || undefined,
+            oneOf: nonNullTypes.map(t =>
+              typeToSchemaOrReferenceObject(t, typeTable)
+            ),
+            discriminator: unionTypeToDiscrimintorObject(type, typeTable)
+          },
+          ...(<OneOfSchemaObject>schemaPropToSchemaObject(type.schemaProps))
         };
       }
   }
@@ -452,8 +407,7 @@ function unionTypeToDiscrimintorObject(
 
 function intersectionTypeToSchema(
   type: IntersectionType,
-  typeTable: TypeTable,
-  schemaProps?: SchemaPropObject
+  typeTable: TypeTable
 ): SchemaObject | ReferenceObject {
   // Sanity check: This should not be possible
   if (type.types.length === 0) {
@@ -464,10 +418,13 @@ function intersectionTypeToSchema(
   const nonNullTypes = type.types.filter(isNotNullType);
 
   return {
-    nullable: nullable || undefined,
-    allOf: nonNullTypes.map((t: Type) =>
-      typeToSchemaOrReferenceObject(t, typeTable, schemaProps)
-    )
+    ...{
+      nullable: nullable || undefined,
+      allOf: nonNullTypes.map((t: Type) =>
+        typeToSchemaOrReferenceObject(t, typeTable)
+      )
+    },
+    ...(<AllOfSchemaObject>schemaPropToSchemaObject(type.schemaProps))
   };
 }
 
@@ -496,17 +453,32 @@ function createEnum<T>(
   return nullable ? [...values, null] : values;
 }
 
+type SchemaPropType = Omit<
+  SchemaObject,
+  | "type"
+  | "items"
+  | "format"
+  | "enum"
+  | "nullable"
+  | "properties"
+  | "required"
+  | "oneOf"
+  | "allOf"
+  | "discriminator"
+  | "not"
+  | "anyOf"
+>;
+function schemaPropToSchemaObject(
+  schemaProps?: SchemaProp[]
+): SchemaPropType | undefined {
+  return schemaProps?.reduce((acc, schemaProp: SchemaProp) => {
+    Object.assign(acc, { [schemaProp.name]: schemaProp.value });
+    return acc;
+  }, {});
+}
+
 export function isReferenceObject(
   typeObject: SchemaObject | ReferenceObject
 ): typeObject is ReferenceObject {
   return "$ref" in typeObject;
-}
-
-export function schemaPropToOpenApi(
-  schemaProps?: SchemaProp[]
-): SchemaPropsSet | undefined {
-  return schemaProps?.reduce<SchemaPropsSet>((acc, schemaProp: SchemaProp) => {
-    acc[schemaProp.name] = schemaProp.value;
-    return acc;
-  }, {});
 }

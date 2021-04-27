@@ -80,13 +80,13 @@ function extractPathParam(
 
   const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
   if (schemaProps && schemaProps.isErr()) return schemaProps;
+  type.schemaProps = schemaProps?.unwrap();
 
   return ok({
     name,
     type,
     description,
-    examples: examples?.unwrap(),
-    schemaProps: schemaProps?.unwrap()
+    examples: examples?.unwrap()
   });
 }
 
