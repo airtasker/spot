@@ -1027,7 +1027,7 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
   \\"paths\\": {
     \\"/users\\": {
       \\"get\\": {
-        \\"operationId\\": \\"EndpointWithExampleOnHeaders\\",
+        \\"operationId\\": \\"EndpointWithSchemaPropsOnHeaders\\",
         \\"parameters\\": [
           {
             \\"name\\": \\"status\\",

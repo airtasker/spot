@@ -285,6 +285,40 @@ describe("OpenAPI 2 generator", () => {
     });
   });
 
+  describe("schemaprops", () => {
+    test("contract with schemaprops parses correctly to an openapi specification", async () => {
+      const contract = generateContract("contract-with-schemaprops.ts");
+      const result = generateOpenAPI2(contract);
+
+      expect(result.paths["/users"].get).toHaveProperty("parameters", [
+        {
+          description: "property-schemaprop description for string",
+          name: "status",
+          in: "header",
+          required: true,
+          type: "string",
+          minLength: 12,
+          maxLength: 20,
+          pattern: "^[0-9a-z_]+$"
+        },
+        {
+          description: "property-schemaprop description for integer",
+          name: "size",
+          in: "header",
+          required: true,
+          format: "int32",
+          type: "integer",
+          minimum: 1,
+          maximum: 100,
+          default: 42
+        }
+      ]);
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
+  });
+
   describe("intersection types", () => {
     test("evaluates intersection type", async () => {
       const contract = generateContract("contract-with-intersection-types.ts");

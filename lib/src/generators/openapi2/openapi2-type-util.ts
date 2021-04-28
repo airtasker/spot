@@ -10,6 +10,7 @@ import {
   isNullType,
   ObjectType,
   ReferenceType,
+  SchemaProp,
   Type,
   TypeKind,
   TypeTable,
@@ -37,29 +38,71 @@ export function typeToSchemaObject(
     case TypeKind.NULL:
       throw new Error("Null must be part of a union for OpenAPI 2");
     case TypeKind.BOOLEAN:
-      return booleanSchema({ nullable });
+      return booleanSchema({ schemaProps: type.schemaProps, nullable });
     case TypeKind.BOOLEAN_LITERAL:
-      return booleanSchema({ values: [type.value], nullable });
+      return booleanSchema({
+        values: [type.value],
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.STRING:
-      return stringSchema({ nullable });
+      return stringSchema({ schemaProps: type.schemaProps, nullable });
     case TypeKind.STRING_LITERAL:
-      return stringSchema({ values: [type.value], nullable });
+      return stringSchema({
+        values: [type.value],
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.FLOAT:
-      return numberSchema({ format: "float", nullable });
+      return numberSchema({
+        format: "float",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.DOUBLE:
-      return numberSchema({ format: "double", nullable });
+      return numberSchema({
+        format: "double",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.FLOAT_LITERAL:
-      return numberSchema({ values: [type.value], format: "float", nullable });
+      return numberSchema({
+        values: [type.value],
+        format: "float",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.INT32:
-      return integerSchema({ format: "int32", nullable });
+      return integerSchema({
+        format: "int32",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.INT64:
-      return integerSchema({ format: "int64", nullable });
+      return integerSchema({
+        format: "int64",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.INT_LITERAL:
-      return integerSchema({ values: [type.value], format: "int32", nullable });
+      return integerSchema({
+        values: [type.value],
+        format: "int32",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.DATE:
-      return stringSchema({ format: "date", nullable });
+      return stringSchema({
+        format: "date",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.DATE_TIME:
-      return stringSchema({ format: "date-time", nullable });
+      return stringSchema({
+        format: "date-time",
+        schemaProps: type.schemaProps,
+        nullable
+      });
     case TypeKind.OBJECT:
       return objectTypeToSchema(type, typeTable, nullable);
     case TypeKind.ARRAY:
@@ -79,12 +122,16 @@ function booleanSchema(
   opts: {
     values?: boolean[];
     nullable?: boolean;
+    schemaProps?: SchemaProp[];
   } = {}
 ): BooleanSchemaObject {
   return {
-    type: "boolean",
-    enum: createEnum(opts.values, opts.nullable),
-    "x-nullable": opts.nullable || undefined
+    ...{
+      type: "boolean",
+      enum: createEnum(opts.values, opts.nullable),
+      "x-nullable": opts.nullable || undefined
+    },
+    ...(<BooleanSchemaObject>schemaPropToObject(opts.schemaProps))
   };
 }
 
@@ -93,13 +140,17 @@ function stringSchema(
     values?: string[];
     nullable?: boolean;
     format?: StringSchemaObject["format"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): StringSchemaObject {
   return {
-    type: "string",
-    enum: createEnum(opts.values, opts.nullable),
-    format: opts.format,
-    "x-nullable": opts.nullable || undefined
+    ...{
+      type: "string",
+      enum: createEnum(opts.values, opts.nullable),
+      format: opts.format,
+      "x-nullable": opts.nullable || undefined
+    },
+    ...(<StringSchemaObject>schemaPropToObject(opts.schemaProps))
   };
 }
 
@@ -108,13 +159,17 @@ function numberSchema(
     values?: number[];
     nullable?: boolean;
     format?: NumberSchemaObject["format"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): NumberSchemaObject {
   return {
-    type: "number",
-    enum: createEnum(opts.values, opts.nullable),
-    format: opts.format,
-    "x-nullable": opts.nullable || undefined
+    ...{
+      type: "number",
+      enum: createEnum(opts.values, opts.nullable),
+      format: opts.format,
+      "x-nullable": opts.nullable || undefined
+    },
+    ...(<NumberSchemaObject>schemaPropToObject(opts.schemaProps))
   };
 }
 
@@ -123,13 +178,17 @@ function integerSchema(
     values?: number[];
     nullable?: boolean;
     format?: IntegerSchemaObject["format"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): IntegerSchemaObject {
   return {
-    type: "integer",
-    enum: createEnum(opts.values, opts.nullable),
-    format: opts.format,
-    "x-nullable": opts.nullable || undefined
+    ...{
+      type: "integer",
+      enum: createEnum(opts.values, opts.nullable),
+      format: opts.format,
+      "x-nullable": opts.nullable || undefined
+    },
+    ...(<IntegerSchemaObject>schemaPropToObject(opts.schemaProps))
   };
 }
 
@@ -160,10 +219,13 @@ function objectTypeToSchema(
     requiredProperties.length > 0 ? requiredProperties : undefined;
 
   return {
-    type: "object",
-    properties,
-    required,
-    "x-nullable": nullable || undefined
+    ...{
+      type: "object",
+      properties,
+      required,
+      "x-nullable": nullable || undefined
+    },
+    ...(<ObjectSchemaObject>schemaPropToObject(type.schemaProps))
   };
 }
 
@@ -173,9 +235,12 @@ function arrayTypeToSchema(
   nullable?: boolean
 ): ArraySchemaObject {
   return {
-    type: "array",
-    items: typeToSchemaObject(type.elementType, typeTable),
-    "x-nullable": nullable || undefined
+    ...{
+      type: "array",
+      items: typeToSchemaObject(type.elementType, typeTable),
+      "x-nullable": nullable || undefined
+    },
+    ...(<ArraySchemaObject>schemaPropToObject(type.schemaProps))
   };
 }
 
@@ -203,23 +268,27 @@ function unionTypeToSchema(
       if (areBooleanLiteralTypes(nonNullTypes)) {
         return booleanSchema({
           values: nonNullTypes.map(t => t.value),
+          schemaProps: type.schemaProps,
           nullable
         });
       } else if (areStringLiteralTypes(nonNullTypes)) {
         return stringSchema({
           values: nonNullTypes.map(t => t.value),
+          schemaProps: type.schemaProps,
           nullable
         });
       } else if (areFloatLiteralTypes(nonNullTypes)) {
         return numberSchema({
           values: nonNullTypes.map(t => t.value),
           format: "float",
+          schemaProps: type.schemaProps,
           nullable
         });
       } else if (areIntLiteralTypes(nonNullTypes)) {
         return integerSchema({
           values: nonNullTypes.map(t => t.value),
           format: "int32",
+          schemaProps: type.schemaProps,
           nullable
         });
       } else {
@@ -241,7 +310,10 @@ function intersectionTypeToSchema(
   const nonNullTypes = type.types.filter(isNotNullType);
 
   return {
-    allOf: nonNullTypes.map((t: Type) => typeToSchemaObject(t, typeTable))
+    ...{
+      allOf: nonNullTypes.map((t: Type) => typeToSchemaObject(t, typeTable))
+    },
+    ...(<AllOfSchemaObject>schemaPropToObject(type.schemaProps))
   };
 }
 
@@ -272,6 +344,30 @@ function createEnum<T>(
 ): (T | null)[] | undefined {
   if (!values) return;
   return nullable ? [...values, null] : values;
+}
+
+type SchemaPropType = Omit<
+  SchemaObject,
+  | "type"
+  | "items"
+  | "format"
+  | "enum"
+  | "nullable"
+  | "properties"
+  | "required"
+  | "oneOf"
+  | "allOf"
+  | "discriminator"
+  | "not"
+  | "anyOf"
+>;
+export function schemaPropToObject(
+  schemaProps?: SchemaProp[]
+): SchemaPropType | undefined {
+  return schemaProps?.reduce((acc, schemaProp: SchemaProp) => {
+    Object.assign(acc, { [schemaProp.name]: schemaProp.value });
+    return acc;
+  }, {});
 }
 
 export function isReferenceSchemaObject(
