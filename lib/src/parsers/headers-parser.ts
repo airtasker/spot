@@ -3,7 +3,7 @@ import { Header } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isHeaderTypeSafe } from "../http";
 import { LociTable } from "../locations";
-import { Type, TypeTable } from "../types";
+import { isSchemaPropAllowedType, Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
@@ -57,7 +57,9 @@ export function parseHeaders(
 
     const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
     if (schemaProps && schemaProps.isErr()) return schemaProps;
-    type.schemaProps = schemaProps?.unwrap();
+    if (isSchemaPropAllowedType(type)) {
+      type.schemaProps = schemaProps?.unwrap();
+    }
 
     headers.push({
       name,

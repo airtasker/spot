@@ -53,7 +53,8 @@ import {
   intersectionType,
   doesInterfaceEvaluatesToNever,
   possibleRootTypes,
-  isObjectType
+  isObjectType,
+  isSchemaPropAllowedType
 } from "../types";
 import { err, ok, Result } from "../util";
 import { getJsDoc, getPropertyName } from "./parser-helpers";
@@ -193,7 +194,9 @@ function parseTypeReference(
         const type = targetTypeResult.unwrap();
         const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
         if (schemaProps && schemaProps.isErr()) return schemaProps;
-        type.schemaProps = schemaProps?.unwrap();
+        if (isSchemaPropAllowedType(type)) {
+          type.schemaProps = schemaProps?.unwrap();
+        }
         typeTable.add(name, {
           type,
           description
@@ -372,7 +375,9 @@ function parseObjectLiteralType(
 
     const schemaProps = extractJSDocSchemaProps(getJsDoc(ps), type);
     if (schemaProps && schemaProps.isErr()) return schemaProps;
-    type.schemaProps = schemaProps?.unwrap();
+    if (isSchemaPropAllowedType(type)) {
+      type.schemaProps = schemaProps?.unwrap();
+    }
 
     const prop = {
       name: getPropertyName(ps),
@@ -434,7 +439,9 @@ function parseInterfaceDeclaration(
 
     const schemaProps = extractJSDocSchemaProps(getJsDoc(ps), type);
     if (schemaProps && schemaProps.isErr()) return schemaProps;
-    type.schemaProps = schemaProps?.unwrap();
+    if (isSchemaPropAllowedType(type)) {
+      type.schemaProps = schemaProps?.unwrap();
+    }
 
     const prop = {
       name: getPropertyName(ps),

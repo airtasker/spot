@@ -69,7 +69,6 @@ export type LiteralType =
 
 export interface NullType {
   kind: TypeKind.NULL;
-  schemaProps?: SchemaProp[];
 }
 
 export interface BooleanType {
@@ -171,7 +170,6 @@ export interface IntersectionType {
 export interface ReferenceType {
   kind: TypeKind.REFERENCE;
   name: string;
-  schemaProps?: SchemaProp[];
 }
 
 // Type builders
@@ -435,6 +433,12 @@ export function isReferenceType(type: Type): type is ReferenceType {
   return type.kind === TypeKind.REFERENCE;
 }
 
+export function isNotReferenceType<T extends Type>(
+  type: T
+): type is Exclude<T, ReferenceType> {
+  return !isReferenceType(type);
+}
+
 export function isPrimitiveType(type: Type): type is PrimitiveType {
   switch (type.kind) {
     case TypeKind.NULL:
@@ -475,6 +479,12 @@ export function isNotLiteralType<T extends Type>(
   type: T
 ): type is Exclude<T, LiteralType> {
   return !isLiteralType(type);
+}
+
+export function isSchemaPropAllowedType<T extends Type>(
+  type: T
+): type is Exclude<T, NullType | ReferenceType> {
+  return isNotNullType(type) && isNotReferenceType(type);
 }
 
 // Guard helpers
