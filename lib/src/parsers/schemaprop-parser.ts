@@ -48,6 +48,94 @@ export function extractJSDocSchemaProps(
   if (rawSchemaProps && rawSchemaProps.length > 0) {
     const schemaProps: SchemaProp[] = [];
     let schemaPropError;
+    const propTypeMap = new Map<
+      string,
+      {
+        type: "string" | "number" | "boolean" | "any";
+        targetTypes: (TypeKind | "number")[];
+      }
+    >([
+      [
+        "additionalProperties",
+        { type: "boolean", targetTypes: [TypeKind.OBJECT] }
+      ],
+      [
+        "default",
+        {
+          type: "any",
+          targetTypes: [
+            "number",
+            TypeKind.STRING,
+            TypeKind.BOOLEAN,
+            TypeKind.ARRAY,
+            TypeKind.OBJECT
+          ]
+        }
+      ],
+      [
+        "deprecated",
+        {
+          type: "boolean",
+          targetTypes: [
+            "number",
+            TypeKind.STRING,
+            TypeKind.BOOLEAN,
+            TypeKind.ARRAY,
+            TypeKind.OBJECT,
+            TypeKind.UNION,
+            TypeKind.INTERSECTION
+          ]
+        }
+      ],
+      [
+        "discriminator",
+        { type: "string", targetTypes: [TypeKind.INTERSECTION] }
+      ],
+      [
+        "example",
+        {
+          type: "any",
+          targetTypes: [
+            "number",
+            TypeKind.STRING,
+            TypeKind.BOOLEAN,
+            TypeKind.ARRAY,
+            TypeKind.OBJECT,
+            TypeKind.UNION,
+            TypeKind.INTERSECTION
+          ]
+        }
+      ],
+      ["exclusiveMaximum", { type: "boolean", targetTypes: ["number"] }],
+      ["exclusiveMinimum", { type: "boolean", targetTypes: ["number"] }],
+      ["maximum", { type: "number", targetTypes: ["number"] }],
+      ["maxItems", { type: "number", targetTypes: [TypeKind.ARRAY] }],
+      ["maxLength", { type: "number", targetTypes: [TypeKind.STRING] }],
+      ["maxProperties", { type: "number", targetTypes: [TypeKind.OBJECT] }],
+      ["minimum", { type: "number", targetTypes: ["number"] }],
+      ["minItems", { type: "number", targetTypes: [TypeKind.ARRAY] }],
+      ["minLength", { type: "number", targetTypes: [TypeKind.STRING] }],
+      ["minProperties", { type: "number", targetTypes: [TypeKind.OBJECT] }],
+      ["multipleOf", { type: "number", targetTypes: ["number"] }],
+      ["pattern", { type: "string", targetTypes: [TypeKind.STRING] }],
+      [
+        "title",
+        {
+          type: "string",
+          targetTypes: [
+            "number",
+            TypeKind.STRING,
+            TypeKind.BOOLEAN,
+            TypeKind.ARRAY,
+            TypeKind.OBJECT,
+            TypeKind.UNION,
+            TypeKind.INTERSECTION
+          ]
+        }
+      ],
+      ["uniqueItems", { type: "boolean", targetTypes: [TypeKind.ARRAY] }]
+    ]);
+
     rawSchemaProps.every(schemaProp => {
       const schemaPropName = schemaProp?.split("\n")[0]?.trim();
       const schemaPropValue = schemaProp?.split("\n")[1]?.trim();
@@ -75,8 +163,9 @@ export function extractJSDocSchemaProps(
         }
 
         if (
-          (schemaPropName === "pattern" ||
-            (type.kind === TypeKind.STRING && schemaPropName === "example")) &&
+          (propTypeMap.get(schemaPropName)?.type === "string" ||
+            (type.kind === TypeKind.STRING &&
+              propTypeMap.get(schemaPropName)?.type === "any")) &&
           (!schemaPropValue.startsWith('"') || !schemaPropValue.endsWith('"'))
         ) {
           schemaPropError = err(
@@ -108,7 +197,7 @@ export function extractJSDocSchemaProps(
       return schemaPropError;
     }
 
-    const typeOf = (value: any): string => {
+    const typeOf = (value: any): "string" | "number" | "boolean" => {
       if (/^-?\d+$/.test(value)) {
         return "number";
       }
@@ -127,21 +216,27 @@ export function extractJSDocSchemaProps(
     const spotTypesToJSTypesMap = new Map();
     spotTypesToJSTypesMap.set(TypeKind.INT32, "number");
     spotTypesToJSTypesMap.set(TypeKind.INT64, "number");
+    spotTypesToJSTypesMap.set(TypeKind.INT_LITERAL, "number");
     spotTypesToJSTypesMap.set(TypeKind.FLOAT, "number");
+    spotTypesToJSTypesMap.set(TypeKind.FLOAT_LITERAL, "number");
     spotTypesToJSTypesMap.set(TypeKind.DOUBLE, "number");
+    spotTypesToJSTypesMap.set(TypeKind.BOOLEAN_LITERAL, "boolean");
+    spotTypesToJSTypesMap.set(TypeKind.STRING_LITERAL, "string");
 
-    const typeSpecified: string =
+    const typeSpecified: TypeKind | "number" =
       spotTypesToJSTypesMap.get(type.kind) || type.kind;
 
     if (
       schemaProps.some(
         schemaProp =>
-          schemaProp.name === "example" &&
-          typeOf(schemaProp.value) !== typeSpecified
+          (propTypeMap.get(schemaProp.name)?.type === "any" &&
+            typeOf(schemaProp.value) !== typeSpecified) ||
+          (propTypeMap.get(schemaProp.name)?.type !== "any" &&
+            propTypeMap.get(schemaProp.name)?.type !== typeOf(schemaProp.value))
       )
     ) {
       return err(
-        new ParserError("type of example must match type of param", {
+        new ParserError("property type is wrong or property not allowed", {
           file: parentJsDocNode.getSourceFile().getFilePath(),
           position: parentJsDocNode.getPos()
         })
@@ -149,24 +244,12 @@ export function extractJSDocSchemaProps(
     }
 
     if (
-      (typeSpecified === "string" &&
-        nameSchemaProps.some(
-          nameSchemaProp =>
-            nameSchemaProp !== "minLength" &&
-            nameSchemaProp !== "maxLength" &&
-            nameSchemaProp !== "pattern" &&
-            nameSchemaProp !== "example"
-        )) ||
-      (typeSpecified === "number" &&
-        nameSchemaProps.some(
-          nameSchemaProp =>
-            nameSchemaProp !== "minimum" &&
-            nameSchemaProp !== "maximum" &&
-            nameSchemaProp !== "default" &&
-            nameSchemaProp !== "example"
-        )) ||
-      (typeSpecified === "boolean" &&
-        nameSchemaProps.some(nameSchemaProp => nameSchemaProp !== "example"))
+      nameSchemaProps.some(
+        nameSchemaProp =>
+          !propTypeMap
+            .get(nameSchemaProp)
+            ?.targetTypes.find(targetType => targetType === typeSpecified)
+      )
     ) {
       return err(
         new ParserError(
