@@ -11,12 +11,25 @@ export function extractJSDocSchemaProps(
   if (!jsDoc) {
     return;
   }
+
+  const rawDefaults = jsDoc
+    .getTags()
+    .filter(tag => tag.getTagName() === "default")
+    .map(schemaProp => schemaProp.getComment());
+  const parentJsDocNode = jsDoc.getParent();
+  if (rawDefaults && rawDefaults.indexOf(undefined) !== -1) {
+    return err(
+      new ParserError("Default must not be empty", {
+        file: parentJsDocNode.getSourceFile().getFilePath(),
+        position: parentJsDocNode.getPos()
+      })
+    );
+  }
+
   const rawSchemaProps = jsDoc
     .getTags()
     .filter(tag => tag.getTagName() === "oaSchemaProp")
     .map(schemaProp => schemaProp.getComment());
-
-  const parentJsDocNode = jsDoc.getParent();
   if (rawSchemaProps && rawSchemaProps.indexOf(undefined) !== -1) {
     return err(
       new ParserError("schemaProp must not be empty", {
@@ -24,6 +37,12 @@ export function extractJSDocSchemaProps(
         position: parentJsDocNode.getPos()
       })
     );
+  }
+
+  if (rawDefaults && rawDefaults.length > 0) {
+    rawDefaults.every(defaultValue => {
+      rawSchemaProps.push("default\n" + defaultValue);
+    });
   }
 
   if (rawSchemaProps && rawSchemaProps.length > 0) {
@@ -44,10 +63,13 @@ export function extractJSDocSchemaProps(
       } else {
         if (schemaProps.some(ex => ex.name === schemaPropName)) {
           schemaPropError = err(
-            new ParserError("duplicate schemaProp name", {
-              file: parentJsDocNode.getSourceFile().getFilePath(),
-              position: parentJsDocNode.getPos()
-            })
+            new ParserError(
+              "duplicate " + schemaPropName + " schemaProp name",
+              {
+                file: parentJsDocNode.getSourceFile().getFilePath(),
+                position: parentJsDocNode.getPos()
+              }
+            )
           );
           return false;
         }

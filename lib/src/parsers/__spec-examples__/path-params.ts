@@ -23,8 +23,7 @@ class PathParamsClass {
        * 123
        * @example property-example-two
        * 456
-       * @oaSchemaProp default
-       * 12
+       * @default 12
        * */
       "property-with-examples": Integer;
     },

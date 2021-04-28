@@ -9,8 +9,7 @@ type SchemaPropTests = {
   /** property-two-schemaprops description
    * @oaSchemaProp minimum
    * 123
-   * @oaSchemaProp default
-   * 456
+   * @default 456
    * */
   "property-with-schemaprops": Integer;
   /** property-schemaprop description

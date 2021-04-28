@@ -35,8 +35,7 @@ class EndpointWithExampleOnHeaders {
        * 1
        * @oaSchemaProp maximum
        * 100
-       * @oaSchemaProp default
-       * 42
+       * @default 42
        *  */
       size: Integer;
     }
