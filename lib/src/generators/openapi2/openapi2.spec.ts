@@ -309,10 +309,57 @@ describe("OpenAPI 2 generator", () => {
           format: "int32",
           type: "integer",
           minimum: 1,
-          maximum: 100,
           default: 42
         }
       ]);
+      expect(result.paths["/users"].get).toHaveProperty("responses", {
+        "200": {
+          description: expect.anything(),
+          schema: {
+            items: {
+              properties: {
+                element: {
+                  description: "property-schemaprop description for object",
+                  maxProperties: 100,
+                  minProperties: 1,
+                  properties: {
+                    price: {
+                      description:
+                        "property-schemaprop description for float inner object",
+                      format: "float",
+                      type: "number",
+                      example: 12,
+                      maximum: 99.95,
+                      multipleOf: 4
+                    }
+                  },
+                  required: ["price"],
+                  type: "object"
+                },
+                id: {
+                  type: "string"
+                },
+                name: {
+                  type: "string"
+                },
+                currencies: {
+                  description: "property-schemaprop description for array",
+                  items: {
+                    type: "string"
+                  },
+                  maxItems: 5,
+                  minItems: 1,
+                  type: "array",
+                  uniqueItems: true
+                }
+              },
+              required: ["id", "name", "element"],
+              type: "object"
+            },
+            type: "array"
+          }
+        }
+      });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       const spectralResult = await spectral.run(result);
       expect(spectralResult).toHaveLength(0);
