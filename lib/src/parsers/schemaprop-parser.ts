@@ -198,7 +198,7 @@ export function extractJSDocSchemaProps(
     }
 
     const typeOf = (value: any): "string" | "number" | "boolean" => {
-      if (/^-?\d+$/.test(value)) {
+      if (/^-?\d+(\.\d+)?$/.test(value)) {
         return "number";
       }
 

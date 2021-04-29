@@ -1036,6 +1036,7 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
             \\"required\\": true,
             \\"schema\\": {
               \\"type\\": \\"string\\",
+              \\"title\\": \\"status-title\\",
               \\"minLength\\": 12,
               \\"maxLength\\": 20,
               \\"pattern\\": \\"^[0-9a-z_]+$\\"
@@ -1050,7 +1051,8 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
               \\"type\\": \\"integer\\",
               \\"format\\": \\"int32\\",
               \\"minimum\\": 1,
-              \\"maximum\\": 100,
+              \\"exclusiveMaximum\\": true,
+              \\"deprecated\\": true,
               \\"default\\": 42
             }
           }
@@ -1070,11 +1072,42 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                       },
                       \\"name\\": {
                         \\"type\\": \\"string\\"
+                      },
+                      \\"element\\": {
+                        \\"type\\": \\"object\\",
+                        \\"properties\\": {
+                          \\"price\\": {
+                            \\"type\\": \\"number\\",
+                            \\"format\\": \\"float\\",
+                            \\"example\\": 12,
+                            \\"maximum\\": 99.95,
+                            \\"exclusiveMinimum\\": false,
+                            \\"multipleOf\\": 4,
+                            \\"description\\": \\"property-schemaprop description for float inner object\\"
+                          }
+                        },
+                        \\"required\\": [
+                          \\"price\\"
+                        ],
+                        \\"minProperties\\": 1,
+                        \\"maxProperties\\": 100,
+                        \\"description\\": \\"property-schemaprop description for object\\"
+                      },
+                      \\"currencies\\": {
+                        \\"type\\": \\"array\\",
+                        \\"items\\": {
+                          \\"type\\": \\"string\\"
+                        },
+                        \\"minItems\\": 1,
+                        \\"maxItems\\": 5,
+                        \\"uniqueItems\\": true,
+                        \\"description\\": \\"property-schemaprop description for array\\"
                       }
                     },
                     \\"required\\": [
                       \\"id\\",
-                      \\"name\\"
+                      \\"name\\",
+                      \\"element\\"
                     ]
                   }
                 }

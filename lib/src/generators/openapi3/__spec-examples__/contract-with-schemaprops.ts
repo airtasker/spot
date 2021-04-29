@@ -6,7 +6,8 @@ import {
   request,
   response,
   String,
-  Integer
+  Integer,
+  Float
 } from "@airtasker/spot";
 
 @api({ name: "contract" })
@@ -22,6 +23,8 @@ class EndpointWithSchemaPropsOnHeaders {
     @headers
     headers: {
       /** property-schemaprop description for string
+       * @oaSchemaProp title
+       * "status-title"
        * @oaSchemaProp minLength
        * 12
        * @oaSchemaProp maxLength
@@ -33,8 +36,10 @@ class EndpointWithSchemaPropsOnHeaders {
       /** property-schemaprop description for integer
        * @oaSchemaProp minimum
        * 1
-       * @oaSchemaProp maximum
-       * 100
+       * @oaSchemaProp exclusiveMaximum
+       * true
+       * @oaSchemaProp deprecated
+       * true
        * @default 42
        *  */
       size: Integer;
@@ -42,5 +47,39 @@ class EndpointWithSchemaPropsOnHeaders {
   ) {}
 
   @response({ status: 200 })
-  successResponse(@body body: { id: String; name: String }[]) {}
+  successResponse(
+    @body
+    body: {
+      id: String;
+      name: String;
+      /** property-schemaprop description for object
+       * @oaSchemaProp minProperties
+       * 1
+       * @oaSchemaProp maxProperties
+       * 100
+       *  */
+      element: {
+        /** property-schemaprop description for float inner object
+         * @oaSchemaProp example
+         * 12.0
+         * @oaSchemaProp maximum
+         * 99.95
+         * @oaSchemaProp exclusiveMinimum
+         * false
+         * @oaSchemaProp multipleOf
+         * 4
+         *  */
+        price: Float;
+      };
+      /** property-schemaprop description for array
+       * @oaSchemaProp minItems
+       * 1
+       * @oaSchemaProp maxItems
+       * 5
+       * @oaSchemaProp uniqueItems
+       * true
+       *  */
+      currencies?: String[];
+    }[]
+  ) {}
 }
