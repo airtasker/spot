@@ -88,10 +88,6 @@ export function extractJSDocSchemaProps(
         }
       ],
       [
-        "discriminator",
-        { type: "string", targetTypes: [TypeKind.INTERSECTION] }
-      ],
-      [
         "example",
         {
           type: "any",
