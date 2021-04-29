@@ -7,7 +7,9 @@ import {
   response,
   String,
   Integer,
-  Float
+  Float,
+  Int64,
+  Double
 } from "@airtasker/spot";
 
 @api({ name: "contract" })
@@ -82,6 +84,43 @@ class EndpointWithSchemaPropsOnHeaders {
        * true
        *  */
       currencies?: String[];
+      /** property-schemaprop description for union
+       * @oaSchemaProp title
+       * "process-code"
+       * @oaSchemaProp deprecated
+       * false
+       *  */
+      code?: "VALID" | "NOT_VALID" | "WAITING" | "APPROVED";
+      /** property-schemaprop description for intersection
+       * @oaSchemaProp title
+       * "process-code"
+       * @oaSchemaProp deprecated
+       * true
+       *  */
+      inheritance?: {
+        /** property-schemaprop description for double inner intersection
+         * @oaSchemaProp example
+         * 12.0
+         * @oaSchemaProp maximum
+         * 99.95
+         * @oaSchemaProp exclusiveMinimum
+         * false
+         * @oaSchemaProp multipleOf
+         * 4
+         *  */
+        inheritId: Double;
+      } & {
+        /** property-schemaprop description for long inner intersection
+         * @oaSchemaProp minimum
+         * 1
+         * @oaSchemaProp exclusiveMaximum
+         * true
+         * @oaSchemaProp deprecated
+         * true
+         * @default 42
+         *  */
+        inheritName: Int64;
+      };
     }[]
   ) {}
 }

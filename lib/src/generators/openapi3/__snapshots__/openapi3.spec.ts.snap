@@ -1103,6 +1103,59 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                         \\"maxItems\\": 5,
                         \\"uniqueItems\\": true,
                         \\"description\\": \\"property-schemaprop description for array\\"
+                      },
+                      \\"code\\": {
+                        \\"type\\": \\"string\\",
+                        \\"enum\\": [
+                          \\"VALID\\",
+                          \\"NOT_VALID\\",
+                          \\"WAITING\\",
+                          \\"APPROVED\\"
+                        ],
+                        \\"title\\": \\"process-code\\",
+                        \\"deprecated\\": false,
+                        \\"description\\": \\"property-schemaprop description for union\\"
+                      },
+                      \\"inheritance\\": {
+                        \\"allOf\\": [
+                          {
+                            \\"type\\": \\"object\\",
+                            \\"properties\\": {
+                              \\"inheritId\\": {
+                                \\"type\\": \\"number\\",
+                                \\"format\\": \\"double\\",
+                                \\"example\\": 12,
+                                \\"maximum\\": 99.95,
+                                \\"exclusiveMinimum\\": false,
+                                \\"multipleOf\\": 4,
+                                \\"description\\": \\"property-schemaprop description for double inner intersection\\"
+                              }
+                            },
+                            \\"required\\": [
+                              \\"inheritId\\"
+                            ]
+                          },
+                          {
+                            \\"type\\": \\"object\\",
+                            \\"properties\\": {
+                              \\"inheritName\\": {
+                                \\"type\\": \\"integer\\",
+                                \\"format\\": \\"int64\\",
+                                \\"minimum\\": 1,
+                                \\"exclusiveMaximum\\": true,
+                                \\"deprecated\\": true,
+                                \\"default\\": 42,
+                                \\"description\\": \\"property-schemaprop description for long inner intersection\\"
+                              }
+                            },
+                            \\"required\\": [
+                              \\"inheritName\\"
+                            ]
+                          }
+                        ],
+                        \\"title\\": \\"process-code\\",
+                        \\"deprecated\\": true,
+                        \\"description\\": \\"property-schemaprop description for intersection\\"
                       }
                     },
                     \\"required\\": [

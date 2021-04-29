@@ -445,6 +445,53 @@ describe("OpenAPI 3 generator", () => {
                       minItems: 1,
                       type: "array",
                       uniqueItems: true
+                    },
+                    code: {
+                      description: "property-schemaprop description for union",
+                      enum: ["VALID", "NOT_VALID", "WAITING", "APPROVED"],
+                      title: "process-code",
+                      deprecated: false,
+                      type: "string"
+                    },
+                    inheritance: {
+                      allOf: [
+                        {
+                          properties: {
+                            inheritId: {
+                              description:
+                                "property-schemaprop description for double inner intersection",
+                              type: "number",
+                              format: "double",
+                              example: 12,
+                              exclusiveMinimum: false,
+                              maximum: 99.95,
+                              multipleOf: 4
+                            }
+                          },
+                          required: ["inheritId"],
+                          type: "object"
+                        },
+                        {
+                          properties: {
+                            inheritName: {
+                              description:
+                                "property-schemaprop description for long inner intersection",
+                              type: "integer",
+                              format: "int64",
+                              default: 42,
+                              deprecated: true,
+                              exclusiveMaximum: true,
+                              minimum: 1
+                            }
+                          },
+                          required: ["inheritName"],
+                          type: "object"
+                        }
+                      ],
+                      deprecated: true,
+                      description:
+                        "property-schemaprop description for intersection",
+                      title: "process-code"
                     }
                   },
                   required: ["id", "name", "element"],
