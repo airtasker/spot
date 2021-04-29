@@ -1091,6 +1091,7 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                         ],
                         \\"minProperties\\": 1,
                         \\"maxProperties\\": 100,
+                        \\"additionalProperties\\": true,
                         \\"description\\": \\"property-schemaprop description for object\\"
                       },
                       \\"currencies\\": {

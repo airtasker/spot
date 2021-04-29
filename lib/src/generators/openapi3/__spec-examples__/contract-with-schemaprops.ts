@@ -57,6 +57,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * 1
        * @oaSchemaProp maxProperties
        * 100
+       * @oaSchemaProp additionalProperties
+       * true
        *  */
       element: {
         /** property-schemaprop description for float inner object

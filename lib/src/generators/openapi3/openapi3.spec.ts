@@ -414,6 +414,7 @@ describe("OpenAPI 3 generator", () => {
                       description: "property-schemaprop description for object",
                       maxProperties: 100,
                       minProperties: 1,
+                      additionalProperties: true,
                       properties: {
                         price: {
                           description:
