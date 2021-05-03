@@ -3,7 +3,7 @@ import { QueryParam } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isQueryParamTypeSafe } from "../http";
 import { LociTable } from "../locations";
-import { Type, TypeTable } from "../types";
+import { isSchemaPropAllowedType, Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
@@ -12,6 +12,7 @@ import {
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
 import { extractJSDocExamples } from "./example-parser";
+import { extractJSDocSchemaProps } from "./schemaprop-parser";
 
 export function parseQueryParams(
   parameter: ParameterDeclaration,
@@ -52,6 +53,12 @@ export function parseQueryParams(
     if (examples && examples.isErr()) return examples;
 
     const optional = propertySignature.hasQuestionToken();
+
+    const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
+    if (schemaProps && schemaProps.isErr()) return schemaProps;
+    if (isSchemaPropAllowedType(type)) {
+      type.schemaProps = schemaProps?.unwrap();
+    }
 
     queryParams.push({
       name,

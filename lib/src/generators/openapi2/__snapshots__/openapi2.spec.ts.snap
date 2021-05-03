@@ -855,6 +855,152 @@ exports[`OpenAPI 2 generator responses endpoint specific and default responses 1
 }"
 `;
 
+exports[`OpenAPI 2 generator schemaprops contract with schemaprops parses correctly to an openapi specification 1`] = `
+"{
+  \\"swagger\\": \\"2.0\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"consumes\\": [
+    \\"application/json\\"
+  ],
+  \\"produces\\": [
+    \\"application/json\\"
+  ],
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"get\\": {
+        \\"operationId\\": \\"EndpointWithSchemaPropsOnHeaders\\",
+        \\"parameters\\": [
+          {
+            \\"name\\": \\"status\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-schemaprop description for string\\",
+            \\"required\\": true,
+            \\"type\\": \\"string\\",
+            \\"minLength\\": 12,
+            \\"maxLength\\": 20,
+            \\"pattern\\": \\"^[0-9a-z_]+$\\"
+          },
+          {
+            \\"name\\": \\"size\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-schemaprop description for integer\\",
+            \\"required\\": true,
+            \\"type\\": \\"integer\\",
+            \\"format\\": \\"int32\\",
+            \\"minimum\\": 1,
+            \\"default\\": 42
+          }
+        ],
+        \\"responses\\": {
+          \\"200\\": {
+            \\"description\\": \\"200 response\\",
+            \\"schema\\": {
+              \\"type\\": \\"array\\",
+              \\"items\\": {
+                \\"type\\": \\"object\\",
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"name\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"element\\": {
+                    \\"type\\": \\"object\\",
+                    \\"properties\\": {
+                      \\"price\\": {
+                        \\"type\\": \\"number\\",
+                        \\"format\\": \\"float\\",
+                        \\"example\\": 12,
+                        \\"maximum\\": 99.95,
+                        \\"multipleOf\\": 4,
+                        \\"description\\": \\"property-schemaprop description for float inner object\\"
+                      }
+                    },
+                    \\"required\\": [
+                      \\"price\\"
+                    ],
+                    \\"minProperties\\": 1,
+                    \\"maxProperties\\": 100,
+                    \\"description\\": \\"property-schemaprop description for object\\"
+                  },
+                  \\"currencies\\": {
+                    \\"type\\": \\"array\\",
+                    \\"items\\": {
+                      \\"type\\": \\"string\\"
+                    },
+                    \\"minItems\\": 1,
+                    \\"maxItems\\": 5,
+                    \\"uniqueItems\\": true,
+                    \\"description\\": \\"property-schemaprop description for array\\"
+                  },
+                  \\"code\\": {
+                    \\"type\\": \\"string\\",
+                    \\"enum\\": [
+                      \\"VALID\\",
+                      \\"NOT_VALID\\",
+                      \\"WAITING\\",
+                      \\"APPROVED\\"
+                    ],
+                    \\"title\\": \\"process-code\\",
+                    \\"description\\": \\"property-schemaprop description for union\\"
+                  },
+                  \\"inheritance\\": {
+                    \\"allOf\\": [
+                      {
+                        \\"type\\": \\"object\\",
+                        \\"properties\\": {
+                          \\"inheritId\\": {
+                            \\"type\\": \\"number\\",
+                            \\"format\\": \\"double\\",
+                            \\"example\\": 12,
+                            \\"maximum\\": 99.95,
+                            \\"multipleOf\\": 4,
+                            \\"description\\": \\"property-schemaprop description for double inner intersection\\"
+                          }
+                        },
+                        \\"required\\": [
+                          \\"inheritId\\"
+                        ]
+                      },
+                      {
+                        \\"type\\": \\"object\\",
+                        \\"properties\\": {
+                          \\"inheritName\\": {
+                            \\"type\\": \\"integer\\",
+                            \\"format\\": \\"int64\\",
+                            \\"minimum\\": 1,
+                            \\"default\\": 42,
+                            \\"description\\": \\"property-schemaprop description for long inner intersection\\"
+                          }
+                        },
+                        \\"required\\": [
+                          \\"inheritName\\"
+                        ]
+                      }
+                    ],
+                    \\"title\\": \\"process-code\\",
+                    \\"description\\": \\"property-schemaprop description for intersection\\"
+                  }
+                },
+                \\"required\\": [
+                  \\"id\\",
+                  \\"name\\",
+                  \\"element\\"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 2 generator security contract with security header 1`] = `
 "{
   \\"swagger\\": \\"2.0\\",

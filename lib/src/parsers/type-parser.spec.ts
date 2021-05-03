@@ -223,7 +223,13 @@ describe("type parser", () => {
             name: "propertyA",
             optional: false,
             type: {
-              kind: TypeKind.STRING
+              kind: TypeKind.STRING,
+              schemaProps: [
+                {
+                  name: "maxLength",
+                  value: 42
+                }
+              ]
             }
           },
           {
@@ -231,7 +237,8 @@ describe("type parser", () => {
             name: "propertyB",
             optional: true,
             type: {
-              kind: TypeKind.BOOLEAN
+              kind: TypeKind.BOOLEAN,
+              schemaProps: undefined
             }
           }
         ]
@@ -268,7 +275,8 @@ describe("type parser", () => {
               name: "a",
               optional: false,
               type: {
-                kind: TypeKind.BOOLEAN
+                kind: TypeKind.BOOLEAN,
+                schemaProps: undefined
               }
             }
           ]
@@ -362,7 +370,7 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasString")).toStrictEqual({
       description: undefined,
-      type: { kind: TypeKind.STRING }
+      type: { kind: TypeKind.STRING, schemaProps: undefined }
     });
   });
 
@@ -382,7 +390,8 @@ describe("type parser", () => {
       description: undefined,
       type: {
         kind: TypeKind.ARRAY,
-        elementType: { kind: TypeKind.STRING }
+        elementType: { kind: TypeKind.STRING },
+        schemaProps: undefined
       }
     });
   });
@@ -401,7 +410,15 @@ describe("type parser", () => {
     expect(typeTable.size).toBe(1);
     expect(typeTable.getOrError("AliasWithDescription")).toStrictEqual({
       description: "Alias description",
-      type: { kind: TypeKind.STRING }
+      type: {
+        kind: TypeKind.STRING,
+        schemaProps: [
+          {
+            name: "pattern",
+            value: "^[a-z]+$"
+          }
+        ]
+      }
     });
   });
 
@@ -421,13 +438,15 @@ describe("type parser", () => {
       description: undefined,
       type: {
         kind: TypeKind.OBJECT,
+        schemaProps: undefined,
         properties: [
           {
             description: undefined,
             name: "interfaceProperty",
             optional: false,
             type: {
-              kind: TypeKind.BOOLEAN
+              kind: TypeKind.BOOLEAN,
+              schemaProps: undefined
             }
           }
         ]
@@ -451,13 +470,20 @@ describe("type parser", () => {
       description: "Interface description",
       type: {
         kind: TypeKind.OBJECT,
+        schemaProps: undefined,
         properties: [
           {
-            description: undefined,
+            description: "InterfaceProperty description",
             name: "interfaceProperty",
             optional: false,
             type: {
-              kind: TypeKind.BOOLEAN
+              kind: TypeKind.BOOLEAN,
+              schemaProps: [
+                {
+                  name: "example",
+                  value: true
+                }
+              ]
             }
           }
         ]
@@ -481,13 +507,15 @@ describe("type parser", () => {
       description: undefined,
       type: {
         kind: TypeKind.OBJECT,
+        schemaProps: undefined,
         properties: [
           {
             description: undefined,
             name: "interfaceExtendsProperty",
             optional: false,
             type: {
-              kind: TypeKind.BOOLEAN
+              kind: TypeKind.BOOLEAN,
+              schemaProps: undefined
             }
           },
           {
@@ -495,7 +523,8 @@ describe("type parser", () => {
             name: "interfaceProperty",
             optional: false,
             type: {
-              kind: TypeKind.BOOLEAN
+              kind: TypeKind.BOOLEAN,
+              schemaProps: undefined
             }
           }
         ]
@@ -510,7 +539,7 @@ describe("type parser", () => {
 
     expect(
       parseType(type, typeTable, lociTable).unwrapOrThrow()
-    ).toStrictEqual({ kind: "boolean" });
+    ).toStrictEqual({ kind: "boolean", schemaProps: undefined });
   });
 
   test("parses nested indexed accessing", () => {
@@ -520,7 +549,7 @@ describe("type parser", () => {
 
     expect(
       parseType(type, typeTable, lociTable).unwrapOrThrow()
-    ).toStrictEqual({ kind: "boolean" });
+    ).toStrictEqual({ kind: "boolean", schemaProps: undefined });
   });
 
   test("parses indexed indexed accessing", () => {
@@ -530,7 +559,7 @@ describe("type parser", () => {
 
     expect(
       parseType(type, typeTable, lociTable).unwrapOrThrow()
-    ).toStrictEqual({ kind: "boolean" });
+    ).toStrictEqual({ kind: "boolean", schemaProps: undefined });
   });
 
   test("parses intersection type", () => {
@@ -550,7 +579,8 @@ describe("type parser", () => {
                 name: "typeA",
                 optional: false,
                 type: {
-                  kind: TypeKind.STRING
+                  kind: TypeKind.STRING,
+                  schemaProps: undefined
                 }
               }
             ]
@@ -563,7 +593,8 @@ describe("type parser", () => {
                 name: "typeB",
                 optional: false,
                 type: {
-                  kind: TypeKind.BOOLEAN
+                  kind: TypeKind.BOOLEAN,
+                  schemaProps: undefined
                 }
               }
             ]

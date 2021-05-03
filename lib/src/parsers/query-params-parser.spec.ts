@@ -32,7 +32,8 @@ describe("query params parser", () => {
       examples: undefined,
       name: "property",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -41,7 +42,8 @@ describe("query params parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -50,7 +52,8 @@ describe("query params parser", () => {
       examples: [{ name: "property-example", value: "property-example-value" }],
       name: "property-with-example",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -68,7 +71,8 @@ describe("query params parser", () => {
       ],
       name: "property-with-examples",
       type: {
-        kind: TypeKind.INT32
+        kind: TypeKind.INT32,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -77,7 +81,8 @@ describe("query params parser", () => {
       examples: undefined,
       name: "optionalProperty",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: true
     });
@@ -87,13 +92,15 @@ describe("query params parser", () => {
       name: "objectProperty",
       type: {
         kind: TypeKind.OBJECT,
+        schemaProps: undefined,
         properties: [
           {
             description: undefined,
             name: "objectProp",
             optional: false,
             type: {
-              kind: TypeKind.STRING
+              kind: TypeKind.STRING,
+              schemaProps: undefined
             }
           }
         ]
@@ -108,7 +115,8 @@ describe("query params parser", () => {
         kind: TypeKind.ARRAY,
         elementType: {
           kind: TypeKind.STRING
-        }
+        },
+        schemaProps: undefined
       },
       optional: false
     });
@@ -135,7 +143,8 @@ describe("query params parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -153,7 +162,8 @@ describe("query params parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -171,7 +181,8 @@ describe("query params parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });

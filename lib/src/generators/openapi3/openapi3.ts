@@ -310,7 +310,8 @@ function headerToHeaderObject(
   return {
     description: header.description,
     required: !header.optional,
-    schema: typeToSchemaOrReferenceObject(header.type, typeTable)
+    schema: typeToSchemaOrReferenceObject(header.type, typeTable),
+    examples: exampleToOpenApiExampleSet(header.examples)
   };
 }
 

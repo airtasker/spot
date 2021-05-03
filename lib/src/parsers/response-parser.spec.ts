@@ -35,7 +35,7 @@ describe("response parser", () => {
           examples: undefined,
           name: "property",
           optional: false,
-          type: { kind: TypeKind.STRING }
+          type: { kind: TypeKind.STRING, schemaProps: undefined }
         }
       ],
       status: 200
