@@ -36,7 +36,7 @@ describe("endpoint parser", () => {
             examples: undefined,
             name: "property",
             optional: false,
-            type: { kind: TypeKind.STRING }
+            type: { kind: TypeKind.STRING, schemaProps: undefined }
           }
         ]
       },
@@ -56,7 +56,7 @@ describe("endpoint parser", () => {
             examples: undefined,
             name: "property",
             optional: false,
-            type: { kind: TypeKind.STRING }
+            type: { kind: TypeKind.STRING, schemaProps: undefined }
           }
         ],
         pathParams: [
@@ -64,7 +64,7 @@ describe("endpoint parser", () => {
             description: undefined,
             examples: undefined,
             name: "pathParam",
-            type: { kind: TypeKind.STRING }
+            type: { kind: TypeKind.STRING, schemaProps: undefined }
           }
         ],
         queryParams: [
@@ -73,7 +73,7 @@ describe("endpoint parser", () => {
             examples: undefined,
             name: "property",
             optional: false,
-            type: { kind: TypeKind.STRING }
+            type: { kind: TypeKind.STRING, schemaProps: undefined }
           }
         ]
       },
@@ -89,7 +89,7 @@ describe("endpoint parser", () => {
               examples: undefined,
               name: "property",
               optional: false,
-              type: { kind: TypeKind.STRING }
+              type: { kind: TypeKind.STRING, schemaProps: undefined }
             }
           ],
           status: 200

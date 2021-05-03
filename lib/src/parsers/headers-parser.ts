@@ -3,7 +3,7 @@ import { Header } from "../definitions";
 import { OptionalNotAllowedError, ParserError } from "../errors";
 import { isHeaderTypeSafe } from "../http";
 import { LociTable } from "../locations";
-import { Type, TypeTable } from "../types";
+import { isSchemaPropAllowedType, Type, TypeTable } from "../types";
 import { err, ok, Result } from "../util";
 import {
   getJsDoc,
@@ -12,6 +12,7 @@ import {
 } from "./parser-helpers";
 import { parseType } from "./type-parser";
 import { extractJSDocExamples } from "./example-parser";
+import { extractJSDocSchemaProps } from "./schemaprop-parser";
 
 export function parseHeaders(
   parameter: ParameterDeclaration,
@@ -53,6 +54,12 @@ export function parseHeaders(
     const examples = extractJSDocExamples(jsDocNode, type);
     if (examples && examples.isErr()) return examples;
     const optional = propertySignature.hasQuestionToken();
+
+    const schemaProps = extractJSDocSchemaProps(jsDocNode, type);
+    if (schemaProps && schemaProps.isErr()) return schemaProps;
+    if (isSchemaPropAllowedType(type)) {
+      type.schemaProps = schemaProps?.unwrap();
+    }
 
     headers.push({
       name,

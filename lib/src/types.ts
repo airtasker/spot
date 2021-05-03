@@ -56,6 +56,11 @@ export type PrimitiveType = Exclude<
   ObjectType | ArrayType | UnionType | ReferenceType | IntersectionType
 >;
 
+export interface SchemaProp {
+  name: string;
+  value: boolean | number | string;
+}
+
 export type LiteralType =
   | BooleanLiteralType
   | StringLiteralType
@@ -68,54 +73,66 @@ export interface NullType {
 
 export interface BooleanType {
   kind: TypeKind.BOOLEAN;
+  schemaProps?: SchemaProp[];
 }
 
 export interface BooleanLiteralType {
   kind: TypeKind.BOOLEAN_LITERAL;
   value: boolean;
+  schemaProps?: SchemaProp[];
 }
 
 export interface StringType {
   kind: TypeKind.STRING;
+  schemaProps?: SchemaProp[];
 }
 
 export interface StringLiteralType {
   kind: TypeKind.STRING_LITERAL;
   value: string;
+  schemaProps?: SchemaProp[];
 }
 
 export interface FloatType {
   kind: TypeKind.FLOAT;
+  schemaProps?: SchemaProp[];
 }
 
 export interface DoubleType {
   kind: TypeKind.DOUBLE;
+  schemaProps?: SchemaProp[];
 }
 
 export interface FloatLiteralType {
   kind: TypeKind.FLOAT_LITERAL;
   value: number;
+  schemaProps?: SchemaProp[];
 }
 
 export interface Int32Type {
   kind: TypeKind.INT32;
+  schemaProps?: SchemaProp[];
 }
 
 export interface Int64Type {
   kind: TypeKind.INT64;
+  schemaProps?: SchemaProp[];
 }
 
 export interface IntLiteralType {
   kind: TypeKind.INT_LITERAL;
   value: number;
+  schemaProps?: SchemaProp[];
 }
 
 export interface DateType {
   kind: TypeKind.DATE;
+  schemaProps?: SchemaProp[];
 }
 
 export interface DateTimeType {
   kind: TypeKind.DATE_TIME;
+  schemaProps?: SchemaProp[];
 }
 
 export interface ObjectPropertiesType {
@@ -128,22 +145,26 @@ export interface ObjectPropertiesType {
 export interface ObjectType {
   kind: TypeKind.OBJECT;
   properties: Array<ObjectPropertiesType>;
+  schemaProps?: SchemaProp[];
 }
 
 export interface ArrayType {
   kind: TypeKind.ARRAY;
   elementType: Type;
+  schemaProps?: SchemaProp[];
 }
 
 export interface UnionType {
   kind: TypeKind.UNION;
   types: Type[];
   discriminator?: string;
+  schemaProps?: SchemaProp[];
 }
 
 export interface IntersectionType {
   kind: TypeKind.INTERSECTION;
   types: Type[];
+  schemaProps?: SchemaProp[];
 }
 
 export interface ReferenceType {
@@ -412,6 +433,12 @@ export function isReferenceType(type: Type): type is ReferenceType {
   return type.kind === TypeKind.REFERENCE;
 }
 
+export function isNotReferenceType<T extends Type>(
+  type: T
+): type is Exclude<T, ReferenceType> {
+  return !isReferenceType(type);
+}
+
 export function isPrimitiveType(type: Type): type is PrimitiveType {
   switch (type.kind) {
     case TypeKind.NULL:
@@ -452,6 +479,12 @@ export function isNotLiteralType<T extends Type>(
   type: T
 ): type is Exclude<T, LiteralType> {
   return !isLiteralType(type);
+}
+
+export function isSchemaPropAllowedType<T extends Type>(
+  type: T
+): type is Exclude<T, NullType | ReferenceType> {
+  return isNotNullType(type) && isNotReferenceType(type);
 }
 
 // Guard helpers

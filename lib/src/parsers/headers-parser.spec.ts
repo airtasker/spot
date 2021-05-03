@@ -32,7 +32,8 @@ describe("headers parser", () => {
       examples: undefined,
       name: "property",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -41,7 +42,8 @@ describe("headers parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -50,7 +52,8 @@ describe("headers parser", () => {
       examples: [{ name: "property-example", value: "property-example-value" }],
       name: "property-with-example",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -68,7 +71,8 @@ describe("headers parser", () => {
       ],
       name: "property-with-examples",
       type: {
-        kind: TypeKind.INT32
+        kind: TypeKind.INT32,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -77,7 +81,8 @@ describe("headers parser", () => {
       examples: undefined,
       name: "optionalProperty",
       type: {
-        kind: TypeKind.INT64
+        kind: TypeKind.INT64,
+        schemaProps: undefined
       },
       optional: true
     });
@@ -95,7 +100,8 @@ describe("headers parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -113,7 +119,8 @@ describe("headers parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
@@ -131,7 +138,8 @@ describe("headers parser", () => {
       examples: undefined,
       name: "property-with-description",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });

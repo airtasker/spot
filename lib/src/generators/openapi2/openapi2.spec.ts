@@ -286,6 +286,129 @@ describe("OpenAPI 2 generator", () => {
     });
   });
 
+  describe("schemaprops", () => {
+    test("contract with schemaprops parses correctly to an openapi specification", async () => {
+      const contract = generateContract("contract-with-schemaprops.ts");
+      const result = generateOpenAPI2(contract);
+
+      expect(result.paths["/users"].get).toHaveProperty("parameters", [
+        {
+          description: "property-schemaprop description for string",
+          name: "status",
+          in: "header",
+          required: true,
+          type: "string",
+          minLength: 12,
+          maxLength: 20,
+          pattern: "^[0-9a-z_]+$"
+        },
+        {
+          description: "property-schemaprop description for integer",
+          name: "size",
+          in: "header",
+          required: true,
+          format: "int32",
+          type: "integer",
+          minimum: 1,
+          default: 42
+        }
+      ]);
+      expect(result.paths["/users"].get).toHaveProperty("responses", {
+        "200": {
+          description: expect.anything(),
+          schema: {
+            items: {
+              properties: {
+                element: {
+                  description: "property-schemaprop description for object",
+                  maxProperties: 100,
+                  minProperties: 1,
+                  properties: {
+                    price: {
+                      description:
+                        "property-schemaprop description for float inner object",
+                      format: "float",
+                      type: "number",
+                      example: 12,
+                      maximum: 99.95,
+                      multipleOf: 4
+                    }
+                  },
+                  required: ["price"],
+                  type: "object"
+                },
+                id: {
+                  type: "string"
+                },
+                name: {
+                  type: "string"
+                },
+                currencies: {
+                  description: "property-schemaprop description for array",
+                  items: {
+                    type: "string"
+                  },
+                  maxItems: 5,
+                  minItems: 1,
+                  type: "array",
+                  uniqueItems: true
+                },
+                code: {
+                  description: "property-schemaprop description for union",
+                  enum: ["VALID", "NOT_VALID", "WAITING", "APPROVED"],
+                  title: "process-code",
+                  type: "string"
+                },
+                inheritance: {
+                  allOf: [
+                    {
+                      properties: {
+                        inheritId: {
+                          description:
+                            "property-schemaprop description for double inner intersection",
+                          type: "number",
+                          format: "double",
+                          example: 12,
+                          maximum: 99.95,
+                          multipleOf: 4
+                        }
+                      },
+                      required: ["inheritId"],
+                      type: "object"
+                    },
+                    {
+                      properties: {
+                        inheritName: {
+                          description:
+                            "property-schemaprop description for long inner intersection",
+                          type: "integer",
+                          format: "int64",
+                          default: 42,
+                          minimum: 1
+                        }
+                      },
+                      required: ["inheritName"],
+                      type: "object"
+                    }
+                  ],
+                  description:
+                    "property-schemaprop description for intersection",
+                  title: "process-code"
+                }
+              },
+              required: ["id", "name", "element"],
+              type: "object"
+            },
+            type: "array"
+          }
+        }
+      });
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
+  });
+
   describe("intersection types", () => {
     test("evaluates intersection type", async () => {
       const contract = generateContract("contract-with-intersection-types.ts");

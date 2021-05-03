@@ -5,6 +5,7 @@ import {
   dereferenceType,
   isArrayType,
   ReferenceType,
+  SchemaProp,
   Type,
   TypeKind,
   TypeTable
@@ -22,6 +23,7 @@ import {
   QueryParameterObject,
   StringParameterObject
 } from "./openapi2-specification";
+import { schemaPropToObject } from "./openapi2-type-util";
 
 export function pathParamToPathParameterObject(
   pathParam: PathParam,
@@ -101,35 +103,61 @@ function basicTypeToParameterBasicTypeObject(
     case TypeKind.NULL:
       throw new Error("Null is not supported for parameters in OpenAPI 2");
     case TypeKind.BOOLEAN:
-      return booleanParameterObject();
+      return booleanParameterObject({ schemaProps: type.schemaProps });
     case TypeKind.BOOLEAN_LITERAL:
-      return booleanParameterObject({ values: [type.value] });
+      return booleanParameterObject({
+        values: [type.value],
+        schemaProps: type.schemaProps
+      });
     case TypeKind.STRING:
-      return stringParameterObject();
+      return stringParameterObject({ schemaProps: type.schemaProps });
     case TypeKind.STRING_LITERAL:
-      return stringParameterObject({ values: [type.value] });
+      return stringParameterObject({
+        values: [type.value],
+        schemaProps: type.schemaProps
+      });
     case TypeKind.FLOAT:
-      return numberParameterObject({ format: "float" });
+      return numberParameterObject({
+        format: "float",
+        schemaProps: type.schemaProps
+      });
     case TypeKind.DOUBLE:
-      return numberParameterObject({ format: "double" });
+      return numberParameterObject({
+        format: "double",
+        schemaProps: type.schemaProps
+      });
     case TypeKind.FLOAT_LITERAL:
       return numberParameterObject({
         values: [type.value],
-        format: "float"
+        format: "float",
+        schemaProps: type.schemaProps
       });
     case TypeKind.INT32:
-      return integerParameterObject({ format: "int32" });
+      return integerParameterObject({
+        format: "int32",
+        schemaProps: type.schemaProps
+      });
     case TypeKind.INT64:
-      return integerParameterObject({ format: "int64" });
+      return integerParameterObject({
+        format: "int64",
+        schemaProps: type.schemaProps
+      });
     case TypeKind.INT_LITERAL:
       return integerParameterObject({
         values: [type.value],
-        format: "int32"
+        format: "int32",
+        schemaProps: type.schemaProps
       });
     case TypeKind.DATE:
-      return stringParameterObject({ format: "date" });
+      return stringParameterObject({
+        format: "date",
+        schemaProps: type.schemaProps
+      });
     case TypeKind.DATE_TIME:
-      return stringParameterObject({ format: "date-time" });
+      return stringParameterObject({
+        format: "date-time",
+        schemaProps: type.schemaProps
+      });
     case TypeKind.OBJECT:
       throw new Error("Object is not supported for parameters in OpenAPI 2");
     case TypeKind.UNION:
@@ -144,11 +172,14 @@ function basicTypeToParameterBasicTypeObject(
 }
 
 function booleanParameterObject(
-  opts: { values?: boolean[] } = {}
+  opts: { values?: boolean[]; schemaProps?: SchemaProp[] } = {}
 ): BooleanParameterObjectType {
   return {
-    type: "boolean",
-    enum: opts.values
+    ...{
+      type: "boolean",
+      enum: opts.values
+    },
+    ...(<BooleanParameterObjectType>schemaPropToObject(opts.schemaProps))
   };
 }
 
@@ -156,12 +187,16 @@ function stringParameterObject(
   opts: {
     values?: string[];
     format?: StringParameterObject["format"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): StringParameterObject {
   return {
-    type: "string",
-    enum: opts.values,
-    format: opts.format
+    ...{
+      type: "string",
+      enum: opts.values,
+      format: opts.format
+    },
+    ...(<StringParameterObject>schemaPropToObject(opts.schemaProps))
   };
 }
 
@@ -169,12 +204,16 @@ function numberParameterObject(
   opts: {
     values?: number[];
     format?: NumberParameterObjectType["format"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): NumberParameterObjectType {
   return {
-    type: "number",
-    enum: opts.values,
-    format: opts.format
+    ...{
+      type: "number",
+      enum: opts.values,
+      format: opts.format
+    },
+    ...(<NumberParameterObjectType>schemaPropToObject(opts.schemaProps))
   };
 }
 
@@ -182,12 +221,16 @@ function integerParameterObject(
   opts: {
     values?: number[];
     format?: IntegerParameterObjectType["format"];
+    schemaProps?: SchemaProp[];
   } = {}
 ): IntegerParameterObjectType {
   return {
-    type: "integer",
-    enum: opts.values,
-    format: opts.format
+    ...{
+      type: "integer",
+      enum: opts.values,
+      format: opts.format
+    },
+    ...(<IntegerParameterObjectType>schemaPropToObject(opts.schemaProps))
   };
 }
 
