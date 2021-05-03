@@ -48,89 +48,6 @@ export function extractJSDocSchemaProps(
   if (rawSchemaProps && rawSchemaProps.length > 0) {
     const schemaProps: SchemaProp[] = [];
     let schemaPropError;
-    const propTypeMap = new Map<
-      string,
-      {
-        type: "string" | "number" | "boolean" | "any";
-        targetTypes: (TypeKind | "number")[];
-      }
-    >([
-      [
-        "additionalProperties",
-        { type: "boolean", targetTypes: [TypeKind.OBJECT] }
-      ],
-      [
-        "default",
-        {
-          type: "any",
-          targetTypes: [
-            "number",
-            TypeKind.STRING,
-            TypeKind.BOOLEAN,
-            TypeKind.ARRAY,
-            TypeKind.OBJECT
-          ]
-        }
-      ],
-      [
-        "deprecated",
-        {
-          type: "boolean",
-          targetTypes: [
-            "number",
-            TypeKind.STRING,
-            TypeKind.BOOLEAN,
-            TypeKind.ARRAY,
-            TypeKind.OBJECT,
-            TypeKind.UNION,
-            TypeKind.INTERSECTION
-          ]
-        }
-      ],
-      [
-        "example",
-        {
-          type: "any",
-          targetTypes: [
-            "number",
-            TypeKind.STRING,
-            TypeKind.BOOLEAN,
-            TypeKind.ARRAY,
-            TypeKind.OBJECT,
-            TypeKind.UNION,
-            TypeKind.INTERSECTION
-          ]
-        }
-      ],
-      ["exclusiveMaximum", { type: "boolean", targetTypes: ["number"] }],
-      ["exclusiveMinimum", { type: "boolean", targetTypes: ["number"] }],
-      ["maximum", { type: "number", targetTypes: ["number"] }],
-      ["maxItems", { type: "number", targetTypes: [TypeKind.ARRAY] }],
-      ["maxLength", { type: "number", targetTypes: [TypeKind.STRING] }],
-      ["maxProperties", { type: "number", targetTypes: [TypeKind.OBJECT] }],
-      ["minimum", { type: "number", targetTypes: ["number"] }],
-      ["minItems", { type: "number", targetTypes: [TypeKind.ARRAY] }],
-      ["minLength", { type: "number", targetTypes: [TypeKind.STRING] }],
-      ["minProperties", { type: "number", targetTypes: [TypeKind.OBJECT] }],
-      ["multipleOf", { type: "number", targetTypes: ["number"] }],
-      ["pattern", { type: "string", targetTypes: [TypeKind.STRING] }],
-      [
-        "title",
-        {
-          type: "string",
-          targetTypes: [
-            "number",
-            TypeKind.STRING,
-            TypeKind.BOOLEAN,
-            TypeKind.ARRAY,
-            TypeKind.OBJECT,
-            TypeKind.UNION,
-            TypeKind.INTERSECTION
-          ]
-        }
-      ],
-      ["uniqueItems", { type: "boolean", targetTypes: [TypeKind.ARRAY] }]
-    ]);
 
     rawSchemaProps.every(schemaProp => {
       const schemaPropName = schemaProp?.split("\n")[0]?.trim();
@@ -262,3 +179,84 @@ export function extractJSDocSchemaProps(
   }
   return;
 }
+
+export const propTypeMap = new Map<
+  string,
+  {
+    type: "string" | "number" | "boolean" | "any";
+    targetTypes: (TypeKind | "number")[];
+  }
+>([
+  ["additionalProperties", { type: "boolean", targetTypes: [TypeKind.OBJECT] }],
+  [
+    "default",
+    {
+      type: "any",
+      targetTypes: [
+        "number",
+        TypeKind.STRING,
+        TypeKind.BOOLEAN,
+        TypeKind.ARRAY,
+        TypeKind.OBJECT
+      ]
+    }
+  ],
+  [
+    "deprecated",
+    {
+      type: "boolean",
+      targetTypes: [
+        "number",
+        TypeKind.STRING,
+        TypeKind.BOOLEAN,
+        TypeKind.ARRAY,
+        TypeKind.OBJECT,
+        TypeKind.UNION,
+        TypeKind.INTERSECTION
+      ]
+    }
+  ],
+  [
+    "example",
+    {
+      type: "any",
+      targetTypes: [
+        "number",
+        TypeKind.STRING,
+        TypeKind.BOOLEAN,
+        TypeKind.ARRAY,
+        TypeKind.OBJECT,
+        TypeKind.UNION,
+        TypeKind.INTERSECTION
+      ]
+    }
+  ],
+  ["exclusiveMaximum", { type: "boolean", targetTypes: ["number"] }],
+  ["exclusiveMinimum", { type: "boolean", targetTypes: ["number"] }],
+  ["maximum", { type: "number", targetTypes: ["number"] }],
+  ["maxItems", { type: "number", targetTypes: [TypeKind.ARRAY] }],
+  ["maxLength", { type: "number", targetTypes: [TypeKind.STRING] }],
+  ["maxProperties", { type: "number", targetTypes: [TypeKind.OBJECT] }],
+  ["minimum", { type: "number", targetTypes: ["number"] }],
+  ["minItems", { type: "number", targetTypes: [TypeKind.ARRAY] }],
+  ["minLength", { type: "number", targetTypes: [TypeKind.STRING] }],
+  ["minProperties", { type: "number", targetTypes: [TypeKind.OBJECT] }],
+  ["multipleOf", { type: "number", targetTypes: ["number"] }],
+  ["pattern", { type: "string", targetTypes: [TypeKind.STRING] }],
+  [
+    "title",
+    {
+      type: "string",
+      targetTypes: [
+        "number",
+        TypeKind.STRING,
+        TypeKind.BOOLEAN,
+        TypeKind.ARRAY,
+        TypeKind.OBJECT,
+        TypeKind.UNION,
+        TypeKind.INTERSECTION
+      ]
+    }
+  ],
+  ["uniqueItems", { type: "boolean", targetTypes: [TypeKind.ARRAY] }]
+]);
