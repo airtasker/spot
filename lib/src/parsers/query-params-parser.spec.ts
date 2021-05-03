@@ -125,7 +125,8 @@ describe("query params parser", () => {
       examples: undefined,
       name: "property.with.dots",
       type: {
-        kind: TypeKind.STRING
+        kind: TypeKind.STRING,
+        schemaProps: undefined
       },
       optional: false
     });
