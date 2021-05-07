@@ -1169,6 +1169,7 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                         ],
                         \\"title\\": \\"process-code\\",
                         \\"deprecated\\": false,
+                        \\"example\\": \\"WAITING\\",
                         \\"description\\": \\"property-schemaprop description for union\\"
                       },
                       \\"inheritance\\": {
@@ -1210,6 +1211,10 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                         ],
                         \\"title\\": \\"process-code\\",
                         \\"deprecated\\": true,
+                        \\"example\\": {
+                          \\"inheritId\\": 3.14,
+                          \\"inheritName\\": 42
+                        },
                         \\"description\\": \\"property-schemaprop description for intersection\\"
                       }
                     },

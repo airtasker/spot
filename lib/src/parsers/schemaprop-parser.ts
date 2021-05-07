@@ -52,6 +52,19 @@ export function extractJSDocSchemaProps(
     const typeSpecified: TypeKind | "number" =
       spotTypesToJSTypesMap.get(type.kind) || type.kind;
 
+    let subTypeSpecified = typeSpecified;
+    if (type.kind === TypeKind.UNION || type.kind === TypeKind.INTERSECTION) {
+      const referenceType: TypeKind = type.types[0].kind;
+      if (
+        type.types.every(subType => {
+          return subType.kind === referenceType;
+        })
+      ) {
+        subTypeSpecified =
+          spotTypesToJSTypesMap.get(referenceType) || referenceType;
+      }
+    }
+
     rawSchemaProps.every(schemaProp => {
       const schemaPropName = schemaProp?.split("\n")[0]?.trim();
       const schemaPropValue = schemaProp?.split("\n")[1]?.trim();
@@ -148,7 +161,7 @@ export function extractJSDocSchemaProps(
       schemaProps.some(
         schemaProp =>
           (propTypeMap.get(schemaProp.name)?.type === "any" &&
-            typeOf(schemaProp.value) !== typeSpecified) ||
+            typeOf(schemaProp.value) !== subTypeSpecified) ||
           (propTypeMap.get(schemaProp.name)?.type !== "any" &&
             propTypeMap.get(schemaProp.name)?.type !== typeOf(schemaProp.value))
       )
