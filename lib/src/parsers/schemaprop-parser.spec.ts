@@ -86,6 +86,24 @@ describe("schemaprop-parser", () => {
       ]);
     });
 
+    test("successfully parses date schemaprops on properties on type ParsedSchemaProps", () => {
+      const booleanSchemaPropNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-date"'
+      );
+      const retrieveBooleanSchemaProp = extractJSDocSchemaProps(
+        booleanSchemaPropNode,
+        {
+          kind: TypeKind.DATE
+        }
+      );
+      expect(retrieveBooleanSchemaProp).toBeDefined();
+      expect(retrieveBooleanSchemaProp!.isOk).toBeTruthy();
+      expect(retrieveBooleanSchemaProp!.unwrapOrThrow()).toStrictEqual([
+        { name: "example", value: "1990-12-31" }
+      ]);
+    });
+
     test("errors schemaprops on properties on type MismatchedSchemaPropAndIntegerType", () => {
       const integerSchemaPropNode = getJsDocsFromPropertySignatures(
         properties,

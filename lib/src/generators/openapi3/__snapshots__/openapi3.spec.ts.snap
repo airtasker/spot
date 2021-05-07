@@ -1086,6 +1086,18 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
             }
           },
           {
+            \\"name\\": \\"start-time\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-schemaprop description for date-time\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\",
+              \\"format\\": \\"date-time\\",
+              \\"title\\": \\"date-time-title\\",
+              \\"default\\": \\"1990-12-31T15:59:60-08:00\\"
+            }
+          },
+          {
             \\"name\\": \\"size\\",
             \\"in\\": \\"header\\",
             \\"description\\": \\"property-schemaprop description for integer\\",
