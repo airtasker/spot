@@ -113,38 +113,9 @@ export function extractJSDocSchemaProps(
       return schemaPropError;
     }
 
-    const typeOf = (value: any): TypeKind | "number" => {
-      if (/^-?\d+(\.\d+)?$/.test(value)) {
-        return "number";
-      }
-
-      if (typeof value === "boolean") {
-        return TypeKind.BOOLEAN;
-      }
-
-      return TypeKind.STRING;
-    };
-
     const nameSchemaProps: string[] = schemaProps.map(ex => {
       return ex.name;
     });
-
-    if (
-      schemaProps.some(
-        schemaProp =>
-          (propTypeMap.get(schemaProp.name)?.type === "any" &&
-            typeOf(schemaProp.value) !== typeSpecified) ||
-          (propTypeMap.get(schemaProp.name)?.type !== "any" &&
-            propTypeMap.get(schemaProp.name)?.type !== typeOf(schemaProp.value))
-      )
-    ) {
-      return err(
-        new ParserError("property type is wrong or property not allowed", {
-          file: parentJsDocNode.getSourceFile().getFilePath(),
-          position: parentJsDocNode.getPos()
-        })
-      );
-    }
 
     if (
       nameSchemaProps.some(
@@ -156,12 +127,37 @@ export function extractJSDocSchemaProps(
     ) {
       return err(
         new ParserError(
-          "property must be compliant with " + typeSpecified + " type",
+          "property must be compliant with " +
+            typeSpecified +
+            " type or property not allowed",
           {
             file: parentJsDocNode.getSourceFile().getFilePath(),
             position: parentJsDocNode.getPos()
           }
         )
+      );
+    }
+
+    const typeOf = (value: any): string => {
+      const typeOfValue = Object.prototype.toString.call(value);
+      const regex = /\[object |\]/g;
+      return typeOfValue.replace(regex, "").toLowerCase();
+    };
+
+    if (
+      schemaProps.some(
+        schemaProp =>
+          (propTypeMap.get(schemaProp.name)?.type === "any" &&
+            typeOf(schemaProp.value) !== typeSpecified) ||
+          (propTypeMap.get(schemaProp.name)?.type !== "any" &&
+            propTypeMap.get(schemaProp.name)?.type !== typeOf(schemaProp.value))
+      )
+    ) {
+      return err(
+        new ParserError("property type is wrong", {
+          file: parentJsDocNode.getSourceFile().getFilePath(),
+          position: parentJsDocNode.getPos()
+        })
       );
     }
 
