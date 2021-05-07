@@ -22,6 +22,11 @@ type SchemaPropTests = {
    * "1990-12-31"
    *  */
   "property-with-date": Date;
+  /** property-schemaprop array of integer
+   * @oaSchemaProp example
+   * [1990,12,31]
+   *  */
+  "property-with-array": Integer[];
   /**
    * @oaSchemaProp example
    * This_is_not_an_integer

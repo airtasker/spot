@@ -86,6 +86,25 @@ describe("schemaprop-parser", () => {
       ]);
     });
 
+    test("successfully parses array schemaprops on properties on type ParsedSchemaProps", () => {
+      const booleanSchemaPropNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-array"'
+      );
+      const retrieveBooleanSchemaProp = extractJSDocSchemaProps(
+        booleanSchemaPropNode,
+        {
+          kind: TypeKind.ARRAY,
+          elementType: { kind: TypeKind.INT32 }
+        }
+      );
+      expect(retrieveBooleanSchemaProp).toBeDefined();
+      expect(retrieveBooleanSchemaProp!.isOk).toBeTruthy();
+      expect(retrieveBooleanSchemaProp!.unwrapOrThrow()).toStrictEqual([
+        { name: "example", value: [1990, 12, 31] }
+      ]);
+    });
+
     test("successfully parses date schemaprops on properties on type ParsedSchemaProps", () => {
       const booleanSchemaPropNode = getJsDocsFromPropertySignatures(
         properties,
