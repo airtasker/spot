@@ -462,6 +462,7 @@ describe("OpenAPI 3 generator", () => {
                       description: "property-schemaprop description for union",
                       enum: ["VALID", "NOT_VALID", "WAITING", "APPROVED"],
                       title: "process-code",
+                      example: "WAITING",
                       deprecated: false,
                       type: "string"
                     },
@@ -501,6 +502,10 @@ describe("OpenAPI 3 generator", () => {
                         }
                       ],
                       deprecated: true,
+                      example: {
+                        inheritId: 3.14,
+                        inheritName: 42
+                      },
                       description:
                         "property-schemaprop description for intersection",
                       title: "process-code"

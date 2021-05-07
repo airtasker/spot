@@ -97,6 +97,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * "process-code"
        * @oaSchemaProp deprecated
        * false
+       * @oaSchemaProp example
+       * "WAITING"
        *  */
       code?: "VALID" | "NOT_VALID" | "WAITING" | "APPROVED";
       /** property-schemaprop description for intersection
@@ -104,6 +106,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * "process-code"
        * @oaSchemaProp deprecated
        * true
+       * @oaSchemaProp example
+       * {"inheritId":3.14, "inheritName":42}
        *  */
       inheritance?: {
         /** property-schemaprop description for double inner intersection
