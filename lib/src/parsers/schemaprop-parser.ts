@@ -49,6 +49,9 @@ export function extractJSDocSchemaProps(
     const schemaProps: SchemaProp[] = [];
     let schemaPropError;
 
+    const typeSpecified: TypeKind | "number" =
+      spotTypesToJSTypesMap.get(type.kind) || type.kind;
+
     rawSchemaProps.every(schemaProp => {
       const schemaPropName = schemaProp?.split("\n")[0]?.trim();
       const schemaPropValue = schemaProp?.split("\n")[1]?.trim();
@@ -77,7 +80,7 @@ export function extractJSDocSchemaProps(
 
         if (
           (propTypeMap.get(schemaPropName)?.type === "string" ||
-            (type.kind === TypeKind.STRING &&
+            (typeSpecified === TypeKind.STRING &&
               propTypeMap.get(schemaPropName)?.type === "any")) &&
           (!schemaPropValue.startsWith('"') || !schemaPropValue.endsWith('"'))
         ) {
@@ -110,34 +113,21 @@ export function extractJSDocSchemaProps(
       return schemaPropError;
     }
 
-    const typeOf = (value: any): "string" | "number" | "boolean" => {
+    const typeOf = (value: any): TypeKind | "number" => {
       if (/^-?\d+(\.\d+)?$/.test(value)) {
         return "number";
       }
 
       if (typeof value === "boolean") {
-        return "boolean";
+        return TypeKind.BOOLEAN;
       }
 
-      return "string";
+      return TypeKind.STRING;
     };
 
     const nameSchemaProps: string[] = schemaProps.map(ex => {
       return ex.name;
     });
-
-    const spotTypesToJSTypesMap = new Map();
-    spotTypesToJSTypesMap.set(TypeKind.INT32, "number");
-    spotTypesToJSTypesMap.set(TypeKind.INT64, "number");
-    spotTypesToJSTypesMap.set(TypeKind.INT_LITERAL, "number");
-    spotTypesToJSTypesMap.set(TypeKind.FLOAT, "number");
-    spotTypesToJSTypesMap.set(TypeKind.FLOAT_LITERAL, "number");
-    spotTypesToJSTypesMap.set(TypeKind.DOUBLE, "number");
-    spotTypesToJSTypesMap.set(TypeKind.BOOLEAN_LITERAL, "boolean");
-    spotTypesToJSTypesMap.set(TypeKind.STRING_LITERAL, "string");
-
-    const typeSpecified: TypeKind | "number" =
-      spotTypesToJSTypesMap.get(type.kind) || type.kind;
 
     if (
       schemaProps.some(
@@ -259,4 +249,17 @@ export const propTypeMap = new Map<
     }
   ],
   ["uniqueItems", { type: "boolean", targetTypes: [TypeKind.ARRAY] }]
+]);
+
+const spotTypesToJSTypesMap = new Map<TypeKind, TypeKind | "number">([
+  [TypeKind.INT32, "number"],
+  [TypeKind.INT64, "number"],
+  [TypeKind.INT_LITERAL, "number"],
+  [TypeKind.FLOAT, "number"],
+  [TypeKind.FLOAT_LITERAL, "number"],
+  [TypeKind.DOUBLE, "number"],
+  [TypeKind.BOOLEAN_LITERAL, TypeKind.BOOLEAN],
+  [TypeKind.STRING_LITERAL, TypeKind.STRING],
+  [TypeKind.DATE, TypeKind.STRING],
+  [TypeKind.DATE_TIME, TypeKind.STRING]
 ]);

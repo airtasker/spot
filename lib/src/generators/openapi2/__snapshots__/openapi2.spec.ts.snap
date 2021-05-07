@@ -884,6 +884,15 @@ exports[`OpenAPI 2 generator schemaprops contract with schemaprops parses correc
             \\"pattern\\": \\"^[0-9a-z_]+$\\"
           },
           {
+            \\"name\\": \\"start-time\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-schemaprop description for date-time\\",
+            \\"required\\": false,
+            \\"type\\": \\"string\\",
+            \\"format\\": \\"date-time\\",
+            \\"default\\": \\"1990-12-31T15:59:60-08:00\\"
+          },
+          {
             \\"name\\": \\"size\\",
             \\"in\\": \\"header\\",
             \\"description\\": \\"property-schemaprop description for integer\\",

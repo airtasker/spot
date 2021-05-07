@@ -303,6 +303,15 @@ describe("OpenAPI 2 generator", () => {
           pattern: "^[0-9a-z_]+$"
         },
         {
+          description: "property-schemaprop description for date-time",
+          name: "start-time",
+          in: "header",
+          required: false,
+          type: "string",
+          format: "date-time",
+          default: "1990-12-31T15:59:60-08:00"
+        },
+        {
           description: "property-schemaprop description for integer",
           name: "size",
           in: "header",

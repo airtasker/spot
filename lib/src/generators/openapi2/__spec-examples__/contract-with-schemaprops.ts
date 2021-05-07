@@ -6,6 +6,7 @@ import {
   request,
   response,
   String,
+  DateTime,
   Integer,
   Float,
   Int64,
@@ -33,6 +34,11 @@ class EndpointWithSchemaPropsOnHeaders {
        * "^[0-9a-z_]+$"
        *  */
       status: String;
+      /** property-schemaprop description for date-time
+       * @default
+       * "1990-12-31T15:59:60-08:00"
+       *  */
+      "start-time"?: DateTime;
       /** property-schemaprop description for integer
        * @oaSchemaProp minimum
        * 1

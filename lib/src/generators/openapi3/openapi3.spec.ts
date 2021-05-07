@@ -388,6 +388,18 @@ describe("OpenAPI 3 generator", () => {
           }
         },
         {
+          description: "property-schemaprop description for date-time",
+          in: "header",
+          name: "start-time",
+          required: false,
+          schema: {
+            title: "date-time-title",
+            type: "string",
+            format: "date-time",
+            default: "1990-12-31T15:59:60-08:00"
+          }
+        },
+        {
           description: "property-schemaprop description for integer",
           name: "size",
           in: "header",
