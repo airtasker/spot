@@ -1,4 +1,4 @@
-import { Date, Integer } from "../../syntax";
+import { Date, Integer, String } from "../../syntax";
 
 type SchemaPropTests = {
   /** property-schemaprop description
@@ -6,6 +6,11 @@ type SchemaPropTests = {
    * "property-schemaprop-value"
    *  */
   "property-with-schemaprop": string;
+   /**
+   * @oaSchemaProp example
+   * "123.3"
+   */
+  "property-with-string": String;
   /** property-two-schemaprops description
    * @oaSchemaProp minimum
    * 123

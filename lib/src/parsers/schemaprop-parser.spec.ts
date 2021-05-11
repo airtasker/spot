@@ -49,6 +49,24 @@ describe("schemaprop-parser", () => {
       ]);
     });
 
+    test("successfully parses string example schemaprops on properties on type ParsedSchemaProps", () => {
+      const stringSchemaPropNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-string"'
+      );
+      const retrieveStringSchemaProp = extractJSDocSchemaProps(
+        stringSchemaPropNode,
+        {
+          kind: TypeKind.STRING
+        }
+      );
+      expect(retrieveStringSchemaProp).toBeDefined();
+      expect(retrieveStringSchemaProp!.isOk).toBeTruthy();
+      expect(retrieveStringSchemaProp!.unwrapOrThrow()).toStrictEqual([
+        { name: "example", value: "123.3" }
+      ]);
+    });
+
     test("successfully parses integer schemaprops on properties on type ParsedSchemaProps", () => {
       const integerSchemaPropNode = getJsDocsFromPropertySignatures(
         properties,
