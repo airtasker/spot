@@ -15,8 +15,10 @@ export const availableRules: LintingRules = {
   "has-response": hasResponse,
   "no-inline-objects-within-unions": noInlineObjectsWithinUnions,
   "no-nullable-arrays": noNullableArrays,
-  "no-nullable-fields-within-request-bodies": noNullableFieldsWithinRequestBodies,
-  "no-omittable-fields-within-response-bodies": noOmittableFieldsWithinResponseBodies
+  "no-nullable-fields-within-request-bodies":
+    noNullableFieldsWithinRequestBodies,
+  "no-omittable-fields-within-response-bodies":
+    noOmittableFieldsWithinResponseBodies
 };
 
 interface LintingRules {

@@ -228,9 +228,9 @@ export class ContractMismatcher {
         case MismatchKind.BODY_TYPE_DISPARITY:
           violations.push(
             responseBodyTypeDisparityViolation(
-              `Response body type disparity:\n${
-                m.data
-              }\n${m.typeDisparities.map(disp => `- ${disp}`).join("\n")}`,
+              `Response body type disparity:\n${m.data}\n${m.typeDisparities
+                .map(disp => `- ${disp}`)
+                .join("\n")}`,
               m.typeDisparities
             )
           );

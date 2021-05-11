@@ -556,9 +556,8 @@ function parseIndexedAccessType(
   typeTable: TypeTable,
   lociTable: LociTable
 ): Result<Type, ParserError> {
-  const propertyAccessChainResult = resolveIndexAccessPropertyAccessChain(
-    typeNode
-  );
+  const propertyAccessChainResult =
+    resolveIndexAccessPropertyAccessChain(typeNode);
   if (propertyAccessChainResult.isErr()) return propertyAccessChainResult;
 
   const rootReferenceResult = resolveIndexedAccessRootReference(typeNode);

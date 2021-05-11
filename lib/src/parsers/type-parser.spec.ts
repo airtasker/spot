@@ -537,9 +537,9 @@ describe("type parser", () => {
       .getPropertyOrThrow("indexedAccess")
       .getTypeNodeOrThrow();
 
-    expect(
-      parseType(type, typeTable, lociTable).unwrapOrThrow()
-    ).toStrictEqual({ kind: "boolean", schemaProps: undefined });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      { kind: "boolean", schemaProps: undefined }
+    );
   });
 
   test("parses nested indexed accessing", () => {
@@ -547,9 +547,9 @@ describe("type parser", () => {
       .getPropertyOrThrow("indexedAccessNested")
       .getTypeNodeOrThrow();
 
-    expect(
-      parseType(type, typeTable, lociTable).unwrapOrThrow()
-    ).toStrictEqual({ kind: "boolean", schemaProps: undefined });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      { kind: "boolean", schemaProps: undefined }
+    );
   });
 
   test("parses indexed indexed accessing", () => {
@@ -557,9 +557,9 @@ describe("type parser", () => {
       .getPropertyOrThrow("indexedIndexedAccess")
       .getTypeNodeOrThrow();
 
-    expect(
-      parseType(type, typeTable, lociTable).unwrapOrThrow()
-    ).toStrictEqual({ kind: "boolean", schemaProps: undefined });
+    expect(parseType(type, typeTable, lociTable).unwrapOrThrow()).toStrictEqual(
+      { kind: "boolean", schemaProps: undefined }
+    );
   });
 
   test("parses intersection type", () => {

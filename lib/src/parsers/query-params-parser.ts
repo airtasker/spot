@@ -28,9 +28,8 @@ export function parseQueryParams(
       })
     );
   }
-  const queryParamPropertySignatures = getParameterPropertySignaturesOrThrow(
-    parameter
-  );
+  const queryParamPropertySignatures =
+    getParameterPropertySignaturesOrThrow(parameter);
 
   const queryParams: Array<QueryParam> = [];
   for (const propertySignature of queryParamPropertySignatures) {

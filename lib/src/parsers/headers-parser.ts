@@ -30,9 +30,8 @@ export function parseHeaders(
     );
   }
 
-  const headerPropertySignatures = getParameterPropertySignaturesOrThrow(
-    parameter
-  );
+  const headerPropertySignatures =
+    getParameterPropertySignaturesOrThrow(parameter);
 
   const headers: Array<Header> = [];
   for (const propertySignature of headerPropertySignatures) {

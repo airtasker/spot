@@ -234,8 +234,10 @@ function integerParameterObject(
   };
 }
 
-const pathParamArrayTypeToParameterArrayTypeObject = arrayTypeToParameterArrayTypeObject;
-const headerArrayTypeToParameterArrayTypeObject = arrayTypeToParameterArrayTypeObject;
+const pathParamArrayTypeToParameterArrayTypeObject =
+  arrayTypeToParameterArrayTypeObject;
+const headerArrayTypeToParameterArrayTypeObject =
+  arrayTypeToParameterArrayTypeObject;
 const queryParamArrayTypeToParameterArrayTypeObject = (
   type: ArrayType,
   typeTable: TypeTable,
