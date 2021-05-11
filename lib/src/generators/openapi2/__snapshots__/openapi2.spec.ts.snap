@@ -934,6 +934,9 @@ exports[`OpenAPI 2 generator schemaprops contract with schemaprops parses correc
                     ],
                     \\"minProperties\\": 1,
                     \\"maxProperties\\": 100,
+                    \\"example\\": {
+                      \\"price\\": 3.14
+                    },
                     \\"description\\": \\"property-schemaprop description for object\\"
                   },
                   \\"currencies\\": {
@@ -955,6 +958,7 @@ exports[`OpenAPI 2 generator schemaprops contract with schemaprops parses correc
                       \\"APPROVED\\"
                     ],
                     \\"title\\": \\"process-code\\",
+                    \\"example\\": \\"WAITING\\",
                     \\"description\\": \\"property-schemaprop description for union\\"
                   },
                   \\"inheritance\\": {
@@ -992,6 +996,10 @@ exports[`OpenAPI 2 generator schemaprops contract with schemaprops parses correc
                       }
                     ],
                     \\"title\\": \\"process-code\\",
+                    \\"example\\": {
+                      \\"inheritId\\": 3.14,
+                      \\"inheritName\\": 42
+                    },
                     \\"description\\": \\"property-schemaprop description for intersection\\"
                   }
                 },

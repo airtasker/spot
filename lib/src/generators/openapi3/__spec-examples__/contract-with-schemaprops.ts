@@ -69,6 +69,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * 100
        * @oaSchemaProp additionalProperties
        * true
+       * @oaSchemaProp example
+       * {"price":3.14}
        *  */
       element: {
         /** property-schemaprop description for float inner object

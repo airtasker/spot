@@ -427,6 +427,7 @@ describe("OpenAPI 3 generator", () => {
                       maxProperties: 100,
                       minProperties: 1,
                       additionalProperties: true,
+                      example: { price: 3.14 },
                       properties: {
                         price: {
                           description:
