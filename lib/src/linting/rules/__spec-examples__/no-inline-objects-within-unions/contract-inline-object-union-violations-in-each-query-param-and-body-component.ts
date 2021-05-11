@@ -38,5 +38,4 @@ interface Body {
   field: InlineObjectUnion;
 }
 
-type InlineObjectUnion =
-  /* prettier-ignore */ { name: String } | { title: String };
+type InlineObjectUnion = { name: String } | { title: String };
