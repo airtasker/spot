@@ -332,6 +332,7 @@ describe("OpenAPI 2 generator", () => {
                   description: "property-schemaprop description for object",
                   maxProperties: 100,
                   minProperties: 1,
+                  example: { price: 3.14 },
                   properties: {
                     price: {
                       description:
@@ -366,6 +367,7 @@ describe("OpenAPI 2 generator", () => {
                   description: "property-schemaprop description for union",
                   enum: ["VALID", "NOT_VALID", "WAITING", "APPROVED"],
                   title: "process-code",
+                  example: "WAITING",
                   type: "string"
                 },
                 inheritance: {
@@ -400,6 +402,10 @@ describe("OpenAPI 2 generator", () => {
                       type: "object"
                     }
                   ],
+                  example: {
+                    inheritId: 3.14,
+                    inheritName: 42
+                  },
                   description:
                     "property-schemaprop description for intersection",
                   title: "process-code"

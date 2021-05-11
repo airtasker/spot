@@ -6,7 +6,7 @@ type SchemaPropTests = {
    * "property-schemaprop-value"
    *  */
   "property-with-schemaprop": string;
-   /**
+  /**
    * @oaSchemaProp example
    * "123.3"
    */

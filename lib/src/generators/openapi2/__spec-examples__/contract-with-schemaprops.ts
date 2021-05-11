@@ -59,6 +59,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * 1
        * @oaSchemaProp maxProperties
        * 100
+       * @oaSchemaProp example
+       * {"price":3.14}
        *  */
       element: {
         /** property-schemaprop description for float inner object
@@ -83,11 +85,15 @@ class EndpointWithSchemaPropsOnHeaders {
       /** property-schemaprop description for union
        * @oaSchemaProp title
        * "process-code"
+       * @oaSchemaProp example
+       * "WAITING"
        *  */
       code?: "VALID" | "NOT_VALID" | "WAITING" | "APPROVED";
       /** property-schemaprop description for intersection
        * @oaSchemaProp title
        * "process-code"
+       * @oaSchemaProp example
+       * {"inheritId":3.14, "inheritName":42}
        *  */
       inheritance?: {
         /** property-schemaprop description for double inner intersection
