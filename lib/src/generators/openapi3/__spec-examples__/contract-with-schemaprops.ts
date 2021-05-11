@@ -6,6 +6,7 @@ import {
   request,
   response,
   String,
+  DateTime,
   Integer,
   Float,
   Int64,
@@ -35,6 +36,13 @@ class EndpointWithSchemaPropsOnHeaders {
        * "^[0-9a-z_]+$"
        *  */
       status: String;
+      /** property-schemaprop description for date-time
+       * @oaSchemaProp title
+       * "date-time-title"
+       * @default
+       * "1990-12-31T15:59:60-08:00"
+       *  */
+      "start-time"?: DateTime;
       /** property-schemaprop description for integer
        * @oaSchemaProp minimum
        * 1
@@ -61,6 +69,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * 100
        * @oaSchemaProp additionalProperties
        * true
+       * @oaSchemaProp example
+       * {"price":3.14}
        *  */
       element: {
         /** property-schemaprop description for float inner object
@@ -89,6 +99,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * "process-code"
        * @oaSchemaProp deprecated
        * false
+       * @oaSchemaProp example
+       * "WAITING"
        *  */
       code?: "VALID" | "NOT_VALID" | "WAITING" | "APPROVED";
       /** property-schemaprop description for intersection
@@ -96,6 +108,8 @@ class EndpointWithSchemaPropsOnHeaders {
        * "process-code"
        * @oaSchemaProp deprecated
        * true
+       * @oaSchemaProp example
+       * {"inheritId":3.14, "inheritName":42}
        *  */
       inheritance?: {
         /** property-schemaprop description for double inner intersection

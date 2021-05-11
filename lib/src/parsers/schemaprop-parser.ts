@@ -49,6 +49,22 @@ export function extractJSDocSchemaProps(
     const schemaProps: SchemaProp[] = [];
     let schemaPropError;
 
+    const typeSpecified: TypeKind | "number" =
+      spotTypesToJSTypesMap.get(type.kind) || type.kind;
+
+    let subTypeSpecified = typeSpecified;
+    if (type.kind === TypeKind.UNION || type.kind === TypeKind.INTERSECTION) {
+      const referenceType: TypeKind = type.types[0].kind;
+      if (
+        type.types.every(subType => {
+          return subType.kind === referenceType;
+        })
+      ) {
+        subTypeSpecified =
+          spotTypesToJSTypesMap.get(referenceType) || referenceType;
+      }
+    }
+
     rawSchemaProps.every(schemaProp => {
       const schemaPropName = schemaProp?.split("\n")[0]?.trim();
       const schemaPropValue = schemaProp?.split("\n")[1]?.trim();
@@ -77,7 +93,7 @@ export function extractJSDocSchemaProps(
 
         if (
           (propTypeMap.get(schemaPropName)?.type === "string" ||
-            (type.kind === TypeKind.STRING &&
+            (typeSpecified === TypeKind.STRING &&
               propTypeMap.get(schemaPropName)?.type === "any")) &&
           (!schemaPropValue.startsWith('"') || !schemaPropValue.endsWith('"'))
         ) {
@@ -110,51 +126,9 @@ export function extractJSDocSchemaProps(
       return schemaPropError;
     }
 
-    const typeOf = (value: any): "string" | "number" | "boolean" => {
-      if (/^-?\d+(\.\d+)?$/.test(value)) {
-        return "number";
-      }
-
-      if (typeof value === "boolean") {
-        return "boolean";
-      }
-
-      return "string";
-    };
-
     const nameSchemaProps: string[] = schemaProps.map(ex => {
       return ex.name;
     });
-
-    const spotTypesToJSTypesMap = new Map();
-    spotTypesToJSTypesMap.set(TypeKind.INT32, "number");
-    spotTypesToJSTypesMap.set(TypeKind.INT64, "number");
-    spotTypesToJSTypesMap.set(TypeKind.INT_LITERAL, "number");
-    spotTypesToJSTypesMap.set(TypeKind.FLOAT, "number");
-    spotTypesToJSTypesMap.set(TypeKind.FLOAT_LITERAL, "number");
-    spotTypesToJSTypesMap.set(TypeKind.DOUBLE, "number");
-    spotTypesToJSTypesMap.set(TypeKind.BOOLEAN_LITERAL, "boolean");
-    spotTypesToJSTypesMap.set(TypeKind.STRING_LITERAL, "string");
-
-    const typeSpecified: TypeKind | "number" =
-      spotTypesToJSTypesMap.get(type.kind) || type.kind;
-
-    if (
-      schemaProps.some(
-        schemaProp =>
-          (propTypeMap.get(schemaProp.name)?.type === "any" &&
-            typeOf(schemaProp.value) !== typeSpecified) ||
-          (propTypeMap.get(schemaProp.name)?.type !== "any" &&
-            propTypeMap.get(schemaProp.name)?.type !== typeOf(schemaProp.value))
-      )
-    ) {
-      return err(
-        new ParserError("property type is wrong or property not allowed", {
-          file: parentJsDocNode.getSourceFile().getFilePath(),
-          position: parentJsDocNode.getPos()
-        })
-      );
-    }
 
     if (
       nameSchemaProps.some(
@@ -166,12 +140,37 @@ export function extractJSDocSchemaProps(
     ) {
       return err(
         new ParserError(
-          "property must be compliant with " + typeSpecified + " type",
+          "property must be compliant with " +
+            typeSpecified +
+            " type or property not allowed",
           {
             file: parentJsDocNode.getSourceFile().getFilePath(),
             position: parentJsDocNode.getPos()
           }
         )
+      );
+    }
+
+    const typeOf = (value: any): string => {
+      const typeOfValue = Object.prototype.toString.call(value);
+      const regex = /\[object |\]/g;
+      return typeOfValue.replace(regex, "").toLowerCase();
+    };
+
+    if (
+      schemaProps.some(
+        schemaProp =>
+          (propTypeMap.get(schemaProp.name)?.type === "any" &&
+            typeOf(schemaProp.value) !== subTypeSpecified) ||
+          (propTypeMap.get(schemaProp.name)?.type !== "any" &&
+            propTypeMap.get(schemaProp.name)?.type !== typeOf(schemaProp.value))
+      )
+    ) {
+      return err(
+        new ParserError("property type is wrong", {
+          file: parentJsDocNode.getSourceFile().getFilePath(),
+          position: parentJsDocNode.getPos()
+        })
       );
     }
 
@@ -259,4 +258,17 @@ export const propTypeMap = new Map<
     }
   ],
   ["uniqueItems", { type: "boolean", targetTypes: [TypeKind.ARRAY] }]
+]);
+
+const spotTypesToJSTypesMap = new Map<TypeKind, TypeKind | "number">([
+  [TypeKind.INT32, "number"],
+  [TypeKind.INT64, "number"],
+  [TypeKind.INT_LITERAL, "number"],
+  [TypeKind.FLOAT, "number"],
+  [TypeKind.FLOAT_LITERAL, "number"],
+  [TypeKind.DOUBLE, "number"],
+  [TypeKind.BOOLEAN_LITERAL, TypeKind.BOOLEAN],
+  [TypeKind.STRING_LITERAL, TypeKind.STRING],
+  [TypeKind.DATE, TypeKind.STRING],
+  [TypeKind.DATE_TIME, TypeKind.STRING]
 ]);

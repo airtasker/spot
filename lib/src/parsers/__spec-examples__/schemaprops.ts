@@ -1,4 +1,4 @@
-import { Integer } from "../../syntax";
+import { Date, Integer, String } from "../../syntax";
 
 type SchemaPropTests = {
   /** property-schemaprop description
@@ -6,6 +6,11 @@ type SchemaPropTests = {
    * "property-schemaprop-value"
    *  */
   "property-with-schemaprop": string;
+  /**
+   * @oaSchemaProp example
+   * "123.3"
+   */
+  "property-with-string": String;
   /** property-two-schemaprops description
    * @oaSchemaProp minimum
    * 123
@@ -17,6 +22,16 @@ type SchemaPropTests = {
    * false
    *  */
   "property-with-boolean": boolean;
+  /** property-schemaprop date
+   * @oaSchemaProp example
+   * "1990-12-31"
+   *  */
+  "property-with-date": Date;
+  /** property-schemaprop array of integer
+   * @oaSchemaProp example
+   * [1990,12,31]
+   *  */
+  "property-with-array": Integer[];
   /**
    * @oaSchemaProp example
    * This_is_not_an_integer

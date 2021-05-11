@@ -49,6 +49,24 @@ describe("schemaprop-parser", () => {
       ]);
     });
 
+    test("successfully parses string example schemaprops on properties on type ParsedSchemaProps", () => {
+      const stringSchemaPropNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-string"'
+      );
+      const retrieveStringSchemaProp = extractJSDocSchemaProps(
+        stringSchemaPropNode,
+        {
+          kind: TypeKind.STRING
+        }
+      );
+      expect(retrieveStringSchemaProp).toBeDefined();
+      expect(retrieveStringSchemaProp!.isOk).toBeTruthy();
+      expect(retrieveStringSchemaProp!.unwrapOrThrow()).toStrictEqual([
+        { name: "example", value: "123.3" }
+      ]);
+    });
+
     test("successfully parses integer schemaprops on properties on type ParsedSchemaProps", () => {
       const integerSchemaPropNode = getJsDocsFromPropertySignatures(
         properties,
@@ -83,6 +101,43 @@ describe("schemaprop-parser", () => {
       expect(retrieveBooleanSchemaProp!.isOk).toBeTruthy();
       expect(retrieveBooleanSchemaProp!.unwrapOrThrow()).toStrictEqual([
         { name: "example", value: false }
+      ]);
+    });
+
+    test("successfully parses array schemaprops on properties on type ParsedSchemaProps", () => {
+      const booleanSchemaPropNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-array"'
+      );
+      const retrieveBooleanSchemaProp = extractJSDocSchemaProps(
+        booleanSchemaPropNode,
+        {
+          kind: TypeKind.ARRAY,
+          elementType: { kind: TypeKind.INT32 }
+        }
+      );
+      expect(retrieveBooleanSchemaProp).toBeDefined();
+      expect(retrieveBooleanSchemaProp!.isOk).toBeTruthy();
+      expect(retrieveBooleanSchemaProp!.unwrapOrThrow()).toStrictEqual([
+        { name: "example", value: [1990, 12, 31] }
+      ]);
+    });
+
+    test("successfully parses date schemaprops on properties on type ParsedSchemaProps", () => {
+      const booleanSchemaPropNode = getJsDocsFromPropertySignatures(
+        properties,
+        '"property-with-date"'
+      );
+      const retrieveBooleanSchemaProp = extractJSDocSchemaProps(
+        booleanSchemaPropNode,
+        {
+          kind: TypeKind.DATE
+        }
+      );
+      expect(retrieveBooleanSchemaProp).toBeDefined();
+      expect(retrieveBooleanSchemaProp!.isOk).toBeTruthy();
+      expect(retrieveBooleanSchemaProp!.unwrapOrThrow()).toStrictEqual([
+        { name: "example", value: "1990-12-31" }
       ]);
     });
 

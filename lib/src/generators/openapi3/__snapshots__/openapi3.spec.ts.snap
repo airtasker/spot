@@ -1086,6 +1086,18 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
             }
           },
           {
+            \\"name\\": \\"start-time\\",
+            \\"in\\": \\"header\\",
+            \\"description\\": \\"property-schemaprop description for date-time\\",
+            \\"required\\": false,
+            \\"schema\\": {
+              \\"type\\": \\"string\\",
+              \\"format\\": \\"date-time\\",
+              \\"title\\": \\"date-time-title\\",
+              \\"default\\": \\"1990-12-31T15:59:60-08:00\\"
+            }
+          },
+          {
             \\"name\\": \\"size\\",
             \\"in\\": \\"header\\",
             \\"description\\": \\"property-schemaprop description for integer\\",
@@ -1135,6 +1147,9 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                         \\"minProperties\\": 1,
                         \\"maxProperties\\": 100,
                         \\"additionalProperties\\": true,
+                        \\"example\\": {
+                          \\"price\\": 3.14
+                        },
                         \\"description\\": \\"property-schemaprop description for object\\"
                       },
                       \\"currencies\\": {
@@ -1157,6 +1172,7 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                         ],
                         \\"title\\": \\"process-code\\",
                         \\"deprecated\\": false,
+                        \\"example\\": \\"WAITING\\",
                         \\"description\\": \\"property-schemaprop description for union\\"
                       },
                       \\"inheritance\\": {
@@ -1198,6 +1214,10 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
                         ],
                         \\"title\\": \\"process-code\\",
                         \\"deprecated\\": true,
+                        \\"example\\": {
+                          \\"inheritId\\": 3.14,
+                          \\"inheritName\\": 42
+                        },
                         \\"description\\": \\"property-schemaprop description for intersection\\"
                       }
                     },

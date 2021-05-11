@@ -303,6 +303,15 @@ describe("OpenAPI 2 generator", () => {
           pattern: "^[0-9a-z_]+$"
         },
         {
+          description: "property-schemaprop description for date-time",
+          name: "start-time",
+          in: "header",
+          required: false,
+          type: "string",
+          format: "date-time",
+          default: "1990-12-31T15:59:60-08:00"
+        },
+        {
           description: "property-schemaprop description for integer",
           name: "size",
           in: "header",
@@ -323,6 +332,7 @@ describe("OpenAPI 2 generator", () => {
                   description: "property-schemaprop description for object",
                   maxProperties: 100,
                   minProperties: 1,
+                  example: { price: 3.14 },
                   properties: {
                     price: {
                       description:
@@ -357,6 +367,7 @@ describe("OpenAPI 2 generator", () => {
                   description: "property-schemaprop description for union",
                   enum: ["VALID", "NOT_VALID", "WAITING", "APPROVED"],
                   title: "process-code",
+                  example: "WAITING",
                   type: "string"
                 },
                 inheritance: {
@@ -391,6 +402,10 @@ describe("OpenAPI 2 generator", () => {
                       type: "object"
                     }
                   ],
+                  example: {
+                    inheritId: 3.14,
+                    inheritName: 42
+                  },
                   description:
                     "property-schemaprop description for intersection",
                   title: "process-code"
