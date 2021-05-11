@@ -94,9 +94,8 @@ function parseOa3Variables(
     );
   }
 
-  const queryParamPropertySignatures = getParameterPropertySignaturesOrThrow(
-    parameter
-  );
+  const queryParamPropertySignatures =
+    getParameterPropertySignaturesOrThrow(parameter);
 
   const oa3ServerVariableParams: Array<Oa3ServerVariable> = [];
 

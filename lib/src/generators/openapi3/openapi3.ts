@@ -374,9 +374,8 @@ function contractToOa3ServerObject(
         ? server.oa3ServerVariables.reduce<{
             [serverVariable: string]: ServerVariableObject;
           }>((acc, serverVariable) => {
-            acc[
-              serverVariable.parameterName
-            ] = oa3ServerVariableToServerVariableObject(serverVariable);
+            acc[serverVariable.parameterName] =
+              oa3ServerVariableToServerVariableObject(serverVariable);
             return acc;
           }, {})
         : undefined;

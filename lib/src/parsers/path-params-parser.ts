@@ -28,9 +28,8 @@ export function parsePathParams(
       })
     );
   }
-  const pathParamPropertySignatures = getParameterPropertySignaturesOrThrow(
-    parameter
-  );
+  const pathParamPropertySignatures =
+    getParameterPropertySignaturesOrThrow(parameter);
 
   const pathParams = [];
   for (const propertySignature of pathParamPropertySignatures) {

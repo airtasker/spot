@@ -37,9 +37,8 @@ export function parseConfig(
     >(queryStratLiteral, "array");
 
     if (queryArrayStratProp) {
-      const queryArrayStratValue = getPropValueAsStringOrThrow(
-        queryArrayStratProp
-      ).getLiteralText();
+      const queryArrayStratValue =
+        getPropValueAsStringOrThrow(queryArrayStratProp).getLiteralText();
       if (!isQueryParamArrayStrategy(queryArrayStratValue)) {
         throw new Error(
           `expected a QueryParamArrayStrategy, got ${queryArrayStratValue}`

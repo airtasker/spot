@@ -61,9 +61,10 @@ export function createProject(): Project {
   });
 }
 
-export function createProjectFromExistingSourceFile(
-  filePath: string
-): { project: Project; file: SourceFile } {
+export function createProjectFromExistingSourceFile(filePath: string): {
+  project: Project;
+  file: SourceFile;
+} {
   const project = createProject();
   const file = project.addSourceFileAtPath(filePath);
   project.resolveSourceFileDependencies();
