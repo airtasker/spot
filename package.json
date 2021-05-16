@@ -10,7 +10,7 @@
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
     "@oclif/plugin-help": "^3.2.2",
-    "ajv": "^6.12.6",
+    "ajv": "^8.4.0",
     "assert-never": "^1.2.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
