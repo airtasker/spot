@@ -108,7 +108,7 @@ export interface Oa3ServerVariable {
 export type QueryParamArrayStrategy = "ampersand" | "comma";
 
 /** Supported HTTP methods */
-export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
 
 /** Type guards */
 export function isSpecificResponse(

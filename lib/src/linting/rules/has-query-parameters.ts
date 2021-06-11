@@ -15,6 +15,7 @@ export function hasQueryParameters(contract: Contract): LintingRuleViolation[] {
     switch (endpoint.method) {
       case "DELETE":
       case "GET":
+      case "HEAD":
         break;
       case "PATCH":
       case "POST":

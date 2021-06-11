@@ -252,6 +252,8 @@ function httpMethodToPathItemMethod(
       return "delete";
     case "PATCH":
       return "patch";
+    case "HEAD":
+      return "head";
     default:
       assertNever(method);
   }

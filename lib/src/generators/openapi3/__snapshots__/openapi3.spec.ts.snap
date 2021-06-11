@@ -76,6 +76,42 @@ exports[`OpenAPI 3 generator HTTP verbs GET endpoint 1`] = `
 }"
 `;
 
+exports[`OpenAPI 3 generator HTTP verbs HEAD endpoint 1`] = `
+"{
+  \\"openapi\\": \\"3.0.2\\",
+  \\"info\\": {
+    \\"title\\": \\"contract\\",
+    \\"version\\": \\"0.0.0\\"
+  },
+  \\"paths\\": {
+    \\"/users\\": {
+      \\"head\\": {
+        \\"operationId\\": \\"HeadEndpoint\\",
+        \\"responses\\": {
+          \\"204\\": {
+            \\"description\\": \\"204 response\\",
+            \\"headers\\": {
+              \\"Location\\": {
+                \\"required\\": true,
+                \\"schema\\": {
+                  \\"type\\": \\"string\\"
+                }
+              },
+              \\"Link\\": {
+                \\"required\\": false,
+                \\"schema\\": {
+                  \\"type\\": \\"string\\"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3 generator HTTP verbs PATCH endpoint 1`] = `
 "{
   \\"openapi\\": \\"3.0.2\\",
