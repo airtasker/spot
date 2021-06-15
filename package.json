@@ -41,7 +41,7 @@
     "@types/validator": "^13.1.4",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.26.1",
-    "core-js": "^3.12.1",
+    "core-js": "^3.14.0",
     "css-loader": "^4.3.0",
     "eslint": "^7.28.0",
     "eslint-plugin-jest": "^24.3.6",
