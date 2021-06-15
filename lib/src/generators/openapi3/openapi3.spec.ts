@@ -128,6 +128,18 @@ describe("OpenAPI 3 generator", () => {
       const spectralResult = await spectral.run(result);
       expect(spectralResult).toHaveLength(0);
     });
+
+    test("HEAD endpoint", async () => {
+      const contract = generateContract("contract-with-head-endpoint.ts");
+      const result = generateOpenAPI3(contract);
+
+      expect(result.paths["/users"]).toMatchObject({
+        head: expect.anything()
+      });
+      expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
+      const spectralResult = await spectral.run(result);
+      expect(spectralResult).toHaveLength(0);
+    });
   });
 
   describe("path params", () => {
