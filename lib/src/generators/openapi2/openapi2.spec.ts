@@ -3,7 +3,6 @@ import { Contract } from "../../definitions";
 import { parseContract } from "../../parsers/contract-parser";
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import { generateOpenAPI2 } from "./openapi2";
-import { generateOpenAPI3 } from "../openapi3";
 
 describe("OpenAPI 2 generator", () => {
   const spectral = new Spectral();
