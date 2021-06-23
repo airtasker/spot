@@ -33,15 +33,21 @@ export function generateData(types: TypeTable, type: Type): any {
       return type.value;
     case TypeKind.OBJECT:
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return type.properties.reduce<{ [key: string]: any }>((acc, property): {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [key: string]: any;
-      } => {
-        if (randomBoolean() || !property.optional) {
-          acc[property.name] = generateData(types, property.type);
-        }
-        return acc;
-      }, {});
+      return type.properties.reduce<{ [key: string]: any }>(
+        (
+          acc,
+          property
+        ): {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          [key: string]: any;
+        } => {
+          if (randomBoolean() || !property.optional) {
+            acc[property.name] = generateData(types, property.type);
+          }
+          return acc;
+        },
+        {}
+      );
     case TypeKind.ARRAY: {
       const size = randomInteger(10);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
