@@ -6,7 +6,7 @@ orbs:
 executors:
   node-executor:
     docker:
-      - image: circleci/node:13-buster
+      - image: cimg/node:14.17
     working_directory: ~/repo
 
 commands:
