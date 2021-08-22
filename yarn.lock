@@ -5794,10 +5794,10 @@ no-case@^3.0.4:
     lower-case "^2.0.2"
     tslib "^2.0.3"
 
-nock@^13.1.0:
-  version "13.1.0"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-13.1.0.tgz#41c8ce8b35ab7d618c4cbf40de1d5bce319979ba"
-  integrity sha512-3N3DUY8XYrxxzWazQ+nSBpiaJ3q6gcpNh4gXovC/QBxrsvNp4tq+wsLHF6mJ3nrn3lPLn7KCJqKxy/9aD+0fdw==
+nock@^13.1.2:
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-13.1.2.tgz#eedcef89e1c1e8db4e1b3cdcfef91f453f6d32b5"
+  integrity sha512-BDjokoeGZnBghmvwCcDJ1yM5TDRMRAJfGi1xIzX5rKTlifbyx1oRpAVl3aNhEA3kGbUSEPD7gBLmwVdnQibrIA==
   dependencies:
     debug "^4.1.0"
     json-stringify-safe "^5.0.1"
