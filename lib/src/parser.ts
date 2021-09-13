@@ -2,9 +2,12 @@ import * as path from "path";
 import { CompilerOptions, Project, ts } from "ts-morph";
 import { Contract } from "./definitions";
 import { parseContract } from "./parsers/contract-parser";
+import { readFileSync, existsSync } from "fs";
+import { resolve } from "path";
+import { parse as parseJSON } from "comment-json";
 
-export function parse(sourcePath: string): Contract {
-  const project = createProject();
+export function parse(sourcePath: string, tsConfigFilePath?: string): Contract {
+  const project = createProject(tsConfigFilePath);
 
   // Add all dependent files that the project requires
   const sourceFile = project.addSourceFileAtPath(sourcePath);
@@ -24,8 +27,46 @@ export function parse(sourcePath: string): Contract {
 /**
  * Create a new project configured for Spot
  */
-function createProject(): Project {
-  const compilerOptions: CompilerOptions = {
+function createProject(tsConfigFilePath?: string): Project {
+  const resolvedTsConfigFilePath = resolve(
+    tsConfigFilePath == null ? "./tsconfig.json" : tsConfigFilePath
+  );
+
+  const customConfig = readTsCompilerOptions(resolvedTsConfigFilePath);
+  const compilerOptions = parseTsCompilerOptions(customConfig);
+
+  // Creates a new typescript program in memory
+  return new Project({
+    compilerOptions,
+    tsConfigFilePath: resolvedTsConfigFilePath
+  });
+}
+
+/**
+ * Retrieves a tsconfig.json from the specified or default path
+ *
+ * @param tsConfigFilePath string|null
+ */
+function readTsCompilerOptions(tsConfigFilePath?: string): CompilerOptions {
+  if (tsConfigFilePath == null || !existsSync(tsConfigFilePath)) {
+    return {};
+  }
+
+  const fileContents = readFileSync(tsConfigFilePath, "utf8");
+  const parsedContents = parseJSON(fileContents, undefined, true);
+
+  return parsedContents.compilerOptions;
+}
+
+/**
+ * Parses a custom tsconfig by merging it with a default one.
+ *
+ * @param customConfig
+ */
+function parseTsCompilerOptions(
+  customConfig: CompilerOptions
+): CompilerOptions {
+  const defaultConfig: CompilerOptions = {
     target: ts.ScriptTarget.ESNext,
     module: ts.ModuleKind.CommonJS,
     strict: true,
@@ -46,8 +87,14 @@ function createProject(): Project {
     }
   };
 
-  // Creates a new typescript program in memory
-  return new Project({ compilerOptions });
+  return {
+    ...customConfig,
+    ...defaultConfig,
+    paths: {
+      ...customConfig.paths,
+      ...defaultConfig.paths
+    }
+  };
 }
 
 /**

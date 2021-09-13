@@ -14,7 +14,7 @@ export default class Generate extends Command {
     "Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats such as OpenAPI.";
 
   static examples = [
-    `$ spot generate --contract api.ts --language yaml --generator openapi3 --out output/`
+    `$ spot generate --contract api.ts --tsconfig ./tsconfig.json --language yaml --generator openapi3 --out output/`
   ];
 
   static flags = {
@@ -23,6 +23,11 @@ export default class Generate extends Command {
       required: true,
       char: "c",
       description: "Path to a TypeScript Contract definition"
+    }),
+    tsconfig: flags.string({
+      required: true,
+      char: "t",
+      description: "Path to a TypeScript configuration file (default=./tsconfig.json)"
     }),
     language: flags.string({
       char: "l",

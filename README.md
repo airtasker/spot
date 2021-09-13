@@ -202,13 +202,14 @@ USAGE
 
 OPTIONS
   -c, --contract=contract    (required) Path to a TypeScript Contract definition
+  -t, --tsconfig=path        Path to a TypeScript configuration file (default=./tsconfig.json)
   -g, --generator=generator  Generator to run
   -h, --help                 show CLI help
   -l, --language=language    Language to generate
   -o, --out=out              Directory in which to output generated files
 
 EXAMPLE
-  $ spot generate --contract api.ts --language yaml --generator openapi3 --out output/
+  $ spot generate --contract api.ts --tsconfig ./tsconfig.json --language yaml --generator openapi3 --out output/
 ```
 
 _See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/generate.js)_
