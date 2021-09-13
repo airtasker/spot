@@ -27,7 +27,8 @@ export default class Generate extends Command {
     tsconfig: flags.string({
       required: true,
       char: "t",
-      description: "Path to a TypeScript configuration file (default=./tsconfig.json)"
+      description:
+        "Path to a TypeScript configuration file (default=./tsconfig.json)"
     }),
     language: flags.string({
       char: "l",
