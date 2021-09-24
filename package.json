@@ -30,7 +30,7 @@
     "@types/express": "^4.17.12",
     "@types/fs-extra": "^9.0.13",
     "@types/inquirer": "^8.1.2",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^27.0.2",
     "@types/js-yaml": "^4.0.1",
     "@types/moxios": "^0.4.11",
     "@types/qs": "^6.9.6",
