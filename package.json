@@ -33,7 +33,7 @@
     "@types/jest": "^27.0.2",
     "@types/js-yaml": "^4.0.1",
     "@types/moxios": "^0.4.11",
-    "@types/qs": "^6.9.6",
+    "@types/qs": "^6.9.7",
     "@types/randomstring": "^1.1.6",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.8",
