@@ -34,7 +34,7 @@
     "@types/js-yaml": "^4.0.1",
     "@types/moxios": "^0.4.12",
     "@types/qs": "^6.9.7",
-    "@types/randomstring": "^1.1.6",
+    "@types/randomstring": "^1.1.7",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.8",
     "@types/supertest": "^2.0.11",
