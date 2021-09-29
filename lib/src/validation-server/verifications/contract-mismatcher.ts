@@ -1,4 +1,5 @@
 import JsonSchemaValidator from "ajv";
+import Ajv from "ajv-formats";
 import assertNever from "assert-never";
 import qs from "qs";
 import * as url from "url";
@@ -412,11 +413,13 @@ export class ContractMismatcher {
       return [];
     }
 
-    const jsv = new JsonSchemaValidator({
-      format: "full",
-      verbose: true,
-      allErrors: true
-    });
+    const jsv = Ajv(
+      new JsonSchemaValidator({
+        verbose: true,
+        allErrors: true
+      })
+    );
+
     const schema = {
       ...typeToJsonSchemaType(contractBody.type, !strict),
       definitions: this.contract.types.reduce<{
@@ -442,7 +445,7 @@ export class ContractMismatcher {
     }
 
     const bodyTypeMismatches = validateFn.errors.map(e => {
-      return `#${e.dataPath} ${
+      return `#${e.instancePath} ${
         e.message ?? "JsonSchemaValidator encountered an unexpected error"
       }`;
     });

@@ -104,16 +104,16 @@ describe("Validation Server", () => {
             {
               type: "request_body_type_disparity",
               message:
-                "Request body type disparity:\n{}\n- # should have required property 'data'",
-              type_disparities: ["# should have required property 'data'"]
+                "Request body type disparity:\n{}\n- # must have required property 'data'",
+              type_disparities: ["# must have required property 'data'"]
             },
             {
               type: "response_body_type_disparity",
               message:
-                "Response body type disparity:\n{}\n- # should have required property 'name'\n- # should have required property 'message'",
+                "Response body type disparity:\n{}\n- # must have required property 'name'\n- # must have required property 'message'",
               type_disparities: [
-                "# should have required property 'name'",
-                "# should have required property 'message'"
+                "# must have required property 'name'",
+                "# must have required property 'message'"
               ]
             }
           ]);
