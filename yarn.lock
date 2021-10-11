@@ -745,22 +745,22 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
 
-"@redocly/ajv@^6.12.3":
-  version "6.12.4"
-  resolved "https://registry.yarnpkg.com/@redocly/ajv/-/ajv-6.12.4.tgz#b131c9c11d1bdaa5564f69bcaefe10a4c9a5aa65"
-  integrity sha512-RB6vWO78v6c+SW/3bZh+XZMr4nGdJKAiPGsBALuUZnLuCiQ7aXCT1AuFHqnfS2gyXbEUEj+kw8p4ux8KdAfs3A==
+"@redocly/ajv@^8.6.2":
+  version "8.6.2"
+  resolved "https://registry.yarnpkg.com/@redocly/ajv/-/ajv-8.6.2.tgz#8c4e485e72f7864f91fae40093bed548ec2619b2"
+  integrity sha512-tU8fQs0D76ZKhJ2cWtnfQthWqiZgGBx0gH0+5D8JvaBEBaqA8foPPBt3Nonwr3ygyv5xrw2IzKWgIY86BlGs+w==
   dependencies:
     fast-deep-equal "^3.1.1"
-    fast-json-stable-stringify "^2.0.0"
-    json-schema-traverse "^0.4.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-"@redocly/openapi-core@^1.0.0-beta.50":
-  version "1.0.0-beta.50"
-  resolved "https://registry.yarnpkg.com/@redocly/openapi-core/-/openapi-core-1.0.0-beta.50.tgz#b399675eafd2b7c354d73329d770997ad82d11dd"
-  integrity sha512-GuXn4IETxpbRd8dlAQDQPtvqOpbMvPMeC/e5mv5MOXkLIznNk4vjiQVe6QSCbZbCHzzpb2+89B6S7asebPm4Rg==
+"@redocly/openapi-core@^1.0.0-beta.54":
+  version "1.0.0-beta.62"
+  resolved "https://registry.yarnpkg.com/@redocly/openapi-core/-/openapi-core-1.0.0-beta.62.tgz#8cf8a343c94d35783e2b15c163c1cdd6f58e2be6"
+  integrity sha512-g4iPB7qpSNFCOpf/FgKiic+QCaCn4mdNQOWVEPuwpN7l72hlQ7J3YUa9cssJomkJXXxZ1zdP4h208s12LkhwVA==
   dependencies:
-    "@redocly/ajv" "^6.12.3"
+    "@redocly/ajv" "^8.6.2"
     "@types/node" "^14.11.8"
     colorette "^1.2.0"
     js-levenshtein "^1.1.6"
@@ -1096,7 +1096,7 @@
   dependencies:
     axios "^0.21.1"
 
-"@types/node@*", "@types/node@^15.6.1":
+"@types/node@*":
   version "15.12.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.4.tgz#e1cf817d70a1e118e81922c4ff6683ce9d422e26"
   integrity sha512-zrNj1+yqYF4WskCMOHwN+w9iuD12+dGm0rQ35HLl9/Ouuq52cEtd0CH9qMgrdNmi5ejC1/V7vKEXYubB+65DkA==
@@ -6906,15 +6906,14 @@ redeyed@~2.1.0:
   dependencies:
     esprima "~4.0.0"
 
-redoc@^2.0.0-rc.56:
-  version "2.0.0-rc.56"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.56.tgz#d0fc05149d4801aa6ddf430af223070f04dce596"
-  integrity sha512-ir2TtQ2d/1FqZWIoLmUZ3qvAAnO6jg8dt0SV75TanmfCXpEABcElXWH3mtUf6qKlvgDVt40diDCVuSvyPPxkAw==
+redoc@^2.0.0-rc.57:
+  version "2.0.0-rc.57"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.57.tgz#71c60aec46ff9a270b63ba959d216cfd4e9f7952"
+  integrity sha512-f8XIqvZF1agphq6xmOU9jTDVNDFHJt3MzDq1lUgZojb/7YY4eqLyDi6er/yCWYkY9DuB+v2jHCOn5UUbMuKAfg==
   dependencies:
     "@babel/runtime" "^7.14.0"
-    "@redocly/openapi-core" "^1.0.0-beta.50"
+    "@redocly/openapi-core" "^1.0.0-beta.54"
     "@redocly/react-dropdown-aria" "^2.0.11"
-    "@types/node" "^15.6.1"
     classnames "^2.3.1"
     decko "^1.2.0"
     dompurify "^2.2.8"
