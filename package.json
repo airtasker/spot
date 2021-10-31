@@ -39,7 +39,7 @@
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
     "@types/supertest": "^2.0.11",
-    "@types/validator": "^13.6.3",
+    "@types/validator": "^13.6.6",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
     "core-js": "^3.18.0",
