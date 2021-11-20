@@ -169,7 +169,7 @@ EXAMPLE
   $ spot checksum api.ts
 ```
 
-_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/checksum.js)_
+_See code: [cli/src/commands/checksum.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/checksum.ts)_
 
 ## `spot docs SPOT_CONTRACT`
 
@@ -190,7 +190,7 @@ EXAMPLE
   $ spot docs api.ts
 ```
 
-_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/docs.js)_
+_See code: [cli/src/commands/docs.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/docs.ts)_
 
 ## `spot generate`
 
@@ -211,7 +211,7 @@ EXAMPLE
   $ spot generate --contract api.ts --language yaml --generator openapi3 --out output/
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/generate.js)_
+_See code: [cli/src/commands/generate.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/generate.ts)_
 
 ## `spot help [COMMAND]`
 
@@ -249,7 +249,7 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/init.js)_
+_See code: [cli/src/commands/init.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/init.ts)_
 
 ## `spot lint SPOT_CONTRACT`
 
@@ -269,7 +269,7 @@ EXAMPLE
   $ spot lint api.ts
 ```
 
-_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/lint.js)_
+_See code: [cli/src/commands/lint.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/lint.ts)_
 
 ## `spot mock SPOT_CONTRACT`
 
@@ -294,7 +294,7 @@ EXAMPLE
   $ spot mock api.ts
 ```
 
-_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/mock.js)_
+_See code: [cli/src/commands/mock.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/mock.ts)_
 
 ## `spot validate SPOT_CONTRACT`
 
@@ -314,7 +314,7 @@ EXAMPLE
   $ spot validate api.ts
 ```
 
-_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/validate.js)_
+_See code: [cli/src/commands/validate.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/validate.ts)_
 
 ## `spot validation-server SPOT_CONTRACT`
 
@@ -335,5 +335,5 @@ EXAMPLE
   $ spot validation-server api.ts
 ```
 
-_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/validation-server.js)_
+_See code: [cli/src/commands/validation-server.ts](https://github.com/airtasker/spot/blob/v1.9.0/cli/src/commands/validation-server.ts)_
 <!-- commandsstop -->
