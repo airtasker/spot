@@ -5739,10 +5739,10 @@ mobx-react@^7.2.0:
   dependencies:
     mobx-react-lite "^3.2.0"
 
-mobx@^6.3.3:
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.3.3.tgz#a3006c56243b1c7ea4ee671a66f963b9f43cf1af"
-  integrity sha512-JoNU50rO6d1wHwKPJqKq4rmUMbYnI9CsJmBo+Cu4exBYenFvIN77LWrZENpzW6reZPADtXMmB1DicbDSfy8Clw==
+mobx@^6.3.12:
+  version "6.3.12"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.3.12.tgz#2ceb4f632081a8bf8757ba7e5e01b5810800022f"
+  integrity sha512-5Hx2IjhBtySVQlSFe+sHczKgOQ+cCyi8hN2wEvWzpJEEMRflQoDzDwJJ+m7SBWBQhfrWMWb1RGZNk4X1XtxJkQ==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
