@@ -2632,10 +2632,10 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
-core-js@^3.18.0:
-  version "3.18.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.18.0.tgz#9af3f4a6df9ba3428a3fb1b171f1503b3f40cc49"
-  integrity sha512-WJeQqq6jOYgVgg4NrXKL0KLQhi0CT4ZOCvFL+3CQ5o7I6J8HkT5wd53EadMfqTDp1so/MT1J+w2ujhWcCJtN7w==
+core-js@^3.22.3:
+  version "3.22.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.22.3.tgz#498c41d997654cb00e81c7a54b44f0ab21ab01d5"
+  integrity sha512-1t+2a/d2lppW1gkLXx3pKPVGbBdxXAkqztvWb1EJ8oF8O2gIGiytzflNiFEehYwVK/t2ryUsGBoOFFvNx95mbg==
 
 core-util-is@~1.0.0:
   version "1.0.2"
