@@ -1,6 +1,7 @@
 import { createProjectFromExistingSourceFile } from "../spec-helpers/helper";
 import {
   getDecoratorConfigOrThrow,
+  getJsDoc,
   getSelfAndLocalDependencies
 } from "./parser-helpers";
 
@@ -44,6 +45,27 @@ describe("parser-helpers", () => {
       const klass = sourceFile.getClassOrThrow("DecoratorPlain");
       const decorator = klass.getDecoratorOrThrow("decoratorPlain");
       expect(() => getDecoratorConfigOrThrow(decorator)).toThrowError();
+    });
+  });
+
+  describe("getJsDoc", () => {
+    const sourceFile = createProjectFromExistingSourceFile(
+      `${__dirname}/__spec-examples__/jsdocs.ts`
+    ).file;
+
+    test("returns JSDoc when it exists", () => {
+      const klass = sourceFile.getClassOrThrow("OneJsDocsClass");
+      expect(getJsDoc(klass)?.getDescription()).toStrictEqual(
+        "one-jsdoc-example"
+      );
+    });
+
+    test("returns last jsdoc when there are multiple JSDocs", () => {
+      const klass = sourceFile.getClassOrThrow("MultipleJsDocsClass");
+      expect(klass.getJsDocs().length).toBeGreaterThan(1);
+      expect(getJsDoc(klass)?.getDescription()).toStrictEqual(
+        "multiple-jsdocs-example-last"
+      );
     });
   });
 });

@@ -337,10 +337,8 @@ export function getPropertyName(
  */
 export function getJsDoc(node: JSDocableNode): JSDoc | undefined {
   const jsDocs = node.getJsDocs();
-  if (jsDocs.length > 1) {
-    throw new Error(`expected at most 1 jsDoc node, got ${jsDocs.length}`);
-  } else if (jsDocs.length === 1) {
-    return jsDocs[0];
+  if (jsDocs.length > 0) {
+    return jsDocs[jsDocs.length - 1];
   }
   return undefined;
 }
