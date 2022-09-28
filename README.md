@@ -215,7 +215,7 @@ _See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spo
 
 ## `spot help [COMMAND]`
 
-display help for spot
+Display help for spot
 
 ```
 USAGE
