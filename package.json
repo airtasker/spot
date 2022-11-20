@@ -48,7 +48,7 @@
     "eslint-plugin-jest": "^24.4.2",
     "html-webpack-plugin": "^4.5.2",
     "jest": "^26.6.3",
-    "jest-junit": "^12.3.0",
+    "jest-junit": "^15.0.0",
     "mini-css-extract-plugin": "^1.6.2",
     "mobx": "^6.3.3",
     "nock": "^13.1.3",
