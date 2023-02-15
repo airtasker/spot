@@ -1,10 +1,5 @@
-# Main squad: *Eng Effectiveness* (Tooling)
-# Main slack channel: #eng-effectiveness
+* @airtasker/platform-services-core
 
-# Mainly targeting dependabot PRs with this. Trialing https://pullpanda.com/assigner
-# Please see commit message for more context
-/yarn.lock @airtasker/tooling-pullassigner
-
-# Known knowledgeable users
-# @fwouts
-# @lfportal
+# Explicitly no codeowners for dependencies files.
+/package.json
+/yarn.lock
