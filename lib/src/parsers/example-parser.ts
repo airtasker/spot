@@ -31,8 +31,9 @@ export function extractJSDocExamples(
     const examples: Example[] = [];
     let exampleError;
     rawExamples.every(example => {
-      const exampleName = example?.split("\n")[0]?.trim();
-      const exampleValue = example?.split("\n")[1]?.trim();
+      const exampleStr = example?.toString();
+      const exampleName = exampleStr?.split("\n")[0]?.trim();
+      const exampleValue = exampleStr?.split("\n")[1]?.trim();
 
       if (!exampleName || !exampleValue) {
         exampleError = err(

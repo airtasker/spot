@@ -58,6 +58,8 @@ export function tryCatch<T, E extends Error>(
   try {
     return ok(op());
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return err(e);
   }
 }

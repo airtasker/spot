@@ -14,7 +14,7 @@ import {
   SourceFile,
   StringLiteral,
   ts,
-  TypeGuards,
+  Node,
   TypeNode
 } from "ts-morph";
 import { HttpMethod, QueryParamArrayStrategy } from "../definitions";
@@ -163,21 +163,21 @@ export function getParameterPropertySignaturesOrThrow(
 export function parseTypeReferencePropertySignaturesOrThrow(
   typeNode: TypeNode
 ): PropertySignature[] {
-  if (TypeGuards.isTypeReferenceNode(typeNode)) {
+  if (Node.isTypeReference(typeNode)) {
     const typeReferenceNode = getTargetDeclarationFromTypeReference(typeNode);
     if (typeReferenceNode.isErr()) throw typeReferenceNode;
     const declaration = typeReferenceNode.unwrap();
     // return early if the declaration is an interface
-    if (TypeGuards.isInterfaceDeclaration(declaration)) {
+    if (Node.isInterfaceDeclaration(declaration)) {
       return declaration.getProperties();
     }
     const declarationAliasTypeNode = declaration.getTypeNodeOrThrow();
     return parseTypeReferencePropertySignaturesOrThrow(
       declarationAliasTypeNode
     );
-  } else if (TypeGuards.isTypeLiteralNode(typeNode)) {
+  } else if (Node.isTypeLiteral(typeNode)) {
     return typeNode.getProperties();
-  } else if (TypeGuards.isIntersectionTypeNode(typeNode)) {
+  } else if (Node.isIntersectionTypeNode(typeNode)) {
     return typeNode
       .getTypeNodes()
       .map(parseTypeReferencePropertySignaturesOrThrow)
@@ -213,7 +213,7 @@ export function getDecoratorConfigOrThrow(
   }
   // expect the argument to be an object literal expression
   const decoratorArg = decoratorArgs[0];
-  if (!TypeGuards.isObjectLiteralExpression(decoratorArg)) {
+  if (!Node.isObjectLiteralExpression(decoratorArg)) {
     throw new Error(
       `expected decorator factory configuration argument to be an object literal`
     );
@@ -239,7 +239,7 @@ export function getObjLiteralProp<T>(
   if (!property) {
     return undefined;
   }
-  if (!TypeGuards.isPropertyAssignment(property)) {
+  if (!Node.isPropertyAssignment(property)) {
     throw new Error("expected property assignment");
   }
   return property;
@@ -258,7 +258,7 @@ export function getObjLiteralPropOrThrow<T>(
   propertyName: Extract<keyof T, string>
 ): PropertyAssignment {
   const property = objectLiteral.getPropertyOrThrow(propertyName);
-  if (!TypeGuards.isPropertyAssignment(property)) {
+  if (!Node.isPropertyAssignment(property)) {
     throw new Error("expected property assignment");
   }
   return property;
