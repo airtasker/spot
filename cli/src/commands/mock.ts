@@ -50,7 +50,7 @@ export default class Mock extends Command {
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix ?? "",
-        ...proxyConfig,
+        proxyConfig,
         logger: this
       }).defer();
       this.log(`Mock server is running on port ${port}.`);
