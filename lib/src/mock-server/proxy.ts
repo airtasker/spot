@@ -10,7 +10,7 @@ export function proxyRequest({
 }: {
   incomingRequest: Request;
   response: Response;
-  proxyConfig: ProxyConfig
+  proxyConfig: ProxyConfig;
 }): void {
   const requestHandler = proxyConfig.isHttps ? https : http;
 
@@ -20,8 +20,8 @@ export function proxyRequest({
     path: proxyConfig.path + incomingRequest.path,
     headers: {
       ...incomingRequest.headers,
-      host: proxyConfig.host,
-    },
+      host: proxyConfig.host
+    }
   };
   console.log(options);
 

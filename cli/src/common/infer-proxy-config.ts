@@ -7,7 +7,7 @@ export default function inferProxyConfig(
     return null;
   }
 
-  const url = new URL(proxyBaseUrl)
+  const url = new URL(proxyBaseUrl);
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     throw new Error(
       'Could not infer protocol from proxy base url, should be either "http" or "https".'
@@ -17,6 +17,6 @@ export default function inferProxyConfig(
   return {
     isHttps: url.protocol === "https:",
     host: url.host,
-    path: url.pathname,
+    path: url.pathname
   };
 }

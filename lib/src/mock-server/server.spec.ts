@@ -3,11 +3,17 @@ import request from "supertest";
 import { Contract } from "../definitions";
 import { defaultConfig } from "../parsers/config-parser";
 import { TypeKind } from "../types";
-import { runMockServer } from "./server";
+import { ProxyConfig, runMockServer } from "./server";
 
 describe("Server", () => {
-  const proxyBaseUrl = "http://localhost:9988";
-  const protocol = "http";
+  const proxyConfig: ProxyConfig = {
+    isHttps: false,
+    host: "localhost:9988",
+    path: ""
+  };
+  const proxyBaseUrl = `http${proxyConfig.isHttps ? "s" : ""}://${
+    proxyConfig.host
+  }${proxyConfig.path}`;
 
   afterEach(() => {
     nock.cleanAll();
@@ -92,10 +98,7 @@ describe("Server", () => {
         logger: mockLogger,
         pathPrefix: "/api",
         port: 8085,
-        proxyConfig: {
-          protocol,
-          proxyBaseUrl
-        }
+        proxyConfig
       });
 
       await request(app)
@@ -111,10 +114,7 @@ describe("Server", () => {
         logger: mockLogger,
         pathPrefix: "/api",
         port: 8085,
-        proxyConfig: {
-          protocol,
-          proxyBaseUrl
-        }
+        proxyConfig
       });
 
       await request(app)
@@ -147,10 +147,7 @@ describe("Server", () => {
         logger: mockLogger,
         pathPrefix: "/api",
         port: 8085,
-        proxyConfig: {
-          protocol,
-          proxyBaseUrl
-        }
+        proxyConfig
       });
 
       await request(app)

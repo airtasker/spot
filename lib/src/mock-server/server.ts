@@ -9,7 +9,7 @@ import { proxyRequest } from "./proxy";
 
 export interface ProxyConfig {
   isHttps: boolean;
-  host: string,
+  host: string;
   path: string;
 }
 
