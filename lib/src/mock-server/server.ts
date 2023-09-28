@@ -10,6 +10,7 @@ import { proxyRequest } from "./proxy";
 export interface ProxyConfig {
   isHttps: boolean;
   host: string;
+  port: number | null;
   path: string;
 }
 

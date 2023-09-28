@@ -5,15 +5,24 @@ import { defaultConfig } from "../parsers/config-parser";
 import { TypeKind } from "../types";
 import { ProxyConfig, runMockServer } from "./server";
 
+function buildProxyBaseUrl(proxyConfig: ProxyConfig): string {
+  let url = `http${proxyConfig.isHttps ? "s" : ""}://`;
+  url += proxyConfig.host;
+  if (proxyConfig.port !== null) {
+    url += `:${proxyConfig.port}`;
+  }
+  url += proxyConfig.path;
+  return url;
+}
+
 describe("Server", () => {
   const proxyConfig: ProxyConfig = {
     isHttps: false,
-    host: "localhost:9988",
+    host: "localhost",
+    port: 9988,
     path: ""
   };
-  const proxyBaseUrl = `http${proxyConfig.isHttps ? "s" : ""}://${
-    proxyConfig.host
-  }${proxyConfig.path}`;
+  const proxyBaseUrl = buildProxyBaseUrl(proxyConfig);
 
   afterEach(() => {
     nock.cleanAll();
