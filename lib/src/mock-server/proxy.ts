@@ -12,7 +12,6 @@ export function proxyRequest({
   response: Response;
   proxyConfig: ProxyConfig;
 }): void {
-  console.log(proxyConfig);
   const requestHandler = proxyConfig.isHttps ? https : http;
 
   const options = {
@@ -30,7 +29,6 @@ export function proxyRequest({
       host: proxyConfig.host
     }
   };
-  console.log(options);
 
   const proxyRequest = requestHandler.request(options, res => {
     // Forward headers
