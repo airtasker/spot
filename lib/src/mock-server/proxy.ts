@@ -41,7 +41,7 @@ export function proxyRequest({
     response.send();
   });
 
-  if (incomingRequest.body) {
+  if (incomingRequest.body && incomingRequest.headers["content-length"]) {
     proxyRequest.write(incomingRequest.body);
   }
 

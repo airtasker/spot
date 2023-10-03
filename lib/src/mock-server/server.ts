@@ -33,7 +33,7 @@ export function runMockServer(
   }
 ) {
   const app = express();
-  app.use(express.raw({type: "*/*"}));
+  app.use(express.raw({ type: () => true }));
   app.use(cors());
   app.use((req, resp, next) => {
     if (req.path.includes("/_draft/")) {
