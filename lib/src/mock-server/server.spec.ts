@@ -3,11 +3,26 @@ import request from "supertest";
 import { Contract } from "../definitions";
 import { defaultConfig } from "../parsers/config-parser";
 import { TypeKind } from "../types";
-import { runMockServer } from "./server";
+import { ProxyConfig, runMockServer } from "./server";
+
+function buildProxyBaseUrl(proxyConfig: ProxyConfig): string {
+  let url = `http${proxyConfig.isHttps ? "s" : ""}://`;
+  url += proxyConfig.host;
+  if (proxyConfig.port !== null) {
+    url += `:${proxyConfig.port}`;
+  }
+  url += proxyConfig.path;
+  return url;
+}
 
 describe("Server", () => {
-  const proxyBaseUrl = "http://localhost:9988";
-  const protocol = "http";
+  const proxyConfig: ProxyConfig = {
+    isHttps: false,
+    host: "localhost",
+    port: 9988,
+    path: ""
+  };
+  const proxyBaseUrl = buildProxyBaseUrl(proxyConfig);
 
   afterEach(() => {
     nock.cleanAll();
@@ -92,10 +107,7 @@ describe("Server", () => {
         logger: mockLogger,
         pathPrefix: "/api",
         port: 8085,
-        proxyConfig: {
-          protocol,
-          proxyBaseUrl
-        }
+        proxyConfig
       });
 
       await request(app)
@@ -111,10 +123,7 @@ describe("Server", () => {
         logger: mockLogger,
         pathPrefix: "/api",
         port: 8085,
-        proxyConfig: {
-          protocol,
-          proxyBaseUrl
-        }
+        proxyConfig
       });
 
       await request(app)
@@ -147,10 +156,7 @@ describe("Server", () => {
         logger: mockLogger,
         pathPrefix: "/api",
         port: 8085,
-        proxyConfig: {
-          protocol,
-          proxyBaseUrl
-        }
+        proxyConfig
       });
 
       await request(app)

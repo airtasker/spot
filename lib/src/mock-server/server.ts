@@ -8,8 +8,10 @@ import { isRequestForEndpoint } from "./matcher";
 import { proxyRequest } from "./proxy";
 
 export interface ProxyConfig {
-  protocol: "http" | "https";
-  proxyBaseUrl: string;
+  isHttps: boolean;
+  host: string;
+  port: number | null;
+  path: string;
 }
 
 /**
@@ -26,7 +28,7 @@ export function runMockServer(
   }: {
     port: number;
     pathPrefix: string;
-    proxyConfig?: ProxyConfig;
+    proxyConfig?: ProxyConfig | null;
     logger: Logger;
   }
 ) {
@@ -48,7 +50,7 @@ export function runMockServer(
           return proxyRequest({
             incomingRequest: req,
             response: resp,
-            ...proxyConfig
+            proxyConfig
           });
         }
 
