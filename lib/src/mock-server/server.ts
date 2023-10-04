@@ -24,11 +24,13 @@ export function runMockServer(
     port,
     pathPrefix,
     proxyConfig,
+    proxyFallbackConfig,
     logger
   }: {
     port: number;
     pathPrefix: string;
     proxyConfig?: ProxyConfig | null;
+    proxyFallbackConfig?: ProxyConfig | null;
     logger: Logger;
   }
 ) {
@@ -74,9 +76,17 @@ export function runMockServer(
       }
     }
 
-    logger.error(`No match for request ${req.method} at ${req.path}.`);
-    resp.status(404);
-    resp.send();
+    logger.log(`No match for request ${req.method} at ${req.path}.`);
+    if (proxyFallbackConfig) {
+      return proxyRequest({
+        incomingRequest: req,
+        response: resp,
+        proxyConfig: proxyFallbackConfig
+      });
+    } else {
+      resp.status(404);
+      resp.send();
+    }
   });
   return {
     app,

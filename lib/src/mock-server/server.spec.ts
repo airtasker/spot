@@ -24,6 +24,14 @@ describe("Server", () => {
   };
   const proxyBaseUrl = buildProxyBaseUrl(proxyConfig);
 
+  const fallbackProxyConfig: ProxyConfig = {
+    isHttps: false,
+    host: "localhost",
+    port: 9944,
+    path: ""
+  };
+  const proxyFallbackBaseUrl = buildProxyBaseUrl(fallbackProxyConfig);
+
   afterEach(() => {
     nock.cleanAll();
   });
@@ -93,6 +101,9 @@ describe("Server", () => {
 
   // Set up mock proxy server
   nock(proxyBaseUrl).get("/api/companies").reply(200, data, {
+    "Content-Type": "application/json"
+  });
+  nock(proxyFallbackBaseUrl).get("/api/not-a-contract").reply(200, data, {
     "Content-Type": "application/json"
   });
 
@@ -166,6 +177,38 @@ describe("Server", () => {
           expect(response.body.name).not.toBe("This is the real response");
           expect(typeof response.body.name).toBe(TypeKind.STRING);
         });
+    });
+
+    it("Requests that do not match a contract return 404 without a fallback proxy", async () => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+        proxyConfig
+      });
+
+      await request(app)
+        .get("/api/not-a-contract")
+        .then(response => {
+          expect(response.statusCode).toBe(404);
+        })
+    });
+
+    it("Requests that do not match a contract to proxy the request with a fallback proxy", async () => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+        proxyConfig,
+        proxyFallbackConfig: fallbackProxyConfig,
+      });
+
+      await request(app)
+        .get("/api/not-a-contract")
+        .then(response => {
+          expect(response.statusCode).toBe(200);
+          expect(response.body.name).toBe("This is the real response");
+        })
     });
   });
 });
