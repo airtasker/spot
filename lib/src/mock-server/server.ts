@@ -33,6 +33,7 @@ export function runMockServer(
   }
 ) {
   const app = express();
+  app.use(express.raw({ type: () => true }));
   app.use(cors());
   app.use((req, resp, next) => {
     if (req.path.includes("/_draft/")) {
@@ -72,7 +73,10 @@ export function runMockServer(
         return;
       }
     }
+
     logger.error(`No match for request ${req.method} at ${req.path}.`);
+    resp.status(404);
+    resp.send();
   });
   return {
     app,

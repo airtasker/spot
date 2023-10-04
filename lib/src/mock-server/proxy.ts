@@ -35,8 +35,13 @@ export function proxyRequest({
     response.writeHead(res.statusCode ?? response.statusCode, res.headers);
     res.pipe(response);
   });
+  proxyRequest.on("error", e => {
+    console.error(`Failed to proxy request: ${e}`, e.stack);
+    response.statusCode = 500;
+    response.send();
+  });
 
-  if (incomingRequest.body) {
+  if (incomingRequest.body && Buffer.isBuffer(incomingRequest.body)) {
     proxyRequest.write(incomingRequest.body);
   }
 
