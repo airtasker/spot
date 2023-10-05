@@ -28,6 +28,10 @@ export default class Mock extends Command {
       description:
         "If set, the server will act as a proxy and fetch data from the given remote server instead of mocking it"
     }),
+    proxyFallbackBaseUrl: flags.string({
+      description:
+        "Like proxyBaseUrl, except used when the requested API does not match defined SPOT contract. If unset, 404 will always be returned."
+    }),
     port: flags.integer({
       char: "p",
       description: "Port on which to run the mock server",
@@ -42,15 +46,17 @@ export default class Mock extends Command {
   async run(): Promise<void> {
     const {
       args,
-      flags: { port, pathPrefix, proxyBaseUrl = "" }
+      flags: { port, pathPrefix, proxyBaseUrl, proxyFallbackBaseUrl = "" }
     } = this.parse(Mock);
     try {
-      const proxyConfig = inferProxyConfig(proxyBaseUrl);
+      const proxyConfig = inferProxyConfig(proxyBaseUrl || "");
+      const proxyFallbackConfig = inferProxyConfig(proxyFallbackBaseUrl || "");
       const contract = parse(args[ARG_API]);
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix ?? "",
         proxyConfig,
+        proxyFallbackConfig,
         logger: this
       }).defer();
       this.log(`Mock server is running on port ${port}.`);

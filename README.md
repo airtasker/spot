@@ -283,12 +283,15 @@ ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
 OPTIONS
-  -h, --help                   show CLI help
-  -p, --port=port              (required) [default: 3010] Port on which to run the mock server
-  --pathPrefix=pathPrefix      Prefix to prepend to each endpoint path
+  -h, --help                                   show CLI help
+  -p, --port=port                              (required) [default: 3010] Port on which to run the mock server
+  --pathPrefix=pathPrefix                      Prefix to prepend to each endpoint path
 
-  --proxyBaseUrl=proxyBaseUrl  If set, the server will act as a proxy and fetch data from the given remote server
-                               instead of mocking it
+  --proxyBaseUrl=proxyBaseUrl                  If set, the server will act as a proxy and fetch data from the given
+                                               remote server instead of mocking it
+
+  --proxyFallbackBaseUrl=proxyFallbackBaseUrl  Like proxyBaseUrl, except used when the requested API does not match
+                                               defined SPOT contract. If unset, 404 will always be returned.
 
 EXAMPLE
   $ spot mock api.ts

@@ -24,6 +24,14 @@ describe("Server", () => {
   };
   const proxyBaseUrl = buildProxyBaseUrl(proxyConfig);
 
+  const fallbackProxyConfig: ProxyConfig = {
+    isHttps: false,
+    host: "example.com",
+    port: 80,
+    path: ""
+  };
+  const proxyFallbackBaseUrl = buildProxyBaseUrl(fallbackProxyConfig);
+
   afterEach(() => {
     nock.cleanAll();
   });
@@ -165,6 +173,35 @@ describe("Server", () => {
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
           expect(typeof response.body.name).toBe(TypeKind.STRING);
+        });
+    });
+
+    it("Requests that do not match a contract return 404 without a fallback proxy", async () => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085
+      });
+
+      await request(app)
+        .get("/")
+        .then(response => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+
+    it("Requests that do not match a contract to proxy the request with a fallback proxy", async () => {
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+        proxyFallbackConfig: fallbackProxyConfig
+      });
+
+      await request(app)
+        .get("/")
+        .then(response => {
+          expect(response.statusCode).toBe(200);
         });
     });
   });
