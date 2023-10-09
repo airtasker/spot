@@ -1,4 +1,4 @@
-import { isRequestForEndpoint } from "./matcher";
+import { isRequestForEndpoint, normalisePath } from "./matcher";
 
 const BASE_ENDPOINT = {
   name: "my-endpoint",
@@ -158,6 +158,25 @@ describe("Matcher", () => {
           }
         )
       ).toBeFalsy();
+    });
+  });
+
+  describe("normalisePath", () => {
+    it("Performs a no-op with no slashes", () => {
+      expect(normalisePath("")).toBe("");
+      expect(normalisePath("chicken little")).toBe("chicken little");
+    });
+
+    it("Normalises more than one slash at various positions within the string", () => {
+      expect(normalisePath("//foo/bar")).toBe("/foo/bar");
+      expect(normalisePath("////foo/bar")).toBe("/foo/bar");
+      expect(normalisePath("/foo/////bar")).toBe("/foo/bar");
+      expect(normalisePath("/foo/bar//")).toBe("/foo/bar/");
+    });
+
+    it("Normalises more than one slash at multiple positions within the string", () => {
+      expect(normalisePath("//foo//bar")).toBe("/foo/bar");
+      expect(normalisePath("////foo////bar")).toBe("/foo/bar");
     });
   });
 });

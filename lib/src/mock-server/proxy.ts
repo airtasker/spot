@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import http from "http";
 import https from "https";
 import { ProxyConfig } from "./server";
+import { normalisePath } from "./matcher";
 
 export function proxyRequest({
   incomingRequest,
@@ -23,7 +24,7 @@ export function proxyRequest({
           ? 443
           : 80
         : proxyConfig.port,
-    path: proxyConfig.path + incomingRequest.path,
+    path: normalisePath(proxyConfig.path + incomingRequest.path),
     headers: {
       ...incomingRequest.headers,
       host: proxyConfig.host
