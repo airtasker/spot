@@ -16,7 +16,7 @@ export default function inferProxyConfig(
 
   return {
     isHttps: url.protocol === "https:",
-    host: url.host,
+    host: url.hostname,
     port: url.port ? parseInt(url.port, 10) : null,
     path: url.pathname
   };
