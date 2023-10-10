@@ -293,6 +293,9 @@ OPTIONS
   --proxyFallbackBaseUrl=proxyFallbackBaseUrl  Like proxyBaseUrl, except used when the requested API does not match
                                                defined SPOT contract. If unset, 404 will always be returned.
 
+  --proxyMockBaseUrl=proxyMockBaseUrl          Like proxyBaseUrl, except used to proxy draft endpoints instead of
+                                               returning mocked responses.
+
 EXAMPLE
   $ spot mock api.ts
 ```
