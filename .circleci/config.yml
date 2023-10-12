@@ -90,28 +90,28 @@ commands:
 jobs:
   test-node14:
     executor: node14
-    parallelism: 8
+    parallelism: 4
     steps:
       - build-and-test:
           node_version: 14
 
   test-node16:
     executor: node16
-    parallelism: 8
+    parallelism: 4
     steps:
       - build-and-test:
           node_version: 16
 
   test-node18:
     executor: node18
-    parallelism: 8
+    parallelism: 4
     steps:
       - build-and-test:
           node_version: 18
 
   test-node20:
     executor: node20
-    parallelism: 8
+    parallelism: 4
     steps:
       - build-and-test:
           node_version: 20
