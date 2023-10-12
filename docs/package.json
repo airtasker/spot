@@ -1,0 +1,31 @@
+{
+  "name": "@airtasker/spot-docs",
+  "version": "0.0.1",
+  "author": "Francois Wouts, Leslie Fung",
+  "bugs": "https://github.com/airtasker/spot/issues",
+  "dependencies": {},
+  "devDependencies": {
+    "core-js": "^3.18.0",
+    "css-loader": "^5.2.7",
+    "html-webpack-plugin": "4.5.2",
+    "mini-css-extract-plugin": "1.6.2",
+    "mobx": "^6.3.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-is": "^17.0.2",
+    "redoc": "^2.1.2",
+    "styled-components": "5.3.1",
+    "ts-loader": "8.3.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.5.0"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "homepage": "https://github.com/airtasker/spot",
+  "license": "MIT",
+  "repository": "airtasker/spot",
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  }
+}
