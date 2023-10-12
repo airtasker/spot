@@ -60,7 +60,7 @@ export function runMockServer(
           });
         }
 
-        // For draft endpoints, either either proxy or generate a mocked response.
+        // For draft endpoints, either proxy or generate a mocked response.
         if (proxyMockConfig) {
           return proxyRequest({
             incomingRequest: req,
