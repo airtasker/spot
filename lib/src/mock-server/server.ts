@@ -24,12 +24,14 @@ export function runMockServer(
     port,
     pathPrefix,
     proxyConfig,
+    proxyMockConfig,
     proxyFallbackConfig,
     logger
   }: {
     port: number;
     pathPrefix: string;
     proxyConfig?: ProxyConfig | null;
+    proxyMockConfig?: ProxyConfig | null;
     proxyFallbackConfig?: ProxyConfig | null;
     logger: Logger;
   }
@@ -49,6 +51,7 @@ export function runMockServer(
         // non-draft end points get real response
         const shouldProxy = !endpoint.draft;
 
+        // Proxy non-draft requests if we have a proxy config.
         if (shouldProxy && proxyConfig) {
           return proxyRequest({
             incomingRequest: req,
@@ -57,20 +60,29 @@ export function runMockServer(
           });
         }
 
-        logger.log(`Request hit for ${endpoint.name} registered.`);
-        const response = endpoint.responses[0] ?? endpoint.defaultResponse;
-        if (!response) {
-          logger.error(`No response defined for endpoint ${endpoint.name}`);
-          return;
-        }
-        resp.status("status" in response ? response.status : 200);
-        resp.header("content-type", "application/json");
-        if (response.body) {
-          resp.send(
-            JSON.stringify(
-              generateData(TypeTable.fromArray(api.types), response.body.type)
-            )
-          );
+        // For draft endpoints, either proxy or generate a mocked response.
+        if (proxyMockConfig) {
+          return proxyRequest({
+            incomingRequest: req,
+            response: resp,
+            proxyConfig: proxyMockConfig
+          });
+        } else {
+          logger.log(`Request hit for ${endpoint.name} registered.`);
+          const response = endpoint.responses[0] ?? endpoint.defaultResponse;
+          if (!response) {
+            logger.error(`No response defined for endpoint ${endpoint.name}`);
+            return;
+          }
+          resp.status("status" in response ? response.status : 200);
+          resp.header("content-type", "application/json");
+          if (response.body) {
+            resp.send(
+              JSON.stringify(
+                generateData(TypeTable.fromArray(api.types), response.body.type)
+              )
+            );
+          }
         }
         return;
       }

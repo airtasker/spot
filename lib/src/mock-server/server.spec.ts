@@ -32,6 +32,14 @@ describe("Server", () => {
   };
   const proxyFallbackBaseUrl = buildProxyBaseUrl(fallbackProxyConfig);
 
+  const mockProxyConfig: ProxyConfig = {
+    isHttps: false,
+    host: "localhost",
+    port: 9988,
+    path: ""
+  };
+  const mockProxyBaseUrl = buildProxyBaseUrl(mockProxyConfig);
+
   afterEach(() => {
     nock.cleanAll();
   });
@@ -97,13 +105,6 @@ describe("Server", () => {
     types: []
   };
 
-  const data = { name: "This is the real response", private: true };
-
-  // Set up mock proxy server
-  nock(proxyBaseUrl).get("/api/companies").reply(200, data, {
-    "Content-Type": "application/json"
-  });
-
   const mockLogger = {
     log: (message: string) => message,
     error: (message: string) => message
@@ -111,6 +112,12 @@ describe("Server", () => {
 
   describe("Run", () => {
     it("Proxy request and return real data if endpoint is not in a draft state", async () => {
+      // Set up mock proxy server
+      const proxyData = { name: "This is the real response", private: true };
+      nock(proxyBaseUrl).get("/api/companies").reply(200, proxyData, {
+        "Content-Type": "application/json"
+      });
+
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
@@ -140,6 +147,29 @@ describe("Server", () => {
         .then(response => {
           expect(response.body.name).not.toBe("This is the real response");
           expect(typeof response.body.name).toBe(TypeKind.STRING);
+        });
+    });
+
+    it("Return proxied data if endpoint is in draft state and we have a mock proxy", async () => {
+      // Set up mock proxy server
+      const proxyData = { name: "This is a proxied response", private: true };
+      nock(mockProxyBaseUrl).post("/api/companies").reply(200, proxyData, {
+        "Content-Type": "application/json"
+      });
+
+      const { app } = runMockServer(contract, {
+        logger: mockLogger,
+        pathPrefix: "/api",
+        port: 8085,
+        proxyConfig,
+        proxyMockConfig: mockProxyConfig
+      });
+
+      await request(app)
+        .post("/api/companies")
+        .expect(200)
+        .then(response => {
+          expect(response.body.name).toBe("This is a proxied response");
         });
     });
 
@@ -191,6 +221,12 @@ describe("Server", () => {
     });
 
     it("Requests that do not match a contract to proxy the request with a fallback proxy", async () => {
+      // Set up mock proxy server
+      const proxyData = { name: "This is a fallback response", private: true };
+      nock(proxyFallbackBaseUrl).get("/foo/bar/baz").reply(200, proxyData, {
+        "Content-Type": "application/json"
+      });
+
       const { app } = runMockServer(contract, {
         logger: mockLogger,
         pathPrefix: "/api",
@@ -199,9 +235,10 @@ describe("Server", () => {
       });
 
       await request(app)
-        .get("/")
+        .get("/foo/bar/baz")
         .then(response => {
           expect(response.statusCode).toBe(200);
+          expect(response.body.name).toBe("This is a fallback response");
         });
     });
   });

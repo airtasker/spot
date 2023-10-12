@@ -32,6 +32,10 @@ export default class Mock extends Command {
       description:
         "Like proxyBaseUrl, except used when the requested API does not match defined SPOT contract. If unset, 404 will always be returned."
     }),
+    proxyMockBaseUrl: flags.string({
+      description:
+        "Like proxyBaseUrl, except used to proxy draft endpoints instead of returning mocked responses."
+    }),
     port: flags.integer({
       char: "p",
       description: "Port on which to run the mock server",
@@ -46,16 +50,24 @@ export default class Mock extends Command {
   async run(): Promise<void> {
     const {
       args,
-      flags: { port, pathPrefix, proxyBaseUrl, proxyFallbackBaseUrl = "" }
+      flags: {
+        port,
+        pathPrefix,
+        proxyBaseUrl,
+        proxyMockBaseUrl,
+        proxyFallbackBaseUrl = ""
+      }
     } = this.parse(Mock);
     try {
       const proxyConfig = inferProxyConfig(proxyBaseUrl || "");
+      const proxyMockConfig = inferProxyConfig(proxyMockBaseUrl || "");
       const proxyFallbackConfig = inferProxyConfig(proxyFallbackBaseUrl || "");
       const contract = parse(args[ARG_API]);
       await runMockServer(contract, {
         port,
         pathPrefix: pathPrefix ?? "",
         proxyConfig,
+        proxyMockConfig,
         proxyFallbackConfig,
         logger: this
       }).defer();
