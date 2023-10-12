@@ -32,7 +32,7 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v3-dependencies-{{ checksum "package.json" }}
+            - v3-dependencies-{{ checksum "yarn.lock" }}
             - v3-dependencies
       - run:
           name: Install dependencies
@@ -40,7 +40,7 @@ commands:
       - save_cache:
           paths:
             - node_modules
-          key: v3-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "yarn.lock" }}
 
   run-tests:
     description: Run the unit tests
