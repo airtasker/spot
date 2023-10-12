@@ -32,15 +32,27 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v3-dependencies-{{ checksum "package.json" }}
+            - v3-dependencies-{{ checksum "yarn.lock" }}
             - v3-dependencies
       - run:
-          name: Install dependencies
+          name: Install main dependencies
           command: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - node_modules
-          key: v3-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          keys:
+            - v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
+            - v3-docs-dependencies
+      - run:
+          name: Install docs dependencies
+          command: yarn install --frozen-lockfile
+          working_directory: docs/
+      - save_cache:
+          paths:
+            - docs/node_modules
+          key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
 
   run-tests:
     description: Run the unit tests
@@ -61,6 +73,9 @@ commands:
             yarn ci:test $TESTFILES
       - store_test_results:
           path: ./test-reports
+      - run:
+          name: Build the documentation.
+          command: yarn build-docs
 
 jobs:
   test-node14:

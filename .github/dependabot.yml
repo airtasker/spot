@@ -4,6 +4,16 @@ updates:
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: daily
+    interval: weekly
+    day: monday
+    time: "05:00"
+    timezone: Australia/Sydney
+  open-pull-requests-limit: 99
+- package-ecosystem: npm
+  directory: "/docs"
+  schedule:
+    interval: weekly
+    day: monday
+    time: "05:00"
     timezone: Australia/Sydney
   open-pull-requests-limit: 99
