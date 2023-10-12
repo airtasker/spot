@@ -45,6 +45,7 @@ commands:
   run-tests:
     description: Run the unit tests
     steps:
+      - prepare-repository
       - run:
           name: Run the tests in parallel.
           environment:
@@ -53,18 +54,35 @@ commands:
             JEST_JUNIT_CLASSNAME: "{filepath}"
           command: |
             set -uex
-            TESTFILES=$(circleci tests glob lib/**/*.spec.ts | circleci tests split --split-by=name)
+            TESTFILES=$(circleci tests glob lib/**/*.spec.ts | circleci tests split --split-by=timings)
             yarn ci:test $TESTFILES
+      - store_test_results:
+          path: ./test-reports
 
 jobs:
   test-node14:
     executor: node14
     parallelism: 8
     steps:
-      - prepare-repository
       - run-tests
-      - store_test_results:
-          path: ./test-reports
+
+  test-node16:
+    executor: node16
+    parallelism: 8
+    steps:
+      - run-tests
+
+  test-node18:
+    executor: node18
+    parallelism: 8
+    steps:
+      - run-tests
+
+  test-node20:
+    executor: node20
+    parallelism: 8
+    steps:
+      - run-tests
 
   lint-check:
     executor: node14
@@ -92,6 +110,18 @@ workflows:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - test-node16:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - test-node18:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - test-node20:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
       - lint-check:
           filters:
             tags:
@@ -99,6 +129,9 @@ workflows:
       - publish:
           requires:
             - test-node14
+            - test-node16
+            - test-node18
+            - test-node20
             - lint-check
           filters:
             tags:
