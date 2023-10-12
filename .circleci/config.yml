@@ -47,7 +47,10 @@ commands:
     steps:
       - prepare-repository
       - run:
-          name: Run the tests in parallel.
+          name: Compile the repository on this version of Node.
+          command: yarn build
+      - run:
+          name: Run the tests on this version of Node.
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
             JEST_JUNIT_OUTPUT_NAME: results.xml
