@@ -116,7 +116,7 @@ function parseOa3Variables(
     const defaultTagNode = jsDocNode
       ?.getTags()
       .find(tag => tag.getTagName() === "default");
-    const defaultTag = defaultTagNode?.getComment();
+    const defaultTag = defaultTagNode?.getComment()?.toString();
     if (!defaultTag) {
       return err(
         new ParserError("@default tag is mandatory ! ", {

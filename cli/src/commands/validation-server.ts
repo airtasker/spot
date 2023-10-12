@@ -43,7 +43,7 @@ export default class ValidationServer extends Command {
       await runValidationServer(port, contract).defer();
       this.log(`Validation server running on port ${port}`);
     } catch (e) {
-      this.error(e, { exit: 1 });
+      this.error(e as Error, { exit: 1 });
     }
   }
 }
