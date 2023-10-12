@@ -75,6 +75,9 @@ commands:
           path: ./test-reports
       - run:
           name: Build the documentation.
+          environment:
+            # Without this, we get `Error: error:0308010C:digital envelope routines::unsupported` on Node >= 17.
+            NODE_OPTIONS: "--openssl-legacy-provider"
           command: yarn build-docs
 
 jobs:
