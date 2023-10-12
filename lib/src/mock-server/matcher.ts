@@ -15,7 +15,8 @@ export function isRequestForEndpoint(
   pathPrefix: string,
   endpoint: Endpoint
 ): boolean {
-  if (req.path.substr(0, pathPrefix.length) !== pathPrefix) {
+  const requestPath = normalisePath(req.path);
+  if (requestPath.substr(0, pathPrefix.length) !== pathPrefix) {
     return false;
   }
   if (req.method.toUpperCase() !== endpoint.method) {
@@ -24,5 +25,14 @@ export function isRequestForEndpoint(
   const regexp = new RegExp(
     "^" + endpoint.path.replace(/:\w+/g, "[^/]+") + "$"
   );
-  return regexp.test(req.path.substr(pathPrefix.length));
+  return regexp.test(requestPath.substr(pathPrefix.length));
+}
+
+/**
+ * Normalises a given HTTP request path, by replacing all instances of two or more "/" in a row with a singular "/".
+ *
+ * @param path The path to normalise
+ */
+export function normalisePath(path: string): string {
+  return path.replace(/[/]{2,}/g, "/");
 }
