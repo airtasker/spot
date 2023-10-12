@@ -1,12 +1,28 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@1.1.6
-
 executors:
-  node-executor:
+  node14:
     docker:
       - image: cimg/node:14.17
+    resource_class: medium
+    working_directory: ~/repo
+
+  node16:
+    docker:
+      - image: cimg/node:16.20.1
+    resource_class: medium
+    working_directory: ~/repo
+
+  node18:
+    docker:
+      - image: cimg/node:18.18.1
+    resource_class: medium
+    working_directory: ~/repo
+
+  node20:
+    docker:
+      - image: cimg/node:20.4.0
+    resource_class: medium
     working_directory: ~/repo
 
 commands:
@@ -26,29 +42,53 @@ commands:
             - node_modules
           key: v3-dependencies-{{ checksum "package.json" }}
 
-jobs:
-  test:
-    executor: node-executor
-    resource_class: xlarge
-    parallelism: 8
+  run-tests:
+    description: Run the unit tests
     steps:
       - prepare-repository
-      - node/with-splitting:
-          glob-path: lib/**/*.spec.ts
-          timings-type: classname
-          steps:
-            - run:
-                name: Run tests
-                command: yarn ci:test $TESTFILES
-                environment:
-                  JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
-                  JEST_JUNIT_OUTPUT_NAME: results.xml
-                  JEST_JUNIT_CLASSNAME: "{filepath}"
+      - run:
+          name: Compile the repository on this version of Node.
+          command: yarn build
+      - run:
+          name: Run the tests on this version of Node.
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
+            JEST_JUNIT_OUTPUT_NAME: results.xml
+            JEST_JUNIT_CLASSNAME: "{filepath}"
+          command: |
+            set -uex
+            TESTFILES=$(circleci tests glob lib/**/*.spec.ts | circleci tests split --split-by=timings)
+            yarn ci:test $TESTFILES
       - store_test_results:
           path: ./test-reports
 
+jobs:
+  test-node14:
+    executor: node14
+    parallelism: 8
+    steps:
+      - run-tests
+
+  test-node16:
+    executor: node16
+    parallelism: 8
+    steps:
+      - run-tests
+
+  test-node18:
+    executor: node18
+    parallelism: 8
+    steps:
+      - run-tests
+
+  test-node20:
+    executor: node20
+    parallelism: 8
+    steps:
+      - run-tests
+
   lint-check:
-    executor: node-executor
+    executor: node14
     steps:
       - prepare-repository
       - run:
@@ -56,7 +96,7 @@ jobs:
           command: yarn lint:check
 
   publish:
-    executor: node-executor
+    executor: node14
     steps:
       - prepare-repository
       - run:
@@ -69,7 +109,19 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - test:
+      - test-node14:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - test-node16:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - test-node18:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      - test-node20:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
@@ -79,7 +131,10 @@ workflows:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
       - publish:
           requires:
-            - test
+            - test-node14
+            - test-node16
+            - test-node18
+            - test-node20
             - lint-check
           filters:
             tags:
