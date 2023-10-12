@@ -54,8 +54,12 @@ commands:
             - docs/node_modules
           key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
 
-  run-tests:
+  build-and-test:
     description: Run the unit tests
+    parameters:
+      node_version:
+        type: integer
+        description: Which integer major version of Node this invocation is using.
     steps:
       - prepare-repository
       - run:
@@ -75,35 +79,42 @@ commands:
           path: ./test-reports
       - run:
           name: Build the documentation.
-          environment:
-            # Without this, we get `Error: error:0308010C:digital envelope routines::unsupported` on Node >= 17.
-            NODE_OPTIONS: "--openssl-legacy-provider"
-          command: yarn build-docs
+          command: |
+            set -uex
+            if [ << parameters.node_version >> -gt 16 ]; then
+              # Without this, we get `Error: error:0308010C:digital envelope routines::unsupported` on Node >= 17.
+              export NODE_OPTIONS="--openssl-legacy-provider"
+            fi
+            yarn build-docs
 
 jobs:
   test-node14:
     executor: node14
     parallelism: 8
     steps:
-      - run-tests
+      - build-and-test:
+          node_version: 14
 
   test-node16:
     executor: node16
     parallelism: 8
     steps:
-      - run-tests
+      - build-and-test:
+          node_version: 16
 
   test-node18:
     executor: node18
     parallelism: 8
     steps:
-      - run-tests
+      - build-and-test:
+          node_version: 18
 
   test-node20:
     executor: node20
     parallelism: 8
     steps:
-      - run-tests
+      - build-and-test:
+          node_version: 20
 
   lint-check:
     executor: node14
