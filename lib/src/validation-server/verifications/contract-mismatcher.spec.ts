@@ -118,7 +118,7 @@ describe("contract mismatch finder", () => {
         },
         undefined,
         2
-      )}\n- #.data should have required property 'age'`
+      )}\n- #/data must have required property 'age'`
     );
   });
 
@@ -152,7 +152,7 @@ describe("contract mismatch finder", () => {
     const result = mismatcher.findViolations(request, response);
     expect(result.violations).toHaveLength(1);
     expect(result.violations[0].message).toBe(
-      'Request body type disparity:\n{\n  "data": {\n    "firstName": "Maple",\n    "lastName": "Syrup",\n    "age": 1,\n    "email": "maple.syrup@airtasker.com",\n    "address": "Doggo bed",\n    "createdAt": "invalidDate"\n  }\n}\n- #.data.createdAt should match format "date"'
+      'Request body type disparity:\n{\n  "data": {\n    "firstName": "Maple",\n    "lastName": "Syrup",\n    "age": 1,\n    "email": "maple.syrup@airtasker.com",\n    "address": "Doggo bed",\n    "createdAt": "invalidDate"\n  }\n}\n- #/data/createdAt must match format "date"'
     );
   });
 

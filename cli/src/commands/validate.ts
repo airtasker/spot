@@ -30,7 +30,7 @@ export default class Validate extends Command {
       parse(args[ARG_API]);
       this.log("Contract is valid");
     } catch (e) {
-      this.error(e);
+      this.error(e as Error);
     }
   }
 }
