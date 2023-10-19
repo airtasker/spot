@@ -31,19 +31,19 @@ describe("parser-helpers", () => {
     test("returns the first argument of a decorator factory that conforms to configuration", () => {
       const klass = sourceFile.getClassOrThrow("DecoratorFactoryConfig");
       const decorator = klass.getDecoratorOrThrow("decoratorFactoryConfig");
-      expect(() => getDecoratorConfigOrThrow(decorator)).not.toThrowError();
+      expect(() => getDecoratorConfigOrThrow(decorator)).not.toThrow();
     });
 
     test("throws when given a decorator factory that does not conform to configuration", () => {
       const klass = sourceFile.getClassOrThrow("DecoratorFactoryNotConfig");
       const decorator = klass.getDecoratorOrThrow("decoratorFactoryNotConfig");
-      expect(() => getDecoratorConfigOrThrow(decorator)).toThrowError();
+      expect(() => getDecoratorConfigOrThrow(decorator)).toThrow();
     });
 
     test("throws when given a plain decorator", () => {
       const klass = sourceFile.getClassOrThrow("DecoratorPlain");
       const decorator = klass.getDecoratorOrThrow("decoratorPlain");
-      expect(() => getDecoratorConfigOrThrow(decorator)).toThrowError();
+      expect(() => getDecoratorConfigOrThrow(decorator)).toThrow();
     });
   });
 });

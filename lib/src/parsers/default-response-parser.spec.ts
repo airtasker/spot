@@ -62,6 +62,6 @@ describe("default response parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("Expected to find decorator named 'defaultResponse'");
+    ).toThrow("Expected to find decorator named 'defaultResponse'");
   });
 });

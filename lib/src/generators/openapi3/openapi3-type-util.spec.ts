@@ -26,7 +26,7 @@ describe("OpenAPI 3 type util", () => {
     test("fails to convert to schema", () => {
       expect(() =>
         typeToSchemaOrReferenceObject(nullType(), new TypeTable())
-      ).toThrowError("Null must be part of a union for OpenAPI 3");
+      ).toThrow("Null must be part of a union for OpenAPI 3");
     });
   });
 

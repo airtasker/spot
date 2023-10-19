@@ -52,7 +52,7 @@ describe("security header parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("Expected to find decorator named 'securityHeader'");
+    ).toThrow("Expected to find decorator named 'securityHeader'");
   });
 
   test("fails to parse @securityHeader decorated property with a field name containing illegal characters", () => {

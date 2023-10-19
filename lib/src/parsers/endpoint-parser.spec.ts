@@ -208,7 +208,7 @@ describe("endpoint parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("Expected to find decorator named 'endpoint'");
+    ).toThrow("Expected to find decorator named 'endpoint'");
   });
 
   test("parses minimal @endpoint decorated class with summary field", () => {

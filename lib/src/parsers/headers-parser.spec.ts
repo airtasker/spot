@@ -152,7 +152,7 @@ describe("headers parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError(
+    ).toThrow(
       "expected parameter value to be an type literal or interface object"
     );
   });
@@ -204,6 +204,6 @@ describe("headers parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("Expected to find decorator named 'headers'");
+    ).toThrow("Expected to find decorator named 'headers'");
   });
 });

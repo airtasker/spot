@@ -24,9 +24,9 @@ import { typeToSchemaObject } from "./openapi2-type-util";
 describe("OpenAPI 2 type util", () => {
   describe("Null type", () => {
     test("fails to convert to schema", () => {
-      expect(() =>
-        typeToSchemaObject(nullType(), new TypeTable())
-      ).toThrowError("Null must be part of a union for OpenAPI 2");
+      expect(() => typeToSchemaObject(nullType(), new TypeTable())).toThrow(
+        "Null must be part of a union for OpenAPI 2"
+      );
     });
   });
 
@@ -494,7 +494,7 @@ describe("OpenAPI 2 type util", () => {
             unionType([stringType(), booleanType()]),
             new TypeTable()
           )
-        ).toThrowError("Unions are not supported in OpenAPI 2");
+        ).toThrow("Unions are not supported in OpenAPI 2");
       });
     });
   });

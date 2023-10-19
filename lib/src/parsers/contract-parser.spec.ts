@@ -71,7 +71,7 @@ describe("contract parser", () => {
       `${__dirname}/__spec-examples__/contracts/not-contract.ts`
     ).file;
 
-    expect(() => parseContract(file)).toThrowError(
+    expect(() => parseContract(file)).toThrow(
       "expected a decorator @api to be used once, found 0 usages"
     );
   });
