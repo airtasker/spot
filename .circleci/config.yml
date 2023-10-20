@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node14:
     docker:
-      - image: cimg/node:14.17
+      - image: cimg/node:14.21.3
     resource_class: medium
     working_directory: ~/repo
 
