@@ -140,7 +140,7 @@ describe("Validation Server", () => {
 
   describe("SPOT contract", () => {
     it("should be valid", () => {
-      expect(() => parse(`${__dirname}/spots/api.ts`)).not.toThrowError();
+      expect(() => parse(`${__dirname}/spots/api.ts`)).not.toThrow();
     });
   });
 });

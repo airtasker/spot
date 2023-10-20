@@ -196,7 +196,7 @@ describe("query params parser", () => {
         typeTable,
         lociTable
       ).unwrapErrOrThrow()
-    ).toThrowError(
+    ).toThrow(
       "expected parameter value to be an type literal or interface object"
     );
   });
@@ -268,6 +268,6 @@ describe("query params parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("Expected to find decorator named 'queryParams'");
+    ).toThrow("Expected to find decorator named 'queryParams'");
   });
 });

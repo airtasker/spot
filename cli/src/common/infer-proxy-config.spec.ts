@@ -8,11 +8,11 @@ describe("inferProxyConfig", () => {
   it("throws an error when non-HTTP or HTTPS protocols are provided", () => {
     expect(() => {
       inferProxyConfig("chicken");
-    }).toThrowError(/Invalid URL/);
+    }).toThrow(/Invalid URL/);
 
     expect(() => {
       inferProxyConfig("ftp://127.0.0.1/foo/bar/baz");
-    }).toThrowError(/Could not infer protocol/);
+    }).toThrow(/Could not infer protocol/);
   });
 
   it("returns the expected value for proxy servers on the default port", () => {

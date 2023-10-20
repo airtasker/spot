@@ -39,8 +39,8 @@ describe("find lint violations", () => {
     it("should only trigger an error", () => {
       expect(findLintViolationsResult.errorCount).toBe(1);
       expect(findLintViolationsResult.warningCount).toBe(0);
-      expect(errorMock).toBeCalled();
-      expect(warnMock).not.toBeCalled();
+      expect(errorMock).toHaveBeenCalled();
+      expect(warnMock).not.toHaveBeenCalled();
     });
   });
 
@@ -72,8 +72,8 @@ describe("find lint violations", () => {
     it("should only trigger a warning", () => {
       expect(findLintViolationsResult.errorCount).toBe(0);
       expect(findLintViolationsResult.warningCount).toBe(1);
-      expect(warnMock).toBeCalled();
-      expect(errorMock).not.toBeCalled();
+      expect(warnMock).toHaveBeenCalled();
+      expect(errorMock).not.toHaveBeenCalled();
     });
   });
 
@@ -105,8 +105,8 @@ describe("find lint violations", () => {
     it("should only trigger a error", () => {
       expect(findLintViolationsResult.errorCount).toBe(1);
       expect(findLintViolationsResult.warningCount).toBe(0);
-      expect(errorMock).toBeCalled();
-      expect(warnMock).not.toBeCalled();
+      expect(errorMock).toHaveBeenCalled();
+      expect(warnMock).not.toHaveBeenCalled();
     });
   });
 
@@ -138,8 +138,8 @@ describe("find lint violations", () => {
     it("should trigger no errors and no warnings", () => {
       expect(findLintViolationsResult.errorCount).toBe(0);
       expect(findLintViolationsResult.warningCount).toBe(0);
-      expect(errorMock).not.toBeCalled();
-      expect(warnMock).not.toBeCalled();
+      expect(errorMock).not.toHaveBeenCalled();
+      expect(warnMock).not.toHaveBeenCalled();
     });
   });
 
@@ -171,8 +171,8 @@ describe("find lint violations", () => {
     it("should trigger only a error", () => {
       expect(findLintViolationsResult.errorCount).toBe(1);
       expect(findLintViolationsResult.warningCount).toBe(0);
-      expect(errorMock).toBeCalled();
-      expect(warnMock).not.toBeCalled();
+      expect(errorMock).toHaveBeenCalled();
+      expect(warnMock).not.toHaveBeenCalled();
     });
   });
 
@@ -191,8 +191,8 @@ describe("find lint violations", () => {
     it("should trigger no errors and no warnings", () => {
       expect(findLintViolationsResult.errorCount).toBe(0);
       expect(findLintViolationsResult.warningCount).toBe(0);
-      expect(errorMock).not.toBeCalled();
-      expect(warnMock).not.toBeCalled();
+      expect(errorMock).not.toHaveBeenCalled();
+      expect(warnMock).not.toHaveBeenCalled();
     });
   });
 
@@ -222,8 +222,8 @@ describe("find lint violations", () => {
     it("should trigger no errors and no warnings", () => {
       expect(findLintViolationsResult.errorCount).toBe(0);
       expect(findLintViolationsResult.warningCount).toBe(0);
-      expect(errorMock).not.toBeCalled();
-      expect(warnMock).not.toBeCalled();
+      expect(errorMock).not.toHaveBeenCalled();
+      expect(warnMock).not.toHaveBeenCalled();
     });
   });
 
@@ -272,8 +272,8 @@ describe("find lint violations", () => {
     it("should trigger 3 errors and 2 warnings", () => {
       expect(findLintViolationsResult.errorCount).toBe(3);
       expect(findLintViolationsResult.warningCount).toBe(2);
-      expect(errorMock).toBeCalledTimes(3);
-      expect(warnMock).toBeCalledTimes(2);
+      expect(errorMock).toHaveBeenCalledTimes(3);
+      expect(warnMock).toHaveBeenCalledTimes(2);
     });
   });
 });

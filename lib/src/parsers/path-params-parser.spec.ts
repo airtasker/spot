@@ -207,7 +207,7 @@ describe("path params parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError(
+    ).toThrow(
       "expected parameter value to be an type literal or interface object"
     );
   });
@@ -279,7 +279,7 @@ describe("path params parser", () => {
         typeTable,
         lociTable
       )
-    ).toThrowError("Expected to find decorator named 'pathParams'");
+    ).toThrow("Expected to find decorator named 'pathParams'");
   });
 
   test("fails to parse empty @example decorator", () => {

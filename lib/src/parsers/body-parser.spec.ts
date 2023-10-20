@@ -76,6 +76,6 @@ describe("body parser", () => {
   test("fails to parse non-@body decorated parameter", () => {
     expect(() =>
       parseBody(method.getParameterOrThrow("notBody"), typeTable, lociTable)
-    ).toThrowError("Expected to find decorator named 'body'");
+    ).toThrow("Expected to find decorator named 'body'");
   });
 });

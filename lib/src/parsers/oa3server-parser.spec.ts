@@ -192,6 +192,6 @@ describe("oa3server parser", () => {
         "OneServerWithServerVariablesException"
       );
       parseOa3Servers(klass, typeTable, lociTable).unwrapOrThrow();
-    }).toThrowError("@default tag is mandatory ! ");
+    }).toThrow("@default tag is mandatory ! ");
   });
 });
