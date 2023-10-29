@@ -2130,10 +2130,10 @@ rechoir@^0.8.0:
   dependencies:
     resolve "^1.20.0"
 
-redoc@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.1.2.tgz#d7d270caa3726d0e3e84365f7aa457c11fd81984"
-  integrity sha512-pTu+aTdyJAMPVnOBYMesEjvRnh51BKE7bFLDIM6DiUSigli+3LfandSEp2FaaGnoqyvvC9axg/dvKQP16s02ww==
+redoc@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.1.3.tgz#612c9fed744993d5fc99cbf39fe9056bd1034fa5"
+  integrity sha512-d7F9qLLxaiFW4GC03VkwlX9wuRIpx9aiIIf3o6mzMnqPfhxrn2IRKGndrkJeVdItgCfmg9jXZiFEowm60f1meQ==
   dependencies:
     "@redocly/openapi-core" "^1.0.0-rc.2"
     classnames "^2.3.1"
