@@ -8,7 +8,7 @@
     "@types/react": "^18.2.35",
     "@types/react-dom": "^18.2.13",
     "@types/react-is": "^18.2.3",
-    "core-js": "^3.33.1",
+    "core-js": "^3.33.2",
     "css-loader": "^5.2.7",
     "html-webpack-plugin": "^4.5.2",
     "mini-css-extract-plugin": "^2.7.6",
