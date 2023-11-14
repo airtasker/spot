@@ -197,7 +197,8 @@ export const propTypeMap = new Map<
         TypeKind.STRING,
         TypeKind.BOOLEAN,
         TypeKind.ARRAY,
-        TypeKind.OBJECT
+        TypeKind.OBJECT,
+        TypeKind.UNION
       ]
     }
   ],
