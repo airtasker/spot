@@ -12,7 +12,8 @@ export interface LintConfig {
 
 const lintConfig: LintConfig = {
   rules: {
-    "no-omittable-fields-within-response-bodies": "warn"
+    "no-omittable-fields-within-response-bodies": "warn",
+    "no-trailing-forward-slash": "warn"
   }
 };
 
