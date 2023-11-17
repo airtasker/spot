@@ -2,7 +2,8 @@ import { Contract } from "../../definitions";
 import { LintingRuleViolation } from "../rule";
 
 /**
- * Request types should always be object types
+ * Checks that no endpoint is defined with a path that contains a trailing
+ * forward slash.
  *
  * @param contract a contract
  */
