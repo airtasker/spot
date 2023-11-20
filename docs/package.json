@@ -10,7 +10,7 @@
     "@types/react-is": "^18.2.4",
     "core-js": "^3.33.3",
     "css-loader": "^5.2.7",
-    "html-webpack-plugin": "^4.5.2",
+    "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
     "mobx": "^6.11.0",
     "react": "^18.2.0",
