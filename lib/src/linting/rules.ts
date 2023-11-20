@@ -7,6 +7,7 @@ import { noInlineObjectsWithinUnions } from "./rules/no-inline-objects-within-un
 import { noNullableArrays } from "./rules/no-nullable-arrays";
 import { noNullableFieldsWithinRequestBodies } from "./rules/no-nullable-fields-within-request-bodies";
 import { noOmittableFieldsWithinResponseBodies } from "./rules/no-omittable-fields-within-response-bodies";
+import { noTrailingForwardSlash } from "./rules/no-trailing-forward-slash";
 
 export const availableRules: LintingRules = {
   "has-discriminator": hasDiscriminator,
@@ -18,7 +19,8 @@ export const availableRules: LintingRules = {
   "no-nullable-fields-within-request-bodies":
     noNullableFieldsWithinRequestBodies,
   "no-omittable-fields-within-response-bodies":
-    noOmittableFieldsWithinResponseBodies
+    noOmittableFieldsWithinResponseBodies,
+  "no-trailing-forward-slash": noTrailingForwardSlash
 };
 
 interface LintingRules {
