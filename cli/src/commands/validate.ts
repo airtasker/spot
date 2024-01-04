@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import { parse } from "../../../lib/src/parser";
 
 const ARG_API = "spot_contract";
@@ -21,7 +21,7 @@ export default class Validate extends Command {
   ];
 
   static flags = {
-    help: flags.help({ char: "h" })
+    help: Flags.help({ char: "h" })
   };
 
   async run(): Promise<void> {

@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import express from "express";
 import path from "path";
 import { generateOpenAPI3 } from "../../../lib/src/generators/openapi3/openapi3";
@@ -22,8 +22,8 @@ export default class Docs extends Command {
   ];
 
   static flags = {
-    help: flags.help({ char: "h" }),
-    port: flags.integer({
+    help: Flags.help({ char: "h" }),
+    port: Flags.integer({
       char: "p",
       description: "Documentation server port",
       default: 8080

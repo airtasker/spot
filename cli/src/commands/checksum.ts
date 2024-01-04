@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import { hashContract } from "../../../lib/src/checksum/hash";
 import { parse } from "../../../lib/src/parser";
 
@@ -22,7 +22,7 @@ export default class Checksum extends Command {
   ];
 
   static flags = {
-    help: flags.help({ char: "h" })
+    help: Flags.help({ char: "h" })
   };
 
   async run(): Promise<void> {

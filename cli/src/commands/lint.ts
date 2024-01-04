@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import { lint } from "../../../lib/src/linting/linter";
 import { parse } from "../../../lib/src/parser";
 import { findLintViolations } from "../../../lib/src/linting/find-lint-violations";
@@ -43,12 +43,12 @@ export default class Lint extends Command {
   static buildFlags() {
     // Arguments depend on the list of available rules, it cannot be typed ahead of time.
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const finalFlags: flags.Input<any> = {
-      help: flags.help({ char: "h" })
+    const finalFlags: Flags.Input<any> = {
+      help: Flags.help({ char: "h" })
     };
 
     Object.keys(availableRules).forEach((rule: string) => {
-      finalFlags[rule] = flags.enum({
+      finalFlags[rule] = Flags.enum({
         description: `Setting for ${rule}`,
         options: ["error", "warn", "off"]
       });

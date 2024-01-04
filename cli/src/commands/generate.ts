@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import { prompt } from "inquirer";
 import YAML from "js-yaml";
 import path from "path";
@@ -18,21 +18,21 @@ export default class Generate extends Command {
   ];
 
   static flags = {
-    help: flags.help({ char: "h" }),
-    contract: flags.string({
+    help: Flags.help({ char: "h" }),
+    contract: Flags.string({
       required: true,
       char: "c",
       description: "Path to a TypeScript Contract definition"
     }),
-    language: flags.string({
+    language: Flags.string({
       char: "l",
       description: "Language to generate"
     }),
-    generator: flags.string({
+    generator: Flags.string({
       char: "g",
       description: "Generator to run"
     }),
-    out: flags.string({
+    out: Flags.string({
       char: "o",
       description: "Directory in which to output generated files"
     })

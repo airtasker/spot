@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import { runMockServer } from "../../../lib/src/mock-server/server";
 import { parse } from "../../../lib/src/parser";
 import inferProxyConfig from "../common/infer-proxy-config";
@@ -23,26 +23,26 @@ export default class Mock extends Command {
   ];
 
   static flags = {
-    help: flags.help({ char: "h" }),
-    proxyBaseUrl: flags.string({
+    help: Flags.help({ char: "h" }),
+    proxyBaseUrl: Flags.string({
       description:
         "If set, the server will act as a proxy and fetch data from the given remote server instead of mocking it"
     }),
-    proxyFallbackBaseUrl: flags.string({
+    proxyFallbackBaseUrl: Flags.string({
       description:
         "Like proxyBaseUrl, except used when the requested API does not match defined SPOT contract. If unset, 404 will always be returned."
     }),
-    proxyMockBaseUrl: flags.string({
+    proxyMockBaseUrl: Flags.string({
       description:
         "Like proxyBaseUrl, except used to proxy draft endpoints instead of returning mocked responses."
     }),
-    port: flags.integer({
+    port: Flags.integer({
       char: "p",
       description: "Port on which to run the mock server",
       default: 3010,
       required: true
     }),
-    pathPrefix: flags.string({
+    pathPrefix: Flags.string({
       description: "Prefix to prepend to each endpoint path"
     })
   };

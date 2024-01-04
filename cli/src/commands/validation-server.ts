@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import { parse } from "../../../lib/src/parser";
 import { runValidationServer } from "../../../lib/src/validation-server/server";
 
@@ -22,8 +22,8 @@ export default class ValidationServer extends Command {
   ];
 
   static flags = {
-    help: flags.help({ char: "h" }),
-    port: flags.integer({
+    help: Flags.help({ char: "h" }),
+    port: Flags.integer({
       char: "p",
       default: 5907,
       description: "The port where application will be available"
