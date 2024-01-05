@@ -36,7 +36,7 @@
     "@types/qs": "^6.9.11",
     "@types/randomstring": "^1.1.11",
     "@types/supertest": "^2.0.16",
-    "@types/validator": "^13.11.6",
+    "@types/validator": "^13.11.7",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
     "eslint": "^7.32.0",
