@@ -1112,10 +1112,10 @@
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.11.tgz#208d8a30bc507bd82e03ada29e4732ea46a6bbda"
   integrity sha512-oGk0gmhnEJK4Yyk+oI7EfXsLayXatCWPHary1MtcmbAifkobT9cM9yutG/hZKIseOU0MqbIwQ/u2nn/Gb+ltuQ==
 
-"@types/randomstring@^1.1.11":
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/@types/randomstring/-/randomstring-1.1.11.tgz#ed2c624b637580e0b49d0eadc018cd252c53c983"
-  integrity sha512-j3y9mKzGyYN5PHWjRv8Ah/ieZlApRbfSb0rBWVrW9Z+z5N1xjZpbBxgVKbO7WAGfnMpvLG2Gg8gRPxo+f0JWmg==
+"@types/randomstring@^1.1.12":
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/@types/randomstring/-/randomstring-1.1.12.tgz#cc4d71d9ac3ac1493290c2130c83317ed56ccebf"
+  integrity sha512-uLAv8k5CVgTIfBsVZ7Sx3y2V7H0Jm8ofnZguqC9WrQ8HeoEgTtRZMwi4gyda3xuqBq2/9OgI2JwcZa+x48ABxA==
 
 "@types/range-parser@*":
   version "1.2.5"
