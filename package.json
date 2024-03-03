@@ -33,7 +33,7 @@
     "@types/inquirer": "^8.1.2",
     "@types/jest": "^27.0.2",
     "@types/js-yaml": "^4.0.9",
-    "@types/qs": "^6.9.11",
+    "@types/qs": "^6.9.12",
     "@types/randomstring": "^1.1.11",
     "@types/supertest": "^2.0.16",
     "@types/validator": "^13.11.7",
