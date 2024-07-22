@@ -1,0 +1,48 @@
+author: airtasker
+name: build-and-test
+description: Build and test. 
+
+inputs:
+  node_version:
+    required: true 
+    description: The version of Node.js to use.
+
+runs:
+  using: composite
+  steps:
+  - uses: "./.github/actions/prepare-repository"
+
+  - name: Compile the repository on this version of Node.
+    run: yarn build
+    shell: bash
+
+  - name: Run the tests on this version of Node.
+    run: |-
+      set -uex
+      TESTFILES=$(circleci tests glob lib/**/*.spec.ts | circleci tests split --split-by=timings)
+      yarn ci:test $TESTFILES
+    env:
+      JEST_JUNIT_OUTPUT_DIR: "./test-reports/jest"
+      JEST_JUNIT_OUTPUT_NAME: ${{ github.sha }}_node${{ inputs.node_version }}_results.xml
+      JEST_JUNIT_CLASSNAME: "{filepath}"
+    shell: bash
+
+  - name: Test summary
+    uses: test-summary/action@v2
+    with:
+      paths: ./test-reports/jest/${{ github.sha }}_node${{ inputs.node_version }}_results.xml
+
+  - name: Upload Artifact
+    uses: actions/upload-artifact@v4.1.0
+    with:
+      path: "./test-reports"
+
+  - name: Build the documentation.
+    run: |-
+      set -uex
+      if [ ${{ inputs.node_version }} -gt 16 ]; then
+        # Without this, we get `Error: error:0308010C:digital envelope routines::unsupported` on Node >= 17.
+        export NODE_OPTIONS="--openssl-legacy-provider"
+      fi
+      yarn build-docs
+    shell: bash

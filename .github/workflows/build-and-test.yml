@@ -1,0 +1,71 @@
+name: airtasker/spot/build-and-test
+
+on:
+  pull_request:
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  test:
+    name: "test-node-${{ matrix.node-version }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true # if one job fails, stop the rest
+      matrix:
+        node-version: [14, 16, 18, 20]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        uses: "./.github/actions/build-and-test"
+        with:
+          node_version: ${{ matrix.node-version }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-node-${{ matrix.node-version }}
+          path: ./test-reports
+
+      - name: Test summary
+        uses: test-summary/action@v2
+        with:
+          paths: ./test-reports/jest/results.xml
+
+  lint-check:
+    runs-on: ubuntu-latest
+    container:
+      image: node:14.17
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/prepare-repository"
+
+    - name: Run lint checker
+      run: yarn lint:check
+
+  publish:
+    runs-on: ubuntu-latest
+    container:
+      image: node:14.17
+    needs:
+    - test
+    - lint-check
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/prepare-repository"
+
+    - name: Authenticate with NPM registry
+      run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+
+    - name: Publish
+      run: npm publish --access=public
