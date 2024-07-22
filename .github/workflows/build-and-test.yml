@@ -44,8 +44,6 @@ jobs:
 
   lint-check:
     runs-on: ubuntu-latest
-    container:
-      image: node:14.17
     steps:
     - uses: actions/checkout@v4.1.0
     - uses: "./.github/actions/prepare-repository"
@@ -55,8 +53,6 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    container:
-      image: node:14.17
     needs:
     - test
     - lint-check
