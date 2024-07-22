@@ -11,7 +11,7 @@ runs:
     uses: actions/cache@v3.3.2
     with:
       key: v3-dependencies-{{ checksum "yarn.lock" }}
-      path: UPDATE_ME
+      path: node_modules
       restore-keys: |-
         v3-dependencies-{{ checksum "yarn.lock" }}
         v3-dependencies
@@ -30,7 +30,7 @@ runs:
     uses: actions/cache@v3.3.2
     with:
       key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
-      path: UPDATE_ME
+      path: docs/node_modules
       restore-keys: |-
         v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
         v3-docs-dependencies
