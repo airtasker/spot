@@ -6,9 +6,9 @@ runs:
   using: composite
 
   steps:
-  - uses: actions/checkout@v4.1.0
+  - uses: actions/checkout@v4
   - name: restore_cache
-    uses: actions/cache@v3.3.2
+    uses: actions/cache@v3
     with:
       key: v3-dependencies-{{ checksum "yarn.lock" }}
       path: node_modules
@@ -21,13 +21,13 @@ runs:
     shell: bash
 
   - name: save_cache
-    uses: actions/cache@v3.3.2
+    uses: actions/cache@v3
     with:
       path: node_modules
       key: v3-dependencies-{{ checksum "yarn.lock" }}
 
   - name: restore_cache
-    uses: actions/cache@v3.3.2
+    uses: actions/cache@v3
     with:
       key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
       path: docs/node_modules
@@ -41,7 +41,7 @@ runs:
     shell: bash
     
   - name: save_cache
-    uses: actions/cache@v3.3.2
+    uses: actions/cache@v3
     with:
       path: docs/node_modules
       key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}

@@ -10,7 +10,7 @@ inputs:
 runs:
   using: composite
   steps:
-  - uses: "./.github/actions/prepare-repository"
+  - uses: ./.github/actions/prepare-repository
 
   - name: Compile the repository on this version of Node.
     run: yarn build
@@ -23,8 +23,8 @@ runs:
         yarn test $file --ci --reporters=default --reporters=jest-junit
       done
     env:
-      JEST_JUNIT_OUTPUT_DIR: "./test-reports/jest"
-      JEST_JUNIT_OUTPUT_NAME: "${{ github.sha }}_node${{ inputs.node_version }}_${filename}_results.xml"
+      JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
+      JEST_JUNIT_OUTPUT_NAME: ${{ github.sha }}_node${{ inputs.node_version }}_${filename}_results.xml
       JEST_JUNIT_CLASSNAME: "{filepath}"
       JEST_JUNIT_UNIQUE_OUTPUT_NAME: "true"
     shell: bash
@@ -32,12 +32,12 @@ runs:
   - name: Test summary
     uses: test-summary/action@v2
     with:
-      paths: ./test-reports/jest/${{ github.sha }}_node${{ inputs.node_version }}_results.xml
+      paths: ./test-reports/jest/${{ github.sha }}_node${{ inputs.node_version }}_${filename}_results.xml
 
   - name: Upload Artifact
-    uses: actions/upload-artifact@v4.1.0
+    uses: actions/upload-artifact@v4
     with:
-      path: "./test-reports"
+      path: ./test-reports
 
   - name: Build the documentation.
     run: |-
