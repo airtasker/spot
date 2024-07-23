@@ -9,7 +9,7 @@ env:
 jobs:
   test:
     name: "test-node-${{ matrix.node-version }}"
-    runs-on: ubuntu-latest
+    runs-on: runs-on,runner=2cpu-linux-x64
     strategy:
       fail-fast: true # if one job fails, stop the rest
       matrix:
@@ -43,7 +43,7 @@ jobs:
           paths: ./test-reports/jest/results.xml
 
   lint-check:
-    runs-on: ubuntu-latest
+    runs-on: runs-on,runner=2cpu-linux-x64
     steps:
     - uses: actions/checkout@v4.1.0
     - uses: "./.github/actions/prepare-repository"
@@ -52,7 +52,7 @@ jobs:
       run: yarn lint:check
 
   publish:
-    runs-on: ubuntu-latest
+    runs-on: runs-on,runner=2cpu-linux-x64
     needs:
     - test
     - lint-check
