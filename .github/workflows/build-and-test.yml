@@ -8,7 +8,7 @@ env:
 
 jobs:
   test:
-    name: "test-node-${{ matrix.node-version }}"
+    name: test-node-${{ matrix.node-version }}
     runs-on: runs-on,runner=4cpu-linux-x64
     strategy:
       fail-fast: true # if one job fails, stop the rest
@@ -46,7 +46,7 @@ jobs:
     runs-on: runs-on,runner=4cpu-linux-x64
     steps:
     - uses: actions/checkout@v4
-    - uses: "./.github/actions/prepare-repository"
+    - uses: ./.github/actions/prepare-repository
 
     - name: Run lint checker
       run: yarn lint:check
@@ -58,7 +58,7 @@ jobs:
     - lint-check
     steps:
     - uses: actions/checkout@v4
-    - uses: "./.github/actions/prepare-repository"
+    - uses: ./.github/actions/prepare-repository
 
     - name: Authenticate with NPM registry
       run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
