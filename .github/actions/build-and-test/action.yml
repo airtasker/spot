@@ -16,11 +16,12 @@ runs:
     run: yarn build
     shell: bash
 
-  - name: Run the tests on this version of Node.
-    run: |-
-      set -uex
-      TESTFILES=$(circleci tests glob lib/**/*.spec.ts | circleci tests split --split-by=timings)
-      yarn ci:test $TESTFILES
+  - name: Find and run test files
+    run: |
+      TESTFILES=$(find lib -name '*.spec.ts')
+      for file in $TESTFILES; do
+        yarn test $file
+      done
     env:
       JEST_JUNIT_OUTPUT_DIR: "./test-reports/jest"
       JEST_JUNIT_OUTPUT_NAME: ${{ github.sha }}_node${{ inputs.node_version }}_results.xml
