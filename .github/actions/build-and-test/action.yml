@@ -20,12 +20,13 @@ runs:
     run: |
       TESTFILES=$(find lib -name '*.spec.ts')
       for file in $TESTFILES; do
-        yarn test $file
+        yarn test $file --ci --reporters=default --reporters=jest-junit
       done
     env:
       JEST_JUNIT_OUTPUT_DIR: "./test-reports/jest"
-      JEST_JUNIT_OUTPUT_NAME: ${{ github.sha }}_node${{ inputs.node_version }}_results.xml
+      JEST_JUNIT_OUTPUT_NAME: "${{ github.sha }}_node${{ inputs.node_version }}_${filename}_results.xml"
       JEST_JUNIT_CLASSNAME: "{filepath}"
+      JEST_JUNIT_UNIQUE_OUTPUT_NAME: "true"
     shell: bash
 
   - name: Test summary
