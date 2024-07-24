@@ -37,7 +37,7 @@ runs:
   - name: Test summary
     uses: test-summary/action@v2
     with:
-      paths: ./test-reports/jest/**/*.xml
+      paths: test-reports/jest/**/*.xml
     continue-on-error: true
 
   - name: Upload Artifact
