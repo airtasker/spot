@@ -36,11 +36,11 @@ jobs:
         with:
           name: test-results-node-${{ matrix.node-version }}
           path: ./test-reports
-
+    
       - name: Test summary
         uses: test-summary/action@v2
         with:
-          paths: ./test-reports/jest/results.xml
+          paths: ./test-reports/**/*.xml
 
   lint-check:
     runs-on: runs-on,runner=4cpu-linux-x64
