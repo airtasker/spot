@@ -34,11 +34,11 @@ runs:
       JEST_JUNIT_UNIQUE_OUTPUT_NAME: "true"
     shell: bash
 
-  - name: Test summary
-    uses: test-summary/action@v2
-    with:
-      paths: test-reports/jest/**/*.xml
-    continue-on-error: true
+#  - name: Test summary
+#    uses: test-summary/action@v2
+#    with:
+#      paths: test-reports/jest/**/*.xml
+#    continue-on-error: true
 
   - name: Upload Artifact
     uses: actions/upload-artifact@v4
