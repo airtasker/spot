@@ -61,7 +61,7 @@ jobs:
     - uses: ./.github/actions/prepare-repository
 
     - name: Authenticate with NPM registry
-      run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+      run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
 
     - name: Publish
       run: npm publish --access=public
