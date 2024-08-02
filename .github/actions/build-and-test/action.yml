@@ -6,6 +6,9 @@ inputs:
   node_version:
     required: true 
     description: The version of Node.js to use.
+  shard:
+    required: true
+    description: Which shard we're on. 
 
 runs:
   using: composite
@@ -25,8 +28,8 @@ runs:
       TESTFILES=$(find lib -name '*.spec.ts')
       for file in $TESTFILES; do
         filename=$(basename "$file" .spec.ts)
-        JEST_JUNIT_OUTPUT_NAME="${{ github.sha }}_${{ github.run_id }}_node${{ inputs.node_version }}_${filename}_results.xml" \
-        yarn test $file --ci --reporters=default --reporters=jest-junit
+        JEST_JUNIT_OUTPUT_NAME="${{ github.sha }}_${{ github.run_id }}_node${{ inputs.node_version }}_${{ inputs.shard }}_${filename}_results.xml" \
+        yarn test $file --ci --reporters=default --reporters=jest-junit --shard=${{ inputs.shard }}
       done
     env:
       JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
