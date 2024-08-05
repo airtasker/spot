@@ -20,12 +20,6 @@ jobs:
             "2",
             "3",
             "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
           ]
     steps:
       - name: Checkout
@@ -50,11 +44,6 @@ jobs:
         with:
           name: test-results-node-${{ matrix.node-version }}-${{ matrix.shard }}
           path: ./test-reports
-    
-      - name: Test summary
-        uses: test-summary/action@v2
-        with:
-          paths: ./test-reports/**/*.xml
 
   lint-check:
     runs-on: runs-on,runner=4cpu-linux-x64
@@ -79,3 +68,8 @@ jobs:
 
     - name: Publish
       run: npm publish --access=public
+
+    - name: Test summary
+      uses: test-summary/action@v2
+      with:
+        paths: ./test-reports/**/*.xml
