@@ -52,6 +52,11 @@ jobs:
           name: test-results-node-${{ matrix.node-version }}-${{ matrix.shard }}
           path: ./test-reports
 
+      - name: Test summary
+        uses: test-summary/action@v2
+        with:
+          paths: ./test-reports/**/*.xml
+
   lint-check:
     runs-on: runs-on,runner=4cpu-linux-x64
     steps:
@@ -63,6 +68,7 @@ jobs:
 
   publish:
     runs-on: runs-on,runner=4cpu-linux-x64
+    if: github.event_name == 'release'
     needs:
     - test
     - lint-check
@@ -75,8 +81,3 @@ jobs:
 
     - name: Publish
       run: npm publish --access=public
-
-    - name: Test summary
-      uses: test-summary/action@v2
-      with:
-        paths: ./test-reports/**/*.xml
