@@ -1,0 +1,47 @@
+author: airtasker
+name: prepare-repository
+description: Prepare the repository for building and testing.
+
+runs:
+  using: composite
+
+  steps:
+  - uses: actions/checkout@v4
+  - name: restore_cache
+    uses: actions/cache@v3
+    with:
+      key: v3-dependencies-{{ checksum "yarn.lock" }}
+      path: node_modules
+      restore-keys: |-
+        v3-dependencies-{{ checksum "yarn.lock" }}
+        v3-dependencies
+
+  - name: Install main dependencies
+    run: yarn install --frozen-lockfile
+    shell: bash
+
+  - name: save_cache
+    uses: actions/cache@v3
+    with:
+      path: node_modules
+      key: v3-dependencies-{{ checksum "yarn.lock" }}
+
+  - name: restore_cache
+    uses: actions/cache@v3
+    with:
+      key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
+      path: docs/node_modules
+      restore-keys: |-
+        v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
+        v3-docs-dependencies
+
+  - name: Install docs dependencies
+    run: yarn install --frozen-lockfile
+    working-directory: docs/
+    shell: bash
+    
+  - name: save_cache
+    uses: actions/cache@v3
+    with:
+      path: docs/node_modules
+      key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
