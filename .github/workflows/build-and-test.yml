@@ -52,6 +52,10 @@ jobs:
           name: test-results-node-${{ matrix.node-version }}-${{ matrix.shard }}
           path: ./test-reports
 
+  test-summary-publish:
+    runs-on: runs-on,runner=4cpu-linux-x64
+    needs: [test]
+    steps:
       - name: Test summary
         uses: test-summary/action@v2
         with:
