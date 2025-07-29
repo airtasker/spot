@@ -4,8 +4,8 @@ import {
   InterfaceDeclaration,
   IntersectionTypeNode,
   LiteralTypeNode,
+  Node,
   TypeAliasDeclaration,
-  TypeGuards,
   TypeLiteralNode,
   TypeNode,
   TypeReferenceNode,
@@ -66,7 +66,7 @@ export function parseType(
   lociTable: LociTable
 ): Result<Type, ParserError> {
   // Type references must be parsed first to ensure internal type aliases are handled
-  if (TypeGuards.isTypeReferenceNode(typeNode)) {
+  if (Node.isTypeReference(typeNode)) {
     if (
       typeNode.getType().isArray() &&
       typeNode.getTypeArguments().length > 0
@@ -76,25 +76,25 @@ export function parseType(
     }
     return parseTypeReference(typeNode, typeTable, lociTable);
     // TODO: discourage native boolean keyword?
-  } else if (TypeGuards.isBooleanKeyword(typeNode)) {
+  } else if (Node.isBooleanKeyword(typeNode)) {
     return ok(booleanType());
     // TODO: discourage native string keyword?
-  } else if (TypeGuards.isStringKeyword(typeNode)) {
+  } else if (Node.isStringKeyword(typeNode)) {
     return ok(stringType());
     // TODO: discourage native number keyword?
-  } else if (TypeGuards.isNumberKeyword(typeNode)) {
+  } else if (Node.isNumberKeyword(typeNode)) {
     return ok(floatType());
-  } else if (TypeGuards.isLiteralTypeNode(typeNode)) {
+  } else if (Node.isLiteralTypeNode(typeNode)) {
     return parseLiteralType(typeNode);
-  } else if (TypeGuards.isArrayTypeNode(typeNode)) {
+  } else if (Node.isArrayTypeNode(typeNode)) {
     return parseArrayType(typeNode, typeTable, lociTable);
-  } else if (TypeGuards.isTypeLiteralNode(typeNode)) {
+  } else if (Node.isTypeLiteral(typeNode)) {
     return parseObjectLiteralType(typeNode, typeTable, lociTable);
-  } else if (TypeGuards.isUnionTypeNode(typeNode)) {
+  } else if (Node.isUnionTypeNode(typeNode)) {
     return parseUnionType(typeNode, typeTable, lociTable);
-  } else if (TypeGuards.isIndexedAccessTypeNode(typeNode)) {
+  } else if (Node.isIndexedAccessTypeNode(typeNode)) {
     return parseIndexedAccessType(typeNode, typeTable, lociTable);
-  } else if (TypeGuards.isIntersectionTypeNode(typeNode)) {
+  } else if (Node.isIntersectionTypeNode(typeNode)) {
     return parseIntersectionTypeNode(typeNode, typeTable, lociTable);
   } else {
     throw new TypeNotAllowedError("unknown type", {
@@ -147,12 +147,12 @@ function parseTypeReference(
   const jsDocNode = getJsDoc(declaration);
   const description = jsDocNode?.getDescription().trim();
 
-  if (TypeGuards.isTypeAliasDeclaration(declaration)) {
+  if (Node.isTypeAliasDeclaration(declaration)) {
     const decTypeNode = declaration.getTypeNodeOrThrow();
     // if the type name is one of of the internal ones ensure they have not been redefined
     // TODO: introduce some more type safety
     if (SPOT_TYPE_ALIASES.includes(name)) {
-      if (TypeGuards.isTypeReferenceNode(decTypeNode)) {
+      if (Node.isTypeReference(decTypeNode)) {
         throw new Error(`Internal type ${name} must not be redefined`);
       } else if (declaration.getType().isString()) {
         switch (name) {
@@ -251,18 +251,18 @@ function parseLiteralType(
   ParserError
 > {
   const literal = typeNode.getLiteral();
-  if (TypeGuards.isBooleanLiteral(literal)) {
+  if (Node.isTrueLiteral(literal) || Node.isFalseLiteral(literal)) {
     return ok(booleanLiteralType(literal.getLiteralValue()));
-  } else if (TypeGuards.isStringLiteral(literal)) {
+  } else if (Node.isStringLiteral(literal)) {
     return ok(stringLiteralType(literal.getLiteralText()));
-  } else if (TypeGuards.isNumericLiteral(literal)) {
+  } else if (Node.isNumericLiteral(literal)) {
     const numericValue = literal.getLiteralValue();
     return ok(
       Number.isInteger(numericValue)
         ? intLiteralType(numericValue)
         : floatLiteralType(numericValue)
     );
-  } else if (TypeGuards.isNullLiteral(literal)) {
+  } else if (Node.isNullLiteral(literal)) {
     return ok(nullType());
   } else {
     return err(
@@ -420,7 +420,7 @@ function parseInterfaceDeclaration(
     .getProperties()
     .map(propertySymbol => {
       const vd = propertySymbol.getValueDeclarationOrThrow();
-      if (!TypeGuards.isPropertySignature(vd)) {
+      if (!Node.isPropertySignature(vd)) {
         throw new Error("expected property signature");
       }
       return vd;
@@ -629,10 +629,10 @@ function resolveIndexedAccessRootReference(
   typeNode: IndexedAccessTypeNode
 ): Result<TypeReferenceNode, ParserError> {
   const objectType = typeNode.getObjectTypeNode();
-  if (TypeGuards.isIndexedAccessTypeNode(objectType)) {
+  if (Node.isIndexedAccessTypeNode(objectType)) {
     return resolveIndexedAccessRootReference(objectType);
   }
-  if (!TypeGuards.isTypeReferenceNode(objectType)) {
+  if (!Node.isTypeReference(objectType)) {
     return err(
       new TypeNotAllowedError("Indexed access type must be reference", {
         file: objectType.getSourceFile().getFilePath(),
@@ -657,7 +657,7 @@ function resolveIndexAccessPropertyAccessChain(
   const acc = accResult.unwrap();
 
   const literalTypeNode = typeNode.getIndexTypeNode();
-  if (!TypeGuards.isLiteralTypeNode(literalTypeNode)) {
+  if (!Node.isLiteralTypeNode(literalTypeNode)) {
     throw new Error("expected type literal");
   }
   const literalTypeResult = parseLiteralType(literalTypeNode);
@@ -668,7 +668,7 @@ function resolveIndexAccessPropertyAccessChain(
   }
 
   const chainParent = typeNode.getObjectTypeNode();
-  if (TypeGuards.isIndexedAccessTypeNode(chainParent)) {
+  if (Node.isIndexedAccessTypeNode(chainParent)) {
     return resolveIndexAccessPropertyAccessChain(
       chainParent,
       ok(acc.concat(literalType.value))
@@ -723,7 +723,7 @@ export function getTargetDeclarationFromTypeReference(
 
   // Enums are not supported:
   // enum SomeEnum { A, B, C }
-  if (TypeGuards.isEnumDeclaration(targetDeclaration)) {
+  if (Node.isEnumDeclaration(targetDeclaration)) {
     return err(
       new TypeNotAllowedError("Enums are not supported", {
         file: targetDeclaration.getSourceFile().getFilePath(),
@@ -733,7 +733,7 @@ export function getTargetDeclarationFromTypeReference(
   }
 
   // References to enum constants (e.g SomeEnum.A) are not supported either.
-  if (TypeGuards.isEnumMember(targetDeclaration)) {
+  if (Node.isEnumMember(targetDeclaration)) {
     return err(
       new TypeNotAllowedError("Enums are not supported", {
         file: targetDeclaration.getSourceFile().getFilePath(),
@@ -743,11 +743,16 @@ export function getTargetDeclarationFromTypeReference(
   }
 
   if (
-    TypeGuards.isInterfaceDeclaration(targetDeclaration) ||
-    TypeGuards.isTypeAliasDeclaration(targetDeclaration)
+    Node.isInterfaceDeclaration(targetDeclaration) ||
+    Node.isTypeAliasDeclaration(targetDeclaration)
   ) {
     return ok(targetDeclaration);
   }
 
-  throw new Error("expected a type alias or interface declaration");
+  return err(
+    new TypeNotAllowedError("expected a type alias or interface declaration", {
+      file: targetDeclaration.getSourceFile().getFilePath(),
+      position: targetDeclaration.getPos()
+    })
+  );
 }

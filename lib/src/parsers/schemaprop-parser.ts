@@ -66,8 +66,9 @@ export function extractJSDocSchemaProps(
     }
 
     rawSchemaProps.every(schemaProp => {
-      const schemaPropName = schemaProp?.split("\n")[0]?.trim();
-      const schemaPropValue = schemaProp?.split("\n")[1]?.trim();
+      const schemaPropStr = schemaProp?.toString();
+      const schemaPropName = schemaPropStr?.split("\n")[0]?.trim();
+      const schemaPropValue = schemaPropStr?.split("\n")[1]?.trim();
 
       if (!schemaPropName || !schemaPropValue) {
         schemaPropError = err(

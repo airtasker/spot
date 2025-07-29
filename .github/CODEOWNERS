@@ -1,0 +1,5 @@
+* @airtasker/platform-services-core
+
+# Explicitly no codeowners for dependencies files.
+package.json
+yarn.lock

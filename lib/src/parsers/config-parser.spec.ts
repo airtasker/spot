@@ -33,6 +33,6 @@ describe("config parser", () => {
   test("fails to parse non-@config decorated class", () => {
     expect(() =>
       parseConfig(exampleFile.getClassOrThrow("NotConfigClass"))
-    ).toThrowError("Expected to find decorator named 'config'");
+    ).toThrow("Expected to find decorator named 'config'");
   });
 });

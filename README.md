@@ -169,7 +169,7 @@ EXAMPLE
   $ spot checksum api.ts
 ```
 
-_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/checksum.js)_
+_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/checksum.js)_
 
 ## `spot docs SPOT_CONTRACT`
 
@@ -190,7 +190,7 @@ EXAMPLE
   $ spot docs api.ts
 ```
 
-_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/docs.js)_
+_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/docs.js)_
 
 ## `spot generate`
 
@@ -211,7 +211,7 @@ EXAMPLE
   $ spot generate --contract api.ts --language yaml --generator openapi3 --out output/
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/generate.js)_
 
 ## `spot help [COMMAND]`
 
@@ -228,7 +228,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.3.1/src/commands/help.ts)_
 
 ## `spot init`
 
@@ -249,7 +249,7 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/init.js)_
+_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/init.js)_
 
 ## `spot lint SPOT_CONTRACT`
 
@@ -263,13 +263,24 @@ ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help                                                     show CLI help
+  --has-discriminator=(error|warn|off)                           Setting for has-discriminator
+  --has-request-payload=(error|warn|off)                         Setting for has-request-payload
+  --has-response=(error|warn|off)                                Setting for has-response
+  --has-response-payload=(error|warn|off)                        Setting for has-response-payload
+  --no-inline-objects-within-unions=(error|warn|off)             Setting for no-inline-objects-within-unions
+  --no-nullable-arrays=(error|warn|off)                          Setting for no-nullable-arrays
+  --no-nullable-fields-within-request-bodies=(error|warn|off)    Setting for no-nullable-fields-within-request-bodies
+  --no-omittable-fields-within-response-bodies=(error|warn|off)  Setting for no-omittable-fields-within-response-bodies
+  --no-trailing-forward-slash=(error|warn|off)                   Setting for no-trailing-forward-slash
 
-EXAMPLE
+EXAMPLES
   $ spot lint api.ts
+  $ spot lint --has-descriminator=error
+  $ spot lint --no-nullable-arrays=off
 ```
 
-_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/lint.js)_
+_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/lint.js)_
 
 ## `spot mock SPOT_CONTRACT`
 
@@ -283,18 +294,24 @@ ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
 OPTIONS
-  -h, --help                   show CLI help
-  -p, --port=port              (required) [default: 3010] Port on which to run the mock server
-  --pathPrefix=pathPrefix      Prefix to prepend to each endpoint path
+  -h, --help                                   show CLI help
+  -p, --port=port                              (required) [default: 3010] Port on which to run the mock server
+  --pathPrefix=pathPrefix                      Prefix to prepend to each endpoint path
 
-  --proxyBaseUrl=proxyBaseUrl  If set, the server will act as a proxy and fetch data from the given remote server
-                               instead of mocking it
+  --proxyBaseUrl=proxyBaseUrl                  If set, the server will act as a proxy and fetch data from the given
+                                               remote server instead of mocking it
+
+  --proxyFallbackBaseUrl=proxyFallbackBaseUrl  Like proxyBaseUrl, except used when the requested API does not match
+                                               defined SPOT contract. If unset, 404 will always be returned.
+
+  --proxyMockBaseUrl=proxyMockBaseUrl          Like proxyBaseUrl, except used to proxy draft endpoints instead of
+                                               returning mocked responses.
 
 EXAMPLE
   $ spot mock api.ts
 ```
 
-_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/mock.js)_
+_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/mock.js)_
 
 ## `spot validate SPOT_CONTRACT`
 
@@ -314,7 +331,7 @@ EXAMPLE
   $ spot validate api.ts
 ```
 
-_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/validate.js)_
+_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/validate.js)_
 
 ## `spot validation-server SPOT_CONTRACT`
 
@@ -335,5 +352,5 @@ EXAMPLE
   $ spot validation-server api.ts
 ```
 
-_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v1.9.0/build/cli/src/commands/validation-server.js)_
+_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v1.13.0/build/cli/src/commands/validation-server.js)_
 <!-- commandsstop -->

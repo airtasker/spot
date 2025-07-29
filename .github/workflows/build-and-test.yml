@@ -1,0 +1,87 @@
+name: airtasker/spot/build-and-test
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  release:
+    types: [published]
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  test:
+    name: test-node-${{ matrix.node-version }}
+    runs-on: runs-on,runner=4cpu-linux-x64
+    strategy:
+      fail-fast: true # if one job fails, stop the rest
+      matrix:
+        node-version: [14, 16, 18, 20]
+        shard:
+          [
+            "1",
+            "2",
+            "3",
+            "4",
+          ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        uses: "./.github/actions/build-and-test"
+        with:
+          node_version: ${{ matrix.node-version }}
+          shard: ${{ matrix.shard }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-node-${{ matrix.node-version }}-${{ matrix.shard }}
+          path: ./test-reports
+
+  test-summary-publish:
+    runs-on: runs-on,runner=4cpu-linux-x64
+    needs: [test]
+    steps:
+      - name: Test summary
+        uses: test-summary/action@v2
+        with:
+          paths: ./test-reports/**/*.xml
+
+  lint-check:
+    runs-on: runs-on,runner=4cpu-linux-x64
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/prepare-repository
+
+    - name: Run lint checker
+      run: yarn lint:check
+
+  publish:
+    runs-on: runs-on,runner=4cpu-linux-x64
+    if: github.event_name == 'release'
+    needs:
+    - test
+    - lint-check
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/prepare-repository
+
+    - name: Authenticate with NPM registry
+      run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+
+    - name: Publish
+      run: npm publish --access=public

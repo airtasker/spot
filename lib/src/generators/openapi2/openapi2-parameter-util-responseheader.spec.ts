@@ -57,7 +57,7 @@ describe("OpenAPI 2 parameter util: response header", () => {
       };
       expect(() =>
         responseHeaderToHeaderObject(header, new TypeTable())
-      ).toThrowError("Null is not supported for parameters in OpenAPI 2");
+      ).toThrow("Null is not supported for parameters in OpenAPI 2");
     });
 
     test("Boolean type", () => {
@@ -224,7 +224,7 @@ describe("OpenAPI 2 parameter util: response header", () => {
       };
       expect(() =>
         responseHeaderToHeaderObject(header, new TypeTable())
-      ).toThrowError("Object is not supported for parameters in OpenAPI 2");
+      ).toThrow("Object is not supported for parameters in OpenAPI 2");
     });
 
     test("Reference types are deferenced", () => {
@@ -266,7 +266,7 @@ describe("OpenAPI 2 parameter util: response header", () => {
         };
         expect(() =>
           responseHeaderToHeaderObject(header, new TypeTable())
-        ).toThrowError("Unions are not supported for parameters in OpenAPI 2");
+        ).toThrow("Unions are not supported for parameters in OpenAPI 2");
       });
 
       test("Multiple non-null types", () => {
@@ -277,7 +277,7 @@ describe("OpenAPI 2 parameter util: response header", () => {
         };
         expect(() =>
           responseHeaderToHeaderObject(header, new TypeTable())
-        ).toThrowError("Unions are not supported for parameters in OpenAPI 2");
+        ).toThrow("Unions are not supported for parameters in OpenAPI 2");
       });
     });
   });

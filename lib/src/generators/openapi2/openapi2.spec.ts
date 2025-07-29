@@ -209,7 +209,7 @@ describe("OpenAPI 2 generator", () => {
 
     test("endpoint with object query param", async () => {
       const contract = generateContract("contract-with-object-query-param.ts");
-      expect(() => generateOpenAPI2(contract)).toThrowError("");
+      expect(() => generateOpenAPI2(contract)).toThrow("");
     });
   });
 

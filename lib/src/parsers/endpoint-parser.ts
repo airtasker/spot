@@ -1,8 +1,4 @@
-import {
-  ClassDeclaration,
-  ObjectLiteralExpression,
-  TypeGuards
-} from "ts-morph";
+import { ClassDeclaration, ObjectLiteralExpression, Node } from "ts-morph";
 import { Endpoint, Response } from "../definitions";
 import { ParserError } from "../errors";
 import { LociTable } from "../locations";
@@ -59,7 +55,7 @@ export function parseEndpoint(
     ?.getTags()
     .find(tag => tag.getTagName() === "summary");
 
-  const summary = summaryNode?.getComment();
+  const summary = summaryNode?.getComment()?.toString();
 
   // Handle draft
   const draft = klass.getDecorator("draft") !== undefined;
@@ -161,7 +157,7 @@ function extractEndpointTags(
 
   for (const elementExpr of tagsLiteral.getElements()) {
     // Sanity check, typesafety should prevent any non-string tags
-    if (!TypeGuards.isStringLiteral(elementExpr)) {
+    if (!Node.isStringLiteral(elementExpr)) {
       return err(
         new ParserError("endpoint tag must be a string", {
           file: elementExpr.getSourceFile().getFilePath(),

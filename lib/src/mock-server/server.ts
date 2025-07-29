@@ -8,8 +8,10 @@ import { isRequestForEndpoint } from "./matcher";
 import { proxyRequest } from "./proxy";
 
 export interface ProxyConfig {
-  protocol: "http" | "https";
-  proxyBaseUrl: string;
+  isHttps: boolean;
+  host: string;
+  port: number | null;
+  path: string;
 }
 
 /**
@@ -22,15 +24,20 @@ export function runMockServer(
     port,
     pathPrefix,
     proxyConfig,
+    proxyMockConfig,
+    proxyFallbackConfig,
     logger
   }: {
     port: number;
     pathPrefix: string;
-    proxyConfig?: ProxyConfig;
+    proxyConfig?: ProxyConfig | null;
+    proxyMockConfig?: ProxyConfig | null;
+    proxyFallbackConfig?: ProxyConfig | null;
     logger: Logger;
   }
 ) {
   const app = express();
+  app.use(express.raw({ type: () => true }));
   app.use(cors());
   app.use((req, resp, next) => {
     if (req.path.includes("/_draft/")) {
@@ -44,33 +51,54 @@ export function runMockServer(
         // non-draft end points get real response
         const shouldProxy = !endpoint.draft;
 
+        // Proxy non-draft requests if we have a proxy config.
         if (shouldProxy && proxyConfig) {
           return proxyRequest({
             incomingRequest: req,
             response: resp,
-            ...proxyConfig
+            proxyConfig
           });
         }
 
-        logger.log(`Request hit for ${endpoint.name} registered.`);
-        const response = endpoint.responses[0] ?? endpoint.defaultResponse;
-        if (!response) {
-          logger.error(`No response defined for endpoint ${endpoint.name}`);
-          return;
-        }
-        resp.status("status" in response ? response.status : 200);
-        resp.header("content-type", "application/json");
-        if (response.body) {
-          resp.send(
-            JSON.stringify(
-              generateData(TypeTable.fromArray(api.types), response.body.type)
-            )
-          );
+        // For draft endpoints, either proxy or generate a mocked response.
+        if (proxyMockConfig) {
+          return proxyRequest({
+            incomingRequest: req,
+            response: resp,
+            proxyConfig: proxyMockConfig
+          });
+        } else {
+          logger.log(`Request hit for ${endpoint.name} registered.`);
+          const response = endpoint.responses[0] ?? endpoint.defaultResponse;
+          if (!response) {
+            logger.error(`No response defined for endpoint ${endpoint.name}`);
+            return;
+          }
+          resp.status("status" in response ? response.status : 200);
+          resp.header("content-type", "application/json");
+          if (response.body) {
+            resp.send(
+              JSON.stringify(
+                generateData(TypeTable.fromArray(api.types), response.body.type)
+              )
+            );
+          }
         }
         return;
       }
     }
-    logger.error(`No match for request ${req.method} at ${req.path}.`);
+
+    logger.log(`No match for request ${req.method} at ${req.path}.`);
+    if (proxyFallbackConfig) {
+      return proxyRequest({
+        incomingRequest: req,
+        response: resp,
+        proxyConfig: proxyFallbackConfig
+      });
+    } else {
+      resp.status(404);
+      resp.send();
+    }
   });
   return {
     app,

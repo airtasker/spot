@@ -1,0 +1,48 @@
+author: airtasker
+name: build-and-test
+description: Build and test. 
+
+inputs:
+  node_version:
+    required: true 
+    description: The version of Node.js to use.
+  shard:
+    required: true
+    description: Which shard we're on. 
+
+runs:
+  using: composite
+  steps:
+  - uses: ./.github/actions/prepare-repository
+
+  - name: Compile the repository on this version of Node.
+    run: yarn build
+    shell: bash
+
+  - name: Create test reports directory
+    run: mkdir -p ./test-reports/jest
+    shell: bash
+
+  - name: Find and run test files
+    run: |
+      TESTFILES=$(find lib -name '*.spec.ts')
+      for file in $TESTFILES; do
+        filename=$(basename "$file" .spec.ts)
+        JEST_JUNIT_OUTPUT_NAME="${{ github.sha }}_${{ github.run_id }}_node${{ inputs.node_version }}_${{ inputs.shard }}_${filename}_results.xml" \
+        yarn test $file --ci --reporters=default --reporters=jest-junit --shard=${{ inputs.shard }}
+      done
+    env:
+      JEST_JUNIT_OUTPUT_DIR: ./test-reports/jest
+      JEST_JUNIT_CLASSNAME: "{filepath}"
+      JEST_JUNIT_UNIQUE_OUTPUT_NAME: "true"
+    shell: bash
+
+  - name: Build the documentation.
+    run: |-
+      set -uex
+      if [ ${{ inputs.node_version }} -gt 16 ]; then
+        # Without this, we get `Error: error:0308010C:digital envelope routines::unsupported` on Node >= 17.
+        export NODE_OPTIONS="--openssl-legacy-provider"
+      fi
+      yarn build-docs
+    shell: bash

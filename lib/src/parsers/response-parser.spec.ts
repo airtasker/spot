@@ -60,6 +60,6 @@ describe("response parser", () => {
   test("fails to parse non-@response decorated method", () => {
     expect(() =>
       parseResponse(klass.getMethodOrThrow("notResponse"), typeTable, lociTable)
-    ).toThrowError("Expected to find decorator named 'response'");
+    ).toThrow("Expected to find decorator named 'response'");
   });
 });

@@ -75,6 +75,6 @@ describe("request parser", () => {
   test("fails to parse non-@request decorated method", () => {
     expect(() =>
       parseRequest(klass.getMethodOrThrow("notRequest"), typeTable, lociTable)
-    ).toThrowError("Expected to find decorator named 'request'");
+    ).toThrow("Expected to find decorator named 'request'");
   });
 });
