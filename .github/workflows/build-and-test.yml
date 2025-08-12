@@ -30,7 +30,7 @@ jobs:
           ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup NodeJS ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -64,7 +64,7 @@ jobs:
   lint-check:
     runs-on: runs-on,runner=4cpu-linux-x64
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ./.github/actions/prepare-repository
 
     - name: Run lint checker
@@ -77,7 +77,7 @@ jobs:
     - test
     - lint-check
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ./.github/actions/prepare-repository
 
     - name: Authenticate with NPM registry
