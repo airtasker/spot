@@ -6,7 +6,7 @@ runs:
   using: composite
 
   steps:
-  - uses: actions/checkout@v4
+  - uses: actions/checkout@v5
   - name: restore_cache
     uses: actions/cache@v4
     with:
