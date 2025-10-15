@@ -1,4 +1,4 @@
-* @airtasker/platform-services-core
+* @airtasker/web-eng
 
 # Explicitly no codeowners for dependencies files.
 package.json
