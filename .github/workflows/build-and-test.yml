@@ -47,7 +47,7 @@ jobs:
           shard: ${{ matrix.shard }}
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-node-${{ matrix.node-version }}-${{ matrix.shard }}
           path: ./test-reports
