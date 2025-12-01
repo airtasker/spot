@@ -5,7 +5,7 @@ updates:
   schedule:
     interval: weekly
     day: monday
-    time: 05:00
+    time: "05:00"
     timezone: Australia/Sydney
   open-pull-requests-limit: 99
   cooldown:
@@ -15,7 +15,7 @@ updates:
   schedule:
     interval: weekly
     day: monday
-    time: 05:00
+    time: "05:00"
     timezone: Australia/Sydney
   open-pull-requests-limit: 99
   cooldown:
@@ -24,20 +24,20 @@ updates:
   directory: /
   schedule:
     interval: daily
-    time: 09:00
+    time: "09:00"
     timezone: Australia/Sydney
   open-pull-requests-limit: 10
 - package-ecosystem: github-actions
   directory: /.github/actions/build-and-test
   schedule:
     interval: daily
-    time: 09:00
+    time: "09:00"
     timezone: Australia/Sydney
   open-pull-requests-limit: 10
 - package-ecosystem: github-actions
   directory: /.github/actions/prepare-repository
   schedule:
     interval: daily
-    time: 09:00
+    time: "09:00"
     timezone: Australia/Sydney
   open-pull-requests-limit: 10
