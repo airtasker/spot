@@ -16,7 +16,7 @@ env:
 jobs:
   test:
     name: test-node-${{ matrix.node-version }}
-    runs-on: runs-on,runner=4cpu-linux-x64
+    runs-on: runs-on=${{ github.run_id }}-test-${{ github.run_attempt }}-${{ strategy.job-index }},runner=4cpu-linux-x64
     strategy:
       fail-fast: true # if one job fails, stop the rest
       matrix:
@@ -53,7 +53,7 @@ jobs:
           path: ./test-reports
 
   test-summary-publish:
-    runs-on: runs-on,runner=4cpu-linux-x64
+    runs-on: runs-on=${{ github.run_id }}-test-summary-publish-${{ github.run_attempt }},runner=4cpu-linux-x64
     needs: [test]
     steps:
       - name: Test summary
@@ -62,7 +62,7 @@ jobs:
           paths: ./test-reports/**/*.xml
 
   lint-check:
-    runs-on: runs-on,runner=4cpu-linux-x64
+    runs-on: runs-on=${{ github.run_id }}-lint-check-${{ github.run_attempt }},runner=4cpu-linux-x64
     steps:
     - uses: actions/checkout@v5
     - uses: ./.github/actions/prepare-repository
@@ -71,7 +71,7 @@ jobs:
       run: yarn lint:check
 
   publish:
-    runs-on: runs-on,runner=4cpu-linux-x64
+    runs-on: runs-on=${{ github.run_id }}-publish-${{ github.run_attempt }},runner=4cpu-linux-x64
     if: github.event_name == 'release'
     needs:
     - test
