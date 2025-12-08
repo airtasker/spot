@@ -1,4 +1,4 @@
-name: Repository Configuration Auditor
+name: Repository Auditor
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: airtasker/repository-configuration-auditor@test-gem
+      - uses: airtasker/repository-configuration-auditor@v1
         with:
           repository: ${{ github.repository }}
           ref: ${{ github.sha }}
