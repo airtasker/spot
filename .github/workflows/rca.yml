@@ -1,0 +1,20 @@
+name: Repository Auditor
+
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: airtasker/repository-configuration-auditor@v1
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.sha }}
+          github-token: ${{ secrets.GH_PAT_REPO_READONLY }}
+          rca_ref: ${{ github.action_ref }}
