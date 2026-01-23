@@ -1,0 +1,22 @@
+name: "Lint / Dependabot"
+
+permissions:
+  contents: read # Required to clone the repository
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - ".github/dependabot.yml"
+      - ".github/workflows/dependabot-linter.yml"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint
+        uses: airtasker/dependabot-config-linter@v1
