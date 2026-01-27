@@ -21,7 +21,7 @@ export default class Checksum extends Command {
     }
   ];
 
-  static flags = {
+  static flags: flags.Input<flags.Output> = {
     help: flags.help({ char: "h" })
   };
 

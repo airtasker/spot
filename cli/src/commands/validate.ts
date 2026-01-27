@@ -20,7 +20,7 @@ export default class Validate extends Command {
     }
   ];
 
-  static flags = {
+  static flags: flags.Input<flags.Output> = {
     help: flags.help({ char: "h" })
   };
 
