@@ -78,7 +78,7 @@ interface CreateUserResponse {
       false
     );
     outputFile(".", "package.json", JSON.stringify({}, null, 2), false);
-    execSync(`yarn add @airtasker/spot`, {
+    execSync(`pnpm add @airtasker/spot`, {
       stdio: "inherit"
     });
   }

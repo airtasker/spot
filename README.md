@@ -48,7 +48,7 @@ For all available syntax, see [Spot Syntax](https://github.com/airtasker/spot/wi
 
 ### Installation
 
-With [yarn](https://yarnpkg.com/en/docs/usage) installed and initialized add `@airtasker/spot` to your project:
+With [pnpm](https://pnpm.io/) installed and initialized add `@airtasker/spot` to your project:
 
 ```sh
 pnpm add @airtasker/spot

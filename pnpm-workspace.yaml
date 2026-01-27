@@ -1,3 +1,6 @@
+packages:
+  - 'docs'
+
 settings:
   # Automatically install peer dependencies
   autoInstallPeers: true

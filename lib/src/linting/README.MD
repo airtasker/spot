@@ -87,7 +87,7 @@ export const availableRules: LintingRules = {
 To run the linter against a contract, prepare the CLI:
 
 ```
-$ yarn prepack
+$ pnpm prepack
 ```
 
 Then run:
