@@ -6,6 +6,7 @@ settings:
 
 overrides:
   jsonpath-plus: ^10.2
+  immer: ^9.0.6
 
 importers:
 
@@ -2269,8 +2270,8 @@ packages:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
 
-  immer@8.0.4:
-    resolution: {integrity: sha512-jMfL18P+/6P6epANRvRk6q8t+3gGhqsJ9EuJ25AXE+9bNTYtssvzeYbEd0mXRYWCmmXSIbnlpz6vd6iJlmGGGQ==}
+  immer@9.0.21:
+    resolution: {integrity: sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==}
 
   import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -5048,7 +5049,7 @@ snapshots:
       '@types/urijs': 1.19.20
       dependency-graph: 0.10.0
       fast-memoize: 2.5.2
-      immer: 8.0.4
+      immer: 9.0.21
       lodash.get: 4.4.2
       lodash.set: 4.3.2
       tslib: 2.6.2
@@ -6966,7 +6967,7 @@ snapshots:
 
   ignore@5.2.4: {}
 
-  immer@8.0.4: {}
+  immer@9.0.21: {}
 
   import-fresh@3.3.0:
     dependencies:

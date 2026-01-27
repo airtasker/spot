@@ -88,7 +88,8 @@
   },
   "pnpm": {
     "overrides": {
-      "jsonpath-plus": "^10.2"
+      "jsonpath-plus": "^10.2",
+      "immer": "^9.0.6"
     }
   },
   "packageManager": "pnpm@10.28.1"
