@@ -1,6 +1,6 @@
 {
   "name": "@airtasker/spot",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "author": "Francois Wouts, Leslie Fung",
   "bin": {
     "spot": "./bin/run"
@@ -50,6 +50,9 @@
   },
   "engines": {
     "node": ">=12.0.0"
+  },
+  "resolutions": {
+    "jsonpath-plus": "^10.2.0"
   },
   "files": [
     "bin",
