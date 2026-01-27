@@ -2,4 +2,4 @@
 
 # Explicitly no codeowners for dependencies files.
 package.json
-yarn.lock
+pnpm-lock.yaml

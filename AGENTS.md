@@ -9,17 +9,17 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 ## Commands
 
 ### Build and Development
-- `yarn build` - Compile TypeScript to JavaScript output in `build/` directory
-- `yarn build:watch` - Compile with watch mode for development
+- `pnpm build` - Compile TypeScript to JavaScript output in `build/` directory
+- `pnpm build:watch` - Compile with watch mode for development
 
 ### Testing
-- `yarn test` - Run all tests with Jest (uses 4 workers)
+- `pnpm test` - Run all tests with Jest (uses 4 workers)
 - `yarn ci:test` - Run tests in CI mode with coverage reporting
-- Single test: `yarn test path/to/test.spec.ts` or `yarn test -- --testNamePattern="test name"`
+- Single test: `pnpm test path/to/test.spec.ts` or `pnpm test -- --testNamePattern="test name"`
 
 ### Code Quality
-- `yarn lint:check` - Run both ESLint and Prettier checks
-- `yarn lint:fix` - Auto-fix ESLint and Prettier issues
+- `pnpm lint:check` - Run both ESLint and Prettier checks
+- `pnpm lint:fix` - Auto-fix ESLint and Prettier issues
 - `yarn eslint:check` / `yarn eslint:fix` - Run ESLint only
 - `yarn prettier:check` / `yarn prettier:fix` - Run Prettier only
 

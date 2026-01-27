@@ -1,0 +1,9 @@
+settings:
+  # Automatically install peer dependencies
+  autoInstallPeers: true
+
+  # Don't fail on unmet peer dependencies (migration compatibility)
+  strictPeerDependencies: false
+
+  # Security: 7-day delay before using newly published packages (10,080 minutes)
+  minimumReleaseAge: 10080

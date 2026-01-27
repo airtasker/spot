@@ -5,9 +5,13 @@
 /.vscode
 /build
 /dist
-/package-lock.json
+
 /tmp
 node_modules
 oclif.manifest.json
 *.tgz
 clients/**/sdk
+
+# Ignore old lock files (pnpm-lock.yaml is tracked)
+yarn.lock
+package-lock.json

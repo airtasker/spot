@@ -51,7 +51,7 @@ For all available syntax, see [Spot Syntax](https://github.com/airtasker/spot/wi
 With [yarn](https://yarnpkg.com/en/docs/usage) installed and initialized add `@airtasker/spot` to your project:
 
 ```sh
-yarn add @airtasker/spot
+pnpm add @airtasker/spot
 ```
 
 You can pass the definition above to a generator by simply running:

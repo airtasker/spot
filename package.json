@@ -72,18 +72,19 @@
   },
   "repository": "airtasker/spot",
   "scripts": {
-    "build-docs": "cd docs && yarn build",
+    "build-docs": "cd docs && pnpm build",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf build; tsc && oclif-dev manifest && yarn build-docs && oclif-dev readme",
+    "prepack": "rm -rf build; tsc && oclif-dev manifest && pnpm build-docs && oclif-dev readme",
     "test": "jest -w 4",
     "ci:test": "jest --config=jest.ci.config.js --ci -w 4",
-    "lint:check": "yarn prettier:check && yarn eslint:check",
+    "lint:check": "pnpm prettier:check && pnpm eslint:check",
     "eslint:check": "eslint . --ext .js,.ts,.tsx",
     "prettier:check": "prettier --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
-    "lint:fix": "yarn prettier:fix && yarn eslint:fix",
+    "lint:fix": "pnpm prettier:fix && pnpm eslint:fix",
     "eslint:fix": "eslint . --fix --ext .js,.ts,.tsx",
     "prettier:fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\""
-  }
+  },
+  "packageManager": "pnpm@10.28.1"
 }
