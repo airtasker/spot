@@ -2,28 +2,28 @@
 
 exports[`OpenAPI 3 generator HTTP verbs DELETE endpoint 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"delete\\": {
-        \\"operationId\\": \\"DeleteEndpoint\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "delete": {
+        "operationId": "DeleteEndpoint",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        \\"responses\\": {
-          \\"204\\": {
-            \\"description\\": \\"204 response\\"
+        "responses": {
+          "204": {
+            "description": "204 response"
           }
         }
       }
@@ -34,35 +34,35 @@ exports[`OpenAPI 3 generator HTTP verbs DELETE endpoint 1`] = `
 
 exports[`OpenAPI 3 generator HTTP verbs GET endpoint 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"GetEndpoint\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -78,29 +78,29 @@ exports[`OpenAPI 3 generator HTTP verbs GET endpoint 1`] = `
 
 exports[`OpenAPI 3 generator HTTP verbs HEAD endpoint 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"head\\": {
-        \\"operationId\\": \\"HeadEndpoint\\",
-        \\"responses\\": {
-          \\"204\\": {
-            \\"description\\": \\"204 response\\",
-            \\"headers\\": {
-              \\"Location\\": {
-                \\"required\\": true,
-                \\"schema\\": {
-                  \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "head": {
+        "operationId": "HeadEndpoint",
+        "responses": {
+          "204": {
+            "description": "204 response",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string"
                 }
               },
-              \\"Link\\": {
-                \\"required\\": false,
-                \\"schema\\": {
-                  \\"type\\": \\"string\\"
+              "Link": {
+                "required": false,
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -114,61 +114,61 @@ exports[`OpenAPI 3 generator HTTP verbs HEAD endpoint 1`] = `
 
 exports[`OpenAPI 3 generator HTTP verbs PATCH endpoint 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"patch\\": {
-        \\"operationId\\": \\"PatchEndpoint\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "patch": {
+        "operationId": "PatchEndpoint",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        \\"requestBody\\": {
-          \\"content\\": {
-            \\"application/json\\": {
-              \\"schema\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"name\\"
+                "required": [
+                  "name"
                 ]
               }
             }
           },
-          \\"required\\": true
+          "required": true
         },
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\",
-                    \\"name\\"
+                  "required": [
+                    "id",
+                    "name"
                   ]
                 }
               }
@@ -183,52 +183,52 @@ exports[`OpenAPI 3 generator HTTP verbs PATCH endpoint 1`] = `
 
 exports[`OpenAPI 3 generator HTTP verbs POST endpoint 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"post\\": {
-        \\"operationId\\": \\"PostEndpoint\\",
-        \\"parameters\\": [],
-        \\"requestBody\\": {
-          \\"content\\": {
-            \\"application/json\\": {
-              \\"schema\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "post": {
+        "operationId": "PostEndpoint",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"name\\"
+                "required": [
+                  "name"
                 ]
               }
             }
           },
-          \\"required\\": true
+          "required": true
         },
-        \\"responses\\": {
-          \\"201\\": {
-            \\"description\\": \\"201 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+        "responses": {
+          "201": {
+            "description": "201 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\",
-                    \\"name\\"
+                  "required": [
+                    "id",
+                    "name"
                   ]
                 }
               }
@@ -243,61 +243,61 @@ exports[`OpenAPI 3 generator HTTP verbs POST endpoint 1`] = `
 
 exports[`OpenAPI 3 generator HTTP verbs PUT endpoint 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"put\\": {
-        \\"operationId\\": \\"PutEndpoint\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "put": {
+        "operationId": "PutEndpoint",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        \\"requestBody\\": {
-          \\"content\\": {
-            \\"application/json\\": {
-              \\"schema\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"name\\"
+                "required": [
+                  "name"
                 ]
               }
             }
           },
-          \\"required\\": true
+          "required": true
         },
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\",
-                    \\"name\\"
+                  "required": [
+                    "id",
+                    "name"
                   ]
                 }
               }
@@ -312,46 +312,46 @@ exports[`OpenAPI 3 generator HTTP verbs PUT endpoint 1`] = `
 
 exports[`OpenAPI 3 generator contract with multiple servers OpenAPI 3 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {},
-  \\"servers\\": [
+  "paths": {},
+  "servers": [
     {
-      \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
-      \\"variables\\": {
-        \\"username\\": {
-          \\"default\\": \\"demo\\"
+      "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
+      "variables": {
+        "username": {
+          "default": "demo"
         },
-        \\"port\\": {
-          \\"default\\": \\"8443\\",
-          \\"enum\\": [
-            \\"8443\\",
-            \\"443\\"
+        "port": {
+          "default": "8443",
+          "enum": [
+            "8443",
+            "443"
           ]
         },
-        \\"basePath\\": {
-          \\"default\\": \\"v2\\"
+        "basePath": {
+          "default": "v2"
         }
       }
     },
     {
-      \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
-      \\"variables\\": {
-        \\"username\\": {
-          \\"default\\": \\"dev\\"
+      "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
+      "variables": {
+        "username": {
+          "default": "dev"
         },
-        \\"port\\": {
-          \\"default\\": \\"8080\\",
-          \\"enum\\": [
-            \\"8080\\",
-            \\"8081\\"
+        "port": {
+          "default": "8080",
+          "enum": [
+            "8080",
+            "8081"
           ]
         },
-        \\"basePath\\": {
-          \\"default\\": \\"v2\\"
+        "basePath": {
+          "default": "v2"
         }
       }
     }
@@ -361,29 +361,29 @@ exports[`OpenAPI 3 generator contract with multiple servers OpenAPI 3 1`] = `
 
 exports[`OpenAPI 3 generator contract with one server OpenAPI 3 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {},
-  \\"servers\\": [
+  "paths": {},
+  "servers": [
     {
-      \\"url\\": \\"https://{username}.gigantic-server.com:{port}/{basePath}\\",
-      \\"description\\": \\"Production server\\",
-      \\"variables\\": {
-        \\"username\\": {
-          \\"default\\": \\"demo\\"
+      "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
+      "description": "Production server",
+      "variables": {
+        "username": {
+          "default": "demo"
         },
-        \\"port\\": {
-          \\"default\\": \\"8443\\",
-          \\"enum\\": [
-            \\"8443\\",
-            \\"443\\"
+        "port": {
+          "default": "8443",
+          "enum": [
+            "8443",
+            "443"
           ]
         },
-        \\"basePath\\": {
-          \\"default\\": \\"v2\\"
+        "basePath": {
+          "default": "v2"
         }
       }
     }
@@ -393,35 +393,35 @@ exports[`OpenAPI 3 generator contract with one server OpenAPI 3 1`] = `
 
 exports[`OpenAPI 3 generator endpoint metadata contract with endpoint metadata description and summary 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"description\\": \\"My description\\",
-        \\"summary\\": \\"My summary\\",
-        \\"operationId\\": \\"GetEndpoint\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "get": {
+        "description": "My description",
+        "summary": "My summary",
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\",
-                    \\"name\\"
+                  "required": [
+                    "id",
+                    "name"
                   ]
                 }
               }
@@ -436,51 +436,51 @@ exports[`OpenAPI 3 generator endpoint metadata contract with endpoint metadata d
 
 exports[`OpenAPI 3 generator examples contract with examples parses correctly to an openapi specification 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithExampleOnHeaders\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "EndpointWithExampleOnHeaders",
+        "parameters": [
           {
-            \\"name\\": \\"Accept-Language\\",
-            \\"in\\": \\"header\\",
-            \\"description\\": \\"property-example description\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "Accept-Language",
+            "in": "header",
+            "description": "property-example description",
+            "required": true,
+            "schema": {
+              "type": "string"
             },
-            \\"examples\\": {
-              \\"property-example\\": {
-                \\"value\\": \\"property-example-value\\"
+            "examples": {
+              "property-example": {
+                "value": "property-example-value"
               }
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -496,53 +496,53 @@ exports[`OpenAPI 3 generator examples contract with examples parses correctly to
 
 exports[`OpenAPI 3 generator headers endpoint with request headers 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithRequestHeaders\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "EndpointWithRequestHeaders",
+        "parameters": [
           {
-            \\"name\\": \\"Accept-Encoding\\",
-            \\"in\\": \\"header\\",
-            \\"required\\": false,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "Accept-Encoding",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           },
           {
-            \\"name\\": \\"Accept-Language\\",
-            \\"in\\": \\"header\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "Accept-Language",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -558,66 +558,66 @@ exports[`OpenAPI 3 generator headers endpoint with request headers 1`] = `
 
 exports[`OpenAPI 3 generator headers endpoint with response headers 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"post\\": {
-        \\"operationId\\": \\"EndpointWithResponseHeaders\\",
-        \\"parameters\\": [],
-        \\"requestBody\\": {
-          \\"content\\": {
-            \\"application/json\\": {
-              \\"schema\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "post": {
+        "operationId": "EndpointWithResponseHeaders",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"name\\"
+                "required": [
+                  "name"
                 ]
               }
             }
           },
-          \\"required\\": true
+          "required": true
         },
-        \\"responses\\": {
-          \\"201\\": {
-            \\"description\\": \\"201 response\\",
-            \\"headers\\": {
-              \\"Location\\": {
-                \\"required\\": true,
-                \\"schema\\": {
-                  \\"type\\": \\"string\\"
+        "responses": {
+          "201": {
+            "description": "201 response",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string"
                 }
               },
-              \\"Link\\": {
-                \\"required\\": false,
-                \\"schema\\": {
-                  \\"type\\": \\"string\\"
+              "Link": {
+                "required": false,
+                "schema": {
+                  "type": "string"
                 }
               }
             },
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\",
-                    \\"name\\"
+                  "required": [
+                    "id",
+                    "name"
                   ]
                 }
               }
@@ -632,42 +632,42 @@ exports[`OpenAPI 3 generator headers endpoint with response headers 1`] = `
 
 exports[`OpenAPI 3 generator intersection types evaluates intersection type 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"IntersectionType\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"allOf\\": [
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "IntersectionType",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
                     {
-                      \\"type\\": \\"object\\",
-                      \\"properties\\": {
-                        \\"id\\": {
-                          \\"type\\": \\"string\\"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
                         }
                       },
-                      \\"required\\": [
-                        \\"id\\"
+                      "required": [
+                        "id"
                       ]
                     },
                     {
-                      \\"type\\": \\"object\\",
-                      \\"properties\\": {
-                        \\"name\\": {
-                          \\"type\\": \\"string\\"
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
                         }
                       },
-                      \\"required\\": [
-                        \\"name\\"
+                      "required": [
+                        "name"
                       ]
                     }
                   ]
@@ -684,62 +684,62 @@ exports[`OpenAPI 3 generator intersection types evaluates intersection type 1`] 
 
 exports[`OpenAPI 3 generator minimal contract produces minimal OpenAPI 3 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {}
+  "paths": {}
 }"
 `;
 
 exports[`OpenAPI 3 generator path params endpoint with path params 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/companies/{companyId}/users/{userId}\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithPathParams\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies/{companyId}/users/{userId}": {
+      "get": {
+        "operationId": "EndpointWithPathParams",
+        "parameters": [
           {
-            \\"name\\": \\"companyId\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           },
           {
-            \\"name\\": \\"userId\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\",
-                    \\"name\\"
+                  "required": [
+                    "id",
+                    "name"
                   ]
                 }
               }
@@ -754,50 +754,50 @@ exports[`OpenAPI 3 generator path params endpoint with path params 1`] = `
 
 exports[`OpenAPI 3 generator query params endpoint with array query param 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/companies\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
           {
-            \\"name\\": \\"countries\\",
-            \\"in\\": \\"query\\",
-            \\"style\\": \\"form\\",
-            \\"explode\\": true,
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"string\\"
+            "name": "countries",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
               }
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -813,50 +813,50 @@ exports[`OpenAPI 3 generator query params endpoint with array query param 1`] = 
 
 exports[`OpenAPI 3 generator query params endpoint with array query param and comma serialization strategy 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/companies\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
           {
-            \\"name\\": \\"countries\\",
-            \\"in\\": \\"query\\",
-            \\"style\\": \\"form\\",
-            \\"explode\\": false,
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"string\\"
+            "name": "countries",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
               }
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -872,64 +872,64 @@ exports[`OpenAPI 3 generator query params endpoint with array query param and co
 
 exports[`OpenAPI 3 generator query params endpoint with object query param 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/companies\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
           {
-            \\"name\\": \\"pagination\\",
-            \\"in\\": \\"query\\",
-            \\"style\\": \\"deepObject\\",
-            \\"explode\\": true,
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"page\\": {
-                  \\"type\\": \\"integer\\",
-                  \\"format\\": \\"int32\\"
+            "name": "pagination",
+            "in": "query",
+            "style": "deepObject",
+            "explode": true,
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "format": "int32"
                 },
-                \\"order\\": {
-                  \\"type\\": \\"string\\",
-                  \\"enum\\": [
-                    \\"desc\\",
-                    \\"asc\\"
+                "order": {
+                  "type": "string",
+                  "enum": [
+                    "desc",
+                    "asc"
                   ]
                 }
               },
-              \\"required\\": [
-                \\"page\\",
-                \\"order\\"
+              "required": [
+                "page",
+                "order"
               ]
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -945,53 +945,53 @@ exports[`OpenAPI 3 generator query params endpoint with object query param 1`] =
 
 exports[`OpenAPI 3 generator query params endpoint with query params 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/companies\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithQueryParams\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithQueryParams",
+        "parameters": [
           {
-            \\"name\\": \\"country\\",
-            \\"in\\": \\"query\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           },
           {
-            \\"name\\": \\"post.code\\",
-            \\"in\\": \\"query\\",
-            \\"required\\": false,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "post.code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -1007,83 +1007,83 @@ exports[`OpenAPI 3 generator query params endpoint with query params 1`] = `
 
 exports[`OpenAPI 3 generator responses endpoint specific and default responses 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithResponses\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "get": {
+        "operationId": "EndpointWithResponses",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\",
-                    \\"name\\"
+                  "required": [
+                    "id",
+                    "name"
                   ]
                 }
               }
             }
           },
-          \\"404\\": {
-            \\"description\\": \\"404 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"message\\": {
-                      \\"type\\": \\"string\\"
+          "404": {
+            "description": "404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
                     },
-                    \\"status\\": {
-                      \\"type\\": \\"string\\"
+                    "status": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"message\\",
-                    \\"status\\"
+                  "required": [
+                    "message",
+                    "status"
                   ]
                 }
               }
             }
           },
-          \\"default\\": {
-            \\"description\\": \\"default response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"message\\": {
-                      \\"type\\": \\"string\\"
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"message\\"
+                  "required": [
+                    "message"
                   ]
                 }
               }
@@ -1098,169 +1098,169 @@ exports[`OpenAPI 3 generator responses endpoint specific and default responses 1
 
 exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correctly to an openapi specification 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithSchemaPropsOnHeaders\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "EndpointWithSchemaPropsOnHeaders",
+        "parameters": [
           {
-            \\"name\\": \\"status\\",
-            \\"in\\": \\"header\\",
-            \\"description\\": \\"property-schemaprop description for string\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"string\\",
-              \\"title\\": \\"status-title\\",
-              \\"minLength\\": 12,
-              \\"maxLength\\": 20,
-              \\"pattern\\": \\"^[0-9a-z_]+$\\"
+            "name": "status",
+            "in": "header",
+            "description": "property-schemaprop description for string",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "status-title",
+              "minLength": 12,
+              "maxLength": 20,
+              "pattern": "^[0-9a-z_]+$"
             }
           },
           {
-            \\"name\\": \\"start-time\\",
-            \\"in\\": \\"header\\",
-            \\"description\\": \\"property-schemaprop description for date-time\\",
-            \\"required\\": false,
-            \\"schema\\": {
-              \\"type\\": \\"string\\",
-              \\"format\\": \\"date-time\\",
-              \\"title\\": \\"date-time-title\\",
-              \\"default\\": \\"1990-12-31T15:59:60-08:00\\"
+            "name": "start-time",
+            "in": "header",
+            "description": "property-schemaprop description for date-time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "title": "date-time-title",
+              "default": "1990-12-31T15:59:60-08:00"
             }
           },
           {
-            \\"name\\": \\"size\\",
-            \\"in\\": \\"header\\",
-            \\"description\\": \\"property-schemaprop description for integer\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"integer\\",
-              \\"format\\": \\"int32\\",
-              \\"minimum\\": 1,
-              \\"exclusiveMaximum\\": true,
-              \\"deprecated\\": true,
-              \\"default\\": 42
+            "name": "size",
+            "in": "header",
+            "description": "property-schemaprop description for integer",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "exclusiveMaximum": true,
+              "deprecated": true,
+              "default": 42
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       },
-                      \\"element\\": {
-                        \\"type\\": \\"object\\",
-                        \\"properties\\": {
-                          \\"price\\": {
-                            \\"type\\": \\"number\\",
-                            \\"format\\": \\"float\\",
-                            \\"example\\": 12,
-                            \\"maximum\\": 99.95,
-                            \\"exclusiveMinimum\\": false,
-                            \\"multipleOf\\": 4,
-                            \\"description\\": \\"property-schemaprop description for float inner object\\"
+                      "element": {
+                        "type": "object",
+                        "properties": {
+                          "price": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 12,
+                            "maximum": 99.95,
+                            "exclusiveMinimum": false,
+                            "multipleOf": 4,
+                            "description": "property-schemaprop description for float inner object"
                           }
                         },
-                        \\"required\\": [
-                          \\"price\\"
+                        "required": [
+                          "price"
                         ],
-                        \\"minProperties\\": 1,
-                        \\"maxProperties\\": 100,
-                        \\"additionalProperties\\": true,
-                        \\"example\\": {
-                          \\"price\\": 3.14
+                        "minProperties": 1,
+                        "maxProperties": 100,
+                        "additionalProperties": true,
+                        "example": {
+                          "price": 3.14
                         },
-                        \\"description\\": \\"property-schemaprop description for object\\"
+                        "description": "property-schemaprop description for object"
                       },
-                      \\"currencies\\": {
-                        \\"type\\": \\"array\\",
-                        \\"items\\": {
-                          \\"type\\": \\"string\\"
+                      "currencies": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
                         },
-                        \\"minItems\\": 1,
-                        \\"maxItems\\": 5,
-                        \\"uniqueItems\\": true,
-                        \\"description\\": \\"property-schemaprop description for array\\"
+                        "minItems": 1,
+                        "maxItems": 5,
+                        "uniqueItems": true,
+                        "description": "property-schemaprop description for array"
                       },
-                      \\"code\\": {
-                        \\"type\\": \\"string\\",
-                        \\"enum\\": [
-                          \\"VALID\\",
-                          \\"NOT_VALID\\",
-                          \\"WAITING\\",
-                          \\"APPROVED\\"
+                      "code": {
+                        "type": "string",
+                        "enum": [
+                          "VALID",
+                          "NOT_VALID",
+                          "WAITING",
+                          "APPROVED"
                         ],
-                        \\"title\\": \\"process-code\\",
-                        \\"deprecated\\": false,
-                        \\"example\\": \\"WAITING\\",
-                        \\"description\\": \\"property-schemaprop description for union\\"
+                        "title": "process-code",
+                        "deprecated": false,
+                        "example": "WAITING",
+                        "description": "property-schemaprop description for union"
                       },
-                      \\"inheritance\\": {
-                        \\"allOf\\": [
+                      "inheritance": {
+                        "allOf": [
                           {
-                            \\"type\\": \\"object\\",
-                            \\"properties\\": {
-                              \\"inheritId\\": {
-                                \\"type\\": \\"number\\",
-                                \\"format\\": \\"double\\",
-                                \\"example\\": 12,
-                                \\"maximum\\": 99.95,
-                                \\"exclusiveMinimum\\": false,
-                                \\"multipleOf\\": 4,
-                                \\"description\\": \\"property-schemaprop description for double inner intersection\\"
+                            "type": "object",
+                            "properties": {
+                              "inheritId": {
+                                "type": "number",
+                                "format": "double",
+                                "example": 12,
+                                "maximum": 99.95,
+                                "exclusiveMinimum": false,
+                                "multipleOf": 4,
+                                "description": "property-schemaprop description for double inner intersection"
                               }
                             },
-                            \\"required\\": [
-                              \\"inheritId\\"
+                            "required": [
+                              "inheritId"
                             ]
                           },
                           {
-                            \\"type\\": \\"object\\",
-                            \\"properties\\": {
-                              \\"inheritName\\": {
-                                \\"type\\": \\"integer\\",
-                                \\"format\\": \\"int64\\",
-                                \\"minimum\\": 1,
-                                \\"exclusiveMaximum\\": true,
-                                \\"deprecated\\": true,
-                                \\"default\\": 42,
-                                \\"description\\": \\"property-schemaprop description for long inner intersection\\"
+                            "type": "object",
+                            "properties": {
+                              "inheritName": {
+                                "type": "integer",
+                                "format": "int64",
+                                "minimum": 1,
+                                "exclusiveMaximum": true,
+                                "deprecated": true,
+                                "default": 42,
+                                "description": "property-schemaprop description for long inner intersection"
                               }
                             },
-                            \\"required\\": [
-                              \\"inheritName\\"
+                            "required": [
+                              "inheritName"
                             ]
                           }
                         ],
-                        \\"title\\": \\"process-code\\",
-                        \\"deprecated\\": true,
-                        \\"example\\": {
-                          \\"inheritId\\": 3.14,
-                          \\"inheritName\\": 42
+                        "title": "process-code",
+                        "deprecated": true,
+                        "example": {
+                          "inheritId": 3.14,
+                          "inheritName": 42
                         },
-                        \\"description\\": \\"property-schemaprop description for intersection\\"
+                        "description": "property-schemaprop description for intersection"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\",
-                      \\"element\\"
+                    "required": [
+                      "id",
+                      "name",
+                      "element"
                     ]
                   }
                 }
@@ -1276,35 +1276,35 @@ exports[`OpenAPI 3 generator schemaprops contract with schemaprops parses correc
 
 exports[`OpenAPI 3 generator security contract with security header 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"GetEndpoint\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"content\\": {
-              \\"application/json\\": {
-                \\"schema\\": {
-                  \\"type\\": \\"array\\",
-                  \\"items\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"id\\": {
-                        \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
                       },
-                      \\"name\\": {
-                        \\"type\\": \\"string\\"
+                      "name": {
+                        "type": "string"
                       }
                     },
-                    \\"required\\": [
-                      \\"id\\",
-                      \\"name\\"
+                    "required": [
+                      "id",
+                      "name"
                     ]
                   }
                 }
@@ -1315,18 +1315,18 @@ exports[`OpenAPI 3 generator security contract with security header 1`] = `
       }
     }
   },
-  \\"components\\": {
-    \\"securitySchemes\\": {
-      \\"SecurityHeader\\": {
-        \\"type\\": \\"apiKey\\",
-        \\"in\\": \\"header\\",
-        \\"name\\": \\"security-header\\"
+  "components": {
+    "securitySchemes": {
+      "SecurityHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "security-header"
       }
     }
   },
-  \\"security\\": [
+  "security": [
     {
-      \\"SecurityHeader\\": []
+      "SecurityHeader": []
     }
   ]
 }"
@@ -1334,11 +1334,11 @@ exports[`OpenAPI 3 generator security contract with security header 1`] = `
 
 exports[`OpenAPI 3 generator versioned contract produces a versioned OpenAPI 3 1`] = `
 "{
-  \\"openapi\\": \\"3.0.2\\",
-  \\"info\\": {
-    \\"title\\": \\"versioned-contract\\",
-    \\"version\\": \\"0.1.0\\"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "versioned-contract",
+    "version": "0.1.0"
   },
-  \\"paths\\": {}
+  "paths": {}
 }"
 `;

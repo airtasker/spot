@@ -2,32 +2,32 @@
 
 exports[`OpenAPI 2 generator HTTP verbs DELETE endpoint 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"delete\\": {
-        \\"operationId\\": \\"DeleteEndpoint\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "delete": {
+        "operationId": "DeleteEndpoint",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
-        \\"responses\\": {
-          \\"204\\": {
-            \\"description\\": \\"204 response\\"
+        "responses": {
+          "204": {
+            "description": "204 response"
           }
         }
       }
@@ -38,39 +38,39 @@ exports[`OpenAPI 2 generator HTTP verbs DELETE endpoint 1`] = `
 
 exports[`OpenAPI 2 generator HTTP verbs GET endpoint 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"GetEndpoint\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"id\\": {
-                    \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
                   },
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"id\\",
-                  \\"name\\"
+                "required": [
+                  "id",
+                  "name"
                 ]
               }
             }
@@ -84,61 +84,61 @@ exports[`OpenAPI 2 generator HTTP verbs GET endpoint 1`] = `
 
 exports[`OpenAPI 2 generator HTTP verbs PATCH endpoint 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"patch\\": {
-        \\"operationId\\": \\"PatchEndpoint\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "patch": {
+        "operationId": "PatchEndpoint",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
-            \\"in\\": \\"body\\",
-            \\"name\\": \\"Body\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+            "in": "body",
+            "name": "Body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"name\\"
+              "required": [
+                "name"
               ]
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"id\\": {
-                  \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 },
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"id\\",
-                \\"name\\"
+              "required": [
+                "id",
+                "name"
               ]
             }
           }
@@ -151,55 +151,55 @@ exports[`OpenAPI 2 generator HTTP verbs PATCH endpoint 1`] = `
 
 exports[`OpenAPI 2 generator HTTP verbs POST endpoint 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"post\\": {
-        \\"operationId\\": \\"PostEndpoint\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users": {
+      "post": {
+        "operationId": "PostEndpoint",
+        "parameters": [
           {
-            \\"in\\": \\"body\\",
-            \\"name\\": \\"Body\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+            "in": "body",
+            "name": "Body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"name\\"
+              "required": [
+                "name"
               ]
             }
           }
         ],
-        \\"responses\\": {
-          \\"201\\": {
-            \\"description\\": \\"201 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"id\\": {
-                  \\"type\\": \\"string\\"
+        "responses": {
+          "201": {
+            "description": "201 response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 },
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"id\\",
-                \\"name\\"
+              "required": [
+                "id",
+                "name"
               ]
             }
           }
@@ -212,61 +212,61 @@ exports[`OpenAPI 2 generator HTTP verbs POST endpoint 1`] = `
 
 exports[`OpenAPI 2 generator HTTP verbs PUT endpoint 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"put\\": {
-        \\"operationId\\": \\"PutEndpoint\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "put": {
+        "operationId": "PutEndpoint",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
-            \\"in\\": \\"body\\",
-            \\"name\\": \\"Body\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+            "in": "body",
+            "name": "Body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"name\\"
+              "required": [
+                "name"
               ]
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"id\\": {
-                  \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 },
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"id\\",
-                \\"name\\"
+              "required": [
+                "id",
+                "name"
               ]
             }
           }
@@ -279,56 +279,56 @@ exports[`OpenAPI 2 generator HTTP verbs PUT endpoint 1`] = `
 
 exports[`OpenAPI 2 generator contract with version produces a versioned OpenAPI 2 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"versioned-contract\\",
-    \\"version\\": \\"0.1.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "versioned-contract",
+    "version": "0.1.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {}
+  "paths": {}
 }"
 `;
 
 exports[`OpenAPI 2 generator endpoint metadata contract with endpoint metadata description and summary 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"description\\": \\"My description\\",
-        \\"summary\\": \\"My summary\\",
-        \\"operationId\\": \\"GetEndpoint\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"id\\": {
-                  \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "get": {
+        "description": "My description",
+        "summary": "My summary",
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 },
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"id\\",
-                \\"name\\"
+              "required": [
+                "id",
+                "name"
               ]
             }
           }
@@ -341,53 +341,53 @@ exports[`OpenAPI 2 generator endpoint metadata contract with endpoint metadata d
 
 exports[`OpenAPI 2 generator headers endpoint with request headers 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithRequestHeaders\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "EndpointWithRequestHeaders",
+        "parameters": [
           {
-            \\"name\\": \\"Accept-Encoding\\",
-            \\"in\\": \\"header\\",
-            \\"required\\": false,
-            \\"type\\": \\"string\\"
+            "name": "Accept-Encoding",
+            "in": "header",
+            "required": false,
+            "type": "string"
           },
           {
-            \\"name\\": \\"Accept-Language\\",
-            \\"in\\": \\"header\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "Accept-Language",
+            "in": "header",
+            "required": true,
+            "type": "string"
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"id\\": {
-                    \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
                   },
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"id\\",
-                  \\"name\\"
+                "required": [
+                  "id",
+                  "name"
                 ]
               }
             }
@@ -401,63 +401,63 @@ exports[`OpenAPI 2 generator headers endpoint with request headers 1`] = `
 
 exports[`OpenAPI 2 generator headers endpoint with response headers 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"post\\": {
-        \\"operationId\\": \\"EndpointWithResponseHeaders\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users": {
+      "post": {
+        "operationId": "EndpointWithResponseHeaders",
+        "parameters": [
           {
-            \\"in\\": \\"body\\",
-            \\"name\\": \\"Body\\",
-            \\"required\\": true,
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+            "in": "body",
+            "name": "Body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"name\\"
+              "required": [
+                "name"
               ]
             }
           }
         ],
-        \\"responses\\": {
-          \\"201\\": {
-            \\"description\\": \\"201 response\\",
-            \\"headers\\": {
-              \\"Location\\": {
-                \\"type\\": \\"string\\"
+        "responses": {
+          "201": {
+            "description": "201 response",
+            "headers": {
+              "Location": {
+                "type": "string"
               },
-              \\"Link\\": {
-                \\"type\\": \\"string\\"
+              "Link": {
+                "type": "string"
               }
             },
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"id\\": {
-                  \\"type\\": \\"string\\"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 },
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"id\\",
-                \\"name\\"
+              "required": [
+                "id",
+                "name"
               ]
             }
           }
@@ -470,46 +470,46 @@ exports[`OpenAPI 2 generator headers endpoint with response headers 1`] = `
 
 exports[`OpenAPI 2 generator intersection types evaluates intersection type 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"IntersectionType\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"allOf\\": [
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "IntersectionType",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "allOf": [
                 {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"id\\": {
-                      \\"type\\": \\"string\\"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"id\\"
+                  "required": [
+                    "id"
                   ]
                 },
                 {
-                  \\"type\\": \\"object\\",
-                  \\"properties\\": {
-                    \\"name\\": {
-                      \\"type\\": \\"string\\"
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
                     }
                   },
-                  \\"required\\": [
-                    \\"name\\"
+                  "required": [
+                    "name"
                   ]
                 }
               ]
@@ -524,68 +524,68 @@ exports[`OpenAPI 2 generator intersection types evaluates intersection type 1`] 
 
 exports[`OpenAPI 2 generator minimal contract produces minimal OpenAPI 2 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {}
+  "paths": {}
 }"
 `;
 
 exports[`OpenAPI 2 generator path params endpoint with path params 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/companies/{companyId}/users/{userId}\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithPathParams\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies/{companyId}/users/{userId}": {
+      "get": {
+        "operationId": "EndpointWithPathParams",
+        "parameters": [
           {
-            \\"name\\": \\"companyId\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
-            \\"name\\": \\"userId\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"id\\": {
-                  \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 },
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"id\\",
-                \\"name\\"
+              "required": [
+                "id",
+                "name"
               ]
             }
           }
@@ -598,51 +598,51 @@ exports[`OpenAPI 2 generator path params endpoint with path params 1`] = `
 
 exports[`OpenAPI 2 generator query params endpoint with array query param 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/companies\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
           {
-            \\"name\\": \\"countries\\",
-            \\"in\\": \\"query\\",
-            \\"required\\": true,
-            \\"type\\": \\"array\\",
-            \\"collectionFormat\\": \\"multi\\",
-            \\"items\\": {
-              \\"type\\": \\"string\\"
+            "name": "countries",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "collectionFormat": "multi",
+            "items": {
+              "type": "string"
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"id\\": {
-                    \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
                   },
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"id\\",
-                  \\"name\\"
+                "required": [
+                  "id",
+                  "name"
                 ]
               }
             }
@@ -656,51 +656,51 @@ exports[`OpenAPI 2 generator query params endpoint with array query param 1`] = 
 
 exports[`OpenAPI 2 generator query params endpoint with array query param and comma serialization strategy 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/companies\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithArrayQueryParam\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
           {
-            \\"name\\": \\"countries\\",
-            \\"in\\": \\"query\\",
-            \\"required\\": true,
-            \\"type\\": \\"array\\",
-            \\"collectionFormat\\": \\"csv\\",
-            \\"items\\": {
-              \\"type\\": \\"string\\"
+            "name": "countries",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "collectionFormat": "csv",
+            "items": {
+              "type": "string"
             }
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"id\\": {
-                    \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
                   },
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"id\\",
-                  \\"name\\"
+                "required": [
+                  "id",
+                  "name"
                 ]
               }
             }
@@ -714,53 +714,53 @@ exports[`OpenAPI 2 generator query params endpoint with array query param and co
 
 exports[`OpenAPI 2 generator query params endpoint with query params 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/companies\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithQueryParams\\",
-        \\"parameters\\": [
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithQueryParams",
+        "parameters": [
           {
-            \\"name\\": \\"country\\",
-            \\"in\\": \\"query\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "type": "string"
           },
           {
-            \\"name\\": \\"post.code\\",
-            \\"in\\": \\"query\\",
-            \\"required\\": false,
-            \\"type\\": \\"string\\"
+            "name": "post.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"id\\": {
-                    \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
                   },
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"id\\",
-                  \\"name\\"
+                "required": [
+                  "id",
+                  "name"
                 ]
               }
             }
@@ -774,77 +774,77 @@ exports[`OpenAPI 2 generator query params endpoint with query params 1`] = `
 
 exports[`OpenAPI 2 generator responses endpoint specific and default responses 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users/{id}\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithResponses\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users/{id}": {
+      "get": {
+        "operationId": "EndpointWithResponses",
+        "parameters": [
           {
-            \\"name\\": \\"id\\",
-            \\"in\\": \\"path\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"id\\": {
-                  \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 },
-                \\"name\\": {
-                  \\"type\\": \\"string\\"
+                "name": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"id\\",
-                \\"name\\"
+              "required": [
+                "id",
+                "name"
               ]
             }
           },
-          \\"404\\": {
-            \\"description\\": \\"404 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"message\\": {
-                  \\"type\\": \\"string\\"
+          "404": {
+            "description": "404 response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
                 },
-                \\"status\\": {
-                  \\"type\\": \\"string\\"
+                "status": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"message\\",
-                \\"status\\"
+              "required": [
+                "message",
+                "status"
               ]
             }
           },
-          \\"default\\": {
-            \\"description\\": \\"default response\\",
-            \\"schema\\": {
-              \\"type\\": \\"object\\",
-              \\"properties\\": {
-                \\"message\\": {
-                  \\"type\\": \\"string\\"
+          "default": {
+            "description": "default response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
                 }
               },
-              \\"required\\": [
-                \\"message\\"
+              "required": [
+                "message"
               ]
             }
           }
@@ -857,156 +857,156 @@ exports[`OpenAPI 2 generator responses endpoint specific and default responses 1
 
 exports[`OpenAPI 2 generator schemaprops contract with schemaprops parses correctly to an openapi specification 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"EndpointWithSchemaPropsOnHeaders\\",
-        \\"parameters\\": [
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "EndpointWithSchemaPropsOnHeaders",
+        "parameters": [
           {
-            \\"name\\": \\"status\\",
-            \\"in\\": \\"header\\",
-            \\"description\\": \\"property-schemaprop description for string\\",
-            \\"required\\": true,
-            \\"type\\": \\"string\\",
-            \\"minLength\\": 12,
-            \\"maxLength\\": 20,
-            \\"pattern\\": \\"^[0-9a-z_]+$\\"
+            "name": "status",
+            "in": "header",
+            "description": "property-schemaprop description for string",
+            "required": true,
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 20,
+            "pattern": "^[0-9a-z_]+$"
           },
           {
-            \\"name\\": \\"start-time\\",
-            \\"in\\": \\"header\\",
-            \\"description\\": \\"property-schemaprop description for date-time\\",
-            \\"required\\": false,
-            \\"type\\": \\"string\\",
-            \\"format\\": \\"date-time\\",
-            \\"default\\": \\"1990-12-31T15:59:60-08:00\\"
+            "name": "start-time",
+            "in": "header",
+            "description": "property-schemaprop description for date-time",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "default": "1990-12-31T15:59:60-08:00"
           },
           {
-            \\"name\\": \\"size\\",
-            \\"in\\": \\"header\\",
-            \\"description\\": \\"property-schemaprop description for integer\\",
-            \\"required\\": true,
-            \\"type\\": \\"integer\\",
-            \\"format\\": \\"int32\\",
-            \\"minimum\\": 1,
-            \\"default\\": 42
+            "name": "size",
+            "in": "header",
+            "description": "property-schemaprop description for integer",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "default": 42
           }
         ],
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"id\\": {
-                    \\"type\\": \\"string\\"
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
                   },
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                  "name": {
+                    "type": "string"
                   },
-                  \\"element\\": {
-                    \\"type\\": \\"object\\",
-                    \\"properties\\": {
-                      \\"price\\": {
-                        \\"type\\": \\"number\\",
-                        \\"format\\": \\"float\\",
-                        \\"example\\": 12,
-                        \\"maximum\\": 99.95,
-                        \\"multipleOf\\": 4,
-                        \\"description\\": \\"property-schemaprop description for float inner object\\"
+                  "element": {
+                    "type": "object",
+                    "properties": {
+                      "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 12,
+                        "maximum": 99.95,
+                        "multipleOf": 4,
+                        "description": "property-schemaprop description for float inner object"
                       }
                     },
-                    \\"required\\": [
-                      \\"price\\"
+                    "required": [
+                      "price"
                     ],
-                    \\"minProperties\\": 1,
-                    \\"maxProperties\\": 100,
-                    \\"example\\": {
-                      \\"price\\": 3.14
+                    "minProperties": 1,
+                    "maxProperties": 100,
+                    "example": {
+                      "price": 3.14
                     },
-                    \\"description\\": \\"property-schemaprop description for object\\"
+                    "description": "property-schemaprop description for object"
                   },
-                  \\"currencies\\": {
-                    \\"type\\": \\"array\\",
-                    \\"items\\": {
-                      \\"type\\": \\"string\\"
+                  "currencies": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
-                    \\"minItems\\": 1,
-                    \\"maxItems\\": 5,
-                    \\"uniqueItems\\": true,
-                    \\"description\\": \\"property-schemaprop description for array\\"
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "uniqueItems": true,
+                    "description": "property-schemaprop description for array"
                   },
-                  \\"code\\": {
-                    \\"type\\": \\"string\\",
-                    \\"enum\\": [
-                      \\"VALID\\",
-                      \\"NOT_VALID\\",
-                      \\"WAITING\\",
-                      \\"APPROVED\\"
+                  "code": {
+                    "type": "string",
+                    "enum": [
+                      "VALID",
+                      "NOT_VALID",
+                      "WAITING",
+                      "APPROVED"
                     ],
-                    \\"title\\": \\"process-code\\",
-                    \\"example\\": \\"WAITING\\",
-                    \\"description\\": \\"property-schemaprop description for union\\"
+                    "title": "process-code",
+                    "example": "WAITING",
+                    "description": "property-schemaprop description for union"
                   },
-                  \\"inheritance\\": {
-                    \\"allOf\\": [
+                  "inheritance": {
+                    "allOf": [
                       {
-                        \\"type\\": \\"object\\",
-                        \\"properties\\": {
-                          \\"inheritId\\": {
-                            \\"type\\": \\"number\\",
-                            \\"format\\": \\"double\\",
-                            \\"example\\": 12,
-                            \\"maximum\\": 99.95,
-                            \\"multipleOf\\": 4,
-                            \\"description\\": \\"property-schemaprop description for double inner intersection\\"
+                        "type": "object",
+                        "properties": {
+                          "inheritId": {
+                            "type": "number",
+                            "format": "double",
+                            "example": 12,
+                            "maximum": 99.95,
+                            "multipleOf": 4,
+                            "description": "property-schemaprop description for double inner intersection"
                           }
                         },
-                        \\"required\\": [
-                          \\"inheritId\\"
+                        "required": [
+                          "inheritId"
                         ]
                       },
                       {
-                        \\"type\\": \\"object\\",
-                        \\"properties\\": {
-                          \\"inheritName\\": {
-                            \\"type\\": \\"integer\\",
-                            \\"format\\": \\"int64\\",
-                            \\"minimum\\": 1,
-                            \\"default\\": 42,
-                            \\"description\\": \\"property-schemaprop description for long inner intersection\\"
+                        "type": "object",
+                        "properties": {
+                          "inheritName": {
+                            "type": "integer",
+                            "format": "int64",
+                            "minimum": 1,
+                            "default": 42,
+                            "description": "property-schemaprop description for long inner intersection"
                           }
                         },
-                        \\"required\\": [
-                          \\"inheritName\\"
+                        "required": [
+                          "inheritName"
                         ]
                       }
                     ],
-                    \\"title\\": \\"process-code\\",
-                    \\"example\\": {
-                      \\"inheritId\\": 3.14,
-                      \\"inheritName\\": 42
+                    "title": "process-code",
+                    "example": {
+                      "inheritId": 3.14,
+                      "inheritName": 42
                     },
-                    \\"description\\": \\"property-schemaprop description for intersection\\"
+                    "description": "property-schemaprop description for intersection"
                   }
                 },
-                \\"required\\": [
-                  \\"id\\",
-                  \\"name\\",
-                  \\"element\\"
+                "required": [
+                  "id",
+                  "name",
+                  "element"
                 ]
               }
             }
@@ -1020,39 +1020,39 @@ exports[`OpenAPI 2 generator schemaprops contract with schemaprops parses correc
 
 exports[`OpenAPI 2 generator security contract with security header 1`] = `
 "{
-  \\"swagger\\": \\"2.0\\",
-  \\"info\\": {
-    \\"title\\": \\"contract\\",
-    \\"version\\": \\"0.0.0\\"
+  "swagger": "2.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
   },
-  \\"consumes\\": [
-    \\"application/json\\"
+  "consumes": [
+    "application/json"
   ],
-  \\"produces\\": [
-    \\"application/json\\"
+  "produces": [
+    "application/json"
   ],
-  \\"paths\\": {
-    \\"/users\\": {
-      \\"get\\": {
-        \\"operationId\\": \\"GetEndpoint\\",
-        \\"responses\\": {
-          \\"200\\": {
-            \\"description\\": \\"200 response\\",
-            \\"schema\\": {
-              \\"type\\": \\"array\\",
-              \\"items\\": {
-                \\"type\\": \\"object\\",
-                \\"properties\\": {
-                  \\"id\\": {
-                    \\"type\\": \\"string\\"
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
                   },
-                  \\"name\\": {
-                    \\"type\\": \\"string\\"
+                  "name": {
+                    "type": "string"
                   }
                 },
-                \\"required\\": [
-                  \\"id\\",
-                  \\"name\\"
+                "required": [
+                  "id",
+                  "name"
                 ]
               }
             }
@@ -1061,16 +1061,16 @@ exports[`OpenAPI 2 generator security contract with security header 1`] = `
       }
     }
   },
-  \\"securityDefinitions\\": {
-    \\"SecurityHeader\\": {
-      \\"type\\": \\"apiKey\\",
-      \\"in\\": \\"header\\",
-      \\"name\\": \\"security-header\\"
+  "securityDefinitions": {
+    "SecurityHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "security-header"
     }
   },
-  \\"security\\": [
+  "security": [
     {
-      \\"SecurityHeader\\": []
+      "SecurityHeader": []
     }
   ]
 }"

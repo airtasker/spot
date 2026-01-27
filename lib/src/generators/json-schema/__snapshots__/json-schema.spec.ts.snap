@@ -1,31 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`JSON Schema generator evaluates intersection type 1`] = `
-Object {
+{
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "definitions": Object {
-    "IntersectionResponse": Object {
-      "allOf": Array [
-        Object {
+  "definitions": {
+    "IntersectionResponse": {
+      "allOf": [
+        {
           "additionalProperties": true,
-          "properties": Object {
-            "id": Object {
+          "properties": {
+            "id": {
               "type": "string",
             },
           },
-          "required": Array [
+          "required": [
             "id",
           ],
           "type": "object",
         },
-        Object {
+        {
           "additionalProperties": true,
-          "properties": Object {
-            "name": Object {
+          "properties": {
+            "name": {
               "type": "string",
             },
           },
-          "required": Array [
+          "required": [
             "name",
           ],
           "type": "object",
@@ -37,27 +37,27 @@ Object {
 `;
 
 exports[`JSON Schema generator produces definitions 1`] = `
-Object {
+{
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "definitions": Object {
-    "User": Object {
+  "definitions": {
+    "User": {
       "additionalProperties": true,
-      "properties": Object {
-        "id": Object {
+      "properties": {
+        "id": {
           "type": "string",
         },
-        "name": Object {
+        "name": {
           "type": "string",
         },
       },
-      "required": Array [
+      "required": [
         "id",
         "name",
       ],
       "type": "object",
     },
-    "Users": Object {
-      "items": Object {
+    "Users": {
+      "items": {
         "$ref": "#/definitions/User",
       },
       "type": "array",
@@ -67,8 +67,8 @@ Object {
 `;
 
 exports[`JSON Schema generator produces minimal json schema 1`] = `
-Object {
+{
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "definitions": Object {},
+  "definitions": {},
 }
 `;
