@@ -15,7 +15,7 @@ Generated the following files:
 `
   ];
 
-  static flags = {
+  static flags: flags.Input<flags.Output> = {
     help: flags.help({ char: "h" })
   };
 
@@ -78,7 +78,7 @@ interface CreateUserResponse {
       false
     );
     outputFile(".", "package.json", JSON.stringify({}, null, 2), false);
-    execSync(`yarn add @airtasker/spot`, {
+    execSync(`pnpm add @airtasker/spot`, {
       stdio: "inherit"
     });
   }

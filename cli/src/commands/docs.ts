@@ -21,7 +21,7 @@ export default class Docs extends Command {
     }
   ];
 
-  static flags = {
+  static flags: flags.Input<flags.Output> = {
     help: flags.help({ char: "h" }),
     port: flags.integer({
       char: "p",

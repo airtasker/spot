@@ -46,12 +46,17 @@ Get started with writing Spot contracts - [Spot Guide](https://github.com/airtas
 
 For all available syntax, see [Spot Syntax](https://github.com/airtasker/spot/wiki/Spot-Syntax)
 
+### Requirements
+
+- Node.js >= 18.12.0
+- pnpm (recommended) or npm
+
 ### Installation
 
-With [yarn](https://yarnpkg.com/en/docs/usage) installed and initialized add `@airtasker/spot` to your project:
+With [pnpm](https://pnpm.io/) installed and initialized add `@airtasker/spot` to your project:
 
 ```sh
-yarn add @airtasker/spot
+pnpm add @airtasker/spot
 ```
 
 You can pass the definition above to a generator by simply running:

@@ -7,41 +7,14 @@ runs:
 
   steps:
   - uses: actions/checkout@v5
-  - name: restore_cache
-    uses: actions/cache@v5
-    with:
-      key: v3-dependencies-{{ checksum "yarn.lock" }}
-      path: node_modules
-      restore-keys: |-
-        v3-dependencies-{{ checksum "yarn.lock" }}
-        v3-dependencies
 
-  - name: Install main dependencies
-    run: yarn install --frozen-lockfile
+  - uses: pnpm/action-setup@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v5
+    with:
+      cache: 'pnpm'
+
+  - name: Install dependencies
+    run: pnpm install --frozen-lockfile
     shell: bash
-
-  - name: save_cache
-    uses: actions/cache@v5
-    with:
-      path: node_modules
-      key: v3-dependencies-{{ checksum "yarn.lock" }}
-
-  - name: restore_cache
-    uses: actions/cache@v5
-    with:
-      key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
-      path: docs/node_modules
-      restore-keys: |-
-        v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}
-        v3-docs-dependencies
-
-  - name: Install docs dependencies
-    run: yarn install --frozen-lockfile
-    working-directory: docs/
-    shell: bash
-    
-  - name: save_cache
-    uses: actions/cache@v5
-    with:
-      path: docs/node_modules
-      key: v3-docs-dependencies-{{ checksum "docs/yarn.lock" }}

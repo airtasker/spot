@@ -13,8 +13,13 @@ import {
   UserInputResponse
 } from "./verifications/user-input-models";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function runValidationServer(port: number, contract: Contract) {
+export function runValidationServer(
+  port: number,
+  contract: Contract
+): {
+  app: express.Application;
+  defer: () => Promise<void>;
+} {
   const app = express();
 
   app.use(express.json());

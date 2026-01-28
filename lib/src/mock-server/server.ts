@@ -17,7 +17,6 @@ export interface ProxyConfig {
 /**
  * Runs a mock server that returns dummy data that conforms to an API definition.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function runMockServer(
   api: Contract,
   {
@@ -35,7 +34,10 @@ export function runMockServer(
     proxyFallbackConfig?: ProxyConfig | null;
     logger: Logger;
   }
-) {
+): {
+  app: express.Application;
+  defer: () => Promise<void>;
+} {
   const app = express();
   app.use(express.raw({ type: () => true }));
   app.use(cors());

@@ -17,7 +17,7 @@ export default class Generate extends Command {
     `$ spot generate --contract api.ts --language yaml --generator openapi3 --out output/`
   ];
 
-  static flags = {
+  static flags: flags.Input<flags.Output> = {
     help: flags.help({ char: "h" }),
     contract: flags.string({
       required: true,

@@ -22,7 +22,7 @@ export default class Mock extends Command {
     }
   ];
 
-  static flags = {
+  static flags: flags.Input<flags.Output> = {
     help: flags.help({ char: "h" }),
     proxyBaseUrl: flags.string({
       description:
