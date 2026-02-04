@@ -17,6 +17,8 @@ jobs:
   test:
     name: test-node-${{ matrix.node-version }}
     runs-on: runs-on,runner=4cpu-linux-x64
+    permissions:
+      contents: read
     strategy:
       fail-fast: true # if one job fails, stop the rest
       matrix:
@@ -52,6 +54,8 @@ jobs:
   test-summary-publish:
     runs-on: runs-on,runner=4cpu-linux-x64
     needs: [test]
+    permissions:
+      contents: read
     steps:
       - name: Test summary
         uses: test-summary/action@v2
@@ -60,6 +64,8 @@ jobs:
 
   lint-check:
     runs-on: runs-on,runner=4cpu-linux-x64
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/prepare-repository
@@ -81,15 +87,44 @@ jobs:
       - uses: ./.github/actions/prepare-repository
 
       - name: Authenticate with NPM registry
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+        run: |
+          cat > ~/.npmrc << 'EOF'
+          //registry.npmjs.org/:_authToken=${{ env.NPM_TOKEN }}
+          EOF
 
       - name: Publish to NPM
-        run: pnpm publish --access=public --no-git-checks
+        id: npm-publish
+        run: pnpm publish --access=public
+
+      - name: Verify NPM publish
+        run: |
+          echo "Waiting for NPM registry propagation..."
+          sleep 10
+          npm view @airtasker/spot@${{ github.event.release.tag_name }} version
 
       - name: Authenticate with GitHub Package Registry
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-          echo "@airtasker:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          cat > ~/.npmrc << 'EOF'
+          //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          @airtasker:registry=https://npm.pkg.github.com
+          EOF
 
       - name: Publish to GitHub Package Registry
-        run: pnpm publish --registry=https://npm.pkg.github.com --access=public --no-git-checks
+        id: gpr-publish
+        run: pnpm publish --registry=https://npm.pkg.github.com --access=public
+        continue-on-error: true
+
+      - name: Verify GPR publish
+        if: steps.gpr-publish.outcome == 'success'
+        run: |
+          echo "Waiting for GitHub Package Registry propagation..."
+          sleep 10
+          npm view @airtasker/spot@${{ github.event.release.tag_name }} version \
+            --registry=https://npm.pkg.github.com
+
+      - name: Report GPR failure
+        if: steps.gpr-publish.outcome == 'failure'
+        run: |
+          echo "::warning::GitHub Package Registry publish failed, but NPM publish succeeded"
+          echo "::warning::Manual GPR publish may be required"
+          echo "::warning::Package is available on NPM: https://www.npmjs.com/package/@airtasker/spot"
