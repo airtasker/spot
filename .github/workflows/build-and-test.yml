@@ -10,9 +10,6 @@ on:
   release:
     types: [published]
 
-env:
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
 jobs:
   test:
     name: test-node-${{ matrix.node-version }}
@@ -86,30 +83,35 @@ jobs:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/prepare-repository
 
-      - name: Authenticate with NPM registry
+      - name: Authenticate with registries
         run: |
           cat > ~/.npmrc << 'EOF'
-          //registry.npmjs.org/:_authToken=${{ env.NPM_TOKEN }}
-          EOF
-
-      - name: Publish to NPM
-        run: pnpm publish --access=public
-
-      - name: Authenticate with GitHub Package Registry
-        run: |
-          cat > ~/.npmrc << 'EOF'
+          //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
           //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
           @airtasker:registry=https://npm.pkg.github.com
           EOF
 
+      - name: Publish to NPM
+        id: npm-publish
+        run: pnpm publish --access=public
+
       - name: Publish to GitHub Package Registry
         id: gpr-publish
+        if: steps.npm-publish.outcome == 'success'
         run: pnpm publish --registry=https://npm.pkg.github.com --access=public
         continue-on-error: true
 
-      - name: Report GPR failure
-        if: steps.gpr-publish.outcome == 'failure'
+      - name: Report publish status
+        if: always()
         run: |
-          echo "::warning::GitHub Package Registry publish failed, but NPM publish succeeded"
-          echo "::warning::Manual GPR publish may be required"
-          echo "::warning::Package is available on NPM: https://www.npmjs.com/package/@airtasker/spot"
+          if [ "${{ steps.npm-publish.outcome }}" != "success" ]; then
+            echo "::error::NPM publish failed"
+            exit 1
+          fi
+
+          if [ "${{ steps.gpr-publish.outcome }}" == "failure" ]; then
+            echo "::warning::GitHub Package Registry publish failed, but NPM publish succeeded"
+            echo "::warning::Manual GPR publish may be required"
+          fi
+
+          echo "✅ Package published to NPM: https://www.npmjs.com/package/@airtasker/spot"
