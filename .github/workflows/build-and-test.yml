@@ -10,13 +10,12 @@ on:
   release:
     types: [published]
 
-env:
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
 jobs:
   test:
     name: test-node-${{ matrix.node-version }}
     runs-on: runs-on,runner=4cpu-linux-x64
+    permissions:
+      contents: read
     strategy:
       fail-fast: true # if one job fails, stop the rest
       matrix:
@@ -52,6 +51,8 @@ jobs:
   test-summary-publish:
     runs-on: runs-on,runner=4cpu-linux-x64
     needs: [test]
+    permissions:
+      contents: read
     steps:
       - name: Test summary
         uses: test-summary/action@v2
@@ -60,6 +61,8 @@ jobs:
 
   lint-check:
     runs-on: runs-on,runner=4cpu-linux-x64
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/prepare-repository
@@ -73,12 +76,42 @@ jobs:
     needs:
       - test
       - lint-check
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/prepare-repository
 
-      - name: Authenticate with NPM registry
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+      - name: Authenticate with registries
+        run: |
+          cat > ~/.npmrc << 'EOF'
+          //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          @airtasker:registry=https://npm.pkg.github.com
+          EOF
 
-      - name: Publish
-        run: npm publish --access=public
+      - name: Publish to NPM
+        id: npm-publish
+        run: pnpm publish --access=public
+
+      - name: Publish to GitHub Package Registry
+        id: gpr-publish
+        if: steps.npm-publish.outcome == 'success'
+        run: pnpm publish --registry=https://npm.pkg.github.com --access=public
+        continue-on-error: true
+
+      - name: Report publish status
+        if: always()
+        run: |
+          if [ "${{ steps.npm-publish.outcome }}" != "success" ]; then
+            echo "::error::NPM publish failed"
+            exit 1
+          fi
+
+          if [ "${{ steps.gpr-publish.outcome }}" == "failure" ]; then
+            echo "::warning::GitHub Package Registry publish failed, but NPM publish succeeded"
+            echo "::warning::Manual GPR publish may be required"
+          fi
+
+          echo "✅ Package published to NPM: https://www.npmjs.com/package/@airtasker/spot"
