@@ -93,14 +93,7 @@ jobs:
           EOF
 
       - name: Publish to NPM
-        id: npm-publish
         run: pnpm publish --access=public
-
-      - name: Verify NPM publish
-        run: |
-          echo "Waiting for NPM registry propagation..."
-          sleep 10
-          npm view @airtasker/spot@${{ github.event.release.tag_name }} version
 
       - name: Authenticate with GitHub Package Registry
         run: |
@@ -113,14 +106,6 @@ jobs:
         id: gpr-publish
         run: pnpm publish --registry=https://npm.pkg.github.com --access=public
         continue-on-error: true
-
-      - name: Verify GPR publish
-        if: steps.gpr-publish.outcome == 'success'
-        run: |
-          echo "Waiting for GitHub Package Registry propagation..."
-          sleep 10
-          npm view @airtasker/spot@${{ github.event.release.tag_name }} version \
-            --registry=https://npm.pkg.github.com
 
       - name: Report GPR failure
         if: steps.gpr-publish.outcome == 'failure'
