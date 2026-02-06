@@ -93,12 +93,12 @@ jobs:
 
       - name: Publish to NPM
         id: npm-publish
-        run: pnpm publish --access=public
+        run: pnpm publish --access=public --no-git-checks
 
       - name: Publish to GitHub Package Registry
         id: gpr-publish
         if: steps.npm-publish.outcome == 'success'
-        run: pnpm publish --registry=https://npm.pkg.github.com --access=public
+        run: pnpm publish --registry=https://npm.pkg.github.com --access=public --no-git-checks
         continue-on-error: true
 
       - name: Report publish status
