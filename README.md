@@ -98,12 +98,11 @@ We built Spot with this in mind. Instead of having to juggle various API format 
 [![License](https://img.shields.io/npm/l/@airtasker/spot.svg)](https://github.com/airtasker/spot/blob/master/package.json)
 
 <!-- toc -->
-
-- [Spot](#spot)
-- [Why we built Spot](#why-we-built-spot)
-- [Usage](#usage)
-- [Commands](#commands)
-- [Releases](#releases)
+* [Spot](#spot)
+* [Why we built Spot](#why-we-built-spot)
+* [Usage](#usage)
+* [Commands](#commands)
+* [Releases](#releases)
 <!-- tocstop -->
 
 # Usage
@@ -147,16 +146,15 @@ console.log(openApi);
 # Commands
 
 <!-- commands -->
-
-- [`spot checksum SPOT_CONTRACT`](#spot-checksum-spot_contract)
-- [`spot docs SPOT_CONTRACT`](#spot-docs-spot_contract)
-- [`spot generate`](#spot-generate)
-- [`spot help [COMMAND]`](#spot-help-command)
-- [`spot init`](#spot-init)
-- [`spot lint SPOT_CONTRACT`](#spot-lint-spot_contract)
-- [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
-- [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
-- [`spot validation-server SPOT_CONTRACT`](#spot-validation-server-spot_contract)
+* [`spot checksum SPOT_CONTRACT`](#spot-checksum-spot_contract)
+* [`spot docs SPOT_CONTRACT`](#spot-docs-spot_contract)
+* [`spot generate`](#spot-generate)
+* [`spot help [COMMAND]`](#spot-help-command)
+* [`spot init`](#spot-init)
+* [`spot lint SPOT_CONTRACT`](#spot-lint-spot_contract)
+* [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
+* [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
+* [`spot validation-server SPOT_CONTRACT`](#spot-validation-server-spot_contract)
 
 ## `spot checksum SPOT_CONTRACT`
 
@@ -176,7 +174,7 @@ EXAMPLE
   $ spot checksum api.ts
 ```
 
-_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/checksum.js)_
+_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/checksum.js)_
 
 ## `spot docs SPOT_CONTRACT`
 
@@ -197,7 +195,7 @@ EXAMPLE
   $ spot docs api.ts
 ```
 
-_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/docs.js)_
+_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/docs.js)_
 
 ## `spot generate`
 
@@ -218,7 +216,7 @@ EXAMPLE
   $ spot generate --contract api.ts --language yaml --generator openapi3 --out output/
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/generate.js)_
 
 ## `spot help [COMMAND]`
 
@@ -256,7 +254,7 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/init.js)_
+_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/init.js)_
 
 ## `spot lint SPOT_CONTRACT`
 
@@ -287,7 +285,7 @@ EXAMPLES
   $ spot lint --no-nullable-arrays=off
 ```
 
-_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/lint.js)_
+_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/lint.js)_
 
 ## `spot mock SPOT_CONTRACT`
 
@@ -318,7 +316,7 @@ EXAMPLE
   $ spot mock api.ts
 ```
 
-_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/mock.js)_
+_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/mock.js)_
 
 ## `spot validate SPOT_CONTRACT`
 
@@ -338,7 +336,7 @@ EXAMPLE
   $ spot validate api.ts
 ```
 
-_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/validate.js)_
+_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/validate.js)_
 
 ## `spot validation-server SPOT_CONTRACT`
 
@@ -359,8 +357,7 @@ EXAMPLE
   $ spot validation-server api.ts
 ```
 
-_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v2.0.1/build/cli/src/commands/validation-server.js)_
-
+_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v2.0.2/build/cli/src/commands/validation-server.js)_
 <!-- commandsstop -->
 
 # Releases
