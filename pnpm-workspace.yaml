@@ -1,5 +1,9 @@
 packages:
-  - 'docs'
+  - "docs"
+
+overrides:
+  jsonpath-plus: "^10.2"
+  immer: "^9.0.6"
 
 # Supply Chain Security Configuration
 # Documentation: https://airtasker.atlassian.net/wiki/spaces/ENG/pages/4767645728/JavaScript+Package+Manager+Configuration
@@ -8,4 +12,6 @@ packages:
 strictDepBuilds: true
 blockExoticSubdeps: true
 minimumReleaseAge: 10080
-minimumReleaseAgeExclude: '@airtasker/*'
+minimumReleaseAgeExclude: "@airtasker/*"
+allowBuilds:
+  core-js: false

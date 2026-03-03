@@ -86,11 +86,5 @@
     "eslint:fix": "eslint . --fix --ext .js,.ts,.tsx",
     "prettier:fix": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\""
   },
-  "pnpm": {
-    "overrides": {
-      "jsonpath-plus": "^10.2",
-      "immer": "^9.0.6"
-    }
-  },
   "packageManager": "pnpm@10.28.1"
 }
