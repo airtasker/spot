@@ -1,5 +1,5 @@
 import { Command, flags } from "@oclif/command";
-import { prompt } from "inquirer";
+import inquirer from "inquirer";
 import YAML from "js-yaml";
 import path from "path";
 import { Contract } from "../../../lib/src/definitions";
@@ -46,7 +46,7 @@ export default class Generate extends Command {
 
     if (!generator) {
       generator = (
-        await prompt<{
+        await inquirer.prompt<{
           Generator: string;
         }>({
           name: "Generator",
@@ -69,7 +69,7 @@ export default class Generate extends Command {
 
     if (!language) {
       language = (
-        await prompt<{
+        await inquirer.prompt<{
           Language: string;
         }>({
           name: "Language",
@@ -92,7 +92,7 @@ export default class Generate extends Command {
 
     if (!outDir) {
       outDir = (
-        await prompt<{
+        await inquirer.prompt<{
           "Output destination": string;
         }>({
           name: "Output destination",
