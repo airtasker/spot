@@ -709,6 +709,138 @@ describe("OpenAPI 3 type util", () => {
     });
   });
 
+  describe("discriminated union with a nested-union member", () => {
+    test("emits mapping entries for all concrete leaves of a union-member reference", () => {
+      // Models the AdsSlider pattern:
+      //   FilterType = FlatTypeA | NestedUnion
+      //   NestedUnion = NestedUnionSingle | NestedUnionDouble
+      // Before the fix, only "nested_union_single" was emitted for NestedUnion;
+      // "nested_union_double" was silently dropped.
+      const typeTable = new TypeTable();
+      typeTable.add("FlatTypeA", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("flat_a"), optional: false },
+          { name: "a", type: stringType(), optional: false }
+        ])
+      });
+      typeTable.add("NestedUnionSingle", {
+        type: objectType([
+          {
+            name: "type",
+            type: stringLiteralType("nested_union_single"),
+            optional: false
+          },
+          { name: "single", type: stringType(), optional: false }
+        ])
+      });
+      typeTable.add("NestedUnionDouble", {
+        type: objectType([
+          {
+            name: "type",
+            type: stringLiteralType("nested_union_double"),
+            optional: false
+          },
+          { name: "double", type: stringType(), optional: false }
+        ])
+      });
+      typeTable.add("NestedUnion", {
+        type: unionType(
+          [
+            referenceType("NestedUnionSingle"),
+            referenceType("NestedUnionDouble")
+          ],
+          "type"
+        )
+      });
+
+      const result = typeToSchemaOrReferenceObject(
+        unionType(
+          [referenceType("FlatTypeA"), referenceType("NestedUnion")],
+          "type"
+        ),
+        typeTable
+      );
+
+      expect(result).toEqual({
+        oneOf: [
+          { $ref: "#/components/schemas/FlatTypeA" },
+          { $ref: "#/components/schemas/NestedUnion" }
+        ],
+        discriminator: {
+          propertyName: "type",
+          mapping: {
+            flat_a: "#/components/schemas/FlatTypeA",
+            nested_union_single: "#/components/schemas/NestedUnion",
+            nested_union_double: "#/components/schemas/NestedUnion"
+          }
+        }
+      });
+    });
+
+    test("emits mapping entries for all three leaves when two union members are both nested unions", () => {
+      const typeTable = new TypeTable();
+      typeTable.add("UnionASingle", {
+        type: objectType([
+          {
+            name: "type",
+            type: stringLiteralType("union_a_single"),
+            optional: false
+          }
+        ])
+      });
+      typeTable.add("UnionADouble", {
+        type: objectType([
+          {
+            name: "type",
+            type: stringLiteralType("union_a_double"),
+            optional: false
+          }
+        ])
+      });
+      typeTable.add("UnionA", {
+        type: unionType(
+          [referenceType("UnionASingle"), referenceType("UnionADouble")],
+          "type"
+        )
+      });
+      typeTable.add("UnionBOnly", {
+        type: objectType([
+          {
+            name: "type",
+            type: stringLiteralType("union_b_only"),
+            optional: false
+          }
+        ])
+      });
+      typeTable.add("UnionB", {
+        type: unionType([referenceType("UnionBOnly")], "type")
+      });
+
+      const result = typeToSchemaOrReferenceObject(
+        unionType(
+          [referenceType("UnionA"), referenceType("UnionB")],
+          "type"
+        ),
+        typeTable
+      );
+
+      expect(result).toEqual({
+        oneOf: [
+          { $ref: "#/components/schemas/UnionA" },
+          { $ref: "#/components/schemas/UnionB" }
+        ],
+        discriminator: {
+          propertyName: "type",
+          mapping: {
+            union_a_single: "#/components/schemas/UnionA",
+            union_a_double: "#/components/schemas/UnionA",
+            union_b_only: "#/components/schemas/UnionB"
+          }
+        }
+      });
+    });
+  });
+
   describe("intersectionType", () => {
     test("converts to an allOf schema object", () => {
       const typeTable = new TypeTable();
