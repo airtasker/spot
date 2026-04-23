@@ -58,8 +58,8 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
       validator:
-        specifier: ^13.12.0
-        version: 13.12.0
+        specifier: ^13.15.35
+        version: 13.15.35
     devDependencies:
       '@oclif/dev-cli':
         specifier: ^1.26.0
@@ -95,8 +95,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.3
       '@types/validator':
-        specifier: ^13.11.10
-        version: 13.11.10
+        specifier: ^13.15.10
+        version: 13.15.10
       '@typescript-eslint/eslint-plugin':
         specifier: ^4.31.2
         version: 4.33.0(@typescript-eslint/parser@4.33.0(eslint@7.32.0)(typescript@4.9.5))(eslint@7.32.0)(typescript@4.9.5)
@@ -921,8 +921,8 @@ packages:
   '@types/urijs@1.19.20':
     resolution: {integrity: sha512-77Mq/2BeHU894J364dUv9tSwxxyCLtcX228Pc8TwZpP5bvOoMns+gZoftp3LYl3FBH8vChpWbuagKGiMki2c1A==}
 
-  '@types/validator@13.11.10':
-    resolution: {integrity: sha512-e2PNXoXLr6Z+dbfx5zSh9TRlXJrELycxiaXznp4S5+D2M3b9bqJEitNHA5923jhnB2zzFiZHa2f0SI1HoIahpg==}
+  '@types/validator@13.15.10':
+    resolution: {integrity: sha512-T8L6i7wCuyoK8A/ZeLYt1+q0ty3Zb9+qbSSvrIVitzT3YjZqkTZ40IbRsPanlB4h1QB3JVL1SYCdR6ngtFYcuA==}
 
   '@types/yargs-parser@21.0.1':
     resolution: {integrity: sha512-axdPBuLuEJt0c4yI5OZssC19K2Mq1uKdrfZBzuxLvaztgqUtFYZUNw7lETExPYJR9jdEoIg4mb7RQKRQzOkeGQ==}
@@ -3817,8 +3817,8 @@ packages:
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
-  validator@13.12.0:
-    resolution: {integrity: sha512-c1Q0mCiPlgdTVVVIJIrBuxNicYE+t/7oKeI9MWLj3fh/uq2Pxh/3eeWbVZ4OcGW1TUf53At0njHw5SMdA3tmMg==}
+  validator@13.15.35:
+    resolution: {integrity: sha512-TQ5pAGhd5whStmqWvYF4OjQROlmv9SMFVt37qoCBdqRffuuklWYQlCNnEs2ZaIBD1kZRNnikiZOS1eqgkar0iw==}
     engines: {node: '>= 0.10'}
 
   vary@1.1.2:
@@ -5196,7 +5196,7 @@ snapshots:
 
   '@types/urijs@1.19.20': {}
 
-  '@types/validator@13.11.10': {}
+  '@types/validator@13.15.10': {}
 
   '@types/yargs-parser@21.0.1': {}
 
@@ -8469,7 +8469,7 @@ snapshots:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
 
-  validator@13.12.0: {}
+  validator@13.15.35: {}
 
   vary@1.1.2: {}
 
