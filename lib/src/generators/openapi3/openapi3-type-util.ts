@@ -317,7 +317,7 @@ function unionTypeToSchema(
             oneOf: nonNullTypes.map(t =>
               typeToSchemaOrReferenceObject(t, typeTable)
             ),
-            discriminator: unionTypeToDiscrimintorObject(type, typeTable)
+            discriminator: unionTypeToDiscriminatorObject(type, typeTable)
           },
           ...(<OneOfSchemaObject>schemaPropToSchemaObject(type.schemaProps))
         };
@@ -325,7 +325,7 @@ function unionTypeToSchema(
   }
 }
 
-function unionTypeToDiscrimintorObject(
+function unionTypeToDiscriminatorObject(
   unionType: UnionType,
   typeTable: TypeTable
 ): DiscriminatorObject | undefined {
@@ -358,44 +358,36 @@ function unionTypeToDiscrimintorObject(
       throw new Error("Unexpected error: expected object reference type");
     }
 
-    // Retrieve the discriminator property
-    // Discriminator properties cannot be optional - we assume this is handled by the type parser
-    // We first determine the object which contains the discriminator
-    // followed by which we identify the prop itself.
-    // This helps us identify discriminators even if one of the unions is an intersection or is
-    // a union of unions
-    const discriminatorObject = concreteTypes.find(object => {
-      return object.properties.find(p => p.name === unionType.discriminator);
-    });
-
-    if (discriminatorObject === undefined) {
-      throw new Error(
-        "Unexpected error: could not find expected discriminator property in objects"
+    // Emit one mapping entry per concrete leaf resolved from this member.
+    // When t is a reference to a union, possibleRootTypes expands it into
+    // multiple concrete leaves — each leaf's discriminator value must map back
+    // to t.name so downstream consumers decode via the wrapper schema.
+    //
+    // Discriminator properties cannot be optional — we assume this is handled
+    // by the type parser, so a missing discriminator is always a hard error.
+    for (const concreteType of concreteTypes) {
+      const discriminatorProp = concreteType.properties.find(
+        p => p.name === unionType.discriminator
       );
-    }
 
-    const discriminatorProp = discriminatorObject.properties.find(
-      p => p.name === unionType.discriminator
-    );
+      if (discriminatorProp === undefined) {
+        throw new Error(
+          "Unexpected error: could not find expected discriminator property in objects"
+        );
+      }
 
-    if (discriminatorProp === undefined) {
-      throw new Error(
-        "Unexpected error: could not find expected discriminator property"
+      const discriminatorPropType = dereferenceType(
+        discriminatorProp.type,
+        typeTable
       );
-    }
+      if (!isStringLiteralType(discriminatorPropType)) {
+        throw new Error(
+          "Unexpected error: expected discriminator property type to be a string literal"
+        );
+      }
 
-    // Extract the property type - this is expected to be a string literal
-    const discriminatorPropType = dereferenceType(
-      discriminatorProp.type,
-      typeTable
-    );
-    if (!isStringLiteralType(discriminatorPropType)) {
-      throw new Error(
-        "Unexpected error: expected discriminator property type to be a string literal"
-      );
+      acc[discriminatorPropType.value] = referenceObjectValue(t.name);
     }
-
-    acc[discriminatorPropType.value] = referenceObjectValue(t.name);
     return acc;
   }, {});
 
