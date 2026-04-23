@@ -362,6 +362,9 @@ function unionTypeToDiscrimintorObject(
     // When t is a reference to a union, possibleRootTypes expands it into
     // multiple concrete leaves — each leaf's discriminator value must map back
     // to t.name so downstream consumers decode via the wrapper schema.
+    //
+    // Discriminator properties cannot be optional — we assume this is handled
+    // by the type parser, so a missing discriminator is always a hard error.
     for (const concreteType of concreteTypes) {
       const discriminatorProp = concreteType.properties.find(
         p => p.name === unionType.discriminator
