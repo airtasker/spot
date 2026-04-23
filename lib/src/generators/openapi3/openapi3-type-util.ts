@@ -317,7 +317,7 @@ function unionTypeToSchema(
             oneOf: nonNullTypes.map(t =>
               typeToSchemaOrReferenceObject(t, typeTable)
             ),
-            discriminator: unionTypeToDiscrimintorObject(type, typeTable)
+            discriminator: unionTypeToDiscriminatorObject(type, typeTable)
           },
           ...(<OneOfSchemaObject>schemaPropToSchemaObject(type.schemaProps))
         };
@@ -325,7 +325,7 @@ function unionTypeToSchema(
   }
 }
 
-function unionTypeToDiscrimintorObject(
+function unionTypeToDiscriminatorObject(
   unionType: UnionType,
   typeTable: TypeTable
 ): DiscriminatorObject | undefined {

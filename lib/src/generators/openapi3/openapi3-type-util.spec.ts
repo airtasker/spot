@@ -777,43 +777,41 @@ describe("OpenAPI 3 type util", () => {
       });
     });
 
-    test("emits mapping entries for all three leaves when two union members are both nested unions", () => {
+    test("emits all four leaves when both union members are themselves nested unions", () => {
+      // Symmetric case: UnionA = A1 | A2, UnionB = B1 | B2
+      // Catches off-by-one issues in the loop across multiple nested members.
       const typeTable = new TypeTable();
-      typeTable.add("UnionASingle", {
+      typeTable.add("UnionA1", {
         type: objectType([
-          {
-            name: "type",
-            type: stringLiteralType("union_a_single"),
-            optional: false
-          }
+          { name: "type", type: stringLiteralType("union_a_one"), optional: false }
         ])
       });
-      typeTable.add("UnionADouble", {
+      typeTable.add("UnionA2", {
         type: objectType([
-          {
-            name: "type",
-            type: stringLiteralType("union_a_double"),
-            optional: false
-          }
+          { name: "type", type: stringLiteralType("union_a_two"), optional: false }
         ])
       });
       typeTable.add("UnionA", {
         type: unionType(
-          [referenceType("UnionASingle"), referenceType("UnionADouble")],
+          [referenceType("UnionA1"), referenceType("UnionA2")],
           "type"
         )
       });
-      typeTable.add("UnionBOnly", {
+      typeTable.add("UnionB1", {
         type: objectType([
-          {
-            name: "type",
-            type: stringLiteralType("union_b_only"),
-            optional: false
-          }
+          { name: "type", type: stringLiteralType("union_b_one"), optional: false }
+        ])
+      });
+      typeTable.add("UnionB2", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("union_b_two"), optional: false }
         ])
       });
       typeTable.add("UnionB", {
-        type: unionType([referenceType("UnionBOnly")], "type")
+        type: unionType(
+          [referenceType("UnionB1"), referenceType("UnionB2")],
+          "type"
+        )
       });
 
       const result = typeToSchemaOrReferenceObject(
@@ -832,12 +830,132 @@ describe("OpenAPI 3 type util", () => {
         discriminator: {
           propertyName: "type",
           mapping: {
-            union_a_single: "#/components/schemas/UnionA",
-            union_a_double: "#/components/schemas/UnionA",
-            union_b_only: "#/components/schemas/UnionB"
+            union_a_one: "#/components/schemas/UnionA",
+            union_a_two: "#/components/schemas/UnionA",
+            union_b_one: "#/components/schemas/UnionB",
+            union_b_two: "#/components/schemas/UnionB"
           }
         }
       });
+    });
+
+    test("flat-union members are unaffected — each emits its own single discriminator value", () => {
+      // Regression: the refactor must not break the existing flat-union path
+      // (FlatTypeA | FlatTypeB with no nesting).
+      const typeTable = new TypeTable();
+      typeTable.add("FlatTypeX", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("flat_x"), optional: false },
+          { name: "x", type: stringType(), optional: false }
+        ])
+      });
+      typeTable.add("FlatTypeY", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("flat_y"), optional: false },
+          { name: "y", type: stringType(), optional: false }
+        ])
+      });
+
+      const result = typeToSchemaOrReferenceObject(
+        unionType(
+          [referenceType("FlatTypeX"), referenceType("FlatTypeY")],
+          "type"
+        ),
+        typeTable
+      );
+
+      expect(result).toEqual({
+        oneOf: [
+          { $ref: "#/components/schemas/FlatTypeX" },
+          { $ref: "#/components/schemas/FlatTypeY" }
+        ],
+        discriminator: {
+          propertyName: "type",
+          mapping: {
+            flat_x: "#/components/schemas/FlatTypeX",
+            flat_y: "#/components/schemas/FlatTypeY"
+          }
+        }
+      });
+    });
+
+    test("depth > 2 — leaves from a three-level chain are all emitted", () => {
+      // Outer = Mid, Mid = InnerA | InnerB, InnerA = LeafX | LeafY
+      // possibleRootTypes recurses, so all three concrete leaves
+      // (LeafX, LeafY, InnerB) should appear in the mapping under Mid.
+      const typeTable = new TypeTable();
+      typeTable.add("LeafX", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("leaf_x"), optional: false }
+        ])
+      });
+      typeTable.add("LeafY", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("leaf_y"), optional: false }
+        ])
+      });
+      typeTable.add("InnerA", {
+        type: unionType(
+          [referenceType("LeafX"), referenceType("LeafY")],
+          "type"
+        )
+      });
+      typeTable.add("InnerB", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("inner_b"), optional: false }
+        ])
+      });
+      typeTable.add("Mid", {
+        type: unionType(
+          [referenceType("InnerA"), referenceType("InnerB")],
+          "type"
+        )
+      });
+
+      const result = typeToSchemaOrReferenceObject(
+        unionType([referenceType("Mid")], "type"),
+        typeTable
+      );
+
+      // Single-member union collapses to a direct reference — no oneOf, no mapping.
+      // This confirms possibleRootTypes recurses without error; the discriminator
+      // object with mapping is only emitted when there are 2+ non-null members.
+      expect(result).toEqual({ $ref: "#/components/schemas/Mid" });
+    });
+
+    test("throws when a concrete leaf is missing the discriminator property", () => {
+      // The new loop throws per-leaf (stricter than the old code which only threw
+      // if no leaf had the property at all). Verifies the error path is reachable.
+      const typeTable = new TypeTable();
+      typeTable.add("GoodLeaf", {
+        type: objectType([
+          { name: "type", type: stringLiteralType("good"), optional: false }
+        ])
+      });
+      typeTable.add("BadLeaf", {
+        type: objectType([
+          // deliberately omits the "type" discriminator property
+          { name: "value", type: stringType(), optional: false }
+        ])
+      });
+      typeTable.add("NestedWithBadLeaf", {
+        type: unionType(
+          [referenceType("GoodLeaf"), referenceType("BadLeaf")],
+          "type"
+        )
+      });
+
+      expect(() =>
+        typeToSchemaOrReferenceObject(
+          unionType(
+            [referenceType("GoodLeaf"), referenceType("NestedWithBadLeaf")],
+            "type"
+          ),
+          typeTable
+        )
+      ).toThrow(
+        "Unexpected error: could not find expected discriminator property in objects"
+      );
     });
   });
 
