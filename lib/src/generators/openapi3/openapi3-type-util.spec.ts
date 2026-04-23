@@ -783,12 +783,20 @@ describe("OpenAPI 3 type util", () => {
       const typeTable = new TypeTable();
       typeTable.add("UnionA1", {
         type: objectType([
-          { name: "type", type: stringLiteralType("union_a_one"), optional: false }
+          {
+            name: "type",
+            type: stringLiteralType("union_a_one"),
+            optional: false
+          }
         ])
       });
       typeTable.add("UnionA2", {
         type: objectType([
-          { name: "type", type: stringLiteralType("union_a_two"), optional: false }
+          {
+            name: "type",
+            type: stringLiteralType("union_a_two"),
+            optional: false
+          }
         ])
       });
       typeTable.add("UnionA", {
@@ -799,12 +807,20 @@ describe("OpenAPI 3 type util", () => {
       });
       typeTable.add("UnionB1", {
         type: objectType([
-          { name: "type", type: stringLiteralType("union_b_one"), optional: false }
+          {
+            name: "type",
+            type: stringLiteralType("union_b_one"),
+            optional: false
+          }
         ])
       });
       typeTable.add("UnionB2", {
         type: objectType([
-          { name: "type", type: stringLiteralType("union_b_two"), optional: false }
+          {
+            name: "type",
+            type: stringLiteralType("union_b_two"),
+            optional: false
+          }
         ])
       });
       typeTable.add("UnionB", {
@@ -815,10 +831,7 @@ describe("OpenAPI 3 type util", () => {
       });
 
       const result = typeToSchemaOrReferenceObject(
-        unionType(
-          [referenceType("UnionA"), referenceType("UnionB")],
-          "type"
-        ),
+        unionType([referenceType("UnionA"), referenceType("UnionB")], "type"),
         typeTable
       );
 
