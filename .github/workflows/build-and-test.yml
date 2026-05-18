@@ -55,7 +55,7 @@ jobs:
       contents: read
     steps:
       - name: Test summary
-        uses: test-summary/action@v2.4
+        uses: test-summary/action@v2.6
         with:
           paths: ./test-reports/**/*.xml
 
