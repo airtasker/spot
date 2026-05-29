@@ -1,4 +1,7 @@
-import { createProjectFromExistingSourceFile } from "../spec-helpers/helper";
+import {
+  createProjectFromExistingSourceFile,
+  createSourceFile
+} from "../spec-helpers/helper";
 import {
   getDecoratorConfigOrThrow,
   getJsDoc,
@@ -66,6 +69,21 @@ describe("parser-helpers", () => {
       expect(getJsDoc(klass)?.getDescription()).toStrictEqual(
         "multiple-jsdocs-example-last"
       );
+    });
+
+    test("returns undefined instead of throwing when ts-morph rejects JSDoc access", () => {
+      const sourceFile = createSourceFile({
+        path: "jsdocs-error",
+        content: "interface CreateUserRequest { firstName: string; }"
+      });
+      const interfaceDeclaration = sourceFile.getInterfaceOrThrow(
+        "CreateUserRequest"
+      );
+      jest.spyOn(interfaceDeclaration, "getJsDocs").mockImplementation(() => {
+        throw new Error("expected at most 1 jsDoc node, got 2");
+      });
+
+      expect(getJsDoc(interfaceDeclaration)).toBeUndefined();
     });
   });
 });

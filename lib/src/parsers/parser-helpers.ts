@@ -330,15 +330,23 @@ export function getPropertyName(
 // JSDOC HELPERS
 
 /**
- * Retrieve a JSDoc for a ts-morph node. The node is expected
- * to have no more than one JSDoc.
+ * Retrieve the last JSDoc for a ts-morph node. When a declaration
+ * is preceded by multiple JSDoc blocks (e.g. a copyright header
+ * followed by a documentation block), ts-morph may reject the
+ * node — the error is swallowed here so generation continues
+ * without a description rather than aborting entirely.
  *
  * @param node a JSDocable ts-morph node
  */
 export function getJsDoc(node: JSDocableNode): JSDoc | undefined {
-  const jsDocs = node.getJsDocs();
-  if (jsDocs.length > 0) {
-    return jsDocs[jsDocs.length - 1];
+  try {
+    const jsDocs = node.getJsDocs();
+    if (jsDocs.length > 0) {
+      return jsDocs[jsDocs.length - 1];
+    }
+  } catch {
+    // Multiple JSDoc blocks on a single declaration can cause
+    // ts-morph to throw. Gracefully return undefined.
   }
   return undefined;
 }
