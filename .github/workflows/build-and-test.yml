@@ -70,12 +70,59 @@ jobs:
       - name: Run lint checker
         run: pnpm lint:check
 
+  # Proves the image is a drop-in replacement for the npm package. Both are built from
+  # this commit and must agree on generated output, exit codes and stdout. Nothing
+  # else covers it: they resolve their dependencies independently, the image deletes
+  # commands the package keeps, and the whole jest suite passes against an image that
+  # cannot run at all.
+  docker-parity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/prepare-repository
+
+      - uses: docker/setup-buildx-action@v3
+
+      # The node base image comes from Docker Hub, whose anonymous pull limit is keyed
+      # on the runner's egress IP and shared with everything else on it. Conditional
+      # because this repository is public: a pull request from a fork gets no secrets,
+      # and an occasional rate-limit flake there is better than a gate forks cannot run.
+      - name: Log in to Docker Hub
+        if: env.DOCKERHUB_TOKEN != ''
+        uses: docker/login-action@v4
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Build the image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          # Single-arch into the local image store, because the parity script has to
+          # run the image. Multi-arch cannot be loaded, and is covered on publish.
+          load: true
+          tags: spot:parity
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build the CLI to compare against
+        run: pnpm build
+
+      - name: Compare the image against the CLI
+        run: ./scripts/check-image-parity spot:parity
+
   publish:
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
     needs:
       - test
       - lint-check
+      - docker-parity
     permissions:
       contents: read
       packages: write

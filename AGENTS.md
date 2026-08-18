@@ -30,6 +30,13 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 - `npx @airtasker/spot mock api.ts` - Run mock server from contract
 - `npx @airtasker/spot validate api.ts` - Validate contract syntax
 
+### Docker image
+- `scripts/check-image-parity <image-ref>` - Compare the image against the compiled CLI. Run `pnpm build` first. This is what the `docker-parity` CI job runs.
+- The image carries `generate`, `validate`, `lint`, `ts-lint`, `checksum` and `validation-server`. `mock`, `docs` and `init` are npm-only, and the Dockerfile deletes their compiled files.
+- `.dockerignore` is an allowlist. Every `!pattern` in it must have a matching `COPY` in the Dockerfile.
+- The `node` base image tag, the `nodejs` line in `.tool-versions`, and the corepack pin against `packageManager` in `package.json` all name the same versions. Move them together.
+- Both distributions are published from one GitHub Release event, so a version means the same thing on npm and on ghcr.
+
 ## Architecture
 
 ### Core Structure
@@ -38,8 +45,10 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
   - `lib.ts` - Library entry point
   - `syntax/` - TypeScript decorator definitions for API contracts (@api, @endpoint, @request, @response, etc.)
   - `generators/` - Code generators for different output formats
-  - `parser/` - TypeScript AST parsing logic
+  - `parsers/` - TypeScript AST parsing logic
+  - `ts-project.ts` - The ts-morph project every contract is parsed and type-checked under
   - `linting/` - Contract validation and linting rules
+  - `ts-lint/` - Formatting, lint and type checking of contract TypeScript, with the canonical config
 
 ### Generators
 - **`generators/openapi2/`** - OpenAPI 2.0 (Swagger) generator
@@ -49,6 +58,7 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 ### CLI Commands
 - **`cli/src/commands/`** - OCLIF-based CLI commands
   - Each command corresponds to a spot CLI function (generate, lint, mock, etc.)
+  - oclif finds them by scanning this directory relative to the nearest `package.json`, with no manifest shipped. That is what lets the image drop a command by deleting its compiled file.
 
 ### Key Concepts
 - **Contracts** - TypeScript files with @api decorated classes defining API structure
