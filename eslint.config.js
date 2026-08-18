@@ -15,8 +15,7 @@ const CONTRACT_SYNTAX_FILES = [
 module.exports = tseslint.config(
   {
     ignores: [
-      // Anchored to the config's own directory, so a bare `build/` would match
-      // only the one at the root. `.eslintignore` matched at any depth.
+      // `**/` so a nested build directory is ignored too, not only the root one.
       "**/build/",
       "docs/webpack.config.js",
       "jest.config.js",
@@ -24,12 +23,10 @@ module.exports = tseslint.config(
     ]
   },
   {
-    // Core rules only. typescript-eslint's recommended set bundles its
-    // `eslint-recommended` block, which switches off the core checks the
-    // compiler already performs — `no-undef`, `no-redeclare`, `no-unreachable`
-    // and a dozen more. Those files are never compiled, so nothing else is
-    // checking them: extending the TypeScript preset here would drop the
-    // checks rather than defer them.
+    // Core rules only. typescript-eslint's recommended set switches off the
+    // core checks the compiler already performs, and `tseslint.config()` applies
+    // an extended config to the parent's `files` — so extending it here would
+    // drop those checks from files nothing compiles.
     files: ["**/*.js"],
     extends: [js.configs.recommended],
     languageOptions: {
@@ -44,11 +41,9 @@ module.exports = tseslint.config(
       globals: globals.node
     },
     rules: {
-      // `String`, `Boolean` and `Date` are Spot's own contract vocabulary, not
-      // the JavaScript wrapper objects these rules exist to catch, and `{}`
-      // appears as a contract type. Empty *interfaces* stay checked: that is
-      // `no-empty-interface`, which v8 folded into `no-empty-object-type`, and
-      // it was never part of the allowance.
+      // Spot's contract vocabulary reuses `String`, `Number` and `Boolean` as
+      // types, and `{}` appears as a contract type. Empty interfaces stay
+      // reported, which is what `allowObjectTypes` leaves on.
       "@typescript-eslint/no-empty-object-type": [
         "error",
         { allowObjectTypes: "always" }
@@ -58,12 +53,9 @@ module.exports = tseslint.config(
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-inferrable-types": "off",
       "@typescript-eslint/no-use-before-define": "off",
-      // The two sites are deliberate: `Example.value` carries an untyped JSON
-      // literal, and `typeOf()` takes anything. Warn rather than error so they
-      // report without needing individual suppressions.
+      // Warn: the remaining sites are deliberate.
       "@typescript-eslint/no-explicit-any": "warn",
-      // v8 moved this out of `recommended` into `strict`. Named explicitly so
-      // the upgrade does not silently stop reporting the sites it covers.
+      // Named explicitly: this rule is in `strict`, not `recommended`.
       "@typescript-eslint/no-non-null-assertion": "warn"
     }
   },
