@@ -6,7 +6,7 @@ import { Contract } from "../../../lib/src/definitions";
 import { generateJsonSchema } from "../../../lib/src/generators/json-schema/json-schema";
 import { generateOpenAPI2 } from "../../../lib/src/generators/openapi2/openapi2";
 import { generateOpenAPI3 } from "../../../lib/src/generators/openapi3/openapi3";
-import { outputFile } from "../../../lib/src/io/output";
+import { outputFile, resolveOutputPath } from "../../../lib/src/io/output";
 import { parse } from "../../../lib/src/parser";
 
 export default class Generate extends Command {
@@ -43,6 +43,28 @@ export default class Generate extends Command {
     const { contract: contractPath } = flags;
     let { language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
+
+    // Each missing flag below falls back to an interactive prompt. With no
+    // terminal — a CI step, a Gradle exec, a docker run without `-it` — that
+    // prompt has nothing to read from, so the command hangs or exits on a
+    // silently empty answer. Name every missing flag at once, so a caller
+    // fixes its invocation in one pass rather than one flag per run.
+    if (!process.stdin.isTTY) {
+      const missing = [
+        generator ? null : "--generator (-g)",
+        language ? null : "--language (-l)",
+        outDir ? null : "--out (-o)"
+      ].filter((flag): flag is string => flag !== null);
+
+      if (missing.length > 0) {
+        this.error(
+          `Cannot prompt for ${missing.join(
+            ", "
+          )} without a terminal. Pass every flag explicitly when running non-interactively.`,
+          { exit: 2 }
+        );
+      }
+    }
 
     if (!generator) {
       generator = (
@@ -108,11 +130,10 @@ export default class Generate extends Command {
     const transformedContract = generatorTransformer(parse(contractPath));
     const formattedContract = formatTransformer(transformedContract);
 
-    outputFile(
-      outDir,
-      `${contractFilename}.${formatExtension}`,
-      formattedContract
-    );
+    const outputName = `${contractFilename}.${formatExtension}`;
+    outputFile(outDir, outputName, formattedContract);
+
+    this.log(`Generated ${resolveOutputPath(outDir, outputName)}`);
   }
 }
 

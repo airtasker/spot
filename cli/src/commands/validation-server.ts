@@ -41,6 +41,9 @@ export default class ValidationServer extends Command {
 
       this.log("Starting validation server...");
       await runValidationServer(port, contract).defer();
+      // Load-bearing readiness line: bff-client's Gradle ExecFork task blocks
+      // on the "Validation server running" prefix before it runs the contract
+      // tests. Reword it and that build waits until it times out.
       this.log(`Validation server running on port ${port}`);
     } catch (e) {
       this.error(e as Error, { exit: 1 });
