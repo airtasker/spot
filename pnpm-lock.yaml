@@ -18,6 +18,12 @@ importers:
       '@oclif/config':
         specifier: ^1.17.0
         version: 1.18.17
+      '@oclif/errors':
+        specifier: ^1.3.6
+        version: 1.3.6
+      '@oclif/help':
+        specifier: ^1.0.15
+        version: 1.0.15
       '@oclif/plugin-help':
         specifier: ^3.2.3
         version: 3.3.1

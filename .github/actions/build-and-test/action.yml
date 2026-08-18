@@ -19,6 +19,18 @@ runs:
     run: pnpm build
     shell: bash
 
+  - name: Smoke-test the built CLI
+    # Every jest suite imports the library directly, so none of them loads
+    # bin/run. A runtime dependency that resolves only because a package
+    # manager hoisted it therefore passes the whole suite and then kills every
+    # command on the first real invocation — which is what pnpm's isolated
+    # layout, and the docker image built from it, actually do.
+    run: |-
+      set -uex
+      node bin/run --help
+      node bin/run validate test-fixtures/contract/api.ts
+    shell: bash
+
   - name: Create test reports directory
     run: mkdir -p ./test-reports/jest
     shell: bash
