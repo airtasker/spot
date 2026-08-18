@@ -26,13 +26,17 @@ describe("parse", () => {
   });
 
   test("rejects a contract whose project has a type error", () => {
-    expect(() => parse(TYPE_ERROR_FIXTURE)).toThrow(
-      /not assignable to type 'number'/
-    );
-    // Diagnostics are joined into one message, so the assertion above matches
-    // on a broken mapping too — the unresolved import simply adds a line
-    // alongside the type error. Ruling that line out is what makes this case
-    // fail-closed: it reports a type error, and only a type error.
-    expect(() => parse(TYPE_ERROR_FIXTURE)).not.toThrow(/Cannot find module/);
+    let message = "";
+    try {
+      parse(TYPE_ERROR_FIXTURE);
+    } catch (e) {
+      message = (e as Error).message;
+    }
+
+    expect(message).toMatch(/not assignable to type 'number'/);
+    // Diagnostics arrive joined, so the assertion above matches a broken
+    // mapping too — the unresolved import adds a line beside the type error.
+    // Ruling it out is what makes this case report a type error and only that.
+    expect(message).not.toMatch(/Cannot find module/);
   });
 });
