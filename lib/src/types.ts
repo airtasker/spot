@@ -62,10 +62,7 @@ export interface SchemaProp {
 }
 
 export type LiteralType =
-  | BooleanLiteralType
-  | StringLiteralType
-  | FloatLiteralType
-  | IntLiteralType;
+  BooleanLiteralType | StringLiteralType | FloatLiteralType | IntLiteralType;
 
 export interface NullType {
   kind: TypeKind.NULL;

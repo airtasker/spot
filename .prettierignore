@@ -1,1 +1,5 @@
 build/
+
+# Held to the canonical contract formatting that ts-lint bundles, which is not
+# this repo's own; dirty/ is deliberately unformatted.
+test-fixtures/ts-lint/

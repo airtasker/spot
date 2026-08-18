@@ -158,15 +158,13 @@ interface SchemaObjectBase {
 }
 
 export interface NumberSchemaObject
-  extends SchemaObjectBase,
-    NumberSchemaObjectBase {
+  extends SchemaObjectBase, NumberSchemaObjectBase {
   type: "number";
   format?: "float" | "double";
 }
 
 export interface IntegerSchemaObject
-  extends SchemaObjectBase,
-    NumberSchemaObjectBase {
+  extends SchemaObjectBase, NumberSchemaObjectBase {
   type: "integer";
   format?: "int32" | "int64";
 }
@@ -222,8 +220,7 @@ export interface ObjectSchemaObject extends SchemaObjectBase {
 
 export interface ObjectPropertiesSchemaObject {
   [name: string]:
-    | (SchemaObject & ObjectPropertySchemaObjectBase)
-    | ReferenceObject;
+    (SchemaObject & ObjectPropertySchemaObjectBase) | ReferenceObject;
 }
 
 interface ObjectPropertySchemaObjectBase {
@@ -285,8 +282,7 @@ export interface OAuth2SecuritySchemeObject extends SecuritySchemeObjectBase {
   flows: OAuthFlowsObject;
 }
 
-export interface OpenIdConnectSecuritySchemeObject
-  extends SecuritySchemeObjectBase {
+export interface OpenIdConnectSecuritySchemeObject extends SecuritySchemeObjectBase {
   type: "openIdConnect";
   openIdConnectUrl: string;
 }

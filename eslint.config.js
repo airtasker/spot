@@ -19,7 +19,10 @@ module.exports = tseslint.config(
       "**/build/",
       "docs/webpack.config.js",
       "jest.config.js",
-      "jest.ci.config.js"
+      "jest.ci.config.js",
+      // Held to the canonical contract config that `ts-lint` bundles, which
+      // differs from this repo's own. `dirty/` is deliberately broken.
+      "test-fixtures/ts-lint/"
     ]
   },
   {
