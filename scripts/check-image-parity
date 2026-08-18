@@ -1,11 +1,14 @@
 #!/bin/bash
-# Checks that the Docker image behaves identically to the compiled CLI, and that it
-# works with no node_modules anywhere near the contract.
+# Compares a given image against the CLI compiled from this checkout, across the
+# generators, the validate/lint/ts-lint exit codes and output, self-containment, the
+# validation-server readiness contract, and the commands the image drops.
 #
-# The image and the npm package are published from the same source, but they resolve
-# their dependencies independently and the image deletes commands the package keeps,
-# so nothing else proves a consumer that switches from one to the other gets the same
-# result.
+# The image and the npm package are built from the same source, but they resolve their
+# dependencies independently and the image deletes commands the package keeps, so
+# nothing else shows that a consumer switching between them gets the same result.
+#
+# Nothing here verifies the image was built from this checkout. Pass one you have just
+# built, as the docker-parity CI job does.
 #
 # Usage: scripts/check-image-parity <image-ref>
 set -ue -o pipefail
@@ -62,7 +65,7 @@ while IFS= read -r generator; do
   DECLARED+=("${generator}")
 done < <(
   sed -n '/^const generators: Generators = {$/,/^};$/p' cli/src/commands/generate.ts |
-    sed -n 's/^  "\{0,1\}\([a-z0-9-]\{1,\}\)"\{0,1\}: {$/\1/p' | sort
+    sed -n 's/^  "\{0,1\}\([A-Za-z0-9._-]\{1,\}\)"\{0,1\}: {$/\1/p' | sort
 )
 
 if [ ${#DECLARED[@]} -eq 0 ]; then
@@ -103,7 +106,9 @@ for case in "${CASES[@]}"; do
   run_image "${args[@]}" -o "${IMAGE_DIR}/${generator}-${language}" >/dev/null
 done
 
-if diff --recursive "${CLI_DIR}" "${IMAGE_DIR}"; then
+if [ -z "$(ls -A "${CLI_DIR}")" ]; then
+  fail "the CLI wrote nothing; there is no output to compare"
+elif diff --recursive "${CLI_DIR}" "${IMAGE_DIR}"; then
   echo "OK: ${#CASES[@]} generator/language combinations produced identical output."
 else
   fail "the image and the compiled CLI generated different output"
@@ -114,9 +119,14 @@ fi
 # Both sides run with the same working directory and the same mount path, so the
 # absolute paths these commands print are expected to match exactly. A difference is
 # a real difference, not a rendering artefact.
+# Takes the exit status the case is expected to produce, so a case chosen because it
+# must fail keeps testing that. Agreement alone cannot: if the underlying failure ever
+# stops failing, both sides return 0, the comparison passes, and the case degrades into
+# another always-succeeding check while still reading as coverage.
 compare_run() {
   local label="${1}"
-  shift
+  local expected="${2}"
+  shift 2
   local cli_out image_out cli_status image_status
 
   set +e
@@ -126,6 +136,10 @@ compare_run() {
   image_status=$?
   set -e
 
+  if [ "${cli_status}" -ne "${expected}" ]; then
+    fail "${label}: expected exit ${expected} from the CLI, got ${cli_status}; this case no longer exercises what it was added for"
+    return
+  fi
   if [ "${cli_status}" -ne "${image_status}" ]; then
     fail "${label}: exit ${cli_status} from the CLI, ${image_status} from the image"
     return
@@ -139,36 +153,36 @@ compare_run() {
 }
 
 echo "== validate, lint, ts-lint: comparing exit code and output =="
-compare_run "validate" validate "${CONTRACT}"
-compare_run "lint" lint "${CONTRACT}"
-# The severity flag bff-client passes; it must keep behaving the same in the image.
-compare_run "lint --no-trailing-forward-slash=error" \
+compare_run "validate" 0 validate "${CONTRACT}"
+compare_run "lint" 0 lint "${CONTRACT}"
+# A severity flag a consumer passes; it must keep behaving the same in the image.
+compare_run "lint --no-trailing-forward-slash=error" 0 \
   lint "${CONTRACT}" --no-trailing-forward-slash=error
-compare_run "ts-lint clean" ts-lint test-fixtures/ts-lint/clean
-compare_run "ts-lint dirty" ts-lint test-fixtures/ts-lint/dirty
+compare_run "ts-lint clean" 0 ts-lint test-fixtures/ts-lint/clean
+compare_run "ts-lint dirty" 1 ts-lint test-fixtures/ts-lint/dirty
 # A command that fails through oclif's own error path, which is a different exit
 # route from ts-lint's. Without it this gate passes on an image where every failing
 # command exits 0 — see the HOME line in the Dockerfile for how that happens.
-compare_run "validate an invalid contract" \
+compare_run "validate an invalid contract" 2 \
   validate lib/src/__spec-examples__/contract-with-type-error.ts
 
 # --- self-containment ---------------------------------------------------------
 #
-# The regression this whole image depends on: Spot used to need the consumer's
-# node_modules to resolve a contract's own `import ... from "@airtasker/spot"`. Run it
-# somewhere that has no node_modules on any parent path, which the repo checkout does
-# not prove.
+# The image must resolve a contract's own `import ... from "@airtasker/spot"` from its
+# own node_modules. The repo checkout cannot demonstrate that — it has node_modules at
+# the root — so run somewhere with none on any parent path, and assert that first.
 echo "== self-containment: no node_modules on any parent path =="
 SCRATCH="$(mktemp -d)"
 trap 'rm -rf "${SCRATCH}"' EXIT
 cp test-fixtures/contract/*.ts "${SCRATCH}/"
 
 parent="${SCRATCH}"
-while [ "${parent}" != "/" ]; do
+while :; do
   if [ -d "${parent}/node_modules" ]; then
     echo "ERROR: ${parent}/node_modules exists, so this check proves nothing." >&2
     exit 1
   fi
+  [ "${parent}" = "/" ] && break
   parent="$(dirname "${parent}")"
 done
 
@@ -185,12 +199,16 @@ fi
 
 # --- validation-server --------------------------------------------------------
 #
-# Long-running, port-bound, and read by a machine: bff-client's Gradle ExecFork task
-# blocks on the readiness line. It has to appear on stdout without a TTY, which is
-# what `docker run -d` and `docker logs` reproduce.
+# Long-running, port-bound, and read by a machine: downstream builds block on the
+# readiness line before running against the server (e.g. bff-client's Gradle ExecFork
+# task). It has to appear on stdout without a TTY, which is what `docker run -d` and
+# `docker logs` reproduce.
 echo "== validation-server: readiness line, port bind, teardown =="
 SERVER_NAME="spot-parity-validation-server"
 docker rm -f "${SERVER_NAME}" >/dev/null 2>&1 || true
+# From here the container has to be reaped even if the script exits early, or it holds
+# the published port and the next run reads a stale server.
+trap 'rm -rf "${SCRATCH}"; docker rm -f "${SERVER_NAME}" >/dev/null 2>&1 || true' EXIT
 
 docker run --detach --name "${SERVER_NAME}" \
   --user "$(id -u):$(id -g)" \
@@ -201,10 +219,15 @@ docker run --detach --name "${SERVER_NAME}" \
 
 server_ready=0
 for _ in $(seq 1 60); do
-  if docker logs "${SERVER_NAME}" 2>&1 | grep -q "Validation server running"; then
+  # Captured rather than piped into grep: grep -q closes the pipe on its first match,
+  # docker logs takes SIGPIPE, and pipefail then reports the successful case as failure.
+  logs="$(docker logs "${SERVER_NAME}" 2>&1 || true)"
+  case "${logs}" in
+  *"Validation server running"*)
     server_ready=1
     break
-  fi
+    ;;
+  esac
   sleep 1
 done
 
@@ -243,7 +266,7 @@ done
 
 echo ""
 if [ "${failures}" -ne 0 ]; then
-  echo "${failures} check(s) failed. The image is not a drop-in replacement for the npm package at this commit." >&2
+  echo "${failures} check(s) failed. ${IMAGE} is not a drop-in replacement for the CLI compiled here." >&2
   exit 1
 fi
 echo "All checks passed."

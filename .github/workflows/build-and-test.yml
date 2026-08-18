@@ -110,6 +110,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # The published image is multi-arch, and arm64 is built under emulation, where
+      # a per-arch dependency or a QEMU quirk can fail the install that amd64
+      # resolved cleanly. Building it here is what stops a release being the first
+      # time arm64 has ever been built. Not loaded or run: a multi-arch result cannot
+      # go into the local image store, so this covers the build, not the behaviour.
+      - name: Build the image for every published architecture
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Build the CLI to compare against
         run: pnpm build
 
