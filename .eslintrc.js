@@ -20,7 +20,8 @@ module.exports = {
     {
       files: [
         "**/__spec-examples__/**/*.ts",
-        "lib/src/validation-server/spots/**/*.ts"
+        "lib/src/validation-server/spots/**/*.ts",
+        "test-fixtures/**/*.ts"
       ],
       rules: {
         "@typescript-eslint/ban-types": "off",

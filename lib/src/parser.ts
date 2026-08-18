@@ -1,10 +1,10 @@
-import * as path from "path";
-import { CompilerOptions, Project, ts } from "ts-morph";
+import { Project } from "ts-morph";
 import { Contract } from "./definitions";
 import { parseContract } from "./parsers/contract-parser";
+import { createContractProject } from "./ts-project";
 
 export function parse(sourcePath: string): Contract {
-  const project = createProject();
+  const project = createContractProject();
 
   // Add all dependent files that the project requires
   const sourceFile = project.addSourceFileAtPath(sourcePath);
@@ -19,35 +19,6 @@ export function parse(sourcePath: string): Contract {
   if (result.isErr()) throw result.unwrapErr();
 
   return result.unwrap().contract;
-}
-
-/**
- * Create a new project configured for Spot
- */
-function createProject(): Project {
-  const compilerOptions: CompilerOptions = {
-    target: ts.ScriptTarget.ESNext,
-    module: ts.ModuleKind.CommonJS,
-    strict: true,
-    noImplicitAny: true,
-    strictNullChecks: true,
-    strictFunctionTypes: true,
-    strictPropertyInitialization: true,
-    noImplicitThis: true,
-    resolveJsonModule: true,
-    alwaysStrict: true,
-    noImplicitReturns: true,
-    noFallthroughCasesInSwitch: true,
-    moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    experimentalDecorators: true,
-    baseUrl: "./",
-    paths: {
-      "@airtasker/spot": [path.join(__dirname, "../lib")]
-    }
-  };
-
-  // Creates a new typescript program in memory
-  return new Project({ compilerOptions });
 }
 
 /**
