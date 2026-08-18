@@ -588,6 +588,7 @@ export function inferDiscriminator(
   const candidateDiscriminators = [];
 
   for (const candidate of possibleDiscriminators.keys()) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const values = possibleDiscriminators.get(candidate)!;
     if (
       new Set(values.map(v => v.value)).size !==
