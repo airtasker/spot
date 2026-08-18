@@ -19,16 +19,35 @@ runs:
     run: pnpm build
     shell: bash
 
-  - name: Smoke-test the built CLI
+  - name: Smoke-test the built CLI against a production-only install
     # Every jest suite imports the library directly, so none of them loads
-    # bin/run. A runtime dependency that resolves only because a package
-    # manager hoisted it therefore passes the whole suite and then kills every
-    # command on the first real invocation — which is what pnpm's isolated
-    # layout, and the docker image built from it, actually do.
+    # bin/run: a package the entrypoint needs can be missing from
+    # `dependencies` and the whole suite still passes.
+    #
+    # The install has to be `--prod` for this step to observe that. Under
+    # pnpm's isolated layout both dependency sets are symlinked into
+    # node_modules, so invoking the CLI after a full install shows only that a
+    # package is declared *somewhere* — which is true of a devDependency, and
+    # is exactly the case that breaks. Pruning first is what makes the step
+    # fail on a misdeclared runtime dependency.
+    #
+    # Restores the full install afterwards, because the jest step below needs
+    # it. `build/` predates the prune and is unaffected by both installs.
+    #
+    # Once per Node version: the failure depends on the dependency set and the
+    # runtime, not on which test shard this job happens to be running.
+    if: inputs.shard == '1'
+    env:
+      # `--prod` removes the modules directory to prune the dev tree, and
+      # refuses to do that unattended unless CI is set. Actions sets it
+      # already; naming it here keeps the step from depending on that.
+      CI: "true"
     run: |-
       set -uex
+      pnpm install --frozen-lockfile --prod
       node bin/run --help
       node bin/run validate test-fixtures/contract/api.ts
+      pnpm install --frozen-lockfile
     shell: bash
 
   - name: Create test reports directory
