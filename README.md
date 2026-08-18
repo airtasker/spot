@@ -148,7 +148,7 @@ that are not always loud:
 | --- | --- |
 | `--volume "$PWD:$PWD"` | Mounts your workspace **at its real absolute path**. Spot passes path arguments to the filesystem unresolved, so mounting elsewhere makes relative paths resolve differently inside and outside the container. |
 | `--workdir "$PWD"` | So `--contract api.ts` and `--out doc/output` mean what they mean at your shell. |
-| `--user "$(id -u):$(id -g)"` | Output is owned by you, not by root. Load-bearing wherever a build system reads Spot's output: an mtime cache or an incremental-build input on a root-owned file breaks it. |
+| `--user "$(id -u):$(id -g)"` | Output is owned by you rather than by the image's own user. Load-bearing wherever a build system reads Spot's output: an mtime cache or an incremental-build input on a file you cannot overwrite breaks it. |
 | `--rm` | Nothing here is long-lived except `validation-server`, below. |
 
 ### Quiet failure modes

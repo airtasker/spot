@@ -24,18 +24,18 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 - `pnpm prettier:check` / `pnpm prettier:fix` - Run Prettier only
 
 ### CLI Usage (after build)
-- `npx @airtasker/spot generate --contract api.ts --generator openapi3 --out output/` - Generate OpenAPI3 from contract
-- `npx @airtasker/spot lint api.ts` - Lint a Spot contract
-- `npx @airtasker/spot ts-lint spots` - Check the TypeScript in a contract tree for formatting, lint and type errors, under configuration Spot bundles itself (`--fix` rewrites in place)
-- `npx @airtasker/spot mock api.ts` - Run mock server from contract
-- `npx @airtasker/spot validate api.ts` - Validate contract syntax
+- `pnpm exec spot generate --contract api.ts --generator openapi3 --language yaml --out doc/output` - Generate OpenAPI3 from contract
+- `pnpm exec spot lint api.ts` - Lint a Spot contract
+- `pnpm exec spot ts-lint <dir>` - Check the TypeScript in a contract tree for formatting, lint and type errors, under configuration Spot bundles itself (`--fix` rewrites in place)
+- `pnpm exec spot mock api.ts` - Run mock server from contract
+- `pnpm exec spot validate api.ts` - Validate contract syntax
 
 ### Docker image
 - `scripts/check-image-parity <image-ref>` - Compare the image against the compiled CLI. Run `pnpm build` first. This is what the `docker-parity` CI job runs.
 - The image carries `generate`, `validate`, `lint`, `ts-lint`, `checksum` and `validation-server`. `mock`, `docs` and `init` are npm-only, and the Dockerfile deletes their compiled files.
 - `.dockerignore` is an allowlist. Every `!pattern` in it must have a matching `COPY` in the Dockerfile.
 - The `node` base image tag, the `nodejs` line in `.tool-versions`, and the corepack pin against `packageManager` in `package.json` all name the same versions. Move them together.
-- The npm package is published from the GitHub Release event. The image is built and parity-checked on every pull request; publishing it is not wired up yet.
+- Both the npm package and the image publish from the GitHub Release event. The jobs are siblings with no ordering, so one registry can end up with a version the other does not. The image is also built and parity-checked on every pull request.
 
 ## Architecture
 
