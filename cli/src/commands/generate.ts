@@ -45,9 +45,11 @@ export default class Generate extends Command {
     const contractFilename = path.basename(contractPath, ".ts");
 
     // Each missing flag below falls back to an interactive prompt, reading
-    // stdin. With no terminal — a CI step, a Gradle exec, a docker run without
-    // `-it` — inquirer still renders and waits on a line event that never
-    // arrives, so the command hangs until whatever is running it gives up.
+    // stdin. With no terminal the answer never arrives, and how that presents
+    // depends on the stdin given: at EOF (docker run without `-i`) the prompt
+    // never settles and the process exits having generated nothing; an open but
+    // silent pipe (a CI step, a Gradle exec) hangs; a pipe carrying newlines
+    // takes the first choice and generates the wrong artifact with exit 0.
     // Name every missing flag at once, so a caller fixes its invocation in one
     // pass rather than one flag per run.
     if (!process.stdin.isTTY) {
