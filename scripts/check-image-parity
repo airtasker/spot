@@ -129,6 +129,16 @@ compare_run() {
   shift 2
   local cli_out image_out cli_status image_status
 
+  # A missing status would shift the command into `expected`, and `[ x -ne y ]` on a
+  # non-number errors out to false inside an `if` — skipping the check and reporting OK.
+  case "${expected}" in
+  '' | *[!0-9]*)
+    echo "ERROR: ${label}: expected status '${expected}' is not a number." >&2
+    echo "compare_run takes <label> <expected-status> <args...>" >&2
+    exit 1
+    ;;
+  esac
+
   set +e
   cli_out="$(run_cli "${@}" 2>&1)"
   cli_status=$?
@@ -173,7 +183,7 @@ compare_run "validate an invalid contract" 2 \
 # the root — so run somewhere with none on any parent path, and assert that first.
 echo "== self-containment: no node_modules on any parent path =="
 SCRATCH="$(mktemp -d)"
-trap 'rm -rf "${SCRATCH}"' EXIT
+trap 'rm -rf "${SCRATCH}" || true' EXIT
 cp test-fixtures/contract/*.ts "${SCRATCH}/"
 
 parent="${SCRATCH}"
@@ -208,7 +218,10 @@ SERVER_NAME="spot-parity-validation-server"
 docker rm -f "${SERVER_NAME}" >/dev/null 2>&1 || true
 # From here the container has to be reaped even if the script exits early, or it holds
 # the published port and the next run reads a stale server.
-trap 'rm -rf "${SCRATCH}"; docker rm -f "${SERVER_NAME}" >/dev/null 2>&1 || true' EXIT
+# Container first, and both clauses guarded: `set -e` applies inside a trap, so an
+# ordering that puts the recoverable command first can skip the reap and rewrite a
+# passing run's exit status.
+trap 'docker rm -f "${SERVER_NAME}" >/dev/null 2>&1 || true; rm -rf "${SCRATCH}" || true' EXIT
 
 docker run --detach --name "${SERVER_NAME}" \
   --user "$(id -u):$(id -g)" \
