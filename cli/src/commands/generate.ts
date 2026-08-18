@@ -44,11 +44,12 @@ export default class Generate extends Command {
     let { language, generator, out: outDir } = flags;
     const contractFilename = path.basename(contractPath, ".ts");
 
-    // Each missing flag below falls back to an interactive prompt. With no
-    // terminal — a CI step, a Gradle exec, a docker run without `-it` — that
-    // prompt has nothing to read from, so the command hangs or exits on a
-    // silently empty answer. Name every missing flag at once, so a caller
-    // fixes its invocation in one pass rather than one flag per run.
+    // Each missing flag below falls back to an interactive prompt, reading
+    // stdin. With no terminal — a CI step, a Gradle exec, a docker run without
+    // `-it` — inquirer still renders and waits on a line event that never
+    // arrives, so the command hangs until whatever is running it gives up.
+    // Name every missing flag at once, so a caller fixes its invocation in one
+    // pass rather than one flag per run.
     if (!process.stdin.isTTY) {
       const missing = [
         generator ? null : "--generator (-g)",

@@ -22,4 +22,13 @@ describe("resolveOutputPath", () => {
       path.join(os.homedir(), "contracts/api.yml")
     );
   });
+  test("an absolute relativePath wins over the output directory", () => {
+    // This is what distinguishes path.resolve from path.join here. Every caller
+    // today passes a bare filename, so the two agree; pinning it means a future
+    // caller that passes an absolute path gets the decided behaviour rather than
+    // whichever one happens to be in place.
+    expect(resolveOutputPath("/srv/contracts", "/etc/spot/api.yml")).toBe(
+      "/etc/spot/api.yml"
+    );
+  });
 });

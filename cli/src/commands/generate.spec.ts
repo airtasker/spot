@@ -1,7 +1,12 @@
 import * as fs from "fs";
+import { prompt } from "inquirer";
 import * as os from "os";
 import * as path from "path";
 import Generate from "./generate";
+
+jest.mock("inquirer", () => ({ prompt: jest.fn() }));
+
+const promptMock = prompt as unknown as jest.Mock;
 
 const CONTRACT = path.join(__dirname, "../../../test-fixtures/contract/api.ts");
 
@@ -12,11 +17,16 @@ describe("generate", () => {
 
   afterEach(() => {
     process.stdin.isTTY = realIsTTY;
+    promptMock.mockReset();
     jest.restoreAllMocks();
   });
 
   function withoutTerminal(): void {
     process.stdin.isTTY = false;
+  }
+
+  function withTerminal(): void {
+    process.stdin.isTTY = true;
   }
 
   async function failureFrom(argv: string[]): Promise<Error> {
@@ -90,5 +100,24 @@ describe("generate", () => {
     expect(log.mock.calls.map(call => String(call[0])).join("")).toContain(
       `Generated ${written}`
     );
+  });
+  test("prompts for the missing flags when there is a terminal", async () => {
+    // The other cases all sit on the no-terminal side of the guard, so without
+    // this one the condition itself is unconstrained: making it unconditional
+    // keeps them all green while destroying every interactive invocation.
+    withTerminal();
+    const outDir = fs.realpathSync(
+      fs.mkdtempSync(path.join(os.tmpdir(), "spot-generate-tty-"))
+    );
+    promptMock
+      .mockResolvedValueOnce({ Generator: "openapi3" })
+      .mockResolvedValueOnce({ Language: "yaml" })
+      .mockResolvedValueOnce({ "Output destination": outDir });
+    jest.spyOn(process.stdout, "write").mockReturnValue(true);
+
+    await Generate.run(["-c", CONTRACT]);
+
+    expect(promptMock).toHaveBeenCalledTimes(3);
+    expect(fs.existsSync(path.join(outDir, "api.yml"))).toBe(true);
   });
 });
