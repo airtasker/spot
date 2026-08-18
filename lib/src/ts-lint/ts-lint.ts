@@ -37,10 +37,8 @@ export async function tsLint(
   const root = path.resolve(dir);
   const files = collectContractFiles(root);
   if (files.length === 0) {
-    // Not a pass. A directory that exists and holds no contracts is what a
-    // renamed tree, an empty bind mount or a partial checkout looks like, and
-    // reporting that as success turns a gate into a no-op that nothing
-    // notices. A directory that does not exist already fails, from readdir.
+    // Not a pass: a renamed tree, an empty bind mount or a partial checkout all
+    // look like this, and calling it success turns the gate into a no-op.
     return {
       report: [
         `No TypeScript files found under ${root}`,
@@ -110,11 +108,12 @@ async function runPrettier(
       // formatted.
       formatted = await format(source, { ...prettierConfig, filepath: file });
     } catch (e) {
-      // Prettier throws on a file it cannot parse, and it is the only step
-      // that does — ESLint reports a parse error as a finding and carries on.
-      // Attribute it and keep going, so one unparseable file does not discard
-      // every finding the other steps have already produced.
-      unparseable.push(`  ${file}: ${(e as Error).message.split("\n")[0]}`);
+      // Unlike the other steps, Prettier throws rather than reporting. Name the
+      // file and keep going, so one bad file does not discard every finding the
+      // other steps have produced. Not `as Error`: a plugin is free to throw
+      // anything, and a throw from in here would take down the whole run.
+      const detail = e instanceof Error ? e.message : String(e);
+      unparseable.push(`  ${file}: ${detail.split("\n")[0]}`);
       continue;
     }
     if (formatted === source) continue;
@@ -204,20 +203,7 @@ function runTypeCheck(files: string[]): string[] {
   files.forEach(file => project.addSourceFileAtPath(file));
   project.resolveSourceFileDependencies();
 
-  // Resolving dependencies pulls in whatever the tree imports, and a declaration
-  // file inside node_modules can carry its own errors. Those are not the
-  // contract author's to fix and --fix cannot reach them, so they would be a
-  // permanent failure a consumer has no move against.
-  //
-  // Only node_modules is excluded. A diagnostic anywhere else — including a
-  // source file above the directory being checked — is about code someone here
-  // can change, and dropping it would mean reporting a tree as clean when it
-  // does not type-check.
-  const diagnostics = project.getPreEmitDiagnostics().filter(diagnostic => {
-    const file = diagnostic.getSourceFile();
-    if (file === undefined) return true;
-    return !file.getFilePath().split(path.posix.sep).includes("node_modules");
-  });
+  const diagnostics = project.getPreEmitDiagnostics();
   if (diagnostics.length === 0) return [];
 
   return [

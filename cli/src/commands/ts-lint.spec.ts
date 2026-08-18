@@ -30,8 +30,10 @@ describe("ts-lint command", () => {
   });
 
   afterEach(() => {
-    writeSpy.mockRestore();
+    // Restored first: a throw from mockRestore would otherwise leak a non-zero
+    // exit code, which reports as a wholly green suite that exits 1.
     process.exitCode = restoreExitCode;
+    writeSpy.mockRestore();
   });
 
   test("exits zero and says so on a clean tree", async () => {
@@ -53,9 +55,6 @@ describe("ts-lint command", () => {
   });
 
   test("exits one when the directory holds no contracts", async () => {
-    // A tree that has been renamed or arrived empty reaches this path. If it
-    // exited zero the gate would pass while checking nothing, which is the one
-    // failure a consumer's green pipeline could never show them.
     const empty = fs.mkdtempSync(path.join(os.tmpdir(), "spot-ts-lint-empty-"));
 
     await TsLint.run([empty]);

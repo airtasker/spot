@@ -74,9 +74,9 @@ describe("tsLint", () => {
     fs.writeFileSync(
       path.join(dir, "eslint.config.mjs"),
       // A rule the bundled config never mentions, on a construct the fixture
-      // has four of. `no-undef` would not do: the bundled config's TypeScript
+      // contains. `no-undef` would not do: the bundled config's TypeScript
       // preset switches it off again, so a leftover config that *was* read
-      // would still report nothing and this test would pass either way.
+      // would report nothing either way.
       "export default [{ rules: { 'no-restricted-syntax': ['error', " +
         "{ selector: 'TSInterfaceDeclaration', message: 'leftover config was read' }] } }];\n"
     );
@@ -88,10 +88,6 @@ describe("tsLint", () => {
   });
 
   test("fails a directory that holds no contracts", async () => {
-    // Distinct from a directory that does not exist, which fails from readdir.
-    // A tree that has been renamed, arrived empty in a bind mount, or been
-    // partially checked out looks like this, and calling it a pass turns the
-    // gate into a no-op that a green pipeline cannot reveal.
     const empty = fs.mkdtempSync(path.join(os.tmpdir(), "spot-ts-lint-empty-"));
 
     const outcome = await tsLint(empty, { fix: false });
@@ -102,14 +98,16 @@ describe("tsLint", () => {
 
   test("a file Prettier cannot parse does not discard the other findings", async () => {
     const dir = copyFixture("dirty");
-    fs.writeFileSync(path.join(dir, "zz-broken.ts"), "export const = ;\n");
+    fs.writeFileSync(path.join(dir, "aa-broken.ts"), "export const = ;\n");
 
     const outcome = await tsLint(dir, { fix: false });
     const report = outcome.report.join("\n");
 
     // The unparseable file is named, rather than surfacing as a bare parse
     // error with a line number and no path.
-    expect(report).toContain("zz-broken.ts");
+    expect(report).toContain("aa-broken.ts");
+    // Sorts first, so this also pins that the walk continues past it.
+    expect(report).toContain("Formatting (2):");
     // And the steps that had already run still report.
     expect(report).toContain(NAMING_ERROR);
     expect(report).toContain(TYPE_ERROR);
@@ -118,10 +116,8 @@ describe("tsLint", () => {
 
   test("does not report type errors from inside node_modules", async () => {
     const dir = copyFixture("clean");
-    // Resolving the tree's imports reaches into node_modules, and a declaration
-    // file there can carry its own errors. A contract author cannot edit them
-    // and --fix cannot reach them, so reporting them would be a standing
-    // failure with no move against it.
+    // Held by `skipLibCheck` in the shared contract compiler options, so `parse`
+    // agrees rather than throwing on diagnostics this step drops.
     const pkg = path.join(dir, "node_modules", "junk");
     fs.mkdirSync(pkg, { recursive: true });
     fs.writeFileSync(
