@@ -1,3 +1,6 @@
+// The same contract as test-fixtures/contract/, in the canonical contract style
+// this command enforces — single quotes, where the repo's own config uses double.
+// Extend both together, or this stops representing a current contract.
 import {
   api,
   body,

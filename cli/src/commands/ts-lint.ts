@@ -41,10 +41,19 @@ export default class TsLint extends Command {
     fixed.forEach(file => this.log(`Fixed ${file}`));
     report.forEach(line => this.log(line));
 
-    if (ok) {
+    // Only claim the tree is clean when there is nothing to show. A report can
+    // be non-empty on a passing run — warnings do not fail the command — and
+    // printing both the findings and "No problems found" contradicts itself.
+    if (ok && report.length === 0) {
       this.log("No problems found");
-    } else {
-      process.exit(1);
+    }
+
+    if (!ok) {
+      // Not process.exit: this.log writes to stdout, which is asynchronous
+      // when stdout is a pipe — every CI runner — and exiting outright
+      // truncates the report mid-stream. Setting the code lets Node flush and
+      // exit on its own.
+      process.exitCode = 1;
     }
   }
 }

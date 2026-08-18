@@ -24,21 +24,30 @@ export interface TsLintOptions {
  *
  * Every step runs even when an earlier one has already found something, so a
  * single invocation reports everything wrong with the tree rather than the
- * first category of thing.
+ * first category of thing. A file Prettier cannot parse is reported against
+ * that file and the remaining files are still checked, for the same reason.
  */
 export async function tsLint(
   dir: string,
   { fix }: TsLintOptions
 ): Promise<TsLintOutcome> {
-  // ESLint requires an absolute cwd, and an absolute path is what the report
-  // should name anyway — the caller has usually cd'd somewhere else.
+  // ESLint requires an absolute cwd, and absolute paths are what the report
+  // should name — a relative one is meaningless once the output is read
+  // somewhere other than the directory the command ran in.
   const root = path.resolve(dir);
   const files = collectContractFiles(root);
   if (files.length === 0) {
+    // Not a pass. A directory that exists and holds no contracts is what a
+    // renamed tree, an empty bind mount or a partial checkout looks like, and
+    // reporting that as success turns a gate into a no-op that nothing
+    // notices. A directory that does not exist already fails, from readdir.
     return {
-      report: [`No TypeScript files found under ${root}`],
+      report: [
+        `No TypeScript files found under ${root}`,
+        "  Nothing was checked. Pass the directory holding the contracts."
+      ],
       fixed: [],
-      ok: true
+      ok: false
     };
   }
 
@@ -58,7 +67,8 @@ export async function tsLint(
 }
 
 /**
- * Every `.ts` file under `dir`, skipping `node_modules` and dot-directories.
+ * Every `.ts` file under `dir`, skipping `node_modules` and any entry whose
+ * name begins with a dot.
  *
  * Deliberately a walk of the tree rather than of the contract's import graph:
  * a contract file that nothing imports yet is exactly the file most likely to
@@ -89,10 +99,24 @@ async function runPrettier(
   fixed: Set<string>
 ): Promise<{ report: string[]; ok: boolean }> {
   const unformatted: string[] = [];
+  const unparseable: string[] = [];
 
   for (const file of files) {
     const source = fs.readFileSync(file, "utf8");
-    const formatted = await format(source, prettierConfig);
+    let formatted: string;
+    try {
+      // `filepath` only labels the input for error messages; the parser is
+      // named explicitly in the config, so this cannot change how the file is
+      // formatted.
+      formatted = await format(source, { ...prettierConfig, filepath: file });
+    } catch (e) {
+      // Prettier throws on a file it cannot parse, and it is the only step
+      // that does — ESLint reports a parse error as a finding and carries on.
+      // Attribute it and keep going, so one unparseable file does not discard
+      // every finding the other steps have already produced.
+      unparseable.push(`  ${file}: ${(e as Error).message.split("\n")[0]}`);
+      continue;
+    }
     if (formatted === source) continue;
 
     if (fix) {
@@ -103,15 +127,21 @@ async function runPrettier(
     }
   }
 
-  if (unformatted.length === 0) return { report: [], ok: true };
-
-  return {
-    report: [
+  const report: string[] = [];
+  if (unformatted.length > 0) {
+    report.push(
       `Formatting (${unformatted.length}):`,
       ...unformatted.map(file => `  ${file}`),
       "  Run with --fix to reformat."
-    ],
-    ok: false
+    );
+  }
+  if (unparseable.length > 0) {
+    report.push(`Unparseable (${unparseable.length}):`, ...unparseable);
+  }
+
+  return {
+    report,
+    ok: unformatted.length === 0 && unparseable.length === 0
   };
 }
 
@@ -152,7 +182,9 @@ async function runEslint(
 
   if (lines.length === 0) return { report: [], ok: true };
 
-  // Warnings are reported but never fail the command.
+  // The header counts every message; only errors decide the exit. A
+  // warning-only run therefore reports lines and still passes, which the CLI
+  // distinguishes by not claiming the tree is clean whenever there is a report.
   return {
     report: [`Lint (${lines.length}):`, ...lines],
     ok: errorCount === 0
@@ -160,8 +192,10 @@ async function runEslint(
 }
 
 /**
- * Type-check the contract tree under the same compiler options `parse` uses,
- * so a tree that passes here is a tree `generate` and `validate` can read.
+ * Type-check the contract tree under the same compiler options `parse` uses, so
+ * a tree that clears this step also clears the type-check `parse` performs.
+ * Contract-level errors — a missing `@api`, an unsupported type — are still
+ * `validate`'s job.
  *
  * There is no emit: the diagnostics are the whole product.
  */
@@ -170,7 +204,20 @@ function runTypeCheck(files: string[]): string[] {
   files.forEach(file => project.addSourceFileAtPath(file));
   project.resolveSourceFileDependencies();
 
-  const diagnostics = project.getPreEmitDiagnostics();
+  // Resolving dependencies pulls in whatever the tree imports, and a declaration
+  // file inside node_modules can carry its own errors. Those are not the
+  // contract author's to fix and --fix cannot reach them, so they would be a
+  // permanent failure a consumer has no move against.
+  //
+  // Only node_modules is excluded. A diagnostic anywhere else — including a
+  // source file above the directory being checked — is about code someone here
+  // can change, and dropping it would mean reporting a tree as clean when it
+  // does not type-check.
+  const diagnostics = project.getPreEmitDiagnostics().filter(diagnostic => {
+    const file = diagnostic.getSourceFile();
+    if (file === undefined) return true;
+    return !file.getFilePath().split(path.posix.sep).includes("node_modules");
+  });
   if (diagnostics.length === 0) return [];
 
   return [

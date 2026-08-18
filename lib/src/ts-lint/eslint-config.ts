@@ -37,8 +37,13 @@ export const eslintConfig: Linter.Config[] = tseslint.config(
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-empty-object-type": "off",
-      // `String`, `Number` and `Boolean` are Spot's own contract types, not the
-      // JavaScript wrapper objects these rules exist to catch.
+      // A contract imports `String`, `Number` and `Boolean` from
+      // `@airtasker/spot`, and that import shadows the global — so on a
+      // well-formed contract this rule has nothing to say either way. What
+      // turning it off suppresses is the opposite case: a file that names the
+      // global because the import is missing. That is a real mistake, and it is
+      // caught where it has consequences, by the parser rejecting the type,
+      // rather than as a wrapper-object complaint here.
       "@typescript-eslint/no-wrapper-object-types": "off",
       "@typescript-eslint/no-unsafe-function-type": "off"
     }
