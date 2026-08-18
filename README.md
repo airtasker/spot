@@ -64,7 +64,7 @@ pnpm add @airtasker/spot
 You can pass the definition above to a generator by simply running:
 
 ```sh
-npx @airtasker/spot generate --contract api.ts
+pnpm exec spot generate --contract api.ts --generator openapi3 --language yaml --out doc/output
 ```
 
 # Why we built Spot
@@ -111,20 +111,20 @@ We built Spot with this in mind. Instead of having to juggle various API format 
 
 Spot ships two ways, built from the same source at the same version.
 
+- **The npm package `@airtasker/spot`** is published to npm and to GitHub Packages and
+  is the distribution available to everyone. It is what you want for interactive local
+  use, for the in-memory API below, and for the commands the image does not carry.
 - **The Docker image `ghcr.io/airtasker/spot`** needs no Node toolchain and no
-  `node_modules` beside your contracts. This is the recommended way to run Spot in a
-  repository that is not otherwise a Node project.
-- **The npm package `@airtasker/spot`** is published to npm and to GitHub Packages, and
-  is fully supported. Nothing here deprecates it. It is what you want for interactive
-  local use, for the in-memory API below, and for the commands the image does not
-  carry.
+  `node_modules` beside your contracts, which suits a repository that is not otherwise
+  a Node project. The package is **private to Airtasker** — if you are outside the
+  organisation, use the npm package.
 
 ## Docker
 
 ```sh
 docker run --rm --user "$(id -u):$(id -g)" \
   --volume "$PWD:$PWD" --workdir "$PWD" \
-  ghcr.io/airtasker/spot:2.1.0 \
+  ghcr.io/airtasker/spot:<version> \
   generate --contract api.ts --generator openapi3 --language yaml --out doc/output
 ```
 
@@ -135,8 +135,9 @@ docker run --rm --user "$(id -u):$(id -g)" \
 echo "$GH_PACKAGES_READONLY_TOKEN" | docker login ghcr.io -u "$USER" --password-stdin
 ```
 
-Tags follow semver: `2.1.0`, `2.1`, `2`, and `latest`. Images are built for
-`linux/amd64` and `linux/arm64`.
+Substitute the release you want for `<version>`; the published tags are the full
+version, the major and minor prefixes, and `latest` for the most recent non-prerelease.
+Images are built for `linux/amd64` and `linux/arm64`.
 
 ### The invocation, argument by argument
 
@@ -154,15 +155,19 @@ that are not always loud:
 
 All of these produce a wrong result rather than an error:
 
-- **An `--out` outside the mount** is written *inside* the container, and the command
-  exits 0. The file simply never appears on the host. Spot logs the absolute path it
-  wrote to — check it against where you expected.
-- **`--out ~/x`** expands the tilde against the **container's** home directory, not
-  yours. Use a path under the mount.
+- **An `--out` outside the mount** is written *inside* the container, so the file never
+  appears on the host. Where the container user cannot write that path this fails
+  loudly; where it can — anywhere under `/tmp`, which is the container's home — the
+  command exits 0. Spot logs the absolute path it wrote to; check it against where you
+  expected.
+- **`--out ~/x`** is that writable case: the tilde expands against the **container's**
+  home directory, not yours, so it succeeds and lands nowhere useful. Use a path under
+  the mount.
 - **Environment variables are not inherited** from your shell. Pass them with
   `--env`.
-- **Omitting `--user`** leaves root-owned output, which a later non-root run cannot
-  overwrite.
+- **Omitting `--user`** writes output as the image's own unprivileged user rather than
+  as you, which a later run as yourself may not be able to overwrite. Downstream builds
+  that key a cache or an incremental task input on the output's mtime stall on this.
 
 ### Long-running: the validation server
 
@@ -171,7 +176,7 @@ docker run --rm --name spot-validation-server \
   --user "$(id -u):$(id -g)" \
   --volume "$PWD:$PWD" --workdir "$PWD" \
   --publish 5600:5600 \
-  ghcr.io/airtasker/spot:2.1.0 \
+  ghcr.io/airtasker/spot:<version> \
   validation-server api.ts -p 5600
 ```
 
@@ -207,13 +212,13 @@ leave it running.
 To get started and set up an API declaration in the current directory, run:
 
 ```
-npx @airtasker/spot init
+pnpm dlx @airtasker/spot init
 ```
 
 You can then run a generator with:
 
 ```
-npx @airtasker/spot generate --contract api.ts
+pnpm exec spot generate --contract api.ts --generator openapi3 --language yaml --out doc/output
 ```
 
 ## In Memory Usage
@@ -461,9 +466,14 @@ _See code: [build/cli/src/commands/validation-server.js](https://github.com/airt
 
 When we're ready for a new release, following steps in the [Wiki](https://github.com/airtasker/spot/wiki/Releasing-Spot)
 
-Publishing the GitHub Release is the only trigger. That one event publishes the npm
-package, the GitHub Packages copy, and the `ghcr.io/airtasker/spot` image, so a version
-means the same thing everywhere and there is no second thing to remember.
+Publishing the GitHub Release is the only trigger, and it starts the npm publish, the
+GitHub Packages copy, and the `ghcr.io/airtasker/spot` image build — so there is no
+second thing to remember.
+
+They run in parallel and can fail independently: one registry can end up with a version
+another does not have. The image build is the more likely of the two to fail, because it
+builds arm64 under emulation. If a release lands on npm but not on ghcr, re-run the
+`docker-publish` job rather than cutting a new version.
 
 This repository is public, which means the ghcr package defaults to public visibility
 the first time it is pushed. `ghcr.io/airtasker/spot` is deliberately **private**:
