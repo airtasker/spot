@@ -14,7 +14,7 @@ runs:
   steps:
   - uses: actions/checkout@v7
 
-  - uses: pnpm/action-setup@v4
+  - uses: pnpm/action-setup@v6
 
   # A caller inside the test matrix passes its matrix version; every other caller takes
   # the repository's own pin, so no job builds or publishes on whatever Node the runner
