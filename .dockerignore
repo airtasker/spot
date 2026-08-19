@@ -1,0 +1,19 @@
+# The image build needs the manifests, the TypeScript sources and the oclif
+# entrypoint. Everything else in this repo is irrelevant to it: docs/ holds a redoc
+# bundle the image never serves, test-fixtures/ holds parity fixtures that are mounted
+# in rather than baked, and .claude/worktrees/ holds full checkouts of the repo.
+#
+# Written as an allowlist — exclude everything, then re-include exactly what the
+# Dockerfile COPYs — so a new top-level directory cannot silently inflate the build
+# context. A pattern added here must have a matching COPY in the Dockerfile.
+*
+
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!docs/package.json
+!tsconfig.json
+!index.ts
+!bin
+!lib
+!cli

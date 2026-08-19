@@ -1,0 +1,285 @@
+#!/bin/bash
+# Compares a given image against the CLI compiled from this checkout, across the
+# generators, the validate/lint/ts-lint exit codes and output, self-containment, the
+# validation-server readiness contract, and the commands the image drops.
+#
+# The image and the npm package are built from the same source, but they resolve their
+# dependencies independently and the image deletes commands the package keeps, so
+# nothing else shows that a consumer switching between them gets the same result.
+#
+# Nothing here verifies the image was built from this checkout. Pass one you have just
+# built, as the docker-parity CI job does.
+#
+# Usage: scripts/check-image-parity <image-ref>
+set -ue -o pipefail
+
+if [ ${#} -ne 1 ]; then
+  echo "Usage: ${0} <image-ref>"
+  exit 1
+fi
+
+IMAGE="${1}"
+
+cd "$(dirname "${0}")/.."
+REPO_ROOT="$(pwd)"
+
+if [ ! -f ./build/cli/src/commands/generate.js ]; then
+  echo "ERROR: ./build/cli/src/commands/generate.js is missing. Run 'pnpm build' first." >&2
+  exit 1
+fi
+
+CONTRACT="test-fixtures/contract/api.ts"
+# Under build/ so a single mount covers both trees and build/ is already gitignored.
+PARITY_DIR="${REPO_ROOT}/build/parity"
+CLI_DIR="${PARITY_DIR}/cli"
+IMAGE_DIR="${PARITY_DIR}/image"
+rm -rf "${PARITY_DIR}"
+mkdir -p "${CLI_DIR}" "${IMAGE_DIR}"
+
+run_cli() {
+  node ./bin/run "${@}"
+}
+
+run_image() {
+  # Mounted at its real absolute path because path arguments are used unresolved, and
+  # run as the invoking user so the output is not root-owned.
+  docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    --volume "${REPO_ROOT}:${REPO_ROOT}" \
+    --workdir "${PWD}" \
+    "${IMAGE}" "${@}"
+}
+
+failures=0
+fail() {
+  echo "FAIL: ${1}" >&2
+  failures=$((failures + 1))
+}
+
+# --- generators ---------------------------------------------------------------
+#
+# Read the generator names out of the CLI rather than trusting the matrix below, so a
+# generator added there cannot slip through this gate uncompared.
+DECLARED=()
+while IFS= read -r generator; do
+  DECLARED+=("${generator}")
+done < <(
+  sed -n '/^const generators: Generators = {$/,/^};$/p' cli/src/commands/generate.ts |
+    sed -n 's/^  "\{0,1\}\([A-Za-z0-9._-]\{1,\}\)"\{0,1\}: {$/\1/p' | sort
+)
+
+if [ ${#DECLARED[@]} -eq 0 ]; then
+  echo "ERROR: no generators parsed from cli/src/commands/generate.ts." >&2
+  echo "The 'const generators' block has probably changed shape; this gate would" >&2
+  echo "otherwise pass while comparing nothing." >&2
+  exit 1
+fi
+
+# generator:language pairs. Kept explicit because the supported languages differ per
+# generator, and checked against DECLARED immediately below.
+CASES=(
+  "json-schema:json"
+  "json-schema:yaml"
+  "openapi2:json"
+  "openapi2:yaml"
+  "openapi3:json"
+  "openapi3:yaml"
+  "raw:json"
+)
+
+COVERED="$(printf '%s\n' "${CASES[@]}" | cut -d: -f1 | sort -u | tr '\n' ' ')"
+if [ "${COVERED}" != "$(printf '%s ' "${DECLARED[@]}")" ]; then
+  echo "ERROR: generator coverage is out of date." >&2
+  echo "  declared in the CLI: ${DECLARED[*]}" >&2
+  echo "  covered here:        ${COVERED}" >&2
+  echo "Add the missing generator's languages to CASES in this script." >&2
+  exit 1
+fi
+
+echo "== generate: comparing output byte for byte =="
+for case in "${CASES[@]}"; do
+  generator="${case%%:*}"
+  language="${case##*:}"
+  args=(generate -c "${CONTRACT}" -g "${generator}" -l "${language}")
+
+  run_cli "${args[@]}" -o "${CLI_DIR}/${generator}-${language}" >/dev/null
+  run_image "${args[@]}" -o "${IMAGE_DIR}/${generator}-${language}" >/dev/null
+done
+
+if [ -z "$(ls -A "${CLI_DIR}")" ]; then
+  fail "the CLI wrote nothing; there is no output to compare"
+elif diff --recursive "${CLI_DIR}" "${IMAGE_DIR}"; then
+  echo "OK: ${#CASES[@]} generator/language combinations produced identical output."
+else
+  fail "the image and the compiled CLI generated different output"
+fi
+
+# --- exit code and stdout parity ----------------------------------------------
+#
+# Both sides run with the same working directory and the same mount path, so the
+# absolute paths these commands print are expected to match exactly. A difference is
+# a real difference, not a rendering artefact.
+# Takes the exit status the case is expected to produce, so a case chosen because it
+# must fail keeps testing that. Agreement alone cannot: if the underlying failure ever
+# stops failing, both sides return 0, the comparison passes, and the case degrades into
+# another always-succeeding check while still reading as coverage.
+compare_run() {
+  local label="${1}"
+  local expected="${2}"
+  shift 2
+  local cli_out image_out cli_status image_status
+
+  # A missing status would shift the command into `expected`, and `[ x -ne y ]` on a
+  # non-number errors out to false inside an `if` — skipping the check and reporting OK.
+  case "${expected}" in
+  '' | *[!0-9]*)
+    echo "ERROR: ${label}: expected status '${expected}' is not a number." >&2
+    echo "compare_run takes <label> <expected-status> <args...>" >&2
+    exit 1
+    ;;
+  esac
+
+  set +e
+  cli_out="$(run_cli "${@}" 2>&1)"
+  cli_status=$?
+  image_out="$(run_image "${@}" 2>&1)"
+  image_status=$?
+  set -e
+
+  if [ "${cli_status}" -ne "${expected}" ]; then
+    fail "${label}: expected exit ${expected} from the CLI, got ${cli_status}; this case no longer exercises what it was added for"
+    return
+  fi
+  if [ "${cli_status}" -ne "${image_status}" ]; then
+    fail "${label}: exit ${cli_status} from the CLI, ${image_status} from the image"
+    return
+  fi
+  if [ "${cli_out}" != "${image_out}" ]; then
+    fail "${label}: output differs"
+    diff <(echo "${cli_out}") <(echo "${image_out}") >&2 || true
+    return
+  fi
+  echo "OK: ${label} (exit ${cli_status}, identical output)"
+}
+
+echo "== validate, lint, ts-lint: comparing exit code and output =="
+compare_run "validate" 0 validate "${CONTRACT}"
+compare_run "lint" 0 lint "${CONTRACT}"
+# A severity flag a consumer passes; it must keep behaving the same in the image.
+compare_run "lint --no-trailing-forward-slash=error" 0 \
+  lint "${CONTRACT}" --no-trailing-forward-slash=error
+compare_run "ts-lint clean" 0 ts-lint test-fixtures/ts-lint/clean
+compare_run "ts-lint dirty" 1 ts-lint test-fixtures/ts-lint/dirty
+# A command that fails through oclif's own error path, which is a different exit
+# route from ts-lint's. Without it this gate passes on an image where every failing
+# command exits 0 — see the HOME line in the Dockerfile for how that happens.
+compare_run "validate an invalid contract" 2 \
+  validate lib/src/__spec-examples__/contract-with-type-error.ts
+
+# --- self-containment ---------------------------------------------------------
+#
+# The image must resolve a contract's own `import ... from "@airtasker/spot"` from its
+# own node_modules. The repo checkout cannot demonstrate that — it has node_modules at
+# the root — so run somewhere with none on any parent path, and assert that first.
+echo "== self-containment: no node_modules on any parent path =="
+SCRATCH="$(mktemp -d)"
+trap 'rm -rf "${SCRATCH}" || true' EXIT
+cp test-fixtures/contract/*.ts "${SCRATCH}/"
+
+parent="${SCRATCH}"
+while :; do
+  if [ -d "${parent}/node_modules" ]; then
+    echo "ERROR: ${parent}/node_modules exists, so this check proves nothing." >&2
+    exit 1
+  fi
+  [ "${parent}" = "/" ] && break
+  parent="$(dirname "${parent}")"
+done
+
+if docker run --rm \
+  --user "$(id -u):$(id -g)" \
+  --volume "${SCRATCH}:${SCRATCH}" \
+  --workdir "${SCRATCH}" \
+  "${IMAGE}" generate -c api.ts -g openapi3 -l yaml -o . >/dev/null &&
+  [ -f "${SCRATCH}/api.yml" ]; then
+  echo "OK: generated from a directory with no node_modules above it."
+else
+  fail "the image could not process a contract outside a Node project"
+fi
+
+# --- validation-server --------------------------------------------------------
+#
+# Long-running, port-bound, and read by a machine: downstream builds block on the
+# readiness line before running against the server (e.g. bff-client's Gradle ExecFork
+# task). It has to appear on stdout without a TTY, which is what `docker run -d` and
+# `docker logs` reproduce.
+echo "== validation-server: readiness line, port bind, teardown =="
+SERVER_NAME="spot-parity-validation-server"
+docker rm -f "${SERVER_NAME}" >/dev/null 2>&1 || true
+# From here the container has to be reaped even if the script exits early, or it holds
+# the published port and the next run reads a stale server.
+# Container first, and both clauses guarded: `set -e` applies inside a trap, so an
+# ordering that puts the recoverable command first can skip the reap and rewrite a
+# passing run's exit status.
+trap 'docker rm -f "${SERVER_NAME}" >/dev/null 2>&1 || true; rm -rf "${SCRATCH}" || true' EXIT
+
+docker run --detach --name "${SERVER_NAME}" \
+  --user "$(id -u):$(id -g)" \
+  --volume "${REPO_ROOT}:${REPO_ROOT}" \
+  --workdir "${PWD}" \
+  --publish 5600:5600 \
+  "${IMAGE}" validation-server "${CONTRACT}" -p 5600 >/dev/null
+
+server_ready=0
+for _ in $(seq 1 60); do
+  # Captured rather than piped into grep: grep -q closes the pipe on its first match,
+  # docker logs takes SIGPIPE, and pipefail then reports the successful case as failure.
+  logs="$(docker logs "${SERVER_NAME}" 2>&1 || true)"
+  case "${logs}" in
+  *"Validation server running"*)
+    server_ready=1
+    break
+    ;;
+  esac
+  sleep 1
+done
+
+if [ "${server_ready}" -eq 1 ]; then
+  echo "OK: readiness line reached stdout without a TTY."
+  if curl -fsS -o /dev/null "http://localhost:5600/health"; then
+    echo "OK: published port answers /health."
+  else
+    fail "validation-server did not answer on the published port"
+  fi
+else
+  fail "validation-server never printed its readiness line"
+  docker logs "${SERVER_NAME}" >&2 || true
+fi
+
+docker rm -f "${SERVER_NAME}" >/dev/null
+
+# --- commands the image does not carry ----------------------------------------
+#
+# mock, docs and init stay npm-only. Their compiled files are deleted from the image,
+# and no oclif manifest is shipped, so nothing can still advertise them.
+echo "== mock, docs and init are absent =="
+for command in mock docs init; do
+  set +e
+  output="$(run_image "${command}" "${CONTRACT}" 2>&1)"
+  status=$?
+  set -e
+  if [ "${status}" -eq 0 ]; then
+    fail "${command} ran in the image; it is supposed to be npm-only"
+  elif ! grep -qi "not found" <<<"${output}"; then
+    fail "${command} failed for the wrong reason: ${output}"
+  else
+    echo "OK: ${command} is not a command in the image."
+  fi
+done
+
+echo ""
+if [ "${failures}" -ne 0 ]; then
+  echo "${failures} check(s) failed. ${IMAGE} is not a drop-in replacement for the CLI compiled here." >&2
+  exit 1
+fi
+echo "All checks passed."
