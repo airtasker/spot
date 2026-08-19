@@ -5,6 +5,14 @@ import { runValidationServer } from "../../../lib/src/validation-server/server";
 const ARG_API = "spot_contract";
 
 /**
+ * Machine-parsed readiness signal. Downstream builds block on this exact prefix
+ * before they run against the server, and a build that never sees it waits until
+ * it times out with nothing else to go on — so the string is a wire contract,
+ * not log text. Pinned by a spec for that reason.
+ */
+export const READY_LINE_PREFIX = "Validation server running";
+
+/**
  * oclif command to start the spot contract validation server
  */
 export default class ValidationServer extends Command {
@@ -41,7 +49,7 @@ export default class ValidationServer extends Command {
 
       this.log("Starting validation server...");
       await runValidationServer(port, contract).defer();
-      this.log(`Validation server running on port ${port}`);
+      this.log(`${READY_LINE_PREFIX} on port ${port}`);
     } catch (e) {
       this.error(e as Error, { exit: 1 });
     }
