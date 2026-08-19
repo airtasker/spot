@@ -130,6 +130,85 @@ jobs:
       - name: Compare the image against the CLI
         run: ./scripts/check-image-parity spot:parity
 
+  # Runs on the GitHub Release event, in parallel with the npm publish below and
+  # independently of it.
+  docker-publish:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    # Two releases published close together would otherwise race on which one ends up
+    # as `latest`, `2` and `2.1`.
+    concurrency:
+      group: docker-publish
+      cancel-in-progress: false
+    needs:
+      - test
+      - lint-check
+      - docker-parity
+    permissions:
+      contents: read
+      packages: write
+    env:
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      # Conditional, as in docker-parity: these credentials are not configured on
+      # this repository, and login-action throws rather than skipping when both are
+      # empty. Without them the base image is pulled anonymously, which is what
+      # docker-parity has always done.
+      - name: Log in to Docker Hub
+        if: env.DOCKERHUB_TOKEN != ''
+        uses: docker/login-action@v4
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      # GITHUB_TOKEN, because the npm publish job below already pushes to GitHub
+      # Packages with it.
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/airtasker/spot
+          # The release ref is the version tag, so these yield 2.1.0, 2.1 and 2. The
+          # commit is recorded in the org.opencontainers.image.revision label that
+          # metadata-action emits, so no separate sha tag is needed to trace an image
+          # back to its source.
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+          # A prerelease must not become what a consumer pulling `latest` gets.
+          # `latest=auto` is metadata-action's default and applies `latest` only to
+          # non-prereleases; it is named explicitly because copying `latest=true` from
+          # a neighbouring repository would silently break that. Withholding
+          # {{major}} and {{major}}.{{minor}} from prereleases is `type=semver`'s own
+          # behaviour, not this block's.
+          flavor: |
+            latest=auto
+
+      # arm64 is not optional: engineers run Spot on Apple Silicon, and bff-client's
+      # devcontainer CI runner is arm64.
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   publish:
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
