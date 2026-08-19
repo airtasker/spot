@@ -50,7 +50,7 @@ For all available syntax, see [Spot Syntax](https://github.com/airtasker/spot/wi
 
 Either Docker, or:
 
-- Node.js >= 18.12.0
+- Node.js >= 22.13.0
 - pnpm (recommended) or npm
 
 ### Installation
