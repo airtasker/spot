@@ -14,7 +14,7 @@ importers:
     dependencies:
       '@oclif/command':
         specifier: ^1.8.0
-        version: 1.8.36(@oclif/config@1.18.17)
+        version: 1.8.36(@oclif/config@1.18.17)(supports-color@8.1.1)
       '@oclif/config':
         specifier: ^1.17.0
         version: 1.18.17
@@ -23,10 +23,10 @@ importers:
         version: 1.3.6
       '@oclif/help':
         specifier: ^1.0.15
-        version: 1.0.15
+        version: 1.0.15(supports-color@8.1.1)
       '@oclif/plugin-help':
-        specifier: ^3.2.3
-        version: 3.3.1
+        specifier: ^6.2.58
+        version: 6.2.58
       ajv:
         specifier: ^8.18.0
         version: 8.18.0
@@ -682,6 +682,10 @@ packages:
     engines: {node: '>=8.0.0'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
+  '@oclif/core@4.13.5':
+    resolution: {integrity: sha512-KcbWlSO+s0Yr9c5wHNC6Npqdh46iJ8t9wCWW19yipT0QmnfZjoTqqqJ1DoP6s3i5P1z5cG35AqS17KL3b20Klw==}
+    engines: {node: '>=18.0.0'}
+
   '@oclif/dev-cli@1.26.10':
     resolution: {integrity: sha512-dJ+II9rVXckzFvG+82PbfphMTnoqiHvsuAAbcHrLdZWPBnFAiDKhNYE0iHnA/knAC4VGXhogsrAJ3ERT5d5r2g==}
     engines: {node: '>=8.10.0'}
@@ -715,9 +719,9 @@ packages:
     resolution: {integrity: sha512-5n5Pkz4L0duknIvFwx2Ko9Xda3miT6RZP8bgaaK3Q/9fzVBrhi4bOM0u05/OThI6V+3NsSdxYS2o1NLcXToWDg==}
     engines: {node: '>=8.0.0'}
 
-  '@oclif/plugin-help@3.3.1':
-    resolution: {integrity: sha512-QuSiseNRJygaqAdABYFWn/H1CwIZCp9zp/PLid6yXvy6VcQV7OenEFF5XuYaCvSARe2Tg9r8Jqls5+fw1A9CbQ==}
-    engines: {node: '>=8.0.0'}
+  '@oclif/plugin-help@6.2.58':
+    resolution: {integrity: sha512-DAYMXZrTWRMLTbpX+rT+ibAmKrZ6IVNGn+fgAGjMoeNlqlSY94eJHocgmqChMwsdWp3H3x+jFmPJiYQt/ifr3Q==}
+    engines: {node: '>=18.0.0'}
 
   '@oclif/screen@1.0.4':
     resolution: {integrity: sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==}
@@ -1203,6 +1207,10 @@ packages:
   ansicolors@0.3.2:
     resolution: {integrity: sha512-QXu7BPrP29VllRxH8GwB7x5iX5qWKAAMLqKQGWTeLWVlNHNOpVMJ91dsxQAIWXpjuW5wqvxu3Jd/nRjrJ+0pqg==}
 
+  ansis@3.17.0:
+    resolution: {integrity: sha512-0qWUglt9JEqLFr3w1I1pbrChn1grhaiAR2ocX1PP/flRmxgtwTzPFFFnfIlD6aMOLQZgSuCRlidD70lvx8yhzg==}
+    engines: {node: '>=14'}
+
   anymatch@3.1.3:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
@@ -1297,11 +1305,11 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
-  brace-expansion@1.1.11:
-    resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
+  brace-expansion@1.1.18:
+    resolution: {integrity: sha512-Edep/X9fGqVNmzKBVsDYIOtD+z1tuezV70LBjdCst9Tqu76lsnvRiZ6oTic1n+/BIwX6QDGAO94PN4N2SADvtw==}
 
-  brace-expansion@2.0.1:
-    resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
+  brace-expansion@2.1.4:
+    resolution: {integrity: sha512-hGfVzPxthbf3+2yjg/RBs60cB0FhqBS/zvdV/4wn4/BmN0bNMMHPc4V/BbFieqf1TKAGGAHnY4eSjajCl0f2Xg==}
 
   brace-expansion@5.0.9:
     resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
@@ -1421,8 +1429,8 @@ packages:
     resolution: {integrity: sha512-tRkV3HJ1ASwm19THiiLIXLO7Im7wlTuKnvkYaTkyoAPefqjNg7W7DHKUlGRxy9vxDvbyCYQkQozvptuMkGCg8A==}
     engines: {node: '>=4'}
 
-  cli-spinners@2.9.1:
-    resolution: {integrity: sha512-jHgecW0pxkonBJdrKsqxgRX9AcG+u/5k0Q7WPDfi8AogLAdwxEkyYYNWwZ5GvVFoFx2uiY1eNcSK00fh+1+FyQ==}
+  cli-spinners@2.9.2:
+    resolution: {integrity: sha512-ywqV+5MmyL4E7ybXgKys4DugZbX0FC6LnwrhjuykIjnK9k8OQacQ7axGKnjDXWNhns0xot3bZI5h55H8yo9cJg==}
     engines: {node: '>=6'}
 
   cli-ux@5.6.7:
@@ -1708,6 +1716,11 @@ packages:
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
+
+  ejs@6.0.1:
+    resolution: {integrity: sha512-UaaM14yby8U3k02ihS1Bmj5Kz2d7CCQM1scxpgs4Mhkq8F1wR2gl3+Ts4h5Ne4Mnt7M9m4Dw7jsuMr3+xO4vZA==}
+    engines: {node: '>=0.12.18'}
+    hasBin: true
 
   electron-to-chromium@1.5.279:
     resolution: {integrity: sha512-0bblUU5UNdOt5G7XqGiJtpZMONma6WAfq9vsFmtn9x1+joAObr6x1chfqyxFSDCAFwFhCQDrqeAr6MYdpwJ9Hg==}
@@ -2302,6 +2315,11 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
+  is-docker@3.0.0:
+    resolution: {integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    hasBin: true
+
   is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
@@ -2317,6 +2335,11 @@ packages:
   is-glob@4.0.3:
     resolution: {integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==}
     engines: {node: '>=0.10.0'}
+
+  is-inside-container@1.0.0:
+    resolution: {integrity: sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA==}
+    engines: {node: '>=14.16'}
+    hasBin: true
 
   is-interactive@1.0.0:
     resolution: {integrity: sha512-2HvIEKRoqS62guEC+qBjpvRubdX910WCMuJTZ+I9yvqKU2/12eSL549HMwtabb4oupdj2sMP50k+XJfB/8JE6w==}
@@ -2359,6 +2382,10 @@ packages:
   is-wsl@2.2.0:
     resolution: {integrity: sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==}
     engines: {node: '>=8'}
+
+  is-wsl@3.1.1:
+    resolution: {integrity: sha512-e6rvdUCiQCAuumZslxRJWR/Doq4VpPR82kqclvcS0efgt430SlGIk05vdCN58+VrzgtIcfNODjozVielycD4Sw==}
+    engines: {node: '>=16'}
 
   isarray@0.0.1:
     resolution: {integrity: sha512-D2S+3GLxWH+uhrNEcoh/fnmYeP8E8/zHl644d/jdA0g2uyXvy3sb0qxotE+ne0LtccHknQzWwZEzhak7oJ0COQ==}
@@ -2634,6 +2661,10 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
+  lilconfig@3.1.3:
+    resolution: {integrity: sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==}
+    engines: {node: '>=14'}
+
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
@@ -2771,15 +2802,15 @@ packages:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
 
-  minimatch@3.1.2:
-    resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
+  minimatch@3.1.5:
+    resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
 
   minimatch@5.1.6:
     resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
     engines: {node: '>=10'}
 
-  minimatch@7.4.6:
-    resolution: {integrity: sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==}
+  minimatch@7.4.9:
+    resolution: {integrity: sha512-Brg/fp/iAVDOQoHxkuN5bEYhyQlZhxddI78yWsCbeEwTHXQjlNLtiJDUsp1GIptVqMI7/gkJMz4vVAc01mpoBw==}
     engines: {node: '>=10'}
 
   minimist@1.2.8:
@@ -3079,6 +3110,10 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
+  picomatch@2.3.2:
+    resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
+    engines: {node: '>=8.6'}
+
   picomatch@4.0.5:
     resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
     engines: {node: '>=12'}
@@ -3133,6 +3168,10 @@ packages:
   postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
+
+  powershell-utils@0.1.0:
+    resolution: {integrity: sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==}
+    engines: {node: '>=20'}
 
   prelude-ls@1.1.2:
     resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
@@ -3947,6 +3986,10 @@ packages:
     resolution: {integrity: sha512-PxiShnxf0IlnQuMYOPPhPkhExoCQuTUNPOa/2JWCYTmBquU9njyyDuwRKN26IZBlp4yn1nt+Agh2HOOBl+55HQ==}
     engines: {node: '>=8.3'}
 
+  wsl-utils@0.4.0:
+    resolution: {integrity: sha512-9YmF+2sFEd+T7TkwlmE337F0IVzfDvDknhtpBQxxXzEOfgPphGlFYpyx0cTuCIFj8/p+sqwBYAeGxOMNSzPPDA==}
+    engines: {node: '>=20'}
+
   xml@1.0.1:
     resolution: {integrity: sha512-huCv9IH9Tcf95zuYCsQraZtWnJvBtLVE0QHMOs8bWyZAFZNDcYjsPq1nEx8jKA9y+Beo9v+7OBPRisQTjinQMw==}
 
@@ -4027,10 +4070,10 @@ snapshots:
       '@babel/helpers': 7.23.2
       '@babel/parser': 7.23.0
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.2(supports-color@5.5.0)
+      '@babel/traverse': 7.23.2
       '@babel/types': 7.28.6
       convert-source-map: 2.0.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -4050,7 +4093,7 @@ snapshots:
       '@babel/types': 7.28.6
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -4159,7 +4202,7 @@ snapshots:
   '@babel/helpers@7.23.2':
     dependencies:
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.2(supports-color@5.5.0)
+      '@babel/traverse': 7.23.2
       '@babel/types': 7.28.6
     transitivePeerDependencies:
       - supports-color
@@ -4344,6 +4387,21 @@ snapshots:
       '@babel/parser': 7.28.6
       '@babel/types': 7.28.6
 
+  '@babel/traverse@7.23.2':
+    dependencies:
+      '@babel/code-frame': 7.22.13
+      '@babel/generator': 7.23.0
+      '@babel/helper-environment-visitor': 7.22.20
+      '@babel/helper-function-name': 7.23.0
+      '@babel/helper-hoist-variables': 7.22.5
+      '@babel/helper-split-export-declaration': 7.22.6
+      '@babel/parser': 7.23.0
+      '@babel/types': 7.23.0
+      debug: 4.4.3(supports-color@8.1.1)
+      globals: 11.12.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@babel/traverse@7.23.2(supports-color@5.5.0)':
     dependencies:
       '@babel/code-frame': 7.22.13
@@ -4367,7 +4425,7 @@ snapshots:
       '@babel/parser': 7.28.6
       '@babel/template': 7.28.6
       '@babel/types': 7.28.6
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -4406,7 +4464,7 @@ snapshots:
   '@eslint/config-array@0.23.5':
     dependencies:
       '@eslint/object-schema': 3.0.5
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.6
     transitivePeerDependencies:
       - supports-color
@@ -4698,7 +4756,7 @@ snapshots:
     dependencies:
       '@oclif/config': 1.18.17
       '@oclif/errors': 1.3.6
-      '@oclif/help': 1.0.15
+      '@oclif/help': 1.0.15(supports-color@8.1.1)
       '@oclif/parser': 3.8.17
       debug: 4.3.4(supports-color@8.1.1)
       semver: 7.5.4
@@ -4720,21 +4778,10 @@ snapshots:
     dependencies:
       '@oclif/config': 1.18.2
       '@oclif/errors': 1.3.6
-      '@oclif/help': 1.0.15
+      '@oclif/help': 1.0.15(supports-color@8.1.1)
       '@oclif/parser': 3.8.17
       debug: 4.3.4(supports-color@8.1.1)
       semver: 7.5.4
-    transitivePeerDependencies:
-      - supports-color
-
-  '@oclif/config@1.18.16':
-    dependencies:
-      '@oclif/errors': 1.3.6
-      '@oclif/parser': 3.8.17
-      debug: 4.4.3(supports-color@5.5.0)
-      globby: 11.1.0
-      is-wsl: 2.2.0
-      tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
 
@@ -4764,12 +4811,33 @@ snapshots:
     dependencies:
       '@oclif/errors': 1.3.6
       '@oclif/parser': 3.8.17
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
+
+  '@oclif/core@4.13.5':
+    dependencies:
+      ansi-escapes: 4.3.2
+      ansis: 3.17.0
+      clean-stack: 3.0.1
+      cli-spinners: 2.9.2
+      debug: 4.4.3(supports-color@8.1.1)
+      ejs: 6.0.1
+      get-package-type: 0.1.0
+      indent-string: 4.0.0
+      lilconfig: 3.1.3
+      minimatch: 10.2.6
+      semver: 7.8.5
+      string-width: 4.2.3
+      supports-color: 8.1.1
+      tinyglobby: 0.2.17
+      widest-line: 3.1.0
+      wordwrap: 1.0.0
+      wrap-ansi: 7.0.0
+      wsl-utils: 0.4.0
 
   '@oclif/dev-cli@1.26.10':
     dependencies:
@@ -4805,20 +4873,6 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  '@oclif/help@1.0.15':
-    dependencies:
-      '@oclif/config': 1.18.16
-      '@oclif/errors': 1.3.6
-      chalk: 4.1.2
-      indent-string: 4.0.0
-      lodash: 4.17.21
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      widest-line: 3.1.0
-      wrap-ansi: 6.2.0
-    transitivePeerDependencies:
-      - supports-color
-
   '@oclif/help@1.0.15(supports-color@8.1.1)':
     dependencies:
       '@oclif/config': 1.18.16(supports-color@8.1.1)
@@ -4847,7 +4901,7 @@ snapshots:
       '@oclif/command': 1.8.36(@oclif/config@1.18.2)
       '@oclif/config': 1.18.2
       '@oclif/errors': 1.3.5
-      '@oclif/help': 1.0.15
+      '@oclif/help': 1.0.15(supports-color@8.1.1)
       chalk: 4.1.2
       indent-string: 4.0.0
       lodash: 4.17.21
@@ -4858,21 +4912,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/plugin-help@3.3.1':
+  '@oclif/plugin-help@6.2.58':
     dependencies:
-      '@oclif/command': 1.8.36(@oclif/config@1.18.2)
-      '@oclif/config': 1.18.2
-      '@oclif/errors': 1.3.5
-      '@oclif/help': 1.0.15
-      chalk: 4.1.2
-      indent-string: 4.0.0
-      lodash: 4.17.21
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      widest-line: 3.1.0
-      wrap-ansi: 6.2.0
-    transitivePeerDependencies:
-      - supports-color
+      '@oclif/core': 4.13.5
 
   '@oclif/screen@1.0.4': {}
 
@@ -5035,7 +5077,7 @@ snapshots:
   '@ts-morph/common@0.19.0':
     dependencies:
       fast-glob: 3.3.1
-      minimatch: 7.4.6
+      minimatch: 7.4.9
       mkdirp: 2.1.6
       path-browserify: 1.0.1
 
@@ -5248,7 +5290,7 @@ snapshots:
       '@typescript-eslint/types': 8.67.0
       '@typescript-eslint/typescript-estree': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/visitor-keys': 8.67.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.8.1
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -5258,7 +5300,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/types': 8.67.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
@@ -5277,7 +5319,7 @@ snapshots:
       '@typescript-eslint/types': 8.67.0
       '@typescript-eslint/typescript-estree': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/utils': 8.67.0(eslint@10.8.1)(typescript@4.9.5)
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.8.1
       ts-api-utils: 2.5.0(typescript@4.9.5)
       typescript: 4.9.5
@@ -5292,7 +5334,7 @@ snapshots:
       '@typescript-eslint/tsconfig-utils': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/types': 8.67.0
       '@typescript-eslint/visitor-keys': 8.67.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.6
       semver: 7.8.5
       tinyglobby: 0.2.17
@@ -5435,7 +5477,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -5498,10 +5540,12 @@ snapshots:
 
   ansicolors@0.3.2: {}
 
+  ansis@3.17.0: {}
+
   anymatch@3.1.3:
     dependencies:
       normalize-path: 3.0.0
-      picomatch: 2.3.1
+      picomatch: 2.3.2
 
   argparse@1.0.10:
     dependencies:
@@ -5663,12 +5707,12 @@ snapshots:
 
   boolbase@1.0.0: {}
 
-  brace-expansion@1.1.11:
+  brace-expansion@1.1.18:
     dependencies:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@2.0.1:
+  brace-expansion@2.1.4:
     dependencies:
       balanced-match: 1.0.2
 
@@ -5783,7 +5827,7 @@ snapshots:
     dependencies:
       string-width: 4.2.3
 
-  cli-spinners@2.9.1: {}
+  cli-spinners@2.9.2: {}
 
   cli-ux@5.6.7(@oclif/config@1.18.17):
     dependencies:
@@ -6080,6 +6124,8 @@ snapshots:
 
   ee-first@1.1.1: {}
 
+  ejs@6.0.1: {}
+
   electron-to-chromium@1.5.279: {}
 
   emittery@0.13.1: {}
@@ -6190,7 +6236,7 @@ snapshots:
       '@types/estree': 1.0.8
       ajv: 6.14.0
       cross-spawn: 7.0.6
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       escape-string-regexp: 4.0.0
       eslint-scope: 9.1.2
       eslint-visitor-keys: 5.0.1
@@ -6505,7 +6551,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       data-uri-to-buffer: 3.0.1
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       file-uri-to-path: 2.0.0
       fs-extra: 8.1.0
       ftp: 0.3.10
@@ -6529,7 +6575,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -6631,7 +6677,7 @@ snapshots:
   http-call@5.3.0:
     dependencies:
       content-type: 1.0.5
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       is-retry-allowed: 1.2.0
       is-stream: 2.0.1
       parse-json: 4.0.0
@@ -6651,7 +6697,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -6660,14 +6706,14 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -6741,6 +6787,8 @@ snapshots:
 
   is-docker@2.2.1: {}
 
+  is-docker@3.0.0: {}
+
   is-extglob@2.1.1: {}
 
   is-fullwidth-code-point@3.0.0: {}
@@ -6750,6 +6798,10 @@ snapshots:
   is-glob@4.0.3:
     dependencies:
       is-extglob: 2.1.1
+
+  is-inside-container@1.0.0:
+    dependencies:
+      is-docker: 3.0.0
 
   is-interactive@1.0.0: {}
 
@@ -6776,6 +6828,10 @@ snapshots:
   is-wsl@2.2.0:
     dependencies:
       is-docker: 2.2.1
+
+  is-wsl@3.1.1:
+    dependencies:
+      is-inside-container: 1.0.0
 
   isarray@0.0.1: {}
 
@@ -6813,7 +6869,7 @@ snapshots:
 
   istanbul-lib-source-maps@4.0.1:
     dependencies:
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -7100,7 +7156,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
-      picomatch: 2.3.1
+      picomatch: 2.3.2
 
   jest-validate@29.7.0:
     dependencies:
@@ -7230,6 +7286,8 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
+  lilconfig@3.1.3: {}
+
   lines-and-columns@1.2.4: {}
 
   load-json-file@6.2.0:
@@ -7343,17 +7401,17 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.9
 
-  minimatch@3.1.2:
+  minimatch@3.1.5:
     dependencies:
-      brace-expansion: 1.1.11
+      brace-expansion: 1.1.18
 
   minimatch@5.1.6:
     dependencies:
-      brace-expansion: 2.0.1
+      brace-expansion: 2.1.4
 
-  minimatch@7.4.6:
+  minimatch@7.4.9:
     dependencies:
-      brace-expansion: 2.0.1
+      brace-expansion: 2.1.4
 
   minimist@1.2.8: {}
 
@@ -7548,7 +7606,7 @@ snapshots:
       bl: 4.1.0
       chalk: 4.1.2
       cli-cursor: 3.1.0
-      cli-spinners: 2.9.1
+      cli-spinners: 2.9.2
       is-interactive: 1.0.0
       is-unicode-supported: 0.1.0
       log-symbols: 4.1.0
@@ -7583,7 +7641,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       get-uri: 3.0.2
       http-proxy-agent: 4.0.1
       https-proxy-agent: 5.0.1
@@ -7650,6 +7708,8 @@ snapshots:
 
   picomatch@2.3.1: {}
 
+  picomatch@2.3.2: {}
+
   picomatch@4.0.5: {}
 
   pirates@4.0.6: {}
@@ -7698,6 +7758,8 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  powershell-utils@0.1.0: {}
+
   prelude-ls@1.1.2: {}
 
   prelude-ls@1.2.1: {}
@@ -7738,7 +7800,7 @@ snapshots:
   proxy-agent@4.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       http-proxy-agent: 4.0.1
       https-proxy-agent: 5.0.1
       lru-cache: 5.1.1
@@ -8090,7 +8152,7 @@ snapshots:
   socks-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       socks: 2.7.1
     transitivePeerDependencies:
       - supports-color
@@ -8199,7 +8261,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       fast-safe-stringify: 2.1.1
       form-data: 4.0.5
       formidable: 3.5.4
@@ -8289,7 +8351,7 @@ snapshots:
     dependencies:
       '@istanbuljs/schema': 0.1.3
       glob: 7.2.3
-      minimatch: 3.1.2
+      minimatch: 3.1.5
 
   text-table@0.2.0: {}
 
@@ -8598,6 +8660,11 @@ snapshots:
       make-dir: 3.1.0
       sort-keys: 4.2.0
       write-file-atomic: 3.0.3
+
+  wsl-utils@0.4.0:
+    dependencies:
+      is-wsl: 3.1.1
+      powershell-utils: 0.1.0
 
   xml@1.0.1: {}
 
