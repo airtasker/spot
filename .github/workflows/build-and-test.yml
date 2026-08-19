@@ -127,7 +127,7 @@ jobs:
           password: ${{ env.DOCKERHUB_TOKEN }}
 
       - name: Build the image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           # Single-arch into the local image store, because the parity script has to
@@ -143,7 +143,7 @@ jobs:
       # stops a release being the first time arm64 has ever been built. Covers the
       # build, not the behaviour.
       - name: Build the image for every published architecture
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -226,7 +226,7 @@ jobs:
 
       # arm64 is not optional: engineers run Spot on Apple Silicon, and bff-client's
       # devcontainer CI runner is arm64.
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64
