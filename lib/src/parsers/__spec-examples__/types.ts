@@ -42,9 +42,7 @@ interface TypeInterface {
   union: boolean | Date | null;
   unionDiscriminated: DiscriminatedUnionElementA | DiscriminatedUnionElementB;
   unionDiscriminatedNullable:
-    | DiscriminatedUnionElementA
-    | DiscriminatedUnionElementB
-    | null;
+    DiscriminatedUnionElementA | DiscriminatedUnionElementB | null;
   aliasString: AliasString;
   aliasArray: AliasArray;
   aliasWithDescription: AliasWithDescription;

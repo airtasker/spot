@@ -87,14 +87,12 @@ export interface UndefinedRequestHeaderViolation extends ViolationBase {
 }
 
 export interface RequestHeaderTypeDisparityViolation
-  extends ViolationBase,
-    TypeViolationBase {
+  extends ViolationBase, TypeViolationBase {
   type: "request_header_type_disparity";
 }
 
 export interface PathParamTypeDisparityViolation
-  extends ViolationBase,
-    TypeViolationBase {
+  extends ViolationBase, TypeViolationBase {
   type: "path_param_type_disparity";
 }
 
@@ -107,8 +105,7 @@ export interface UndefinedQueryParamViolation extends ViolationBase {
 }
 
 export interface QueryParamTypeDisparityViolation
-  extends ViolationBase,
-    TypeViolationBase {
+  extends ViolationBase, TypeViolationBase {
   type: "query_param_type_disparity";
 }
 
@@ -117,8 +114,7 @@ export interface UndefinedRequestBodyViolation extends ViolationBase {
 }
 
 export interface RequestBodyTypeDisparityViolation
-  extends ViolationBase,
-    TypeViolationBase {
+  extends ViolationBase, TypeViolationBase {
   type: "request_body_type_disparity";
 }
 
@@ -131,8 +127,7 @@ export interface UndefinedResponseHeaderViolation extends ViolationBase {
 }
 
 export interface ResponseHeaderTypeDisparityViolation
-  extends ViolationBase,
-    TypeViolationBase {
+  extends ViolationBase, TypeViolationBase {
   type: "response_header_type_disparity";
 }
 
@@ -141,7 +136,6 @@ export interface UndefinedResponseBodyViolation extends ViolationBase {
 }
 
 export interface ResponseBodyTypeDisparityViolation
-  extends ViolationBase,
-    TypeViolationBase {
+  extends ViolationBase, TypeViolationBase {
   type: "response_body_type_disparity";
 }

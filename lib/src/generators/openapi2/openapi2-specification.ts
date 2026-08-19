@@ -101,24 +101,19 @@ export type HeaderObject =
   | ArrayHeaderObject;
 
 export interface StringHeaderObject
-  extends HeaderObjectBase,
-    StringParameterObject {}
+  extends HeaderObjectBase, StringParameterObject {}
 
 export interface NumberHeaderObject
-  extends HeaderObjectBase,
-    NumberParameterObjectType {}
+  extends HeaderObjectBase, NumberParameterObjectType {}
 
 export interface IntegerHeaderObject
-  extends HeaderObjectBase,
-    IntegerParameterObjectType {}
+  extends HeaderObjectBase, IntegerParameterObjectType {}
 
 export interface BooleanHeaderObject
-  extends HeaderObjectBase,
-    BooleanParameterObjectType {}
+  extends HeaderObjectBase, BooleanParameterObjectType {}
 
 export interface ArrayHeaderObject
-  extends HeaderObjectBase,
-    ArrayParameterObjectType {}
+  extends HeaderObjectBase, ArrayParameterObjectType {}
 
 interface HeaderObjectBase {
   description?: string;
@@ -172,16 +167,13 @@ interface ParameterObjectBase {
 }
 
 type QueryParameterObjectType =
-  | BaseParameterObjectTypes
-  | ArrayMultiParameterObjectType;
+  BaseParameterObjectTypes | ArrayMultiParameterObjectType;
 
 type HeaderParameterObjectType =
-  | BaseParameterObjectTypes
-  | ArrayParameterObjectType;
+  BaseParameterObjectTypes | ArrayParameterObjectType;
 
 type PathParameterObjectType =
-  | BaseParameterObjectTypes
-  | ArrayParameterObjectType;
+  BaseParameterObjectTypes | ArrayParameterObjectType;
 
 type FormDataParameterObjectType =
   | BaseParameterObjectTypes
@@ -204,15 +196,13 @@ export interface StringParameterObject {
   enum?: string[];
 }
 
-export interface NumberParameterObjectType
-  extends NumberParameterObjectTypeBase {
+export interface NumberParameterObjectType extends NumberParameterObjectTypeBase {
   type: "number";
   format?: "float" | "double";
   default?: number;
 }
 
-export interface IntegerParameterObjectType
-  extends NumberParameterObjectTypeBase {
+export interface IntegerParameterObjectType extends NumberParameterObjectTypeBase {
   type: "integer";
   format?: "int32" | "int64";
   default?: number;
@@ -232,8 +222,7 @@ export interface ArrayParameterObjectType extends ArrayParameterObjectTypeBase {
   collectionFormat?: "csv" | "ssv" | "tsv" | "pipes";
 }
 
-export interface ArrayMultiParameterObjectType
-  extends ArrayParameterObjectTypeBase {
+export interface ArrayMultiParameterObjectType extends ArrayParameterObjectTypeBase {
   collectionFormat?: "csv" | "ssv" | "tsv" | "pipes" | "multi";
 }
 
@@ -306,29 +295,25 @@ export type OAuth2SecuritySchemeObject =
   | AccessCodeOAuth2SecuritySchemeObject;
 
 export interface ImplicitOAuth2SecuritySchemeObject
-  extends OAuth2SecuritySchemeObjectBase,
-    SecuritySchemeObjectBase {
+  extends OAuth2SecuritySchemeObjectBase, SecuritySchemeObjectBase {
   flow: "implicit";
   authorizationUrl: string;
 }
 
 export interface PasswordOAuth2SecuritySchemeObject
-  extends OAuth2SecuritySchemeObjectBase,
-    SecuritySchemeObjectBase {
+  extends OAuth2SecuritySchemeObjectBase, SecuritySchemeObjectBase {
   flow: "password";
   tokenUrl: string;
 }
 
 export interface ApplicationOAuth2SecuritySchemeObject
-  extends OAuth2SecuritySchemeObjectBase,
-    SecuritySchemeObjectBase {
+  extends OAuth2SecuritySchemeObjectBase, SecuritySchemeObjectBase {
   flow: "application";
   tokenUrl: string;
 }
 
 export interface AccessCodeOAuth2SecuritySchemeObject
-  extends OAuth2SecuritySchemeObjectBase,
-    SecuritySchemeObjectBase {
+  extends OAuth2SecuritySchemeObjectBase, SecuritySchemeObjectBase {
   flow: "accessCode";
   authorizationUrl: string;
   tokenUrl: string;
@@ -398,15 +383,13 @@ interface SchemaObjectBase {
 }
 
 export interface NumberSchemaObject
-  extends SchemaObjectBase,
-    NumberSchemaObjectBase {
+  extends SchemaObjectBase, NumberSchemaObjectBase {
   type: "number";
   format?: "float" | "double";
 }
 
 export interface IntegerSchemaObject
-  extends SchemaObjectBase,
-    NumberSchemaObjectBase {
+  extends SchemaObjectBase, NumberSchemaObjectBase {
   type: "integer";
   format?: "int32" | "int64";
 }

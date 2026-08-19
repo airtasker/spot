@@ -26,6 +26,7 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 ### CLI Usage (after build)
 - `npx @airtasker/spot generate --contract api.ts --generator openapi3 --out output/` - Generate OpenAPI3 from contract
 - `npx @airtasker/spot lint api.ts` - Lint a Spot contract
+- `npx @airtasker/spot ts-lint spots` - Check the TypeScript in a contract tree for formatting, lint and type errors, under configuration Spot bundles itself (`--fix` rewrites in place)
 - `npx @airtasker/spot mock api.ts` - Run mock server from contract
 - `npx @airtasker/spot validate api.ts` - Validate contract syntax
 
