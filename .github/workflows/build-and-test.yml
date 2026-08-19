@@ -204,7 +204,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/airtasker/spot
           # The release ref is the version tag, so these yield 2.1.0, 2.1 and 2. The
