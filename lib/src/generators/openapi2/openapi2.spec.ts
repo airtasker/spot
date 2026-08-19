@@ -1,15 +1,86 @@
-import { isOpenApiv2, Spectral } from "@stoplight/spectral";
+import {
+  Document,
+  ISpectralDiagnostic,
+  RulesetDefinition,
+  Spectral
+} from "@stoplight/spectral-core";
+import { Json } from "@stoplight/spectral-parsers";
+import { oas } from "@stoplight/spectral-rulesets";
 import { Contract } from "../../definitions";
 import { parseContract } from "../../parsers/contract-parser";
 import { createProjectFromExistingSourceFile } from "../../spec-helpers/helper";
 import { generateOpenAPI2 } from "./openapi2";
 
 describe("OpenAPI 2 generator", () => {
+  /**
+   * The OpenAPI rules every generated document is held to. See the equivalent
+   * block in `openapi3.spec.ts` for why `oas` is pulled in with everything off
+   * and how each rule's own `formats` decides where it applies.
+   */
+  const ruleset: RulesetDefinition = {
+    extends: [[oas as RulesetDefinition, "off"]],
+    rules: {
+      // `operation-2xx-response` under spectral 5.
+      "operation-success-response": true,
+      "operation-operationId-unique": true,
+      "operation-parameters": true,
+      "path-params": true,
+      "no-eval-in-markdown": true,
+      "no-script-tags-in-markdown": true,
+      "openapi-tags-alphabetical": true,
+      "operation-operationId-valid-in-url": true,
+      "path-declarations-must-exist": true,
+      "path-keys-no-trailing-slash": true,
+      "path-not-include-query": true,
+      "typed-enum": true,
+      "oas2-operation-formData-consume-check": true,
+      "oas2-operation-security-defined": true,
+      // As in `openapi3.spec.ts`: the old ruleset named `oas2-valid-example`,
+      // which spectral 5 did not have, so neither of these ran. The schema half
+      // waits on https://airtasker.atlassian.net/browse/COMPASS-29
+      "oas2-valid-media-example": true,
+      "oas2-valid-schema-example": false,
+      "oas2-anyOf": true,
+      "oas2-oneOf": true,
+      "oas2-schema": true
+      // `example-value-or-externalValue` is gone rather than renamed. Spectral 6
+      // has only an `oas3-` form, which an OpenAPI 2 document would skip — and
+      // spectral 5 had no rule by that name either, so nothing is lost.
+    }
+  };
+
   const spectral = new Spectral();
 
-  beforeAll(async () => {
-    spectral.registerFormat("oas2", isOpenApiv2);
-    await spectral.loadRuleset(`${__dirname}/spectral.ruleset.yml`);
+  beforeAll(() => {
+    spectral.setRuleset(ruleset);
+  });
+
+  const lint = (document: unknown): Promise<ISpectralDiagnostic[]> =>
+    spectral.run(new Document(JSON.stringify(document), Json));
+
+  test("the extends and rules wiring leaves the named rules enabled", async () => {
+    // Every assertion above is `toHaveLength(0)`, which a ruleset that enabled
+    // nothing satisfies just as well as a clean document. A rule that no longer
+    // exists is not the gap: `setRuleset` throws on an unknown name, so a
+    // rename fails loudly on its own. The gap is a ruleset that stays
+    // well-formed while enabling nothing — every rule flipped to `false`, or
+    // the `extends`/`rules` wiring changed — which would leave all of those
+    // assertions passing over nothing. So this document breaks specific rules
+    // and names the codes it expects back.
+    const findings = await lint({
+      swagger: "2.0",
+      info: { title: "t", version: "1" },
+      host: "example.org",
+      tags: [{ name: "zebra" }, { name: "apple" }],
+      paths: {
+        "/trailing/": { get: { responses: { "200": { description: "ok" } } } }
+      }
+    });
+
+    expect(findings.map(finding => finding.code).sort()).toEqual([
+      "openapi-tags-alphabetical",
+      "path-keys-no-trailing-slash"
+    ]);
   });
 
   test("minimal contract produces minimal OpenAPI 2", async () => {
@@ -17,7 +88,7 @@ describe("OpenAPI 2 generator", () => {
     const result = generateOpenAPI2(contract);
 
     expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-    const spectralResult = await spectral.run(result);
+    const spectralResult = await lint(result);
     expect(spectralResult).toHaveLength(0);
   });
 
@@ -26,7 +97,7 @@ describe("OpenAPI 2 generator", () => {
     const result = generateOpenAPI2(contract);
 
     expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-    const spectralResult = await spectral.run(result);
+    const spectralResult = await lint(result);
     expect(spectralResult).toHaveLength(0);
   });
 
@@ -45,7 +116,7 @@ describe("OpenAPI 2 generator", () => {
         name: "security-header"
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });
@@ -59,7 +130,7 @@ describe("OpenAPI 2 generator", () => {
         get: expect.anything()
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -71,7 +142,7 @@ describe("OpenAPI 2 generator", () => {
         post: expect.anything()
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -83,7 +154,7 @@ describe("OpenAPI 2 generator", () => {
         put: expect.anything()
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -95,7 +166,7 @@ describe("OpenAPI 2 generator", () => {
         patch: expect.anything()
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -107,7 +178,7 @@ describe("OpenAPI 2 generator", () => {
         delete: expect.anything()
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });
@@ -134,7 +205,7 @@ describe("OpenAPI 2 generator", () => {
         }
       ]);
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });
@@ -159,7 +230,7 @@ describe("OpenAPI 2 generator", () => {
         }
       ]);
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -180,7 +251,7 @@ describe("OpenAPI 2 generator", () => {
         }
       ]);
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -203,7 +274,7 @@ describe("OpenAPI 2 generator", () => {
         }
       ]);
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -233,7 +304,7 @@ describe("OpenAPI 2 generator", () => {
         }
       ]);
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
 
@@ -253,7 +324,7 @@ describe("OpenAPI 2 generator", () => {
         }
       );
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });
@@ -280,7 +351,7 @@ describe("OpenAPI 2 generator", () => {
         }
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });
@@ -418,7 +489,7 @@ describe("OpenAPI 2 generator", () => {
         }
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });
@@ -432,7 +503,7 @@ describe("OpenAPI 2 generator", () => {
         get: expect.anything()
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });
@@ -448,7 +519,7 @@ describe("OpenAPI 2 generator", () => {
         }
       });
       expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
-      const spectralResult = await spectral.run(result);
+      const spectralResult = await lint(result);
       expect(spectralResult).toHaveLength(0);
     });
   });

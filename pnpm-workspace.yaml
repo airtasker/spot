@@ -23,3 +23,9 @@ allowBuilds:
   # lockfile, so it resolves and exits. On a platform with no pinned binding the
   # failure moves to require time instead — denying the script does not self-heal that.
   unrs-resolver: false
+  # Install-time analytics, reached through four of the seven @stoplight/spectral-*
+  # packages in the tree.
+  # Its postinstall reports the install to scarf.sh and it carries no functionality,
+  # so it is never run.
+  "@scarf/scarf": false
+
