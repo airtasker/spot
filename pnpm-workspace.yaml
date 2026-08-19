@@ -12,7 +12,10 @@ overrides:
 strictDepBuilds: true
 blockExoticSubdeps: true
 minimumReleaseAge: 10080
-minimumReleaseAgeExclude: "@airtasker/*"
+# A list, not a string: pnpm reads a scalar here as no exclusions and stops applying
+# minimumReleaseAge at all, so the quarantine above silently covers nothing.
+minimumReleaseAgeExclude:
+  - "@airtasker/*"
 allowBuilds:
   core-js: false
   # Reached through jest-resolve. Its postinstall only fetches a native binding when
