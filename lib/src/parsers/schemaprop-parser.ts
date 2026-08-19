@@ -110,7 +110,7 @@ export function extractJSDocSchemaProps(
         try {
           const parsedValue = JSON.parse(schemaPropValue);
           schemaProps.push({ name: schemaPropName, value: parsedValue });
-        } catch (e) {
+        } catch {
           schemaPropError = err(
             new ParserError("could not parse schemaProp", {
               file: parentJsDocNode.getSourceFile().getFilePath(),

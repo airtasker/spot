@@ -70,7 +70,7 @@ export function extractJSDocExamples(
         try {
           const parsedValue = JSON.parse(exampleValue);
           examples.push({ name: exampleName, value: parsedValue });
-        } catch (e) {
+        } catch {
           exampleError = err(
             new ParserError("could not parse example", {
               file: parentJsDocNode.getSourceFile().getFilePath(),
