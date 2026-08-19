@@ -17,9 +17,11 @@ jobs:
     permissions:
       contents: read
     strategy:
-      fail-fast: true # if one job fails, stop the rest
+      # 26 is required, and on the Current line until it becomes LTS on 2026-10-28.
+      # A regression there must not suppress the 22 and 24 results needed to place it.
+      fail-fast: false
       matrix:
-        node-version: [18, 20, 22, 24]
+        node-version: [22, 24, 26]
         shard: ["1", "2", "3", "4"]
     steps:
       - name: Checkout
@@ -48,16 +50,41 @@ jobs:
           name: test-results-node-${{ matrix.node-version }}-${{ matrix.shard }}
           path: ./test-reports
 
+  # The only required status check on master, so this job's `needs` is what actually
+  # gates a merge: a job absent from that list can fail without blocking one.
+  #
+  # It runs even when a dependency fails, and asserts their results itself in the last
+  # step, because a job skipped by a failed `needs` reports the `skipped` conclusion and
+  # a required check can count that as passing. The summary above it is reporting only —
+  # the assertion is what decides this job, so a change to the reporting action cannot
+  # quietly open the gate.
   test-summary-publish:
     runs-on: ubuntu-latest
-    needs: [test]
+    needs: [test, lint-check, docker-parity]
+    if: always()
     permissions:
       contents: read
     steps:
+      # Nothing else puts the matrix's reports in this workspace, so without this the
+      # summary globs an empty directory and reports on nothing.
+      - name: Download the matrix test results
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          path: ./test-reports
+          pattern: test-results-*
+
       - name: Test summary
         uses: test-summary/action@v2.6
+        continue-on-error: true
         with:
           paths: ./test-reports/**/*.xml
+
+      - name: Fail unless every job this one gates succeeded
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "::error::test=${{ needs.test.result }} lint-check=${{ needs.lint-check.result }} docker-parity=${{ needs.docker-parity.result }}"
+          exit 1
 
   lint-check:
     runs-on: ubuntu-latest

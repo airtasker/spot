@@ -14,6 +14,8 @@ runs:
   using: composite
   steps:
   - uses: ./.github/actions/prepare-repository
+    with:
+      node_version: ${{ inputs.node_version }}
 
   - name: Compile the repository on this version of Node.
     run: pnpm build
@@ -61,9 +63,5 @@ runs:
   - name: Build the documentation.
     run: |-
       set -uex
-      if [ ${{ inputs.node_version }} -gt 16 ]; then
-        # Without this, we get `Error: error:0308010C:digital envelope routines::unsupported` on Node >= 17.
-        export NODE_OPTIONS="--openssl-legacy-provider"
-      fi
       pnpm build-docs
     shell: bash

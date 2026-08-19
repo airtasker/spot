@@ -2,6 +2,12 @@ author: airtasker
 name: prepare-repository
 description: Prepare the repository for building and testing.
 
+inputs:
+  node_version:
+    required: false
+    default: ""
+    description: The version of Node.js to use. Defaults to the .tool-versions pin.
+
 runs:
   using: composite
 
@@ -10,9 +16,15 @@ runs:
 
   - uses: pnpm/action-setup@v4
 
+  # A caller inside the test matrix passes its matrix version; every other caller takes
+  # the repository's own pin, so no job builds or publishes on whatever Node the runner
+  # image happens to ship. Exactly one of the two inputs is ever set: setup-node prefers
+  # node-version whenever it is non-empty and warns that it is ignoring the other.
   - name: Setup Node.js
     uses: actions/setup-node@v7
     with:
+      node-version: ${{ inputs.node_version }}
+      node-version-file: ${{ inputs.node_version == '' && '.tool-versions' || '' }}
       cache: 'pnpm'
 
   - name: Install dependencies
