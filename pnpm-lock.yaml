@@ -14,7 +14,7 @@ importers:
     dependencies:
       '@oclif/command':
         specifier: ^1.8.0
-        version: 1.8.36(@oclif/config@1.18.17)
+        version: 1.8.36(@oclif/config@1.18.17)(supports-color@8.1.1)
       '@oclif/config':
         specifier: ^1.17.0
         version: 1.18.17
@@ -119,8 +119,8 @@ importers:
         specifier: ^14.0.17
         version: 14.0.17
       prettier:
-        specifier: ^3.3.2
-        version: 3.3.2
+        specifier: ^3.9.6
+        version: 3.9.6
       supertest:
         specifier: ^7.1.3
         version: 7.2.2
@@ -3136,8 +3136,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.3.2:
-    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
+  prettier@3.9.6:
+    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -4021,10 +4021,10 @@ snapshots:
       '@babel/helpers': 7.23.2
       '@babel/parser': 7.23.0
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.2(supports-color@5.5.0)
+      '@babel/traverse': 7.23.2
       '@babel/types': 7.28.6
       convert-source-map: 2.0.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -4044,7 +4044,7 @@ snapshots:
       '@babel/types': 7.28.6
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -4153,7 +4153,7 @@ snapshots:
   '@babel/helpers@7.23.2':
     dependencies:
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.2(supports-color@5.5.0)
+      '@babel/traverse': 7.23.2
       '@babel/types': 7.28.6
     transitivePeerDependencies:
       - supports-color
@@ -4338,6 +4338,21 @@ snapshots:
       '@babel/parser': 7.28.6
       '@babel/types': 7.28.6
 
+  '@babel/traverse@7.23.2':
+    dependencies:
+      '@babel/code-frame': 7.22.13
+      '@babel/generator': 7.23.0
+      '@babel/helper-environment-visitor': 7.22.20
+      '@babel/helper-function-name': 7.23.0
+      '@babel/helper-hoist-variables': 7.22.5
+      '@babel/helper-split-export-declaration': 7.22.6
+      '@babel/parser': 7.23.0
+      '@babel/types': 7.23.0
+      debug: 4.4.3(supports-color@8.1.1)
+      globals: 11.12.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@babel/traverse@7.23.2(supports-color@5.5.0)':
     dependencies:
       '@babel/code-frame': 7.22.13
@@ -4361,7 +4376,7 @@ snapshots:
       '@babel/parser': 7.28.6
       '@babel/template': 7.28.6
       '@babel/types': 7.28.6
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -4400,7 +4415,7 @@ snapshots:
   '@eslint/config-array@0.23.5':
     dependencies:
       '@eslint/object-schema': 3.0.5
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.6
     transitivePeerDependencies:
       - supports-color
@@ -4692,7 +4707,7 @@ snapshots:
     dependencies:
       '@oclif/config': 1.18.17
       '@oclif/errors': 1.3.6
-      '@oclif/help': 1.0.15
+      '@oclif/help': 1.0.15(supports-color@8.1.1)
       '@oclif/parser': 3.8.17
       debug: 4.3.4(supports-color@8.1.1)
       semver: 7.5.4
@@ -4714,21 +4729,10 @@ snapshots:
     dependencies:
       '@oclif/config': 1.18.2
       '@oclif/errors': 1.3.6
-      '@oclif/help': 1.0.15
+      '@oclif/help': 1.0.15(supports-color@8.1.1)
       '@oclif/parser': 3.8.17
       debug: 4.3.4(supports-color@8.1.1)
       semver: 7.5.4
-    transitivePeerDependencies:
-      - supports-color
-
-  '@oclif/config@1.18.16':
-    dependencies:
-      '@oclif/errors': 1.3.6
-      '@oclif/parser': 3.8.17
-      debug: 4.4.3(supports-color@5.5.0)
-      globby: 11.1.0
-      is-wsl: 2.2.0
-      tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
 
@@ -4758,7 +4762,7 @@ snapshots:
     dependencies:
       '@oclif/errors': 1.3.6
       '@oclif/parser': 3.8.17
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.6.2
@@ -4799,20 +4803,6 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  '@oclif/help@1.0.15':
-    dependencies:
-      '@oclif/config': 1.18.16
-      '@oclif/errors': 1.3.6
-      chalk: 4.1.2
-      indent-string: 4.0.0
-      lodash: 4.17.21
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      widest-line: 3.1.0
-      wrap-ansi: 6.2.0
-    transitivePeerDependencies:
-      - supports-color
-
   '@oclif/help@1.0.15(supports-color@8.1.1)':
     dependencies:
       '@oclif/config': 1.18.16(supports-color@8.1.1)
@@ -4841,7 +4831,7 @@ snapshots:
       '@oclif/command': 1.8.36(@oclif/config@1.18.2)
       '@oclif/config': 1.18.2
       '@oclif/errors': 1.3.5
-      '@oclif/help': 1.0.15
+      '@oclif/help': 1.0.15(supports-color@8.1.1)
       chalk: 4.1.2
       indent-string: 4.0.0
       lodash: 4.17.21
@@ -4857,7 +4847,7 @@ snapshots:
       '@oclif/command': 1.8.36(@oclif/config@1.18.2)
       '@oclif/config': 1.18.2
       '@oclif/errors': 1.3.5
-      '@oclif/help': 1.0.15
+      '@oclif/help': 1.0.15(supports-color@8.1.1)
       chalk: 4.1.2
       indent-string: 4.0.0
       lodash: 4.17.21
@@ -5242,7 +5232,7 @@ snapshots:
       '@typescript-eslint/types': 8.67.0
       '@typescript-eslint/typescript-estree': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/visitor-keys': 8.67.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.8.1
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -5252,7 +5242,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/types': 8.67.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
@@ -5271,7 +5261,7 @@ snapshots:
       '@typescript-eslint/types': 8.67.0
       '@typescript-eslint/typescript-estree': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/utils': 8.67.0(eslint@10.8.1)(typescript@4.9.5)
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       eslint: 10.8.1
       ts-api-utils: 2.5.0(typescript@4.9.5)
       typescript: 4.9.5
@@ -5286,7 +5276,7 @@ snapshots:
       '@typescript-eslint/tsconfig-utils': 8.67.0(typescript@4.9.5)
       '@typescript-eslint/types': 8.67.0
       '@typescript-eslint/visitor-keys': 8.67.0
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.6
       semver: 7.8.5
       tinyglobby: 0.2.17
@@ -5429,7 +5419,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -6184,7 +6174,7 @@ snapshots:
       '@types/estree': 1.0.8
       ajv: 6.14.0
       cross-spawn: 7.0.6
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       escape-string-regexp: 4.0.0
       eslint-scope: 9.1.2
       eslint-visitor-keys: 5.0.1
@@ -6499,7 +6489,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       data-uri-to-buffer: 3.0.1
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       file-uri-to-path: 2.0.0
       fs-extra: 8.1.0
       ftp: 0.3.10
@@ -6625,7 +6615,7 @@ snapshots:
   http-call@5.3.0:
     dependencies:
       content-type: 1.0.5
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       is-retry-allowed: 1.2.0
       is-stream: 2.0.1
       parse-json: 4.0.0
@@ -6645,7 +6635,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -6654,14 +6644,14 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -6807,7 +6797,7 @@ snapshots:
 
   istanbul-lib-source-maps@4.0.1:
     dependencies:
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -7577,7 +7567,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       get-uri: 3.0.2
       http-proxy-agent: 4.0.1
       https-proxy-agent: 5.0.1
@@ -7696,7 +7686,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.3.2: {}
+  prettier@3.9.6: {}
 
   pretty-error@4.0.0:
     dependencies:
@@ -8084,7 +8074,7 @@ snapshots:
   socks-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       socks: 2.7.1
     transitivePeerDependencies:
       - supports-color
@@ -8193,7 +8183,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.4.3(supports-color@5.5.0)
+      debug: 4.4.3(supports-color@8.1.1)
       fast-safe-stringify: 2.1.1
       form-data: 4.0.5
       formidable: 3.5.4
