@@ -5,6 +5,8 @@
 /.vscode
 /build
 /dist
+/junit.xml
+/test-reports
 
 /tmp
 node_modules
