@@ -255,6 +255,7 @@ console.log(openApi);
 * [`spot init`](#spot-init)
 * [`spot lint SPOT_CONTRACT`](#spot-lint-spot_contract)
 * [`spot mock SPOT_CONTRACT`](#spot-mock-spot_contract)
+* [`spot ts-lint [DIRECTORY]`](#spot-ts-lint-directory)
 * [`spot validate SPOT_CONTRACT`](#spot-validate-spot_contract)
 * [`spot validation-server SPOT_CONTRACT`](#spot-validation-server-spot_contract)
 
@@ -276,7 +277,7 @@ EXAMPLE
   $ spot checksum api.ts
 ```
 
-_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/checksum.js)_
+_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/checksum.js)_
 
 ## `spot docs SPOT_CONTRACT`
 
@@ -297,7 +298,7 @@ EXAMPLE
   $ spot docs api.ts
 ```
 
-_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/docs.js)_
+_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/docs.js)_
 
 ## `spot generate`
 
@@ -318,7 +319,7 @@ EXAMPLE
   $ spot generate --contract api.ts --language yaml --generator openapi3 --out output/
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/generate.js)_
+_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/generate.js)_
 
 ## `spot help [COMMAND]`
 
@@ -356,7 +357,7 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/init.js)_
+_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/init.js)_
 
 ## `spot lint SPOT_CONTRACT`
 
@@ -387,7 +388,7 @@ EXAMPLES
   $ spot lint --no-nullable-arrays=off
 ```
 
-_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/lint.js)_
+_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/lint.js)_
 
 ## `spot mock SPOT_CONTRACT`
 
@@ -418,7 +419,29 @@ EXAMPLE
   $ spot mock api.ts
 ```
 
-_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/mock.js)_
+_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/mock.js)_
+
+## `spot ts-lint [DIRECTORY]`
+
+Check the TypeScript in a Spot contract tree for formatting, lint and type errors
+
+```
+USAGE
+  $ spot ts-lint [DIRECTORY]
+
+ARGUMENTS
+  DIRECTORY  [default: .] directory to check
+
+OPTIONS
+  -h, --help  show CLI help
+  --fix       Reformat and apply lint fixes in place
+
+EXAMPLES
+  $ spot ts-lint
+  $ spot ts-lint spots --fix
+```
+
+_See code: [build/cli/src/commands/ts-lint.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/ts-lint.js)_
 
 ## `spot validate SPOT_CONTRACT`
 
@@ -438,7 +461,7 @@ EXAMPLE
   $ spot validate api.ts
 ```
 
-_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/validate.js)_
+_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/validate.js)_
 
 ## `spot validation-server SPOT_CONTRACT`
 
@@ -459,7 +482,7 @@ EXAMPLE
   $ spot validation-server api.ts
 ```
 
-_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v2.0.3/build/cli/src/commands/validation-server.js)_
+_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/validation-server.js)_
 <!-- commandsstop -->
 
 # Releases
