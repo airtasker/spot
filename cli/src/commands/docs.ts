@@ -1,5 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import express from "express";
+import { listen } from "../../../lib/src/express-listen";
 import path from "path";
 import { generateOpenAPI3 } from "../../../lib/src/generators/openapi3/openapi3";
 import { parse } from "../../../lib/src/parser";
@@ -49,15 +50,13 @@ export default class Docs extends Command {
       res.send(openApiObj);
     });
 
-    const start = async (): Promise<void> => {
-      try {
-        this.log(`Documentation server started on port ${port}`);
-        this.log(`Open http://localhost:${port} to view documentation`);
-        await server.listen(port);
-      } catch (err) {
-        this.error(err as Error, { exit: 1 });
-      }
-    };
-    start();
+    try {
+      await listen(server, port);
+    } catch (err) {
+      this.error(err as Error, { exit: 1 });
+    }
+
+    this.log(`Documentation server started on port ${port}`);
+    this.log(`Open http://localhost:${port} to view documentation`);
   }
 }
