@@ -113,7 +113,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/prepare-repository
 
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       # The node base image comes from Docker Hub, whose anonymous pull limit is keyed
       # on the runner's egress IP and shared with everything else on it. Conditional
@@ -181,7 +181,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - uses: docker/setup-qemu-action@v4
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       # Conditional, as in docker-parity: these credentials are not configured on
       # this repository, and login-action throws rather than skipping when both are
