@@ -68,7 +68,7 @@ jobs:
       # Nothing else puts the matrix's reports in this workspace, so without this the
       # summary globs an empty directory and reports on nothing.
       - name: Download the matrix test results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           path: ./test-reports
