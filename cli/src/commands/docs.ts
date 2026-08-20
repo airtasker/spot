@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Args, Command, Flags } from "@oclif/core";
 import express from "express";
 import { listen } from "../../../lib/src/express-listen";
 import path from "path";
@@ -13,18 +13,17 @@ export default class Docs extends Command {
 
   static examples = ["$ spot docs api.ts"];
 
-  static args = [
-    {
-      name: ARG_API,
+  static args = {
+    [ARG_API]: Args.string({
       required: true,
       description: "path to Spot contract",
       hidden: false
-    }
-  ];
+    })
+  };
 
-  static flags: flags.Input<flags.Output> = {
-    help: flags.help({ char: "h" }),
-    port: flags.integer({
+  static flags = {
+    help: Flags.help({ char: "h" }),
+    port: Flags.integer({
       char: "p",
       description: "Documentation server port",
       default: 8080
@@ -32,7 +31,7 @@ export default class Docs extends Command {
   };
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(Docs);
+    const { args, flags } = await this.parse(Docs);
     const { port } = flags;
 
     const server = express();

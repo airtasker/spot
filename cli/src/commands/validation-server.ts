@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Args, Command, Flags } from "@oclif/core";
 import { parse } from "../../../lib/src/parser";
 import { runValidationServer } from "../../../lib/src/validation-server/server";
 
@@ -20,18 +20,17 @@ export default class ValidationServer extends Command {
 
   static examples = ["$ spot validation-server api.ts"];
 
-  static args = [
-    {
-      name: ARG_API,
+  static args = {
+    [ARG_API]: Args.string({
       required: true,
       description: "path to Spot contract",
       hidden: false
-    }
-  ];
+    })
+  };
 
-  static flags: flags.Input<flags.Output> = {
-    help: flags.help({ char: "h" }),
-    port: flags.integer({
+  static flags = {
+    help: Flags.help({ char: "h" }),
+    port: Flags.integer({
       char: "p",
       default: 5907,
       description: "The port where application will be available"
@@ -39,7 +38,7 @@ export default class ValidationServer extends Command {
   };
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(ValidationServer);
+    const { args, flags } = await this.parse(ValidationServer);
     const contractPath = args[ARG_API];
     const { port } = flags;
 

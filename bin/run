@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
-require('@oclif/command').run()
-.then(require('@oclif/command/flush'))
-.catch(require('@oclif/errors/handle'))
+// `handle` is what turns a thrown error into the process exit code, including
+// the explicit ones commands pass to `this.error(..., { exit })`. `flush` waits
+// for buffered stdout to drain before the process ends.
+// @oclif/core reads $SHELL and falls back to os.userInfo().shell, which throws
+// uv_os_get_passwd ENOENT for a uid with no /etc/passwd entry — the uid supplied
+// by `docker run --user`, a Kubernetes runAsUser, or npx inside another image.
+// The Dockerfile sets this too; here it covers the entrypoints that never read it.
+process.env.SHELL ||= '/bin/sh'
+
+const oclif = require('@oclif/core')
+
+oclif.run().then(oclif.flush).catch(oclif.handle)
