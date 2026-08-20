@@ -86,7 +86,8 @@ describe("generate", () => {
     const outDir = fs.realpathSync(
       fs.mkdtempSync(path.join(os.tmpdir(), "spot-generate-"))
     );
-    const log = jest.spyOn(process.stdout, "write").mockReturnValue(true);
+    // @oclif/core 4 logs through `console.log`; see the note in ts-lint.spec.ts.
+    const log = jest.spyOn(console, "log").mockImplementation(() => undefined);
 
     await Generate.run([
       "-c",
@@ -166,7 +167,7 @@ describe("generate", () => {
       .mockResolvedValueOnce({ Generator: "openapi3" })
       .mockResolvedValueOnce({ Language: "yaml" })
       .mockResolvedValueOnce({ "Output destination": outDir });
-    jest.spyOn(process.stdout, "write").mockReturnValue(true);
+    jest.spyOn(console, "log").mockImplementation(() => undefined);
 
     await Generate.run(["-c", CONTRACT]);
 

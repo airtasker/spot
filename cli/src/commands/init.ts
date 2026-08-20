@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Command, Flags } from "@oclif/core";
 import { execSync } from "child_process";
 import fs from "fs-extra";
 import { outputFile } from "../../../lib/src/io/output";
@@ -15,8 +15,8 @@ Generated the following files:
 `
   ];
 
-  static flags: flags.Input<flags.Output> = {
-    help: flags.help({ char: "h" })
+  static flags = {
+    help: Flags.help({ char: "h" })
   };
 
   async run(): Promise<void> {

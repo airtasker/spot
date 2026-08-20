@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Args, Command, Flags } from "@oclif/core";
 import { tsLint } from "../../../lib/src/ts-lint/ts-lint";
 
 const ARG_DIR = "directory";
@@ -13,26 +13,25 @@ export default class TsLint extends Command {
 
   static examples = ["$ spot ts-lint", "$ spot ts-lint spots --fix"];
 
-  static args = [
-    {
-      name: ARG_DIR,
+  static args = {
+    [ARG_DIR]: Args.string({
       required: false,
       default: ".",
       description: "directory to check",
       hidden: false
-    }
-  ];
+    })
+  };
 
-  static flags: flags.Input<flags.Output> = {
-    help: flags.help({ char: "h" }),
-    fix: flags.boolean({
+  static flags = {
+    help: Flags.help({ char: "h" }),
+    fix: Flags.boolean({
       description: "Reformat and apply lint fixes in place",
       default: false
     })
   };
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(TsLint);
+    const { args, flags } = await this.parse(TsLint);
 
     const { report, fixed, ok } = await tsLint(args[ARG_DIR], {
       fix: flags.fix
