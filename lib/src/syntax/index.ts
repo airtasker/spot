@@ -11,3 +11,5 @@ export * from "./response";
 export * from "./security-header";
 export * from "./types";
 export * from "./draft";
+export * from "./oa3server";
+export * from "./oa3serverVariables";
