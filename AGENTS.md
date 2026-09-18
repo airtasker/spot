@@ -70,7 +70,7 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 ### TypeScript Configuration
 - Strict TypeScript settings enabled
 - Experimental decorators enabled for syntax support
-- Builds to CommonJS modules targeting ES2019
+- Builds to CommonJS modules targeting ES2022, with `useDefineForClassFields` off so class-field semantics stay as they were
 - Path mapping: `@airtasker/spot` → `./lib/src/lib`
 
 ### Testing

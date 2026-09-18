@@ -1,5 +1,5 @@
-import * as path from "path";
-import { Project, SourceFile, ts } from "ts-morph";
+import { Project, SourceFile } from "ts-morph";
+import { contractCompilerOptions } from "../ts-project";
 
 /**
  * Create an AST source file. Any files imported from the main file must also be provided.
@@ -40,23 +40,12 @@ interface FileDetail {
 export function createProject(): Project {
   return new Project({
     compilerOptions: {
-      target: ts.ScriptTarget.ESNext,
-      module: ts.ModuleKind.CommonJS,
-      strict: true,
-      noImplicitAny: true,
-      strictNullChecks: true,
-      strictFunctionTypes: true,
-      strictPropertyInitialization: true,
-      noImplicitThis: true,
-      alwaysStrict: true,
-      noImplicitReturns: true,
-      noFallthroughCasesInSwitch: true,
-      moduleResolution: ts.ModuleResolutionKind.NodeJs,
-      experimentalDecorators: true,
-      baseUrl: "./",
-      paths: {
-        "@airtasker/spot": [path.join(__dirname, "../lib")]
-      }
+      // Contracts are parsed under the same options `createContractProject`
+      // uses, so a spec and the command it stands in for agree on the compiler
+      // settings. The `@airtasker/spot` mapping needs no override: it is an
+      // absolute path resolved when that module loads, so it points at the same
+      // declarations from here.
+      ...contractCompilerOptions
     }
   });
 }

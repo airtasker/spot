@@ -75,7 +75,16 @@ class Ok<T> {
     return true;
   }
 
-  isErr(): boolean {
+  /**
+   * `this is never` rather than `boolean`, because the return type is what makes
+   * `Result` narrow. A caller writes `if (r.isErr()) return r;` and then reaches for
+   * `r.unwrap()`; narrowing a union by a method call needs every member of that union
+   * to answer with a type predicate. When one member answers `boolean` the call
+   * carries no type information, so `r` stays `Ok<T> | Err<E>` in both branches: the
+   * early return stops being assignable to the caller's `Result`, and `unwrap` stops
+   * being visible. An `Ok` is never an error, so the narrowed type here is `never`.
+   */
+  isErr(): this is never {
     return false;
   }
 
@@ -105,7 +114,8 @@ class Err<E extends Error> {
     this.value = value;
   }
 
-  isOk(): boolean {
+  // A type predicate for the same reason as `Ok.isErr` above. An `Err` is never ok.
+  isOk(): this is never {
     return false;
   }
 
