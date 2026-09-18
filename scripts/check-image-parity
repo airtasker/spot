@@ -164,6 +164,7 @@ compare_run() {
 
 echo "== validate, lint, ts-lint: comparing exit code and output =="
 compare_run "validate" 0 validate "${CONTRACT}"
+compare_run "checksum" 0 checksum "${CONTRACT}"
 compare_run "lint" 0 lint "${CONTRACT}"
 # A severity flag a consumer passes; it must keep behaving the same in the image.
 compare_run "lint --no-trailing-forward-slash=error" 0 \

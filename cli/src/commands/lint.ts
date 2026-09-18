@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Args, Command, Flags, Interfaces } from "@oclif/core";
 import { lint } from "../../../lib/src/linting/linter";
 import { parse } from "../../../lib/src/parser";
 import { findLintViolations } from "../../../lib/src/linting/find-lint-violations";
@@ -29,26 +29,27 @@ export default class Lint extends Command {
     "$ spot lint --no-nullable-arrays=off"
   ];
 
-  static args = [
-    {
-      name: ARG_API,
+  static args = {
+    [ARG_API]: Args.string({
       required: true,
       description: "path to Spot contract",
       hidden: false
-    }
-  ];
+    })
+  };
 
   static flags = this.buildFlags();
 
   static buildFlags() {
-    // Arguments depend on the list of available rules, it cannot be typed ahead of time.
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    const finalFlags: flags.Input<any> = {
-      help: flags.help({ char: "h" })
+    // The rules are only known at runtime, but the values are still flags:
+    // `FlagInput` rejects a flag *factory*, which is what `Flags.option`
+    // returns and what silently broke this command once already.
+    const finalFlags: Interfaces.FlagInput = {
+      help: Flags.help({ char: "h" })
     };
 
     Object.keys(availableRules).forEach((rule: string) => {
-      finalFlags[rule] = flags.enum({
+      // A string flag restricted by `options` is what v1's `flags.enum` was.
+      finalFlags[rule] = Flags.string({
         description: `Setting for ${rule}`,
         options: ["error", "warn", "off"]
       });
@@ -58,7 +59,7 @@ export default class Lint extends Command {
   }
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(Lint);
+    const { args, flags } = await this.parse(Lint);
     const contractPath = args[ARG_API];
     const contract = parse(contractPath);
     const groupedLintErrors = lint(contract);
@@ -76,7 +77,12 @@ export default class Lint extends Command {
         error: (msg: string) => {
           this.error(msg, { exit: false });
         },
-        warn: this.warn
+        // Wrapped rather than passed by reference: `Command.warn` reads
+        // `this.jsonEnabled()`, so handing the bare method to a caller that
+        // invokes it off a plain object throws before it can warn.
+        warn: (msg: string) => {
+          this.warn(msg);
+        }
       }
     );
 

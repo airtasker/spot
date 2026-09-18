@@ -265,19 +265,22 @@ Generate a checksum for a Spot contract
 
 ```
 USAGE
-  $ spot checksum SPOT_CONTRACT
+  $ spot checksum SPOT_CONTRACT [-h]
 
 ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
-OPTIONS
-  -h, --help  show CLI help
+FLAGS
+  -h, --help  Show CLI help.
 
-EXAMPLE
+DESCRIPTION
+  Generate a checksum for a Spot contract
+
+EXAMPLES
   $ spot checksum api.ts
 ```
 
-_See code: [build/cli/src/commands/checksum.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/checksum.js)_
+_See code: [src/commands/checksum.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/checksum.ts)_
 
 ## `spot docs SPOT_CONTRACT`
 
@@ -285,20 +288,23 @@ Preview Spot contract as OpenAPI3 documentation. The documentation server will s
 
 ```
 USAGE
-  $ spot docs SPOT_CONTRACT
+  $ spot docs SPOT_CONTRACT [-h] [-p <value>]
 
 ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
-OPTIONS
-  -h, --help       show CLI help
-  -p, --port=port  [default: 8080] Documentation server port
+FLAGS
+  -h, --help          Show CLI help.
+  -p, --port=<value>  [default: 8080] Documentation server port
 
-EXAMPLE
+DESCRIPTION
+  Preview Spot contract as OpenAPI3 documentation. The documentation server will start on http://localhost:8080.
+
+EXAMPLES
   $ spot docs api.ts
 ```
 
-_See code: [build/cli/src/commands/docs.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/docs.js)_
+_See code: [src/commands/docs.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/docs.ts)_
 
 ## `spot generate`
 
@@ -306,37 +312,44 @@ Runs a generator on an API. Used to produce client libraries, server boilerplate
 
 ```
 USAGE
-  $ spot generate
+  $ spot generate -c <value> [-h] [-l <value>] [-g <value>] [-o <value>]
 
-OPTIONS
-  -c, --contract=contract    (required) Path to a TypeScript Contract definition
-  -g, --generator=generator  Generator to run
-  -h, --help                 show CLI help
-  -l, --language=language    Language to generate
-  -o, --out=out              Directory in which to output generated files
+FLAGS
+  -c, --contract=<value>   (required) Path to a TypeScript Contract definition
+  -g, --generator=<value>  Generator to run
+  -h, --help               Show CLI help.
+  -l, --language=<value>   Language to generate
+  -o, --out=<value>        Directory in which to output generated files
 
-EXAMPLE
+DESCRIPTION
+  Runs a generator on an API. Used to produce client libraries, server boilerplates and well-known API contract formats
+  such as OpenAPI.
+
+EXAMPLES
   $ spot generate --contract api.ts --language yaml --generator openapi3 --out output/
 ```
 
-_See code: [build/cli/src/commands/generate.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/generate.js)_
+_See code: [src/commands/generate.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/generate.ts)_
 
 ## `spot help [COMMAND]`
 
-display help for spot
+Display help for spot.
 
 ```
 USAGE
-  $ spot help [COMMAND]
+  $ spot help [COMMAND...] [-n]
 
 ARGUMENTS
-  COMMAND  command to show help for
+  [COMMAND...]  Command to show help for.
 
-OPTIONS
-  --all  see all commands in CLI
+FLAGS
+  -n, --nested-commands  Include all nested commands in the output.
+
+DESCRIPTION
+  Display help for spot.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.3.1/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.2.58/src/commands/help.ts)_
 
 ## `spot init`
 
@@ -344,12 +357,15 @@ Generates the boilerplate for an API.
 
 ```
 USAGE
-  $ spot init
+  $ spot init [-h]
 
-OPTIONS
-  -h, --help  show CLI help
+FLAGS
+  -h, --help  Show CLI help.
 
-EXAMPLE
+DESCRIPTION
+  Generates the boilerplate for an API.
+
+EXAMPLES
   $ spot init
   Generated the following files:
   - api.ts
@@ -357,7 +373,7 @@ EXAMPLE
   - package.json
 ```
 
-_See code: [build/cli/src/commands/init.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/init.js)_
+_See code: [src/commands/init.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/init.ts)_
 
 ## `spot lint SPOT_CONTRACT`
 
@@ -365,30 +381,48 @@ Lint a Spot contract
 
 ```
 USAGE
-  $ spot lint SPOT_CONTRACT
+  $ spot lint SPOT_CONTRACT [-h] [--has-discriminator error|warn|off] [--has-request-payload
+    error|warn|off] [--has-response-payload error|warn|off] [--has-response error|warn|off]
+    [--no-inline-objects-within-unions error|warn|off] [--no-nullable-arrays error|warn|off]
+    [--no-nullable-fields-within-request-bodies error|warn|off] [--no-omittable-fields-within-response-bodies
+    error|warn|off] [--no-trailing-forward-slash error|warn|off]
 
 ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
-OPTIONS
-  -h, --help                                                     show CLI help
-  --has-discriminator=(error|warn|off)                           Setting for has-discriminator
-  --has-request-payload=(error|warn|off)                         Setting for has-request-payload
-  --has-response=(error|warn|off)                                Setting for has-response
-  --has-response-payload=(error|warn|off)                        Setting for has-response-payload
-  --no-inline-objects-within-unions=(error|warn|off)             Setting for no-inline-objects-within-unions
-  --no-nullable-arrays=(error|warn|off)                          Setting for no-nullable-arrays
-  --no-nullable-fields-within-request-bodies=(error|warn|off)    Setting for no-nullable-fields-within-request-bodies
-  --no-omittable-fields-within-response-bodies=(error|warn|off)  Setting for no-omittable-fields-within-response-bodies
-  --no-trailing-forward-slash=(error|warn|off)                   Setting for no-trailing-forward-slash
+FLAGS
+  -h, --help                                                 Show CLI help.
+      --has-discriminator=<option>                           Setting for has-discriminator
+                                                             <options: error|warn|off>
+      --has-request-payload=<option>                         Setting for has-request-payload
+                                                             <options: error|warn|off>
+      --has-response=<option>                                Setting for has-response
+                                                             <options: error|warn|off>
+      --has-response-payload=<option>                        Setting for has-response-payload
+                                                             <options: error|warn|off>
+      --no-inline-objects-within-unions=<option>             Setting for no-inline-objects-within-unions
+                                                             <options: error|warn|off>
+      --no-nullable-arrays=<option>                          Setting for no-nullable-arrays
+                                                             <options: error|warn|off>
+      --no-nullable-fields-within-request-bodies=<option>    Setting for no-nullable-fields-within-request-bodies
+                                                             <options: error|warn|off>
+      --no-omittable-fields-within-response-bodies=<option>  Setting for no-omittable-fields-within-response-bodies
+                                                             <options: error|warn|off>
+      --no-trailing-forward-slash=<option>                   Setting for no-trailing-forward-slash
+                                                             <options: error|warn|off>
+
+DESCRIPTION
+  Lint a Spot contract
 
 EXAMPLES
   $ spot lint api.ts
+
   $ spot lint --has-descriminator=error
+
   $ spot lint --no-nullable-arrays=off
 ```
 
-_See code: [build/cli/src/commands/lint.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/lint.js)_
+_See code: [src/commands/lint.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/lint.ts)_
 
 ## `spot mock SPOT_CONTRACT`
 
@@ -396,30 +430,31 @@ Run a mock server based on a Spot contract
 
 ```
 USAGE
-  $ spot mock SPOT_CONTRACT
+  $ spot mock SPOT_CONTRACT -p <value> [-h] [--proxyBaseUrl <value>] [--proxyFallbackBaseUrl <value>]
+    [--proxyMockBaseUrl <value>] [--pathPrefix <value>]
 
 ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
-OPTIONS
-  -h, --help                                   show CLI help
-  -p, --port=port                              (required) [default: 3010] Port on which to run the mock server
-  --pathPrefix=pathPrefix                      Prefix to prepend to each endpoint path
+FLAGS
+  -h, --help                          Show CLI help.
+  -p, --port=<value>                  (required) [default: 3010] Port on which to run the mock server
+      --pathPrefix=<value>            Prefix to prepend to each endpoint path
+      --proxyBaseUrl=<value>          If set, the server will act as a proxy and fetch data from the given remote server
+                                      instead of mocking it
+      --proxyFallbackBaseUrl=<value>  Like proxyBaseUrl, except used when the requested API does not match defined SPOT
+                                      contract. If unset, 404 will always be returned.
+      --proxyMockBaseUrl=<value>      Like proxyBaseUrl, except used to proxy draft endpoints instead of returning
+                                      mocked responses.
 
-  --proxyBaseUrl=proxyBaseUrl                  If set, the server will act as a proxy and fetch data from the given
-                                               remote server instead of mocking it
+DESCRIPTION
+  Run a mock server based on a Spot contract
 
-  --proxyFallbackBaseUrl=proxyFallbackBaseUrl  Like proxyBaseUrl, except used when the requested API does not match
-                                               defined SPOT contract. If unset, 404 will always be returned.
-
-  --proxyMockBaseUrl=proxyMockBaseUrl          Like proxyBaseUrl, except used to proxy draft endpoints instead of
-                                               returning mocked responses.
-
-EXAMPLE
+EXAMPLES
   $ spot mock api.ts
 ```
 
-_See code: [build/cli/src/commands/mock.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/mock.js)_
+_See code: [src/commands/mock.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/mock.ts)_
 
 ## `spot ts-lint [DIRECTORY]`
 
@@ -427,21 +462,25 @@ Check the TypeScript in a Spot contract tree for formatting, lint and type error
 
 ```
 USAGE
-  $ spot ts-lint [DIRECTORY]
+  $ spot ts-lint [DIRECTORY] [-h] [--fix]
 
 ARGUMENTS
-  DIRECTORY  [default: .] directory to check
+  [DIRECTORY]  [default: .] directory to check
 
-OPTIONS
-  -h, --help  show CLI help
-  --fix       Reformat and apply lint fixes in place
+FLAGS
+  -h, --help  Show CLI help.
+      --fix   Reformat and apply lint fixes in place
+
+DESCRIPTION
+  Check the TypeScript in a Spot contract tree for formatting, lint and type errors
 
 EXAMPLES
   $ spot ts-lint
+
   $ spot ts-lint spots --fix
 ```
 
-_See code: [build/cli/src/commands/ts-lint.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/ts-lint.js)_
+_See code: [src/commands/ts-lint.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/ts-lint.ts)_
 
 ## `spot validate SPOT_CONTRACT`
 
@@ -449,19 +488,22 @@ Validate a Spot contract
 
 ```
 USAGE
-  $ spot validate SPOT_CONTRACT
+  $ spot validate SPOT_CONTRACT [-h]
 
 ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
-OPTIONS
-  -h, --help  show CLI help
+FLAGS
+  -h, --help  Show CLI help.
 
-EXAMPLE
+DESCRIPTION
+  Validate a Spot contract
+
+EXAMPLES
   $ spot validate api.ts
 ```
 
-_See code: [build/cli/src/commands/validate.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/validate.js)_
+_See code: [src/commands/validate.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/validate.ts)_
 
 ## `spot validation-server SPOT_CONTRACT`
 
@@ -469,20 +511,23 @@ Start the spot contract validation server
 
 ```
 USAGE
-  $ spot validation-server SPOT_CONTRACT
+  $ spot validation-server SPOT_CONTRACT [-h] [-p <value>]
 
 ARGUMENTS
   SPOT_CONTRACT  path to Spot contract
 
-OPTIONS
-  -h, --help       show CLI help
-  -p, --port=port  [default: 5907] The port where application will be available
+FLAGS
+  -h, --help          Show CLI help.
+  -p, --port=<value>  [default: 5907] The port where application will be available
 
-EXAMPLE
+DESCRIPTION
+  Start the spot contract validation server
+
+EXAMPLES
   $ spot validation-server api.ts
 ```
 
-_See code: [build/cli/src/commands/validation-server.js](https://github.com/airtasker/spot/blob/v2.1.0/build/cli/src/commands/validation-server.js)_
+_See code: [src/commands/validation-server.ts](https://github.com/airtasker/spot/blob/v2.1.0/src/commands/validation-server.ts)_
 <!-- commandsstop -->
 
 # Releases

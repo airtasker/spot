@@ -1,4 +1,4 @@
-import { Command, flags } from "@oclif/command";
+import { Args, Command, Flags } from "@oclif/core";
 import { hashContract } from "../../../lib/src/checksum/hash";
 import { parse } from "../../../lib/src/parser";
 
@@ -12,21 +12,20 @@ export default class Checksum extends Command {
 
   static examples = ["$ spot checksum api.ts"];
 
-  static args = [
-    {
-      name: ARG_API,
+  static args = {
+    [ARG_API]: Args.string({
       required: true,
       description: "path to Spot contract",
       hidden: false
-    }
-  ];
+    })
+  };
 
-  static flags: flags.Input<flags.Output> = {
-    help: flags.help({ char: "h" })
+  static flags = {
+    help: Flags.help({ char: "h" })
   };
 
   async run(): Promise<void> {
-    const { args } = this.parse(Checksum);
+    const { args } = await this.parse(Checksum);
     try {
       const contract = parse(args[ARG_API]);
       const hash = hashContract(contract);

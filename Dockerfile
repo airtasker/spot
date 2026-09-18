@@ -45,7 +45,7 @@ RUN pnpm install --frozen-lockfile
 COPY tsconfig.json index.ts ./
 COPY lib ./lib
 COPY cli ./cli
-# `tsc` rather than the pack lifecycle. `prepack` also runs `oclif-dev manifest` — the
+# `tsc` rather than the pack lifecycle. `prepack` also runs `oclif manifest` — the
 # image must ship no manifest, see the runtime stage — and `pnpm build-docs`, a
 # webpack/redoc bundle that this image never serves.
 RUN pnpm exec tsc
@@ -82,6 +82,12 @@ RUN for c in mock docs init; do \
 # would report an invalid contract and still pass its CI gate. /tmp because an
 # arbitrary uid has to be able to write it.
 ENV HOME=/tmp
+
+# Load-bearing for the same reason. @oclif/core reads `$SHELL` and falls back to
+# `os.userInfo().shell`, which throws `uv_os_get_passwd ENOENT` for a uid with no
+# /etc/passwd entry — the uid `--user "$(id -u):$(id -g)"` supplies. Every command
+# fails before it starts, so this is not a nicety either.
+ENV SHELL=/bin/sh
 
 # Overridden by `--workdir` in normal use. Mode 1777 because the documented invocation
 # passes an arbitrary `--user`, which would otherwise find this directory unwritable;

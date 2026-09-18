@@ -23,11 +23,14 @@ describe("ts-lint command", () => {
     restoreExitCode = process.exitCode;
     process.exitCode = undefined;
     out = "";
+    // `this.log` reaches the terminal through `console.log` in @oclif/core 4,
+    // not through `process.stdout.write`. Spying on the stream captures
+    // nothing, because jest substitutes its own `console` and that never
+    // reaches the real stream.
     writeSpy = jest
-      .spyOn(process.stdout, "write")
-      .mockImplementation((chunk: unknown) => {
-        out += String(chunk);
-        return true;
+      .spyOn(console, "log")
+      .mockImplementation((...args: unknown[]) => {
+        out += args.map(String).join(" ") + "\n";
       });
   });
 
