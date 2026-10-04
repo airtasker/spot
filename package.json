@@ -20,7 +20,7 @@
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "express": "^4.19.2",
-    "fs-extra": "^11.4.0",
+    "fs-extra": "^11.4.1",
     "inquirer": "^8.1.1",
     "js-yaml": "^4.3.1",
     "prettier": "^3.9.6",
