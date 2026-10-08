@@ -43,7 +43,10 @@ import {
   ServerObject,
   ServerVariableObject
 } from "./openapi3-1-specification";
-import { typeToSchemaObject } from "./openapi3-1-type-util";
+import {
+  relocateSchemaPropError,
+  typeToSchemaObject
+} from "./openapi3-1-type-util";
 import {
   OpenApi31ComplianceError,
   validateOpenAPI31,
@@ -138,10 +141,9 @@ function endpointsToPathsObject(
 
     acc[pathName] = acc[pathName] ?? {};
     const pathItemMethod = httpMethodToPathItemMethod(endpoint.method);
-    acc[pathName][pathItemMethod] = endpointToOperationObject(
-      endpoint,
-      typeTable,
-      config
+    acc[pathName][pathItemMethod] = relocateSchemaPropError(
+      () => endpointToOperationObject(endpoint, typeTable, config),
+      e => e.at(`endpoint "${endpoint.name}"`)
     );
     return acc;
   }, {});
@@ -195,7 +197,7 @@ function endpointRequestToParameterObjects(
     in: "path",
     description: p.description,
     required: true,
-    schema: typeToSchemaObject(p.type, typeTable),
+    schema: locatedSchema(p.type, typeTable, `request path param "${p.name}"`),
     examples: exampleToOpenApiExampleSet(p.examples)
   }));
 
@@ -206,7 +208,11 @@ function endpointRequestToParameterObjects(
       description: p.description,
       ...typeToQueryParameterSerializationStrategy(p.type, typeTable, config),
       required: !p.optional,
-      schema: typeToSchemaObject(p.type, typeTable),
+      schema: locatedSchema(
+        p.type,
+        typeTable,
+        `request query param "${p.name}"`
+      ),
       examples: exampleToOpenApiExampleSet(p.examples)
     })
   );
@@ -216,7 +222,7 @@ function endpointRequestToParameterObjects(
     in: "header",
     description: p.description,
     required: !p.optional,
-    schema: typeToSchemaObject(p.type, typeTable),
+    schema: locatedSchema(p.type, typeTable, `request header "${p.name}"`),
     examples: exampleToOpenApiExampleSet(p.examples)
   }));
 
@@ -272,7 +278,7 @@ function endpointRequestBodyToRequestBodyObject(
   return {
     content: {
       "application/json": {
-        schema: typeToSchemaObject(requestBody.type, typeTable)
+        schema: locatedSchema(requestBody.type, typeTable, "request body")
       }
     },
     required: true
@@ -316,12 +322,18 @@ function endpointResponseToResponseObject(
     (isSpecificResponse(response)
       ? `${response.status} response`
       : "default response");
+  const site = isSpecificResponse(response)
+    ? `response ${response.status}`
+    : "default response";
 
   const headers =
     response.headers.length > 0
       ? response.headers.reduce<{ [name: string]: HeaderObject }>(
           (acc, header) => {
-            acc[header.name] = headerToHeaderObject(header, typeTable);
+            acc[header.name] = relocateSchemaPropError(
+              () => headerToHeaderObject(header, typeTable),
+              e => e.at(`${site} header "${header.name}"`)
+            );
             return acc;
           },
           {}
@@ -330,7 +342,7 @@ function endpointResponseToResponseObject(
 
   const content = response.body && {
     "application/json": {
-      schema: typeToSchemaObject(response.body.type, typeTable)
+      schema: locatedSchema(response.body.type, typeTable, `${site} body`)
     }
   };
 
@@ -355,11 +367,22 @@ function contractTypesToComponentsObjectSchemas(
 ): { [schema: string]: SchemaObject } {
   return types.reduce<{ [schema: string]: SchemaObject }>((acc, t) => {
     acc[t.name] = {
-      ...typeToSchemaObject(t.typeDef.type, typeTable),
+      ...locatedSchema(t.typeDef.type, typeTable, `component "${t.name}"`),
       description: t.typeDef.description
     };
     return acc;
   }, {});
+}
+
+function locatedSchema(
+  type: Type,
+  typeTable: TypeTable,
+  site: string
+): SchemaObject {
+  return relocateSchemaPropError(
+    () => typeToSchemaObject(type, typeTable),
+    e => e.at(site)
+  );
 }
 
 function httpMethodToPathItemMethod(
