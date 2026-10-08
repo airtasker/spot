@@ -436,6 +436,22 @@ Create them as COMPASS `Technical Task` tickets, never `TODO`s.
 | The existing output changes by accident, or through a dependency bump | PR 1 hashes JSON and YAML, and every later PR must show an empty three-dot diff. |
 | Conflicts with COMPASS-28's in-flight migrations in `generate.ts` | Rebase onto them, and coordinate merge order on the tickets. |
 
+## Implementation decisions (2026-10-08)
+
+PRs 1–7 were started before Phase 0 ran. To unblock them, these decisions were taken:
+
+- **Phase 0 moves from a gate before PR 2 to a gate before release.** PRs 2–7 use the plan's defaults:
+  - `anyOf` for nullable references;
+  - `oneOf` for unions without a discriminator;
+  - `description` beside `$ref`;
+  - `{type: "null"}` for a lone `null`;
+  - `openapi: "3.1.0"`;
+  - an error for an unbounded `exclusive*`.
+
+  If Phase 0 contradicts any of these, the relevant PR changes before it is marked ready. PR 8 is not started until Phase 0 is done.
+- **The stack is based on this plan's PR, on `master`.** It is rebased onto COMPASS-28 as that work merges.
+- **Open question 5: no `--no-verify` flag.** The self-check cannot be switched off.
+
 ## Open questions
 
 Phase 0 settles each of these unless noted.
