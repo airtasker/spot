@@ -1,9 +1,8 @@
 name: airtasker/spot/build-and-test
 
 on:
+  # Every base branch, so a PR stacked on another PR's branch is tested too.
   pull_request:
-    branches:
-      - master
   push:
     branches:
       - master
