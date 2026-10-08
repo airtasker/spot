@@ -50,6 +50,7 @@ const SNAPSHOT_CONTRACTS = [
 const UNSUPPORTED_CONTRACTS = ["contract-with-schemaprops.ts"];
 
 const OPENAPI31_SNAPSHOT_CONTRACTS = [
+  "contract-with-nested-discriminated-unions.ts",
   "contract-with-null-type.ts",
   "contract-with-nullable-intersections.ts",
   "contract-with-nullable-references.ts",
@@ -136,6 +137,20 @@ describe("OpenAPI 3.1 generator", () => {
     expect(() => generateFromSpecExample(filename)).toThrow(
       "is not supported by the OpenAPI 3.1 generator"
     );
+  });
+
+  test("a parsed union whose members share a leaf is not discriminated", () => {
+    const result = generateFromSpecExample(
+      "contract-with-nested-discriminated-unions.ts",
+      OPENAPI31_SPEC_EXAMPLES_DIR
+    );
+
+    expect(result.components?.schemas?.Body.properties?.diamond).toStrictEqual({
+      oneOf: [
+        { $ref: "#/components/schemas/Left" },
+        { $ref: "#/components/schemas/Right" }
+      ]
+    });
   });
 
   test("keeps a component description beside $ref", () => {
