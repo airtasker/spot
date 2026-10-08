@@ -44,14 +44,29 @@ import {
   ServerVariableObject
 } from "./openapi3-1-specification";
 import { typeToSchemaObject } from "./openapi3-1-type-util";
+import {
+  OpenApi31ComplianceError,
+  validateOpenAPI31,
+  Violation
+} from "./validate";
 
 const SECURITY_HEADER_SCHEME_NAME = "SecurityHeader";
+
+export interface GenerateOpenAPI31Options {
+  onWarning?: (warning: Violation) => void;
+}
 
 /**
  * The returned document is plain JSON data: it has no `undefined` values and
  * no shared object references, so it equals what is written to disk.
+ *
+ * @throws OpenApi31ComplianceError if the document does not conform to
+ * OpenAPI 3.1. Every violation is listed.
  */
-export function generateOpenAPI31(contract: Contract): OpenApiV31 {
+export function generateOpenAPI31(
+  contract: Contract,
+  options: GenerateOpenAPI31Options = {}
+): OpenApiV31 {
   const typeTable = TypeTable.fromArray(contract.types);
 
   const openapi: OpenApiV31 = {
@@ -75,7 +90,13 @@ export function generateOpenAPI31(contract: Contract): OpenApiV31 {
     servers: contract.oa3servers && contractToOa3ServerObject(contract)
   };
 
-  return JSON.parse(JSON.stringify(openapi));
+  const document: OpenApiV31 = JSON.parse(JSON.stringify(openapi));
+  const { errors, warnings } = validateOpenAPI31(document);
+  if (errors.length > 0) {
+    throw new OpenApi31ComplianceError(errors);
+  }
+  warnings.forEach(warning => options.onWarning?.(warning));
+  return document;
 }
 
 function contractToComponentsObject(
