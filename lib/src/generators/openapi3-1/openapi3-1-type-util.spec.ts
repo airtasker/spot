@@ -708,6 +708,14 @@ describe("OpenAPI 3.1 type util", () => {
       union("NestedWithBadLeaf", ["GoodLeaf", "BadLeaf"])
     ]);
     const outer = (...members: Type[]) => unionType(members, "type");
+    const inlineMember = objectType([
+      { name: "type", type: stringLiteralType("inline"), optional: false }
+    ]);
+    const inlineMemberSchema: SchemaObject = {
+      type: "object",
+      properties: { type: { type: "string", enum: ["inline"] } },
+      required: ["type"]
+    };
 
     it.each<[string, Type, SchemaObject]>([
       [
@@ -818,21 +826,51 @@ describe("OpenAPI 3.1 type util", () => {
         }
       ],
       [
-        "an outer union with an inline member is not flattened",
+        "an inline member is kept and reference members are flattened, with no mapping",
         outer(
-          objectType([
-            { name: "type", type: stringLiteralType("inline"), optional: false }
-          ]),
+          referenceType("FlatTypeA"),
+          inlineMember,
           referenceType("NestedUnion")
         ),
         {
           oneOf: [
+            ref("FlatTypeA"),
+            inlineMemberSchema,
+            ref("NestedUnionSingle"),
+            ref("NestedUnionDouble")
+          ],
+          discriminator: { propertyName: "type" }
+        }
+      ],
+      [
+        "an inline member with a reference to a nullable union lifts the null",
+        outer(inlineMember, referenceType("MaybeNested")),
+        {
+          anyOf: [
             {
-              type: "object",
-              properties: { type: { type: "string", enum: ["inline"] } },
-              required: ["type"]
+              oneOf: [
+                inlineMemberSchema,
+                ref("NestedUnionSingle"),
+                ref("NestedUnionDouble")
+              ],
+              discriminator: { propertyName: "type" }
             },
-            ref("NestedUnion")
+            { type: "null" }
+          ]
+        }
+      ],
+      [
+        "an inline member with references that share a leaf lists it once",
+        outer(
+          inlineMember,
+          referenceType("NestedUnion"),
+          referenceType("NestedUnionSingle")
+        ),
+        {
+          oneOf: [
+            inlineMemberSchema,
+            ref("NestedUnionSingle"),
+            ref("NestedUnionDouble")
           ],
           discriminator: { propertyName: "type" }
         }
@@ -845,12 +883,17 @@ describe("OpenAPI 3.1 type util", () => {
       [
         "an inline member of an inner union",
         outer(referenceType("FlatTypeA"), referenceType("WithInlineMember")),
-        "The union WithInlineMember has an inline object member, so the OpenAPI 3.1 generator cannot list it in a discriminator mapping. Declare the member as a named type."
+        "The union WithInlineMember has an inline object member, so the OpenAPI 3.1 generator cannot flatten it into a discriminated union. Declare the member as a named type."
       ],
       [
         "a leaf missing the discriminator property",
         outer(referenceType("GoodLeaf"), referenceType("NestedWithBadLeaf")),
         'Unexpected error: the discriminator property "type" of BadLeaf is not a string literal'
+      ],
+      [
+        "an inline member of an inner union, beside an inline outer member",
+        outer(inlineMember, referenceType("WithInlineMember")),
+        "The union WithInlineMember has an inline object member, so the OpenAPI 3.1 generator cannot flatten it into a discriminated union. Declare the member as a named type."
       ]
     ])("%s is rejected", (_, type, message) => {
       expect(() => typeToSchemaObject(type, typeTable)).toThrow(message);

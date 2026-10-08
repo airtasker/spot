@@ -40,7 +40,7 @@ export function discriminatedLeafReferences(
         visitReference(inner);
       } else {
         throw new Error(
-          `${union} has an inline ${inner.kind} member, so the OpenAPI 3.1 generator cannot list it in a discriminator mapping. Declare the member as a named type.`
+          `${union} has an inline ${inner.kind} member, so the OpenAPI 3.1 generator cannot flatten it into a discriminated union. Declare the member as a named type.`
         );
       }
     });

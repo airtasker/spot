@@ -1548,6 +1548,67 @@ exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nested-discriminated-uni
               }
             }
           },
+          "inlineMemberWithUnion": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "inline"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              {
+                "$ref": "#/components/schemas/SingleSlider"
+              },
+              {
+                "$ref": "#/components/schemas/RangeSlider"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind"
+            }
+          },
+          "inlineMemberWithNullableUnion": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "inline"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ]
+                  },
+                  {
+                    "$ref": "#/components/schemas/SingleSlider"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RangeSlider"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "kind"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "diamond": {
             "oneOf": [
               {
@@ -1566,6 +1627,8 @@ exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nested-discriminated-uni
           "alias",
           "liftedNull",
           "intersectionLeaf",
+          "inlineMemberWithUnion",
+          "inlineMemberWithNullableUnion",
           "diamond"
         ]
       }
