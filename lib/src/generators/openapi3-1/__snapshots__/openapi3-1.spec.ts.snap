@@ -2108,6 +2108,232 @@ exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nullable-types.ts matche
 }"
 `;
 
+exports[`OpenAPI 3.1 generator openapi3-1/contract-with-schemaprop-conversions.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/prices": {
+      "get": {
+        "operationId": "SchemaPropConversions",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "An upper bound made exclusive, with the flag written first",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "exclusiveMaximum": 100,
+              "examples": [
+                10
+              ]
+            }
+          },
+          {
+            "name": "size",
+            "in": "header",
+            "description": "A lower bound made exclusive",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "exclusiveMinimum": 1,
+              "default": 42
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Price": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "amount"
+        ],
+        "examples": [
+          {
+            "amount": 3.5
+          }
+        ],
+        "minProperties": 1,
+        "description": "A component with an example"
+      },
+      "Body": {
+        "type": "object",
+        "properties": {
+          "ratio": {
+            "type": "number",
+            "format": "float",
+            "exclusiveMinimum": 0,
+            "exclusiveMaximum": 1,
+            "description": "Both bounds made exclusive"
+          },
+          "even": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "multipleOf": 2,
+            "description": "False flags are dropped, with or without a bound"
+          },
+          "code": {
+            "type": "string",
+            "title": "code-title",
+            "minLength": 2,
+            "maxLength": 8,
+            "pattern": "^[A-Z]+$",
+            "examples": [
+              "ABC"
+            ],
+            "deprecated": true,
+            "description": "A string with an example"
+          },
+          "tag": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "examples": [
+              {
+                "name": "tag"
+              }
+            ],
+            "minProperties": 1,
+            "maxProperties": 3,
+            "additionalProperties": false,
+            "description": "An object with an example"
+          },
+          "currencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "examples": [
+              [
+                "AUD",
+                "USD"
+              ]
+            ],
+            "minItems": 1,
+            "maxItems": 5,
+            "uniqueItems": true,
+            "description": "An array with an example"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "title": "status-title",
+            "examples": [
+              "OPEN"
+            ],
+            "deprecated": false,
+            "description": "A literal union with an example"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "note-title",
+            "deprecated": true,
+            "description": "A nullable union with schemaprops"
+          },
+          "namedPrice": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                },
+                "required": [
+                  "amount"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            ],
+            "title": "named-price",
+            "examples": [
+              {
+                "amount": 3.5,
+                "name": "tag"
+              }
+            ],
+            "description": "An intersection with an example"
+          },
+          "previous": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Price"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "A nullable reference to a component with an example"
+          }
+        },
+        "required": [
+          "ratio",
+          "even",
+          "code",
+          "tag",
+          "currencies",
+          "status",
+          "note",
+          "namedPrice",
+          "previous"
+        ]
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3.1 generator openapi3-1/contract-with-unions.ts matches the snapshot 1`] = `
 "{
   "openapi": "3.1.0",
