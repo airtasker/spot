@@ -1,0 +1,1114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI 3.1 generator contract-with-array-query-param.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
+          {
+            "name": "countries",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-array-query-param-and-comma-serialization-strategy.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
+          {
+            "name": "countries",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-delete-endpoint.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users/{id}": {
+      "delete": {
+        "operationId": "DeleteEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "204 response"
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-endpoint-metadata.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "description": "My description",
+        "summary": "My summary",
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-examples.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "EndpointWithExampleOnHeaders",
+        "parameters": [
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "description": "property-example description",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "property-example": {
+                "value": "property-example-value"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-get-endpoint.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-head-endpoint.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "head": {
+        "operationId": "HeadEndpoint",
+        "responses": {
+          "204": {
+            "description": "204 response",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Link": {
+                "required": false,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-multiple-servers.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {},
+  "servers": [
+    {
+      "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
+      "variables": {
+        "username": {
+          "default": "demo"
+        },
+        "port": {
+          "default": "8443",
+          "enum": [
+            "8443",
+            "443"
+          ]
+        },
+        "basePath": {
+          "default": "v2"
+        }
+      }
+    },
+    {
+      "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
+      "variables": {
+        "username": {
+          "default": "dev"
+        },
+        "port": {
+          "default": "8080",
+          "enum": [
+            "8080",
+            "8081"
+          ]
+        },
+        "basePath": {
+          "default": "v2"
+        }
+      }
+    }
+  ]
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-object-query-param.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithArrayQueryParam",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "style": "deepObject",
+            "explode": true,
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "order": {
+                  "type": "string",
+                  "enum": [
+                    "desc",
+                    "asc"
+                  ]
+                }
+              },
+              "required": [
+                "page",
+                "order"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-one-server.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {},
+  "servers": [
+    {
+      "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
+      "description": "Production server",
+      "variables": {
+        "username": {
+          "default": "demo"
+        },
+        "port": {
+          "default": "8443",
+          "enum": [
+            "8443",
+            "443"
+          ]
+        },
+        "basePath": {
+          "default": "v2"
+        }
+      }
+    }
+  ]
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-patch-endpoint.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users/{id}": {
+      "patch": {
+        "operationId": "PatchEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-path-params.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/companies/{companyId}/users/{userId}": {
+      "get": {
+        "operationId": "EndpointWithPathParams",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-post-endpoint.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "operationId": "PostEndpoint",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "201 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-put-endpoint.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users/{id}": {
+      "put": {
+        "operationId": "PutEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-query-params.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/companies": {
+      "get": {
+        "operationId": "EndpointWithQueryParams",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "post.code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-request-headers.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "EndpointWithRequestHeaders",
+        "parameters": [
+          {
+            "name": "Accept-Encoding",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-response-headers.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "operationId": "EndpointWithResponseHeaders",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "201 response",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Link": {
+                "required": false,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-security-header.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "GetEndpoint",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "SecurityHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "security-header"
+      }
+    }
+  },
+  "security": [
+    {
+      "SecurityHeader": []
+    }
+  ]
+}"
+`;
+
+exports[`OpenAPI 3.1 generator contract-with-specific-and-default-responses.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users/{id}": {
+      "get": {
+        "operationId": "EndpointWithResponses",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator minimal-contract.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {}
+}"
+`;
+
+exports[`OpenAPI 3.1 generator versioned-contract.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "versioned-contract",
+    "version": "0.1.0"
+  },
+  "paths": {}
+}"
+`;
