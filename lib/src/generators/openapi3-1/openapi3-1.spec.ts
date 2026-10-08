@@ -2,8 +2,15 @@ import fs from "fs";
 import path from "path";
 import { Contract, Endpoint } from "../../definitions";
 import { parse } from "../../parser";
-import { referenceType, stringType } from "../../types";
+import {
+  referenceType,
+  stringLiteralType,
+  stringType,
+  unionType
+} from "../../types";
 import { generateOpenAPI31 } from "./openapi3-1";
+import * as validate from "./validate";
+import { OpenApi31ComplianceError, validateOpenAPI31 } from "./validate";
 
 const OPENAPI3_SPEC_EXAMPLES_DIR = path.join(
   __dirname,
@@ -93,6 +100,10 @@ describe("OpenAPI 3.1 generator", () => {
     test("is plain JSON data", () => {
       expect(result).toStrictEqual(JSON.parse(JSON.stringify(result)));
     });
+
+    test("passes the self-check with no warnings", () => {
+      expect(validateOpenAPI31(result)).toEqual({ errors: [], warnings: [] });
+    });
   });
 
   test.each(UNSUPPORTED_CONTRACTS)("%s is rejected", filename => {
@@ -117,6 +128,78 @@ describe("OpenAPI 3.1 generator", () => {
     expect(result.components?.schemas?.Alias).toStrictEqual({
       $ref: "#/components/schemas/Name",
       description: "an alias"
+    });
+  });
+
+  describe("self-check", () => {
+    const contractWithServerDefault = (defaultValue: string) =>
+      contractWith({
+        oa3servers: [
+          {
+            url: "https://example.com:{port}",
+            oa3ServerVariables: [
+              {
+                parameterName: "port",
+                defaultValue,
+                type: unionType([
+                  stringLiteralType("80"),
+                  stringLiteralType("443")
+                ])
+              }
+            ]
+          }
+        ]
+      });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    test("a non-conforming document is rejected with every violation", () => {
+      expect(() =>
+        generateOpenAPI31(contractWithServerDefault("8080"))
+      ).toThrow(
+        new OpenApi31ComplianceError([
+          {
+            path: "/servers/0/variables/port/default",
+            message:
+              'default "8080" is not one of the variable\'s enum values ["80","443"]'
+          }
+        ])
+      );
+    });
+
+    test("a conforming document is returned", () => {
+      expect(
+        generateOpenAPI31(contractWithServerDefault("443")).servers
+      ).toStrictEqual([
+        {
+          url: "https://example.com:{port}",
+          variables: { port: { default: "443", enum: ["80", "443"] } }
+        }
+      ]);
+    });
+
+    test("warnings are passed to onWarning and do not fail generation", () => {
+      const warning = { path: "/components/schemas/A/oneOf", message: "w" };
+      jest
+        .spyOn(validate, "validateOpenAPI31")
+        .mockReturnValue({ errors: [], warnings: [warning] });
+      const onWarning = jest.fn();
+
+      const result = generateOpenAPI31(contractWith({}), { onWarning });
+
+      expect(result.openapi).toBe("3.1.0");
+      expect(onWarning.mock.calls).toEqual([[warning]]);
+    });
+
+    test("validates the normalised document", () => {
+      const spy = jest.spyOn(validate, "validateOpenAPI31");
+
+      const result = generateOpenAPI31(contractWith({}));
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.mock.calls[0][0]).toBe(result);
     });
   });
 

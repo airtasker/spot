@@ -1,2 +1,8 @@
-export { generateOpenAPI31 } from "./openapi3-1";
+export { generateOpenAPI31, GenerateOpenAPI31Options } from "./openapi3-1";
 export * as Specification from "./openapi3-1-specification";
+export {
+  OpenApi31ComplianceError,
+  validateOpenAPI31,
+  ValidationResult,
+  Violation
+} from "./validate";
