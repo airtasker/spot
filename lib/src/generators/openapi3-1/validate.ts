@@ -26,7 +26,7 @@ export class OpenApi31ComplianceError extends Error {
     super(
       [
         `The generated document does not conform to OpenAPI 3.1 (${violations.length} violation${violations.length === 1 ? "" : "s"}):`,
-        ...violations.map(formatViolation)
+        ...violations.map(violation => `  ${formatViolation(violation)}`)
       ].join("\n")
     );
     this.name = "OpenApi31ComplianceError";
@@ -35,7 +35,7 @@ export class OpenApi31ComplianceError extends Error {
 }
 
 export function formatViolation(violation: Violation): string {
-  return `  ${violation.path || "/"}: ${violation.message}`;
+  return `${violation.path || "/"}: ${violation.message}`;
 }
 
 const SCHEMA_REF_PREFIX = "#/components/schemas/";
