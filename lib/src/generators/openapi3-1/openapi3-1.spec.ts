@@ -58,6 +58,11 @@ const OPENAPI31_SNAPSHOT_CONTRACTS = [
   "contract-with-unions.ts"
 ];
 
+// Contracts whose output passes the self-check with warnings.
+const OPENAPI31_WARNING_CONTRACTS = [
+  "contract-with-overlapping-nullable-members.ts"
+];
+
 function generateFromSpecExample(
   filename: string,
   dir = OPENAPI3_SPEC_EXAMPLES_DIR
@@ -94,9 +99,9 @@ describe("OpenAPI 3.1 generator", () => {
     );
   });
 
-  test("every openapi3.1 spec example is snapshotted", () => {
+  test("every openapi3.1 spec example is snapshotted or expects warnings", () => {
     expect(fs.readdirSync(OPENAPI31_SPEC_EXAMPLES_DIR).sort()).toEqual(
-      [...OPENAPI31_SNAPSHOT_CONTRACTS].sort()
+      [...OPENAPI31_SNAPSHOT_CONTRACTS, ...OPENAPI31_WARNING_CONTRACTS].sort()
     );
   });
 
@@ -261,6 +266,42 @@ describe("OpenAPI 3.1 generator", () => {
             path: "/components/schemas/Amount/oneOf",
             message:
               "members 0 and 1 can match the same value, so that value matches more than one oneOf branch"
+          }
+        ]
+      ]);
+    });
+
+    test("a union of two nullable references is generated with a warning", () => {
+      const onWarning = jest.fn();
+
+      const result = generateOpenAPI31(
+        parse(
+          path.join(
+            OPENAPI31_SPEC_EXAMPLES_DIR,
+            "contract-with-overlapping-nullable-members.ts"
+          )
+        ),
+        { onWarning }
+      );
+
+      expect(result.components?.schemas?.Body).toStrictEqual({
+        type: "object",
+        properties: {
+          pet: {
+            oneOf: [
+              { $ref: "#/components/schemas/MaybeCat" },
+              { $ref: "#/components/schemas/MaybeDog" }
+            ]
+          }
+        },
+        required: ["pet"]
+      });
+      expect(onWarning.mock.calls).toEqual([
+        [
+          {
+            path: "/components/schemas/Body/properties/pet/oneOf",
+            message:
+              "members /components/schemas/Body/properties/pet/oneOf/0, /components/schemas/Body/properties/pet/oneOf/1 all admit null, so null matches more than one oneOf branch and is rejected"
           }
         ]
       ]);

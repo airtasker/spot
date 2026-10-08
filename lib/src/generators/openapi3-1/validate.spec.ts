@@ -687,6 +687,163 @@ describe("validateOpenAPI31", () => {
       ).toHaveLength(1);
     });
 
+    test("two members that admit null through references", () => {
+      expect(
+        validateOpenAPI31(
+          documentWith({
+            MaybeCat: {
+              anyOf: [{ $ref: "#/components/schemas/Cat" }, { type: "null" }]
+            },
+            MaybeDog: {
+              anyOf: [{ $ref: "#/components/schemas/Dog" }, { type: "null" }]
+            },
+            MaybeCatAlias: { $ref: "#/components/schemas/MaybeCat" },
+            Pets: {
+              oneOf: [
+                { $ref: "#/components/schemas/MaybeCatAlias" },
+                { $ref: "#/components/schemas/Bird" },
+                { $ref: "#/components/schemas/MaybeDog" }
+              ]
+            }
+          })
+        )
+      ).toEqual({
+        errors: [],
+        warnings: [
+          {
+            path: "/components/schemas/Pets/oneOf",
+            message:
+              "members /components/schemas/Pets/oneOf/0, /components/schemas/Pets/oneOf/2 all admit null, so null matches more than one oneOf branch and is rejected"
+          }
+        ]
+      });
+    });
+
+    test.each([
+      ["a type array", { type: ["object", "null"] }],
+      ["an enum containing null", { enum: ["a", null] }],
+      ["a oneOf member", { oneOf: [{ type: "boolean" }, { type: "null" }] }],
+      [
+        "every allOf member",
+        { allOf: [{ type: ["string", "null"] }, { enum: ["a", null] }] }
+      ]
+    ])("a member that admits null through %s", (_, nullable) => {
+      expect(
+        validateOpenAPI31(
+          documentWith({
+            Value: { oneOf: [nullable, { type: "null" }] }
+          })
+        ).warnings
+      ).toEqual([
+        {
+          path: "/components/schemas/Value/oneOf",
+          message:
+            "members /components/schemas/Value/oneOf/0, /components/schemas/Value/oneOf/1 all admit null, so null matches more than one oneOf branch and is rejected"
+        }
+      ]);
+    });
+
+    test("an allOf with a member that does not admit null", () => {
+      expect(
+        validateOpenAPI31(
+          documentWith({
+            Value: {
+              oneOf: [
+                { allOf: [{ type: ["string", "null"] }, { type: "string" }] },
+                { type: "null" }
+              ]
+            }
+          })
+        ).warnings
+      ).toEqual([]);
+    });
+
+    test("nullable scalar members that overlap only on null", () => {
+      expect(
+        validateOpenAPI31(
+          documentWith({
+            Value: {
+              oneOf: [
+                { type: ["string", "null"] },
+                { type: ["integer", "null"] }
+              ]
+            }
+          })
+        ).warnings
+      ).toEqual([
+        {
+          path: "/components/schemas/Value/oneOf",
+          message:
+            "members /components/schemas/Value/oneOf/0, /components/schemas/Value/oneOf/1 all admit null, so null matches more than one oneOf branch and is rejected"
+        }
+      ]);
+    });
+
+    test("a single member that admits null", () => {
+      expect(
+        validateOpenAPI31(
+          documentWith({
+            MaybeCat: {
+              anyOf: [{ $ref: "#/components/schemas/Cat" }, { type: "null" }]
+            },
+            Pets: {
+              oneOf: [
+                { $ref: "#/components/schemas/MaybeCat" },
+                { $ref: "#/components/schemas/Dog" }
+              ]
+            }
+          })
+        ).warnings
+      ).toEqual([]);
+    });
+
+    test("a discriminated oneOf reports nullable members as errors only", () => {
+      const result = validateOpenAPI31(
+        documentWith({
+          MaybeCat: {
+            anyOf: [{ $ref: "#/components/schemas/Cat" }, { type: "null" }]
+          },
+          Pet: {
+            oneOf: [
+              { $ref: "#/components/schemas/MaybeCat" },
+              { type: "null" }
+            ],
+            discriminator: { propertyName: "kind" }
+          }
+        })
+      );
+
+      expect(result.warnings).toEqual([]);
+      expect(result.errors).toEqual(
+        expect.arrayContaining([
+          {
+            path: "/components/schemas/Pet/oneOf/0",
+            message:
+              "a member of a discriminated oneOf admits null; the null branch belongs outside the discriminated oneOf"
+          },
+          {
+            path: "/components/schemas/Pet/oneOf/1",
+            message:
+              "a member of a discriminated oneOf admits null; the null branch belongs outside the discriminated oneOf"
+          }
+        ])
+      );
+    });
+
+    test("a $ref cycle is treated as not admitting null", () => {
+      expect(
+        validateOpenAPI31(
+          documentWith({
+            Loop: { $ref: "#/components/schemas/LoopBack" },
+            LoopBack: { $ref: "#/components/schemas/Loop" },
+            Value: {
+              oneOf: [{ $ref: "#/components/schemas/Loop" }, { type: "null" }]
+            }
+          })
+        ).warnings
+      ).toEqual([]);
+    });
+
     test("disjoint scalar members", () => {
       expect(
         validateOpenAPI31(
