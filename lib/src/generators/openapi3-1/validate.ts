@@ -440,10 +440,22 @@ class SemanticChecker {
 
   /**
    * Overlapping members make a value match more than one branch of a
-   * `oneOf`, which fails validation. Only scalar members are compared:
-   * whether two object schemas overlap cannot be decided in general.
+   * `oneOf`, which fails validation. `null` is checked across every member;
+   * other values only across scalar members, because whether two object
+   * schemas overlap cannot be decided in general.
    */
   private checkOneOfOverlap(members: unknown[], path: string): void {
+    const nullable = members
+      .map((member, index) => ({ member, index }))
+      .filter(({ member }) => this.admitsNull(member, new Set()))
+      .map(({ index }) => `${path}/${index}`);
+    if (nullable.length > 1) {
+      this.warn(
+        path,
+        `members ${nullable.join(", ")} all admit null, so null matches more than one oneOf branch and is rejected`
+      );
+    }
+
     const scalars = members.map(member => this.scalarShape(member));
     for (let i = 0; i < scalars.length; i++) {
       for (let j = i + 1; j < scalars.length; j++) {
@@ -459,6 +471,7 @@ class SemanticChecker {
     }
   }
 
+  /** The non-null values a scalar member accepts. */
   private scalarShape(schema: unknown): ScalarShape | undefined {
     const resolved = this.dereference(schema, new Set());
     if (!isRecord(resolved) || resolved.type === undefined) {
@@ -471,15 +484,21 @@ class SemanticChecker {
     ) {
       return undefined;
     }
-    const types = Array.isArray(resolved.type)
-      ? resolved.type
-      : [resolved.type];
+    const types = (
+      Array.isArray(resolved.type) ? resolved.type : [resolved.type]
+    ).filter((type): type is string => typeof type === "string");
     if (types.some(type => type === "object" || type === "array")) {
       return undefined;
     }
+    const nonNullTypes = types.filter(type => type !== "null");
+    if (nonNullTypes.length === 0) {
+      return undefined;
+    }
     return {
-      types: new Set(types.filter((t): t is string => typeof t === "string")),
-      enum: Array.isArray(resolved.enum) ? resolved.enum : undefined
+      types: new Set(nonNullTypes),
+      enum: Array.isArray(resolved.enum)
+        ? resolved.enum.filter(value => value !== null)
+        : undefined
     };
   }
 
