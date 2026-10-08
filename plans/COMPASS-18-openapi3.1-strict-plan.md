@@ -158,9 +158,9 @@ The generator validates its own output before returning it. On any violation it 
 The steps below were checked by experiment against the locked `ajv` 8.18.0 and `ajv-formats` 2.1.1. Each step that the experiment confirmed is marked "Verified".
 
 1. **Vendor the schemas.** Add these as `.ts` modules, each with its `$id` and source URL in a header comment:
-   - the OAS 3.1 document schema, `https://spec.openapis.org/oas/3.1/schema/2025-11-23` (`2024-11-14` or later);
-   - its dialect, `dialect/base`;
-   - its vocabulary meta-schema, `meta/base`.
+   - the OAS 3.1 document schema, `https://spec.openapis.org/oas/3.1/schema/2026-08-03` (`2024-11-14` or later);
+   - its dialect, `dialect/2024-11-10`;
+   - its vocabulary meta-schema, `meta/2024-11-10`.
 
    Why these choices:
 
@@ -169,7 +169,7 @@ The steps below were checked by experiment against the locked `ajv` 8.18.0 and `
    - **`.ts`, not `.json`.** `tsconfig.json` has no `resolveJsonModule`, and the Dockerfile builds with plain `tsc`.
 2. **Rewrite `$dynamicRef` at load time.**
    - Without the rewrite, ajv 8.18 rejects every Schema Object, valid ones included, with "must NOT have unevaluated properties". Verified.
-   - Deep-clone the document schema. Replace each of its four `{"$dynamicRef": "#meta"}` with a `$ref` to the vendored OAS dialect. Register the dialect and `meta/base` with `addMetaSchema`.
+   - Deep-clone the document schema. Replace each of its four `{"$dynamicRef": "#meta"}` with a `$ref` to the vendored OAS dialect. Register the dialect and meta-schema with `addMetaSchema`.
    - This compiles on ajv 8.18. Verified.
    - It validates Schema Objects against JSON Schema 2020-12 **and** the OAS vocabulary. For example, it rejects `type: "foo"`, a boolean `exclusiveMaximum`, `discriminator.propertyName: 5` and unknown discriminator keys. All four verified.
    - A test pins the replacement count at 4, so a schema update fails loudly.
@@ -353,7 +353,7 @@ The full emission table, including rule 0, except flattening of nested unions.
 **What it does:**
 
 - **Inline members.** These are members that are not references, at the top level of the outer union.
-  - An outer union with any inline member keeps the existing behaviour: a discriminator with no mapping, and no flattening at all, including for the outer union's reference members.
+  - An outer union with any inline member gets a discriminator with no mapping. Its inline members are kept, and its reference members are still flattened to leaf refs, with any inner `null` lifted.
   - The output is spec-legal, and no mapping means there is no mapping target to get wrong.
 - **Reference members.**
   - Follow aliases to the first target that is not a reference.
@@ -451,6 +451,18 @@ PRs 1–7 were started before Phase 0 ran. To unblock them, these decisions were
   If Phase 0 contradicts any of these, the relevant PR changes before it is marked ready. PR 8 is not started until Phase 0 is done.
 - **The stack is based on this plan's PR, on `master`.** It is rebased onto COMPASS-28 as that work merges.
 - **Open question 5: no `--no-verify` flag.** The self-check cannot be switched off.
+
+### Changes to the phases
+
+Each PR body records its own deviations. The ones that change the plan are:
+
+- **CI on stacked PRs.** `build-and-test` triggered only on PRs against `master`. A separate PR, #2801, sits between the plan and PR 1 and drops that filter.
+- **Freeze-check base.** Until PR 1 merges, the three-dot freeze diff uses `origin/compass-18-openapi3-freeze` as its base. Against `origin/master` it always lists PR 1's own spec file.
+- **Vendored schemas (PR 3).** The document schema is `…/oas/3.1/schema/2026-08-03`, the newest dated release. The dialect and meta-schema are the dated `dialect/2024-11-10` and `meta/2024-11-10`, which the document schema references. They are semantically identical to `dialect/base` and `meta/base`.
+- **Parser limits (PR 4).** The parser rejects parenthesised types, so `(A & B) | null` is written `A & B | null`. An inline nested union can only be written as an indexed access type.
+- **Mixed discriminated unions (PR 5).** For a union with an inline member, the reference members are still flattened to leaf refs and any inner `null` is lifted, and no mapping is emitted. Without the flattening, the self-check rejected the whole document. One case is still rejected: an inline member that is itself a union, written as an indexed access type.
+- **Null overlap (#2807, between PR 5 and PR 6).** The self-check warns when two or more `oneOf` members admit null, such as `MaybeA | MaybeB`. `null` then matches more than one branch, so `oneOf` rejects it.
+- **Schemaprop errors (PR 6).** The error for an unbounded `exclusive*` names its location: the component and property path, or the endpoint and the request or response position.
 
 ## Open questions
 
