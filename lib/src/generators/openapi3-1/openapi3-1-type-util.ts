@@ -126,7 +126,10 @@ function objectTypeToSchema(
       ? type.properties.reduce<{ [name: string]: SchemaObject }>(
           (acc, property) => {
             acc[property.name] = {
-              ...typeToSchemaObject(property.type, typeTable),
+              ...relocateSchemaPropError(
+                () => typeToSchemaObject(property.type, typeTable),
+                e => e.inProperty(property.name)
+              ),
               description: property.description
             };
             return acc;
@@ -153,7 +156,10 @@ function arrayTypeToSchema(
 ): SchemaObject {
   return {
     type: "array",
-    items: typeToSchemaObject(type.elementType, typeTable),
+    items: relocateSchemaPropError(
+      () => typeToSchemaObject(type.elementType, typeTable),
+      e => e.inProperty("[]")
+    ),
     ...schemaPropsToSchemaObject(type)
   };
 }
@@ -382,7 +388,7 @@ function schemaPropsToSchemaObject(owner: SchemaPropOwner): SchemaObject {
       case "exclusiveMaximum": {
         const bound = name === "exclusiveMinimum" ? "minimum" : "maximum";
         if (value === true && !schemaProps.has(bound)) {
-          throw new Error(
+          throw new SchemaPropConversionError(
             `The "${name}" schemaprop on type "${owner.kind}" has no "${bound}" ` +
               `to make exclusive. OpenAPI 3.1 states an exclusive bound as a ` +
               `number in "${name}", so add a "${bound}" or remove "${name}".`
@@ -401,3 +407,64 @@ const EXCLUSIVE_FLAG = {
   minimum: "exclusiveMinimum",
   maximum: "exclusiveMaximum"
 } as const;
+
+/**
+ * A schemaprop that has no JSON Schema 2020-12 form. The message names
+ * where it is: the sites enclosing it, outermost first, then the path of
+ * properties from there, where `[]` stands for an array's items.
+ */
+export class SchemaPropConversionError extends Error {
+  constructor(
+    readonly reason: string,
+    readonly sites: string[] = [],
+    readonly propertyPath: string[] = []
+  ) {
+    const location =
+      propertyPath.length > 0
+        ? [...sites, `property "${formatPropertyPath(propertyPath)}"`]
+        : sites;
+    super(location.length > 0 ? `${location.join(", ")}: ${reason}` : reason);
+    this.name = "SchemaPropConversionError";
+  }
+
+  at(site: string): SchemaPropConversionError {
+    return new SchemaPropConversionError(
+      this.reason,
+      [site, ...this.sites],
+      this.propertyPath
+    );
+  }
+
+  inProperty(name: string): SchemaPropConversionError {
+    return new SchemaPropConversionError(this.reason, this.sites, [
+      name,
+      ...this.propertyPath
+    ]);
+  }
+}
+
+function formatPropertyPath(path: string[]): string {
+  return path.reduce(
+    (acc, segment) =>
+      segment === "[]" || acc === "" ? acc + segment : `${acc}.${segment}`,
+    ""
+  );
+}
+
+/**
+ * Runs `generate`, and rethrows a `SchemaPropConversionError` from it after
+ * `relocate` has added where it was raised.
+ */
+export function relocateSchemaPropError<T>(
+  generate: () => T,
+  relocate: (e: SchemaPropConversionError) => SchemaPropConversionError
+): T {
+  try {
+    return generate();
+  } catch (e) {
+    if (e instanceof SchemaPropConversionError) {
+      throw relocate(e);
+    }
+    throw e;
+  }
+}
