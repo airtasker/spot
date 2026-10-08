@@ -24,7 +24,8 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 - `pnpm prettier:check` / `pnpm prettier:fix` - Run Prettier only
 
 ### CLI Usage (after build)
-- `pnpm exec spot generate --contract api.ts --generator openapi3 --language yaml --out doc/output` - Generate OpenAPI3 from contract
+- `pnpm exec spot generate --contract api.ts --generator openapi3 --language yaml --out doc/output` - Generate OpenAPI 3.0 from contract
+- `pnpm exec spot generate --contract api.ts --generator openapi3.1 --language yaml --out doc/openapi3.1` - Generate OpenAPI 3.1 from contract; fails on any violation of the OpenAPI 3.1 schema. Writes the same file name as `openapi3`, so use a separate `--out`
 - `pnpm exec spot lint api.ts` - Lint a Spot contract
 - `pnpm exec spot ts-lint <dir>` - Check the TypeScript in a contract tree for formatting, lint and type errors, under configuration Spot bundles itself (`--fix` rewrites in place)
 - `pnpm exec spot mock api.ts` - Run mock server from contract
@@ -52,7 +53,8 @@ Spot is a TypeScript-based API contract definition tool that generates OpenAPI, 
 
 ### Generators
 - **`generators/openapi2/`** - OpenAPI 2.0 (Swagger) generator
-- **`generators/openapi3/`** - OpenAPI 3.x generator
+- **`generators/openapi3/`** - OpenAPI 3.0 generator. Its output is frozen: `openapi3-freeze.spec.ts` pins hashes of it, because downstream code generators depend on its exact shape
+- **`generators/openapi3-1/`** - OpenAPI 3.1 generator, independent of `openapi3/`. It validates every document it produces (`validate.ts`) and throws `OpenApi31ComplianceError` on any violation
 - **`generators/json-schema/`** - JSON Schema generator
 
 ### CLI Commands

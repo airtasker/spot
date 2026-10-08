@@ -221,6 +221,19 @@ You can then run a generator with:
 pnpm exec spot generate --contract api.ts --generator openapi3 --language yaml --out doc/output
 ```
 
+`--generator openapi3` writes OpenAPI 3.0. `--generator openapi3.1` writes OpenAPI 3.1,
+and checks the document against the OpenAPI 3.1 schema before writing it: a contract
+that cannot be expressed as a conforming document fails with every violation listed,
+and nothing is written. Problems that do not make the document invalid, such as `oneOf`
+members that can match the same value, are printed to stderr as warnings.
+
+```
+pnpm exec spot generate --contract api.ts --generator openapi3.1 --language yaml --out doc/openapi3.1
+```
+
+Both OpenAPI generators name their output after the contract (`api.yml` or `api.json`),
+so give each its own `--out` directory.
+
 ## In Memory Usage
 
 ```ts
@@ -243,6 +256,16 @@ console.log(openApi);
   security: undefined
 }
 */
+```
+
+The OpenAPI 3.1 generator throws `Spot.OpenApi31.OpenApi31ComplianceError`, which
+lists every violation, rather than return a document that does not conform. Warnings
+go to an optional callback:
+
+```ts
+const openApi31 = Spot.OpenApi31.generateOpenAPI31(contract, {
+  onWarning: warning => console.warn(Spot.OpenApi31.formatViolation(warning))
+});
 ```
 
 # Commands
