@@ -46,8 +46,11 @@ const SNAPSHOT_CONTRACTS = [
   "versioned-contract.ts"
 ];
 
-// Contracts that use shapes this generator rejects.
-const UNSUPPORTED_CONTRACTS = ["contract-with-schemaprops.ts"];
+// Contracts that use shapes this generator rejects, with the error each raises.
+const UNSUPPORTED_CONTRACTS: { [filename: string]: string } = {
+  "contract-with-schemaprops.ts":
+    'The "exclusiveMaximum" schemaprop on type "int32" has no "maximum" to make exclusive.'
+};
 
 const OPENAPI31_SNAPSHOT_CONTRACTS = [
   "contract-with-nested-discriminated-unions.ts",
@@ -55,6 +58,7 @@ const OPENAPI31_SNAPSHOT_CONTRACTS = [
   "contract-with-nullable-intersections.ts",
   "contract-with-nullable-references.ts",
   "contract-with-nullable-types.ts",
+  "contract-with-schemaprop-conversions.ts",
   "contract-with-unions.ts"
 ];
 
@@ -95,7 +99,7 @@ function endpointWith(overrides: Partial<Endpoint>): Endpoint {
 describe("OpenAPI 3.1 generator", () => {
   test("every openapi3 spec example is either snapshotted or listed as unsupported", () => {
     expect(fs.readdirSync(OPENAPI3_SPEC_EXAMPLES_DIR).sort()).toEqual(
-      [...SNAPSHOT_CONTRACTS, ...UNSUPPORTED_CONTRACTS].sort()
+      [...SNAPSHOT_CONTRACTS, ...Object.keys(UNSUPPORTED_CONTRACTS)].sort()
     );
   });
 
@@ -138,11 +142,12 @@ describe("OpenAPI 3.1 generator", () => {
     });
   });
 
-  test.each(UNSUPPORTED_CONTRACTS)("%s is rejected", filename => {
-    expect(() => generateFromSpecExample(filename)).toThrow(
-      "is not supported by the OpenAPI 3.1 generator"
-    );
-  });
+  test.each(Object.entries(UNSUPPORTED_CONTRACTS))(
+    "%s is rejected",
+    (filename, error) => {
+      expect(() => generateFromSpecExample(filename)).toThrow(error);
+    }
+  );
 
   test("a parsed union whose members share a leaf is not discriminated", () => {
     const result = generateFromSpecExample(

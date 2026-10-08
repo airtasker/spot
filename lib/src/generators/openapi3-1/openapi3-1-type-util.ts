@@ -8,9 +8,9 @@ import {
   IntersectionType,
   isNotNullType,
   isReferenceType,
+  NullType,
   ObjectType,
   ReferenceType,
-  SchemaProp,
   Type,
   TypeKind,
   TypeTable,
@@ -31,60 +31,60 @@ export function typeToSchemaObject(
     case TypeKind.NULL:
       return { type: "null" };
     case TypeKind.BOOLEAN:
-      return primitiveSchema("boolean", { schemaProps: type.schemaProps });
+      return primitiveSchema("boolean", { owner: type });
     case TypeKind.BOOLEAN_LITERAL:
       return primitiveSchema("boolean", {
         values: [type.value],
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.STRING:
-      return primitiveSchema("string", { schemaProps: type.schemaProps });
+      return primitiveSchema("string", { owner: type });
     case TypeKind.STRING_LITERAL:
       return primitiveSchema("string", {
         values: [type.value],
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.FLOAT:
       return primitiveSchema("number", {
         format: "float",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.DOUBLE:
       return primitiveSchema("number", {
         format: "double",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.FLOAT_LITERAL:
       return primitiveSchema("number", {
         values: [type.value],
         format: "float",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.INT32:
       return primitiveSchema("integer", {
         format: "int32",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.INT64:
       return primitiveSchema("integer", {
         format: "int64",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.INT_LITERAL:
       return primitiveSchema("integer", {
         values: [type.value],
         format: "int32",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.DATE:
       return primitiveSchema("string", {
         format: "date",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.DATE_TIME:
       return primitiveSchema("string", {
         format: "date-time",
-        schemaProps: type.schemaProps
+        owner: type
       });
     case TypeKind.OBJECT:
       return objectTypeToSchema(type, typeTable);
@@ -106,14 +106,14 @@ function primitiveSchema(
   opts: {
     values?: (string | number | boolean)[];
     format?: SchemaObject["format"];
-    schemaProps?: SchemaProp[];
+    owner?: SchemaPropOwner;
   }
 ): SchemaObject {
   return {
     type,
     enum: opts.values,
     format: opts.format,
-    ...schemaPropsToSchemaObject(opts.schemaProps)
+    ...(opts.owner && schemaPropsToSchemaObject(opts.owner))
   };
 }
 
@@ -143,7 +143,7 @@ function objectTypeToSchema(
     type: "object",
     properties,
     required: requiredProperties.length > 0 ? requiredProperties : undefined,
-    ...schemaPropsToSchemaObject(type.schemaProps)
+    ...schemaPropsToSchemaObject(type)
   };
 }
 
@@ -154,7 +154,7 @@ function arrayTypeToSchema(
   return {
     type: "array",
     items: typeToSchemaObject(type.elementType, typeTable),
-    ...schemaPropsToSchemaObject(type.schemaProps)
+    ...schemaPropsToSchemaObject(type)
   };
 }
 
@@ -164,7 +164,7 @@ function unionTypeToSchema(
 ): SchemaObject {
   const nonNullTypes = type.types.filter(isNotNullType);
   const nullable = nonNullTypes.length < type.types.length;
-  const unionSchemaProps = schemaPropsToSchemaObject(type.schemaProps);
+  const unionSchemaProps = schemaPropsToSchemaObject(type);
 
   if (nonNullTypes.length === 0) {
     return { type: "null", ...unionSchemaProps };
@@ -279,7 +279,7 @@ function intersectionTypeToSchema(
 ): SchemaObject {
   return {
     allOf: type.types.map(t => typeToSchemaObject(t, typeTable)),
-    ...schemaPropsToSchemaObject(type.schemaProps)
+    ...schemaPropsToSchemaObject(type)
   };
 }
 
@@ -347,27 +347,57 @@ function referenceTypeToSchema(type: ReferenceType): SchemaObject {
   return { $ref: schemaReference(type.name) };
 }
 
+type SchemaPropOwner = Exclude<Type, NullType | ReferenceType>;
+
 /**
- * These schemaprops take a different form in JSON Schema 2020-12, so copying
- * them unchanged would emit an invalid document.
+ * The schemaprops of `owner` as JSON Schema 2020-12 keywords.
+ *
+ * - `example` becomes a one-item `examples`.
+ * - `exclusiveMinimum: true` moves the `minimum` value into a numeric
+ *   `exclusiveMinimum`, and likewise for the maximum. A `false` flag is
+ *   dropped, and the bound is kept as it is.
+ * - Every other schemaprop is copied unchanged.
+ *
+ * @throws if an exclusive flag is `true` with no bound to make exclusive
  */
-const UNCONVERTED_SCHEMA_PROPS = new Set([
-  "example",
-  "exclusiveMinimum",
-  "exclusiveMaximum"
-]);
-
-function schemaPropsToSchemaObject(
-  schemaProps: SchemaProp[] = []
-): SchemaObject {
-  return schemaProps.reduce<SchemaObject>((acc, schemaProp) => {
-    if (UNCONVERTED_SCHEMA_PROPS.has(schemaProp.name)) {
-      return unsupported(`The "${schemaProp.name}" schemaprop`);
+function schemaPropsToSchemaObject(owner: SchemaPropOwner): SchemaObject {
+  const schemaProps = new Map(
+    (owner.schemaProps ?? []).map(p => [p.name, p.value])
+  );
+  const schema: SchemaObject = {};
+  schemaProps.forEach((value, name) => {
+    switch (name) {
+      case "example":
+        schema.examples = [value];
+        return;
+      case "minimum":
+      case "maximum": {
+        const exclusive = EXCLUSIVE_FLAG[name];
+        Object.assign(schema, {
+          [schemaProps.get(exclusive) === true ? exclusive : name]: value
+        });
+        return;
+      }
+      case "exclusiveMinimum":
+      case "exclusiveMaximum": {
+        const bound = name === "exclusiveMinimum" ? "minimum" : "maximum";
+        if (value === true && !schemaProps.has(bound)) {
+          throw new Error(
+            `The "${name}" schemaprop on type "${owner.kind}" has no "${bound}" ` +
+              `to make exclusive. OpenAPI 3.1 states an exclusive bound as a ` +
+              `number in "${name}", so add a "${bound}" or remove "${name}".`
+          );
+        }
+        return;
+      }
+      default:
+        Object.assign(schema, { [name]: value });
     }
-    return Object.assign(acc, { [schemaProp.name]: schemaProp.value });
-  }, {});
+  });
+  return schema;
 }
 
-function unsupported(subject: string): never {
-  throw new Error(`${subject} is not supported by the OpenAPI 3.1 generator`);
-}
+const EXCLUSIVE_FLAG = {
+  minimum: "exclusiveMinimum",
+  maximum: "exclusiveMaximum"
+} as const;
