@@ -64,6 +64,8 @@ interface Body {
   alias: Toggle | SliderAlias;
   liftedNull: Toggle | MaybeSlider;
   intersectionLeaf: LabelledTag | Slider;
+  inlineMemberWithUnion: { kind: "inline" } | Slider;
+  inlineMemberWithNullableUnion: { kind: "inline" } | MaybeSlider;
   // Left and Right share Toggle, so the parser infers no discriminator.
   diamond: Left | Right;
 }

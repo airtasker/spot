@@ -14,8 +14,7 @@ import {
   Type,
   TypeKind,
   TypeTable,
-  UnionType,
-  unionType
+  UnionType
 } from "../../types";
 import {
   discriminatedLeafReferences,
@@ -229,38 +228,46 @@ function literalUnionToSchema(types: Type[]): SchemaObject | undefined {
 }
 
 /**
- * A `oneOf` with a discriminator. When every member is a reference, the
- * members are flattened to their leaf references, so that each `oneOf`
- * member and mapping target declares the discriminator property itself.
- * With an inline member there is no mapping and no flattening: readers
- * match members by the discriminator property alone.
+ * A `oneOf` with a discriminator. Each reference member is flattened to its
+ * leaf references, so that each `oneOf` member and mapping target declares
+ * the discriminator property itself. Inline members are kept as they are;
+ * with one, there is no mapping, and readers match members by the
+ * discriminator property alone.
  */
 function discriminatedUnionToSchema(
   members: Type[],
   propertyName: string,
   typeTable: TypeTable
 ): { schema: SchemaObject; nullable: boolean } {
-  if (!members.every(isReferenceType)) {
-    return {
-      schema: {
-        oneOf: members.map(t => typeToSchemaObject(t, typeTable)),
-        discriminator: { propertyName }
-      },
-      nullable: false
-    };
-  }
+  const leaves = new Map<string, ReferenceType>();
+  const oneOf: SchemaObject[] = [];
+  let nullable = false;
+  members.forEach(member => {
+    if (!isReferenceType(member)) {
+      oneOf.push(typeToSchemaObject(member, typeTable));
+      return;
+    }
+    const flattened = discriminatedLeafReferences(member, typeTable);
+    nullable = nullable || flattened.nullable;
+    flattened.leaves
+      .filter(leaf => !leaves.has(leaf.name))
+      .forEach(leaf => {
+        leaves.set(leaf.name, leaf);
+        oneOf.push(referenceTypeToSchema(leaf));
+      });
+  });
 
-  const { leaves, nullable } = discriminatedLeafReferences(
-    unionType(members),
+  const mapping = discriminatorMapping(
+    [...leaves.values()],
+    propertyName,
     typeTable
   );
   return {
     schema: {
-      oneOf: leaves.map(referenceTypeToSchema),
-      discriminator: {
-        propertyName,
-        mapping: discriminatorMapping(leaves, propertyName, typeTable)
-      }
+      oneOf,
+      discriminator: members.every(isReferenceType)
+        ? { propertyName, mapping }
+        : { propertyName }
     },
     nullable
   };

@@ -98,7 +98,7 @@ describe("discriminated union flattening", () => {
         typeTable
       )
     ).toThrow(
-      "The inline union has an inline string member, so the OpenAPI 3.1 generator cannot list it in a discriminator mapping. Declare the member as a named type."
+      "The inline union has an inline string member, so the OpenAPI 3.1 generator cannot flatten it into a discriminated union. Declare the member as a named type."
     );
   });
 
