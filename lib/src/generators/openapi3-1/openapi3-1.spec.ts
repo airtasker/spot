@@ -3,6 +3,8 @@ import path from "path";
 import { Contract, Endpoint } from "../../definitions";
 import { parse } from "../../parser";
 import {
+  floatType,
+  int32Type,
   referenceType,
   stringLiteralType,
   stringType,
@@ -17,6 +19,8 @@ const OPENAPI3_SPEC_EXAMPLES_DIR = path.join(
   "../openapi3/__spec-examples__"
 );
 
+const OPENAPI31_SPEC_EXAMPLES_DIR = path.join(__dirname, "__spec-examples__");
+
 const SNAPSHOT_CONTRACTS = [
   "contract-with-array-query-param-and-comma-serialization-strategy.ts",
   "contract-with-array-query-param.ts",
@@ -25,6 +29,7 @@ const SNAPSHOT_CONTRACTS = [
   "contract-with-examples.ts",
   "contract-with-get-endpoint.ts",
   "contract-with-head-endpoint.ts",
+  "contract-with-intersection-types.ts",
   "contract-with-multiple-servers.ts",
   "contract-with-object-query-param.ts",
   "contract-with-one-server.ts",
@@ -42,15 +47,21 @@ const SNAPSHOT_CONTRACTS = [
 ];
 
 // Contracts that use shapes this generator rejects.
-const UNSUPPORTED_CONTRACTS = [
-  "contract-with-intersection-types.ts",
-  "contract-with-schemaprops.ts"
+const UNSUPPORTED_CONTRACTS = ["contract-with-schemaprops.ts"];
+
+const OPENAPI31_SNAPSHOT_CONTRACTS = [
+  "contract-with-null-type.ts",
+  "contract-with-nullable-intersections.ts",
+  "contract-with-nullable-references.ts",
+  "contract-with-nullable-types.ts",
+  "contract-with-unions.ts"
 ];
 
-function generateFromSpecExample(filename: string) {
-  return generateOpenAPI31(
-    parse(path.join(OPENAPI3_SPEC_EXAMPLES_DIR, filename))
-  );
+function generateFromSpecExample(
+  filename: string,
+  dir = OPENAPI3_SPEC_EXAMPLES_DIR
+) {
+  return generateOpenAPI31(parse(path.join(dir, filename)));
 }
 
 function contractWith(overrides: Partial<Contract>): Contract {
@@ -82,11 +93,26 @@ describe("OpenAPI 3.1 generator", () => {
     );
   });
 
-  describe.each(SNAPSHOT_CONTRACTS)("%s", filename => {
+  test("every openapi3.1 spec example is snapshotted", () => {
+    expect(fs.readdirSync(OPENAPI31_SPEC_EXAMPLES_DIR).sort()).toEqual(
+      [...OPENAPI31_SNAPSHOT_CONTRACTS].sort()
+    );
+  });
+
+  describe.each([
+    ...SNAPSHOT_CONTRACTS.map(filename => [
+      filename,
+      OPENAPI3_SPEC_EXAMPLES_DIR
+    ]),
+    ...OPENAPI31_SNAPSHOT_CONTRACTS.map(filename => [
+      `openapi3-1/${filename}`,
+      OPENAPI31_SPEC_EXAMPLES_DIR
+    ])
+  ])("%s", (name, dir) => {
     let result: ReturnType<typeof generateOpenAPI31>;
 
     beforeAll(() => {
-      result = generateFromSpecExample(filename);
+      result = generateFromSpecExample(path.basename(name), dir);
     });
 
     test("matches the snapshot", () => {
@@ -191,6 +217,38 @@ describe("OpenAPI 3.1 generator", () => {
 
       expect(result.openapi).toBe("3.1.0");
       expect(onWarning.mock.calls).toEqual([[warning]]);
+    });
+
+    test("a union with overlapping members is generated with a warning", () => {
+      const onWarning = jest.fn();
+
+      const result = generateOpenAPI31(
+        contractWith({
+          types: [
+            {
+              name: "Amount",
+              typeDef: { type: unionType([int32Type(), floatType()]) }
+            }
+          ]
+        }),
+        { onWarning }
+      );
+
+      expect(result.components?.schemas?.Amount).toStrictEqual({
+        oneOf: [
+          { type: "integer", format: "int32" },
+          { type: "number", format: "float" }
+        ]
+      });
+      expect(onWarning.mock.calls).toEqual([
+        [
+          {
+            path: "/components/schemas/Amount/oneOf",
+            message:
+              "members 0 and 1 can match the same value, so that value matches more than one oneOf branch"
+          }
+        ]
+      ]);
     });
 
     test("validates the normalised document", () => {

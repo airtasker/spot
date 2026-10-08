@@ -333,6 +333,58 @@ exports[`OpenAPI 3.1 generator contract-with-head-endpoint.ts matches the snapsh
 }"
 `;
 
+exports[`OpenAPI 3.1 generator contract-with-intersection-types.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "IntersectionType",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3.1 generator contract-with-multiple-servers.ts matches the snapshot 1`] = `
 "{
   "openapi": "3.1.0",
@@ -1099,6 +1151,860 @@ exports[`OpenAPI 3.1 generator minimal-contract.ts matches the snapshot 1`] = `
     "version": "0.0.0"
   },
   "paths": {}
+}"
+`;
+
+exports[`OpenAPI 3.1 generator openapi3-1/contract-with-null-type.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "NullType",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Nothing": {
+        "type": "null"
+      },
+      "Body": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nothing": {
+            "type": "null"
+          },
+          "aliasedNothing": {
+            "$ref": "#/components/schemas/Nothing"
+          }
+        },
+        "required": [
+          "name",
+          "nothing",
+          "aliasedNothing"
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nullable-intersections.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "NullableIntersections",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Named": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Aged": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "age"
+        ]
+      },
+      "NamedAndAged": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Named"
+          },
+          {
+            "$ref": "#/components/schemas/Aged"
+          }
+        ]
+      },
+      "Body": {
+        "type": "object",
+        "properties": {
+          "inline": {
+            "anyOf": [
+              {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Named"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Aged"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NamedAndAged"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "required": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Named"
+              },
+              {
+                "$ref": "#/components/schemas/Aged"
+              }
+            ]
+          }
+        },
+        "required": [
+          "inline",
+          "reference",
+          "required"
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nullable-references.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "NullableReferences",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UserAlias": {
+        "$ref": "#/components/schemas/User"
+      },
+      "MaybeUser": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "MaybeUserAlias": {
+        "$ref": "#/components/schemas/MaybeUser"
+      },
+      "Body": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "the user, if any"
+          },
+          "alias": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserAlias"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maybeUser": {
+            "$ref": "#/components/schemas/MaybeUser"
+          },
+          "maybeUserAlias": {
+            "$ref": "#/components/schemas/MaybeUserAlias"
+          },
+          "optionalUser": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "user",
+          "alias",
+          "maybeUser",
+          "maybeUserAlias"
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nullable-types.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "NullableTypes",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body": {
+        "type": "object",
+        "properties": {
+          "boolean": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "string": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "dateTime": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "float": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "float"
+          },
+          "double": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "int32": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "int64": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "stringLiteral": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "one",
+              null
+            ]
+          },
+          "intLiteral": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              1,
+              null
+            ],
+            "format": "int32"
+          },
+          "booleanLiteral": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "enum": [
+              true,
+              null
+            ]
+          },
+          "stringLiterals": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "one",
+              "two",
+              null
+            ]
+          },
+          "intLiterals": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              1,
+              2,
+              null
+            ],
+            "format": "int32"
+          },
+          "object": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "array": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "arrayOfNullable": {
+            "type": "array",
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "required": [
+          "boolean",
+          "string",
+          "date",
+          "dateTime",
+          "float",
+          "double",
+          "int32",
+          "int64",
+          "stringLiteral",
+          "intLiteral",
+          "booleanLiteral",
+          "stringLiterals",
+          "intLiterals",
+          "object",
+          "array",
+          "arrayOfNullable"
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`OpenAPI 3.1 generator openapi3-1/contract-with-unions.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "Unions",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Cat": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "cat"
+            ]
+          },
+          "meows": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "meows"
+        ]
+      },
+      "Dog": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "dog"
+            ]
+          },
+          "barks": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "barks"
+        ]
+      },
+      "Bird": {
+        "type": "object",
+        "properties": {
+          "wings": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "wings"
+        ]
+      },
+      "MaybePet": {
+        "anyOf": [
+          {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Cat"
+              },
+              {
+                "$ref": "#/components/schemas/Dog"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "cat": "#/components/schemas/Cat",
+                "dog": "#/components/schemas/Dog"
+              }
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "Pet": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/Dog"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "cat": "#/components/schemas/Cat",
+            "dog": "#/components/schemas/Dog"
+          }
+        }
+      },
+      "Choices": {
+        "type": "object",
+        "properties": {
+          "colour": {
+            "type": "string",
+            "enum": [
+              "red",
+              "green"
+            ]
+          },
+          "pet": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Cat"
+              },
+              {
+                "$ref": "#/components/schemas/Dog"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "cat": "#/components/schemas/Cat",
+                "dog": "#/components/schemas/Dog"
+              }
+            }
+          }
+        },
+        "required": [
+          "colour",
+          "pet"
+        ]
+      },
+      "Body": {
+        "type": "object",
+        "properties": {
+          "literals": {
+            "type": "string",
+            "enum": [
+              "a",
+              "b"
+            ]
+          },
+          "nullableLiterals": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "a",
+              "b",
+              null
+            ]
+          },
+          "mixed": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer",
+                "format": "int32"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "nullableMixed": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer",
+                "format": "int32"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discriminated": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Cat"
+              },
+              {
+                "$ref": "#/components/schemas/Dog"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "cat": "#/components/schemas/Cat",
+                "dog": "#/components/schemas/Dog"
+              }
+            }
+          },
+          "nullableDiscriminated": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Cat"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Dog"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "kind",
+                  "mapping": {
+                    "cat": "#/components/schemas/Cat",
+                    "dog": "#/components/schemas/Dog"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "inlineDiscriminated": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "cat"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "dog"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind"
+            }
+          },
+          "undiscriminated": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Cat"
+              },
+              {
+                "$ref": "#/components/schemas/Bird"
+              }
+            ]
+          },
+          "nullableUndiscriminated": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Cat"
+              },
+              {
+                "$ref": "#/components/schemas/Bird"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "undiscriminatedWithNullableMember": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Bird"
+              },
+              {
+                "$ref": "#/components/schemas/MaybePet"
+              }
+            ]
+          },
+          "pet": {
+            "$ref": "#/components/schemas/Pet"
+          },
+          "maybePet": {
+            "$ref": "#/components/schemas/MaybePet"
+          },
+          "catOrNull": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Cat"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "inlineLiteralUnionOrNull": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "red",
+              "green",
+              null
+            ]
+          },
+          "inlineDiscriminatedUnionOrNull": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Cat"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Dog"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "kind",
+                  "mapping": {
+                    "cat": "#/components/schemas/Cat",
+                    "dog": "#/components/schemas/Dog"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "literals",
+          "nullableLiterals",
+          "mixed",
+          "nullableMixed",
+          "discriminated",
+          "nullableDiscriminated",
+          "inlineDiscriminated",
+          "undiscriminated",
+          "nullableUndiscriminated",
+          "undiscriminatedWithNullableMember",
+          "pet",
+          "maybePet",
+          "catOrNull",
+          "inlineLiteralUnionOrNull",
+          "inlineDiscriminatedUnionOrNull"
+        ]
+      }
+    }
+  }
 }"
 `;
 
