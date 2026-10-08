@@ -3,8 +3,10 @@ import path from "path";
 import { Contract, Endpoint } from "../../definitions";
 import { parse } from "../../parser";
 import {
+  arrayType,
   floatType,
   int32Type,
+  objectType,
   referenceType,
   stringLiteralType,
   stringType,
@@ -49,7 +51,7 @@ const SNAPSHOT_CONTRACTS = [
 // Contracts that use shapes this generator rejects, with the error each raises.
 const UNSUPPORTED_CONTRACTS: { [filename: string]: string } = {
   "contract-with-schemaprops.ts":
-    'The "exclusiveMaximum" schemaprop on type "int32" has no "maximum" to make exclusive.'
+    'endpoint "EndpointWithSchemaPropsOnHeaders", request header "size": The "exclusiveMaximum" schemaprop on type "int32" has no "maximum" to make exclusive.'
 };
 
 const OPENAPI31_SNAPSHOT_CONTRACTS = [
@@ -341,6 +343,118 @@ describe("OpenAPI 3.1 generator", () => {
       expect(result.paths["/user"].get?.responses).toStrictEqual({
         default: { description: "default response" }
       });
+    });
+  });
+
+  describe("an unconvertible schemaprop", () => {
+    const unbounded = {
+      ...int32Type(),
+      schemaProps: [{ name: "exclusiveMinimum", value: true }]
+    };
+    const reason =
+      'The "exclusiveMinimum" schemaprop on type "int32" has no "minimum" to make exclusive.';
+    const nested = objectType([
+      {
+        name: "items",
+        optional: false,
+        type: arrayType(
+          objectType([{ name: "count", optional: false, type: unbounded }])
+        )
+      }
+    ]);
+    const okResponse = { status: 200, headers: [] };
+
+    it.each<[string, Partial<Contract>, string]>([
+      [
+        "component property",
+        { types: [{ name: "Basket", typeDef: { type: nested } }] },
+        'component "Basket", property "items[].count"'
+      ],
+      [
+        "path param",
+        {
+          endpoints: [
+            endpointWith({
+              path: "/user/:id",
+              request: {
+                headers: [],
+                pathParams: [{ name: "id", type: unbounded }],
+                queryParams: []
+              },
+              responses: [okResponse]
+            })
+          ]
+        },
+        'endpoint "getUser", request path param "id"'
+      ],
+      [
+        "query param",
+        {
+          endpoints: [
+            endpointWith({
+              request: {
+                headers: [],
+                pathParams: [],
+                queryParams: [{ name: "page", type: unbounded, optional: true }]
+              },
+              responses: [okResponse]
+            })
+          ]
+        },
+        'endpoint "getUser", request query param "page"'
+      ],
+      [
+        "request body property",
+        {
+          endpoints: [
+            endpointWith({
+              method: "POST",
+              request: {
+                headers: [],
+                pathParams: [],
+                queryParams: [],
+                body: { type: nested }
+              },
+              responses: [okResponse]
+            })
+          ]
+        },
+        'endpoint "getUser", request body, property "items[].count"'
+      ],
+      [
+        "response header",
+        {
+          endpoints: [
+            endpointWith({
+              responses: [
+                {
+                  ...okResponse,
+                  headers: [{ name: "count", type: unbounded, optional: false }]
+                }
+              ]
+            })
+          ]
+        },
+        'endpoint "getUser", response 200 header "count"'
+      ],
+      [
+        "default response body",
+        {
+          endpoints: [
+            endpointWith({
+              defaultResponse: {
+                headers: [],
+                body: { type: arrayType(unbounded) }
+              }
+            })
+          ]
+        },
+        'endpoint "getUser", default response body, property "[]"'
+      ]
+    ])("in a %s names its location", (_, overrides, location) => {
+      expect(() => generateOpenAPI31(contractWith(overrides))).toThrow(
+        `${location}: ${reason}`
+      );
     });
   });
 });
