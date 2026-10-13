@@ -1154,6 +1154,489 @@ exports[`OpenAPI 3.1 generator minimal-contract.ts matches the snapshot 1`] = `
 }"
 `;
 
+exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nested-discriminated-unions.ts matches the snapshot 1`] = `
+"{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "contract",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/filters": {
+      "get": {
+        "operationId": "NestedDiscriminatedUnions",
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Toggle": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "toggle"
+            ]
+          },
+          "on": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "on"
+        ]
+      },
+      "SingleSlider": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "single_slider"
+            ]
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "kind",
+          "value"
+        ]
+      },
+      "RangeSlider": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "range_slider"
+            ]
+          },
+          "min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "kind",
+          "min",
+          "max"
+        ]
+      },
+      "Slider": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SingleSlider"
+          },
+          {
+            "$ref": "#/components/schemas/RangeSlider"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "single_slider": "#/components/schemas/SingleSlider",
+            "range_slider": "#/components/schemas/RangeSlider"
+          }
+        }
+      },
+      "Filter": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Toggle"
+          },
+          {
+            "$ref": "#/components/schemas/SingleSlider"
+          },
+          {
+            "$ref": "#/components/schemas/RangeSlider"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "toggle": "#/components/schemas/Toggle",
+            "single_slider": "#/components/schemas/SingleSlider",
+            "range_slider": "#/components/schemas/RangeSlider"
+          }
+        }
+      },
+      "Picker": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "picker"
+            ]
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "options"
+        ]
+      },
+      "Control": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SingleSlider"
+          },
+          {
+            "$ref": "#/components/schemas/RangeSlider"
+          },
+          {
+            "$ref": "#/components/schemas/Picker"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "single_slider": "#/components/schemas/SingleSlider",
+            "range_slider": "#/components/schemas/RangeSlider",
+            "picker": "#/components/schemas/Picker"
+          }
+        }
+      },
+      "SliderAlias": {
+        "$ref": "#/components/schemas/Slider"
+      },
+      "MaybeSlider": {
+        "anyOf": [
+          {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SingleSlider"
+              },
+              {
+                "$ref": "#/components/schemas/RangeSlider"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "single_slider": "#/components/schemas/SingleSlider",
+                "range_slider": "#/components/schemas/RangeSlider"
+              }
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "tag"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "Labelled": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ]
+      },
+      "LabelledTag": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Tag"
+          },
+          {
+            "$ref": "#/components/schemas/Labelled"
+          }
+        ]
+      },
+      "Left": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Toggle"
+          },
+          {
+            "$ref": "#/components/schemas/Picker"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "toggle": "#/components/schemas/Toggle",
+            "picker": "#/components/schemas/Picker"
+          }
+        }
+      },
+      "Right": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Toggle"
+          },
+          {
+            "$ref": "#/components/schemas/Tag"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "toggle": "#/components/schemas/Toggle",
+            "tag": "#/components/schemas/Tag"
+          }
+        }
+      },
+      "Body": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/Filter"
+          },
+          "nullableFilter": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Toggle"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SingleSlider"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RangeSlider"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "kind",
+                  "mapping": {
+                    "toggle": "#/components/schemas/Toggle",
+                    "single_slider": "#/components/schemas/SingleSlider",
+                    "range_slider": "#/components/schemas/RangeSlider"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "threeLevels": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Toggle"
+              },
+              {
+                "$ref": "#/components/schemas/SingleSlider"
+              },
+              {
+                "$ref": "#/components/schemas/RangeSlider"
+              },
+              {
+                "$ref": "#/components/schemas/Picker"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "toggle": "#/components/schemas/Toggle",
+                "single_slider": "#/components/schemas/SingleSlider",
+                "range_slider": "#/components/schemas/RangeSlider",
+                "picker": "#/components/schemas/Picker"
+              }
+            }
+          },
+          "alias": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Toggle"
+              },
+              {
+                "$ref": "#/components/schemas/SingleSlider"
+              },
+              {
+                "$ref": "#/components/schemas/RangeSlider"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "toggle": "#/components/schemas/Toggle",
+                "single_slider": "#/components/schemas/SingleSlider",
+                "range_slider": "#/components/schemas/RangeSlider"
+              }
+            }
+          },
+          "liftedNull": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Toggle"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SingleSlider"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RangeSlider"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "kind",
+                  "mapping": {
+                    "toggle": "#/components/schemas/Toggle",
+                    "single_slider": "#/components/schemas/SingleSlider",
+                    "range_slider": "#/components/schemas/RangeSlider"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intersectionLeaf": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LabelledTag"
+              },
+              {
+                "$ref": "#/components/schemas/SingleSlider"
+              },
+              {
+                "$ref": "#/components/schemas/RangeSlider"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "tag": "#/components/schemas/LabelledTag",
+                "single_slider": "#/components/schemas/SingleSlider",
+                "range_slider": "#/components/schemas/RangeSlider"
+              }
+            }
+          },
+          "inlineMemberWithUnion": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "inline"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              {
+                "$ref": "#/components/schemas/SingleSlider"
+              },
+              {
+                "$ref": "#/components/schemas/RangeSlider"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind"
+            }
+          },
+          "inlineMemberWithNullableUnion": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "inline"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ]
+                  },
+                  {
+                    "$ref": "#/components/schemas/SingleSlider"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RangeSlider"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "kind"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "diamond": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Left"
+              },
+              {
+                "$ref": "#/components/schemas/Right"
+              }
+            ]
+          }
+        },
+        "required": [
+          "filter",
+          "nullableFilter",
+          "threeLevels",
+          "alias",
+          "liftedNull",
+          "intersectionLeaf",
+          "inlineMemberWithUnion",
+          "inlineMemberWithNullableUnion",
+          "diamond"
+        ]
+      }
+    }
+  }
+}"
+`;
+
 exports[`OpenAPI 3.1 generator openapi3-1/contract-with-null-type.ts matches the snapshot 1`] = `
 "{
   "openapi": "3.1.0",

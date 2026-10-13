@@ -5,14 +5,10 @@ import {
   areIntLiteralTypes,
   areStringLiteralTypes,
   ArrayType,
-  dereferenceType,
   IntersectionType,
   isNotNullType,
-  isObjectType,
   isReferenceType,
-  isStringLiteralType,
   ObjectType,
-  possibleRootTypes,
   ReferenceType,
   SchemaProp,
   Type,
@@ -20,6 +16,11 @@ import {
   TypeTable,
   UnionType
 } from "../../types";
+import {
+  discriminatedLeafReferences,
+  discriminatorMapping,
+  schemaReference
+} from "./discriminator";
 import { JsonType, SchemaObject } from "./openapi3-1-specification";
 
 export function typeToSchemaObject(
@@ -190,25 +191,9 @@ function unionTypeToSchema(
   }
 
   if (type.discriminator !== undefined) {
-    nonNullTypes.forEach(member => {
-      if (!resolvesToSingleObject(member, typeTable)) {
-        unsupported(
-          `A discriminated union with a member that resolves to another union (${describeMember(member)})`
-        );
-      }
-    });
-    const discriminated: SchemaObject = {
-      oneOf: nonNullTypes.map(t => typeToSchemaObject(t, typeTable)),
-      discriminator: {
-        propertyName: type.discriminator,
-        mapping: discriminatorMapping(
-          nonNullTypes,
-          type.discriminator,
-          typeTable
-        )
-      }
-    };
-    return nullable
+    const { schema: discriminated, nullable: liftedNull } =
+      discriminatedUnionToSchema(nonNullTypes, type.discriminator, typeTable);
+    return nullable || liftedNull
       ? { anyOf: [discriminated, { type: "null" }], ...unionSchemaProps }
       : { ...discriminated, ...unionSchemaProps };
   }
@@ -243,54 +228,49 @@ function literalUnionToSchema(types: Type[]): SchemaObject | undefined {
 }
 
 /**
- * Maps each discriminator value to its member's `$ref`. A mapping needs every
- * member to be a reference; with an inline member there is no mapping, and
- * readers match members by the discriminator property alone.
+ * A `oneOf` with a discriminator. Each reference member is flattened to its
+ * leaf references, so that each `oneOf` member and mapping target declares
+ * the discriminator property itself. Inline members are kept as they are;
+ * with one, there is no mapping, and readers match members by the
+ * discriminator property alone.
  */
-function discriminatorMapping(
+function discriminatedUnionToSchema(
   members: Type[],
   propertyName: string,
   typeTable: TypeTable
-): { [value: string]: string } | undefined {
-  if (!members.every(isReferenceType)) {
-    return undefined;
-  }
-
-  return members.reduce<{ [value: string]: string }>((mapping, member) => {
-    const [root] = possibleRootTypes(member, typeTable);
-    const property = isObjectType(root)
-      ? root.properties.find(p => p.name === propertyName)
-      : undefined;
-    const propertyType = property && dereferenceType(property.type, typeTable);
-    if (propertyType === undefined || !isStringLiteralType(propertyType)) {
-      throw new Error(
-        `Unexpected error: the discriminator property "${propertyName}" of ${member.name} is not a string literal`
-      );
+): { schema: SchemaObject; nullable: boolean } {
+  const leaves = new Map<string, ReferenceType>();
+  const oneOf: SchemaObject[] = [];
+  let nullable = false;
+  members.forEach(member => {
+    if (!isReferenceType(member)) {
+      oneOf.push(typeToSchemaObject(member, typeTable));
+      return;
     }
-    mapping[propertyType.value] = referenceObjectValue(member.name);
-    return mapping;
-  }, {});
-}
+    const flattened = discriminatedLeafReferences(member, typeTable);
+    nullable = nullable || flattened.nullable;
+    flattened.leaves
+      .filter(leaf => !leaves.has(leaf.name))
+      .forEach(leaf => {
+        leaves.set(leaf.name, leaf);
+        oneOf.push(referenceTypeToSchema(leaf));
+      });
+  });
 
-/**
- * Whether a discriminated `oneOf` member resolves to one object schema, which
- * is where the discriminator property must be required. A member that
- * resolves to another union resolves to that union's `oneOf` instead.
- */
-function resolvesToSingleObject(type: Type, typeTable: TypeTable): boolean {
-  const resolved = dereferenceType(type, typeTable);
-  switch (resolved.kind) {
-    case TypeKind.OBJECT:
-      return true;
-    case TypeKind.INTERSECTION:
-      return resolved.types.every(t => resolvesToSingleObject(t, typeTable));
-    default:
-      return false;
-  }
-}
-
-function describeMember(type: Type): string {
-  return isReferenceType(type) ? type.name : `an inline ${type.kind}`;
+  const mapping = discriminatorMapping(
+    [...leaves.values()],
+    propertyName,
+    typeTable
+  );
+  return {
+    schema: {
+      oneOf,
+      discriminator: members.every(isReferenceType)
+        ? { propertyName, mapping }
+        : { propertyName }
+    },
+    nullable
+  };
 }
 
 function intersectionTypeToSchema(
@@ -364,11 +344,7 @@ function widenToNull(schema: SchemaObject): SchemaObject {
 }
 
 function referenceTypeToSchema(type: ReferenceType): SchemaObject {
-  return { $ref: referenceObjectValue(type.name) };
-}
-
-function referenceObjectValue(name: string): string {
-  return `#/components/schemas/${name}`;
+  return { $ref: schemaReference(type.name) };
 }
 
 /**

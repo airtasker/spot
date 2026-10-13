@@ -482,36 +482,56 @@ describe("OpenAPI 3.1 type util", () => {
       expect(typeToSchemaObject(type, typeTable)).toEqual(expected);
     });
 
-    it.each<[string, Type, string]>([
-      [
-        "a reference to another union",
-        unionType([referenceType("Pet"), referenceType("Bird")], "kind"),
-        "Pet"
-      ],
-      [
-        "a reference to a nullable union",
-        unionType([referenceType("MaybeCat"), referenceType("Dog")], "kind"),
-        "MaybeCat"
-      ],
-      [
-        "an inline union",
-        unionType(
-          [
-            unionType([referenceType("Cat"), referenceType("Dog")], "kind"),
-            referenceType("Bird")
-          ],
-          "kind"
-        ),
-        "an inline union"
-      ]
-    ])(
-      "a discriminated union with %s as a member is rejected",
-      (_, type, member) => {
-        expect(() => typeToSchemaObject(type, typeTable)).toThrow(
-          `A discriminated union with a member that resolves to another union (${member}) is not supported by the OpenAPI 3.1 generator`
-        );
-      }
-    );
+    describe("a discriminated union with a member that resolves to another union", () => {
+      const fishTable = TypeTable.fromArray([
+        ...typeTable.toArray(),
+        named(
+          "Fish",
+          objectType([
+            { name: "kind", type: stringLiteralType("fish"), optional: false }
+          ])
+        )
+      ]);
+
+      it.each<[string, Type, SchemaObject]>([
+        [
+          "a reference to another union is flattened to its leaves",
+          unionType([referenceType("Pet"), referenceType("Fish")], "kind"),
+          {
+            oneOf: [ref("Cat"), ref("Dog"), ref("Fish")],
+            discriminator: {
+              propertyName: "kind",
+              mapping: {
+                cat: "#/components/schemas/Cat",
+                dog: "#/components/schemas/Dog",
+                fish: "#/components/schemas/Fish"
+              }
+            }
+          }
+        ],
+        [
+          "a reference to a nullable union lifts its null to the outer union",
+          unionType([referenceType("MaybeCat"), referenceType("Dog")], "kind"),
+          { anyOf: [catAndDogOneOf, { type: "null" }] }
+        ],
+        [
+          "an inline union is not flattened, and has no mapping",
+          unionType(
+            [
+              unionType([referenceType("Cat"), referenceType("Dog")], "kind"),
+              referenceType("Fish")
+            ],
+            "kind"
+          ),
+          {
+            oneOf: [catAndDogOneOf, ref("Fish")],
+            discriminator: { propertyName: "kind" }
+          }
+        ]
+      ])("%s", (_, type, expected) => {
+        expect(typeToSchemaObject(type, fishTable)).toEqual(expected);
+      });
+    });
 
     describe("union-level schemaprops stay on the outer schema", () => {
       const title = { name: "title", value: "a title" };
@@ -563,6 +583,320 @@ describe("OpenAPI 3.1 type util", () => {
           )
         ).toEqual({ allOf: [ref("Cat"), ref("Bird")], title: "a title" });
       });
+    });
+  });
+
+  describe("nested discriminated unions", () => {
+    const tagged = (name: string, value: string) => ({
+      name,
+      typeDef: {
+        type: objectType([
+          { name: "type", type: stringLiteralType(value), optional: false },
+          { name: name.toLowerCase(), type: stringType(), optional: false }
+        ])
+      }
+    });
+    const union = (name: string, members: string[]) => ({
+      name,
+      typeDef: {
+        type: unionType(
+          members.map(m => referenceType(m)),
+          "type"
+        )
+      }
+    });
+    const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` });
+    const discriminatedBy = (leaves: { [value: string]: string }) => ({
+      oneOf: Object.values(leaves).map(ref),
+      discriminator: {
+        propertyName: "type",
+        mapping: Object.fromEntries(
+          Object.entries(leaves).map(([value, name]) => [
+            value,
+            `#/components/schemas/${name}`
+          ])
+        )
+      }
+    });
+    const typeTable = TypeTable.fromArray([
+      tagged("FlatTypeA", "flat_a"),
+      tagged("FlatTypeB", "flat_b"),
+      tagged("NestedUnionSingle", "nested_union_single"),
+      tagged("NestedUnionDouble", "nested_union_double"),
+      union("NestedUnion", ["NestedUnionSingle", "NestedUnionDouble"]),
+      tagged("UnionA1", "union_a_one"),
+      tagged("UnionA2", "union_a_two"),
+      union("UnionA", ["UnionA1", "UnionA2"]),
+      tagged("UnionB1", "union_b_one"),
+      tagged("UnionB2", "union_b_two"),
+      union("UnionB", ["UnionB1", "UnionB2"]),
+      tagged("LeafX", "leaf_x"),
+      tagged("LeafY", "leaf_y"),
+      union("InnerA", ["LeafX", "LeafY"]),
+      tagged("InnerB", "inner_b"),
+      union("Mid", ["InnerA", "InnerB"]),
+      tagged("Other", "other"),
+      {
+        name: "NestedUnionAlias",
+        typeDef: { type: referenceType("NestedUnion") }
+      },
+      { name: "FlatTypeAAlias", typeDef: { type: referenceType("FlatTypeA") } },
+      {
+        name: "MaybeNested",
+        typeDef: {
+          type: unionType(
+            [
+              referenceType("NestedUnionSingle"),
+              referenceType("NestedUnionDouble"),
+              nullType()
+            ],
+            "type"
+          )
+        }
+      },
+      { name: "Nothing", typeDef: { type: nullType() } },
+      {
+        name: "Extra",
+        typeDef: {
+          type: objectType([
+            { name: "extra", type: stringType(), optional: false }
+          ])
+        }
+      },
+      {
+        name: "Combined",
+        typeDef: {
+          type: intersectionType([
+            objectType([
+              {
+                name: "type",
+                type: stringLiteralType("combined"),
+                optional: false
+              }
+            ]),
+            referenceType("Extra")
+          ])
+        }
+      },
+      {
+        name: "WithInlineMember",
+        typeDef: {
+          type: unionType(
+            [
+              referenceType("NestedUnionSingle"),
+              objectType([
+                {
+                  name: "type",
+                  type: stringLiteralType("inline"),
+                  optional: false
+                }
+              ])
+            ],
+            "type"
+          )
+        }
+      },
+      tagged("GoodLeaf", "good"),
+      {
+        name: "BadLeaf",
+        typeDef: {
+          type: objectType([
+            { name: "value", type: stringType(), optional: false }
+          ])
+        }
+      },
+      union("NestedWithBadLeaf", ["GoodLeaf", "BadLeaf"])
+    ]);
+    const outer = (...members: Type[]) => unionType(members, "type");
+    const inlineMember = objectType([
+      { name: "type", type: stringLiteralType("inline"), optional: false }
+    ]);
+    const inlineMemberSchema: SchemaObject = {
+      type: "object",
+      properties: { type: { type: "string", enum: ["inline"] } },
+      required: ["type"]
+    };
+
+    it.each<[string, Type, SchemaObject]>([
+      [
+        "a reference to a union lists that union's leaves",
+        outer(referenceType("FlatTypeA"), referenceType("NestedUnion")),
+        discriminatedBy({
+          flat_a: "FlatTypeA",
+          nested_union_single: "NestedUnionSingle",
+          nested_union_double: "NestedUnionDouble"
+        })
+      ],
+      [
+        "every member a reference to a union",
+        outer(referenceType("UnionA"), referenceType("UnionB")),
+        discriminatedBy({
+          union_a_one: "UnionA1",
+          union_a_two: "UnionA2",
+          union_b_one: "UnionB1",
+          union_b_two: "UnionB2"
+        })
+      ],
+      [
+        "no nesting",
+        outer(referenceType("FlatTypeA"), referenceType("FlatTypeB")),
+        discriminatedBy({ flat_a: "FlatTypeA", flat_b: "FlatTypeB" })
+      ],
+      [
+        "three levels",
+        outer(referenceType("Mid"), referenceType("Other")),
+        discriminatedBy({
+          leaf_x: "LeafX",
+          leaf_y: "LeafY",
+          inner_b: "InnerB",
+          other: "Other"
+        })
+      ],
+      [
+        "an alias of a union",
+        outer(referenceType("FlatTypeA"), referenceType("NestedUnionAlias")),
+        discriminatedBy({
+          flat_a: "FlatTypeA",
+          nested_union_single: "NestedUnionSingle",
+          nested_union_double: "NestedUnionDouble"
+        })
+      ],
+      [
+        "an alias of an object is a leaf under its own name",
+        outer(referenceType("FlatTypeAAlias"), referenceType("NestedUnion")),
+        discriminatedBy({
+          flat_a: "FlatTypeAAlias",
+          nested_union_single: "NestedUnionSingle",
+          nested_union_double: "NestedUnionDouble"
+        })
+      ],
+      [
+        "an intersection leaf",
+        outer(referenceType("Combined"), referenceType("NestedUnion")),
+        discriminatedBy({
+          combined: "Combined",
+          nested_union_single: "NestedUnionSingle",
+          nested_union_double: "NestedUnionDouble"
+        })
+      ],
+      [
+        "an inner nullable union lifts its null to the outer union",
+        outer(referenceType("FlatTypeA"), referenceType("MaybeNested")),
+        {
+          anyOf: [
+            discriminatedBy({
+              flat_a: "FlatTypeA",
+              nested_union_single: "NestedUnionSingle",
+              nested_union_double: "NestedUnionDouble"
+            }),
+            { type: "null" }
+          ]
+        }
+      ],
+      [
+        "a reference to null is lifted to the outer union",
+        outer(
+          referenceType("FlatTypeA"),
+          referenceType("FlatTypeB"),
+          referenceType("Nothing")
+        ),
+        {
+          anyOf: [
+            discriminatedBy({ flat_a: "FlatTypeA", flat_b: "FlatTypeB" }),
+            { type: "null" }
+          ]
+        }
+      ],
+      [
+        "an outer null and a lifted null give one null branch",
+        outer(
+          referenceType("FlatTypeA"),
+          referenceType("MaybeNested"),
+          nullType()
+        ),
+        {
+          anyOf: [
+            discriminatedBy({
+              flat_a: "FlatTypeA",
+              nested_union_single: "NestedUnionSingle",
+              nested_union_double: "NestedUnionDouble"
+            }),
+            { type: "null" }
+          ]
+        }
+      ],
+      [
+        "an inline member is kept and reference members are flattened, with no mapping",
+        outer(
+          referenceType("FlatTypeA"),
+          inlineMember,
+          referenceType("NestedUnion")
+        ),
+        {
+          oneOf: [
+            ref("FlatTypeA"),
+            inlineMemberSchema,
+            ref("NestedUnionSingle"),
+            ref("NestedUnionDouble")
+          ],
+          discriminator: { propertyName: "type" }
+        }
+      ],
+      [
+        "an inline member with a reference to a nullable union lifts the null",
+        outer(inlineMember, referenceType("MaybeNested")),
+        {
+          anyOf: [
+            {
+              oneOf: [
+                inlineMemberSchema,
+                ref("NestedUnionSingle"),
+                ref("NestedUnionDouble")
+              ],
+              discriminator: { propertyName: "type" }
+            },
+            { type: "null" }
+          ]
+        }
+      ],
+      [
+        "an inline member with references that share a leaf lists it once",
+        outer(
+          inlineMember,
+          referenceType("NestedUnion"),
+          referenceType("NestedUnionSingle")
+        ),
+        {
+          oneOf: [
+            inlineMemberSchema,
+            ref("NestedUnionSingle"),
+            ref("NestedUnionDouble")
+          ],
+          discriminator: { propertyName: "type" }
+        }
+      ]
+    ])("%s", (_, type, expected) => {
+      expect(typeToSchemaObject(type, typeTable)).toEqual(expected);
+    });
+
+    it.each<[string, Type, string]>([
+      [
+        "an inline member of an inner union",
+        outer(referenceType("FlatTypeA"), referenceType("WithInlineMember")),
+        "The union WithInlineMember has an inline object member, so the OpenAPI 3.1 generator cannot flatten it into a discriminated union. Declare the member as a named type."
+      ],
+      [
+        "a leaf missing the discriminator property",
+        outer(referenceType("GoodLeaf"), referenceType("NestedWithBadLeaf")),
+        'Unexpected error: the discriminator property "type" of BadLeaf is not a string literal'
+      ],
+      [
+        "an inline member of an inner union, beside an inline outer member",
+        outer(inlineMember, referenceType("WithInlineMember")),
+        "The union WithInlineMember has an inline object member, so the OpenAPI 3.1 generator cannot flatten it into a discriminated union. Declare the member as a named type."
+      ]
+    ])("%s is rejected", (_, type, message) => {
+      expect(() => typeToSchemaObject(type, typeTable)).toThrow(message);
     });
   });
 });
