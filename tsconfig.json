@@ -4,8 +4,15 @@
 
     /* Basic Options */
     // "incremental": true,                   /* Enable incremental compilation */
-    // Optional chaining was introduced in es2020. This project supports node >= 12. Only node >= 14 supports optional chaining.
-    "target": "es2019",                       /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
+    // Every runtime the package supports implements es2022 in full — see the floor in
+    // `engines.node` — so nothing here is downlevelled for a runtime that needs it.
+    "target": "es2022",
+    // `target: es2022` would otherwise turn this on, which changes what a class
+    // field is: a declared-but-unassigned field becomes an own enumerable
+    // property. `ParserError` and its siblings are exported, and that shows up
+    // in what a consumer gets from `JSON.stringify` on one — `message` appears
+    // where it did not before. Emit follows the target; field semantics do not.
+    "useDefineForClassFields": false,                       /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
     "module": "commonjs",                     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
     // "lib": [],                             /* Specify library files to be included in the compilation. */
     // "allowJs": true,                       /* Allow javascript files to be compiled. */
