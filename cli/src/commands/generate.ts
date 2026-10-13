@@ -6,6 +6,10 @@ import { Contract } from "../../../lib/src/definitions";
 import { generateJsonSchema } from "../../../lib/src/generators/json-schema/json-schema";
 import { generateOpenAPI2 } from "../../../lib/src/generators/openapi2/openapi2";
 import { generateOpenAPI3 } from "../../../lib/src/generators/openapi3/openapi3";
+import {
+  formatViolation,
+  generateOpenAPI31
+} from "../../../lib/src/generators/openapi3-1";
 import { outputFile, resolveOutputPath } from "../../../lib/src/io/output";
 import { parse } from "../../../lib/src/parser";
 
@@ -130,7 +134,9 @@ export default class Generate extends Command {
     const formatTransformer = generators[generator].formats[language].formatter;
     const formatExtension = generators[generator].formats[language].extension;
 
-    const transformedContract = generatorTransformer(parse(contractPath));
+    const transformedContract = generatorTransformer(parse(contractPath), {
+      warn: message => this.warn(message)
+    });
     const formattedContract = formatTransformer(transformedContract);
 
     const outputName = `${contractFilename}.${formatExtension}`;
@@ -155,11 +161,19 @@ interface Generators {
 }
 
 interface Generator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transformer: (contract: Contract) => Record<string, any>;
+  transformer: (
+    contract: Contract,
+    context: GeneratorContext
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) => Record<string, any>;
   formats: {
     [name: string]: Format;
   };
+}
+
+interface GeneratorContext {
+  /** Reports a problem that does not stop generation. */
+  warn: (message: string) => void;
 }
 
 interface Format {
@@ -207,6 +221,16 @@ const generators: Generators = {
   },
   openapi3: {
     transformer: generateOpenAPI3,
+    formats: {
+      json: jsonFormat,
+      yaml: yamlFormat
+    }
+  },
+  "openapi3.1": {
+    transformer: (contract, { warn }) =>
+      generateOpenAPI31(contract, {
+        onWarning: violation => warn(formatViolation(violation))
+      }),
     formats: {
       json: jsonFormat,
       yaml: yamlFormat

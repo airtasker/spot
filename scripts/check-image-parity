@@ -84,6 +84,8 @@ CASES=(
   "openapi2:yaml"
   "openapi3:json"
   "openapi3:yaml"
+  "openapi3.1:json"
+  "openapi3.1:yaml"
   "raw:json"
 )
 
