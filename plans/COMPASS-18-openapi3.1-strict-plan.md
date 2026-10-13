@@ -220,51 +220,81 @@ These are the checks the schemas cannot express.
 
 ### Phase 0 — consumer probe (no SPOT code)
 
-Post the results to COMPASS-18 and add them to this document under a *Phase 0 results* heading.
+Phase 0 runs on what the merged generator really emits: the real contracts and this generator's spec-examples. It needs no hand-written probe document. It is the gate before PR 8. The harness is thrown away after the run. Post the results to COMPASS-18 and add them to this document under a *Phase 0 results* heading, with every command and `jq` transform inlined so the PR 8 gate can re-run them.
 
-1. **Probe document.** Hand-write `probe.yaml`, a 3.1 document with:
-   - one schema per row of the emission table;
-   - 2- and 3-level nested discriminated unions;
-   - a nullable intersection;
-   - a query parameter and a JSON request body;
-   - `description` beside `$ref`.
-2. **Generate the clients.** Use `openapitools/openapi-generator-cli`: the latest 7.x release that is at least seven days old, pinned by tag. Run `typescript-fetch` and `typescript-axios`.
-   - Generate each **with the default normaliser**. `SIMPLIFY_ONEOF_ANYOF` has been on by default since 7.0.0.
-   - Generate each again with `--openapi-normalizer SIMPLIFY_ONEOF_ANYOF=false`, to see what the normaliser is hiding.
-3. **Type-check.** Compile every client with `tsc --strict --noEmit` three times:
-   - browser: `lib: ["es2020", "dom"]`;
-   - Node: no DOM, with `@types/node`;
-   - React Native: `types: ["react-native"]`, no DOM.
-4. **Runtime smoke test.** Type-checking cannot find runtime gaps, so run each client against a stub server, issuing a request with a query parameter and a JSON body:
-   - under Node;
-   - under the `react-native` Jest preset, or on Hermes.
+**Pinned inputs:**
 
-   Known hazard: the default `typescript-axios` template builds URLs with `new URL(path, DUMMY_BASE_URL)` and then sets `url.search`. React Native's built-in `URL` does not implement that setter, so the client needs `react-native-url-polyfill`. With the `withNodeImports` option on, it also imports Node's `url` module, which Metro does not provide. `typescript-fetch` builds query strings with its own `querystring()` and touches `Blob` and `FormData` only behind `typeof` guards. Record the polyfills each client needs.
-5. **Count shapes in the real contracts.** Run `spot generate -g raw -l json` (raw supports JSON only) on the monorepo contracts under `apis/public-facing/http/api-client-v1` and `apis/public-facing/http/legacy-rails-monolith`, and count:
+| Input | Pin |
+|---|---|
+| SPOT | a local `pnpm build` of `master` at a recorded commit, run as `node ./bin/run`. v2.1.0 has no `openapi3.1`. |
+| Contracts | `airtasker/monorepo` at a recorded commit: `apis/public-facing/http/api-client-v1/api.ts` for every step, and `apis/public-facing/http/legacy-rails-monolith/api.ts` for steps 1 and 2 only |
+| openapi-generator | `openapitools/openapi-generator-cli`: the latest 7.x release that is at least seven days old, pinned by digest |
+| TypeScript | the monorepo catalog version |
+| React Native | the Expo SDK, `react-native` version and engine (Hermes) of the monorepo's `@marketplace/expo-app` |
+
+1. **Generate the inputs.**
+   - Run `-g openapi3.1` on both contracts, in JSON and YAML. A self-check or generation error is a finding, not a harness failure. Record every error and every `Warning:` line.
+   - Run `-g openapi3` on `api-client-v1`. This is the 3.0 baseline.
+   - Run `-g openapi3.1` on every contract in `openapi3-1/__spec-examples__/`, and on the 3.0 query-parameter and request-body examples that the 3.1 spec snapshots.
+   - Count `description` beside `$ref` in the `api-client-v1` output. No spec-example produces it, so if the count is 0, generate a minimal scratch contract that does.
+   - **A/B variants** are `jq` rewrites of the `api-client-v1` 3.1 JSON:
+     - `nullable-ref-oneOf`: each `anyOf: [{$ref}, {type: "null"}]` becomes `oneOf`;
+     - `undiscriminated-anyOf`: each `oneOf` without a `discriminator` becomes `anyOf`;
+     - `no-ref-description`: `description` is dropped beside `$ref`;
+     - `oas-3.1.1`: `openapi` becomes `"3.1.1"`.
+
+     Lint every variant with a pinned `redocly lint` (`spec` ruleset), so that a broken variant is not taken for a generator failure.
+2. **Count shapes in the real contracts.** Walk `spot generate -g raw -l json` (raw supports JSON only) for both contracts, and count:
    - nested discriminated unions;
    - inner unions that contain `null` or an inline member;
    - outer unions that mix inline members and references to unions;
    - unbounded `exclusive*` flags;
-   - overlapping `oneOf` members;
-   - nullable intersections, and how often the existing generator drops their `null` (finding 5);
+   - overlapping `oneOf` members, from the step 1 warnings;
+   - nullable intersections, and how often the 3.0 output drops their `null` (finding 5);
    - aliases to unions;
    - endpoints with no response.
+3. **Generate the clients.** Run `typescript-fetch` and `typescript-axios`:
+   - with default options, and with a candidate production set (for example `stringEnums` for fetch, and `withSeparateModelsAndApi` and `useSingleRequestParameter` for axios);
+   - with the default normaliser, where `SIMPLIFY_ONEOF_ANYOF` has been on since 7.0.0, and again with `--openapi-normalizer SIMPLIFY_ONEOF_ANYOF=false` to see what the normaliser hides.
 
-**Record these decisions:**
+   The full matrix runs on the `api-client-v1` 3.1 output and its 3.0 baseline. Spec-examples and A/B variants use defaults with the default normaliser. Record each exit code and each generator warning about 3.1, `anyOf`, `oneOf` or `discriminator`.
+4. **Type-check.** Compile every client with `tsc --noEmit` five times:
+   - browser: `--strict`, `lib: ["es2020", "dom"]`;
+   - Node: `--strict`, no DOM, with `@types/node`;
+   - React Native: `--strict`, `types: ["react-native"]`, no DOM;
+   - the monorepo's `tsconfig.base.json` flags, without and then with the four overrides that `@airtasker/bff-api` needs. This shows what post-processing the client would need.
+5. **Review type quality.** In the `api-client-v1` models of each candidate client, citing file and line:
+   - discriminated unions narrow on the discriminator, and nested unions flatten to leaves with no wrapper-only model;
+   - `X | null` stays `| null`, including nullable references and intersections;
+   - intersections keep every member's properties;
+   - `description` beside `$ref` becomes a doc comment, not an extra wrapper model;
+   - `{type: "null"}` and `type: [T, "null"]` leak no `any` or `unknown`;
+   - about five models compared with `@airtasker/bff-api` and with the 3.0-baseline client.
 
-- `anyOf` or `oneOf` for nullable refs, and for unions without a discriminator;
-- whether to emit `description` beside `$ref`;
-- `{type: "null"}` for a lone `null`, or an error;
-- `3.1.0` or `3.1.1`;
-- error or drop for an unbounded `exclusive*`;
+   Diff each A/B variant's models against the base output. Each encoding decision then rests on a concrete difference, or on its absence.
+6. **Runtime smoke test.** Type-checking cannot find runtime gaps. Run each client against a stub `node:http` echo server, using `api-client-v1` operations with a query parameter and a JSON body. Assert the URL, query and body it sends, and decode a canned response with a `null` reference, a discriminated-union leaf and a nested-union leaf:
+   - under Node;
+   - on the iOS simulator, on Hermes, from a temporary, uncommitted screen in `@marketplace/expo-app`, or from a scratch app on the same Expo and React Native versions. The `react-native` Jest preset is not enough: it runs on Node with Node's `URL`.
+
+   Run first with no polyfills, then add them one at a time. Record each failure and each polyfill. Known hazard: the default `typescript-axios` template builds URLs with `new URL(path, DUMMY_BASE_URL)` and then sets `url.search`. React Native's built-in `URL` does not implement that setter, so the client needs `react-native-url-polyfill`. With the `withNodeImports` option on, it also imports Node's `url` module, which Metro does not provide. `typescript-fetch` builds query strings with its own `querystring()` and touches `Blob` and `FormData` only behind `typeof` guards.
+
+**Record these decisions,** each against the default that PRs 2–7 shipped (see *Implementation decisions*) and the evidence for it:
+
+- `anyOf` or `oneOf` for nullable refs (`nullable-ref-oneOf`), and for unions without a discriminator (`undiscriminated-anyOf` and the overlap warnings);
+- whether to emit `description` beside `$ref` (`no-ref-description`);
+- `{type: "null"}` for a lone `null`, or an error (the `contract-with-null-type.ts` client);
+- `3.1.0` or `3.1.1` (`oas-3.1.1`);
+- error or drop for an unbounded `exclusive*` (the step 2 counts);
 - `typescript-fetch` or `typescript-axios`, and the polyfills each needs on React Native.
 
-**Exit criteria.** Before PR 2:
+**Exit criteria.** Before PR 8, the chosen client must:
 
-- the chosen client type-checks under `--strict` for **browser, Node and React Native**;
-- it passes the runtime smoke test under **Node and React Native**.
+- type-check under `--strict` for **browser, Node and React Native**;
+- pass the runtime smoke test under **Node and on Hermes**;
+- show no lost `null`, no `any` leak and no wrapper-only model in the type-quality review;
+- SPOT must also generate both monorepo contracts with no error.
 
-If not, record the blockers on COMPASS-18 and escalate.
+If not, record the blockers on COMPASS-18 and escalate. Each decision that contradicts a shipped default becomes its own `fix(COMPASS-18): …` PR on `master` before PR 8, and the affected steps are re-run against it.
 
 ### PR 1 — `test(COMPASS-18): freeze legacy openapi3 output`
 
@@ -413,7 +443,7 @@ No change is needed to the Dockerfile or `.dockerignore`: they copy `lib/` and `
 
 - **Bump to v2.2.0** in `package.json`, and run `prepack` to refresh the oclif README.
 - **List everything unreleased since v2.1.0 in the PR body**, not just this work. At the baseline that includes `e2e1050`, which raises `engines.node` to `>=22.13`, plus whatever COMPASS-28 has merged by then. Justify the semver bump against the whole list: a minor bump for a new generator, unless something in the list is breaking.
-- **Gate:** before cutting the GitHub Release, re-run Phase 0 steps 2–4 against the real `api-client-v1` contract with the built generator. The Release publishes to npm and the Docker image.
+- **Gate:** before cutting the GitHub Release, re-run Phase 0 steps 1 and 3–6 with the built generator. The Release publishes to npm and the Docker image.
 
 ### Follow-up tickets
 
@@ -427,7 +457,7 @@ Create them as COMPASS `Technical Task` tickets, never `TODO`s.
 
 | Risk | Mitigation |
 |---|---|
-| openapi-generator's 3.1 support is incomplete: `type` arrays, `anyOf` with `null`, `$ref` with siblings | Phase 0 gates PR 2 onwards. Every encoding choice has a fallback. |
+| openapi-generator's 3.1 support is incomplete: `type` arrays, `anyOf` with `null`, `$ref` with siblings | Phase 0 gates the release (PR 8). Every encoding choice has a fallback. |
 | React Native gaps. The default `typescript-axios` sets `URL.search`, which React Native's `URL` lacks, so it needs `react-native-url-polyfill`. `withNodeImports` would also import Node's `url`, which Metro lacks. `typescript-fetch` needs only `fetch`, and guards its uses of `Blob` and `FormData`. Type-checking finds none of this. | The Phase 0 runtime smoke test on React Native is an exit criterion. |
 | ajv's `$dynamicRef` support is partial | The rewrite at load time to the vendored OAS dialect, verified on ajv 8.18. A test pins the replacement count. |
 | New hard errors reject real contracts: unbounded `exclusive*`, an inline member of an inner union, an endpoint with no response | Phase 0 counts them. The PR 8 release gate generates the real contracts. |
@@ -448,7 +478,7 @@ PRs 1–7 were started before Phase 0 ran. To unblock them, these decisions were
   - `openapi: "3.1.0"`;
   - an error for an unbounded `exclusive*`.
 
-  If Phase 0 contradicts any of these, the relevant PR changes before it is marked ready. PR 8 is not started until Phase 0 is done.
+  PRs 2–7 have merged with these defaults. If Phase 0 contradicts one, the fix is a new COMPASS-18 PR on `master` before PR 8. PR 8 is not started until Phase 0 is done.
 - **The stack is based on this plan's PR, on `master`.** It is rebased onto COMPASS-28 as that work merges.
 - **Open question 5: no `--no-verify` flag.** The self-check cannot be switched off.
 
