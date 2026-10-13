@@ -14,6 +14,7 @@ import {
   nullType,
   objectType,
   referenceType,
+  SchemaProp,
   stringLiteralType,
   stringType,
   Type,
@@ -191,19 +192,75 @@ describe("OpenAPI 3.1 type util", () => {
       });
     });
 
-    it.each(["example", "exclusiveMinimum", "exclusiveMaximum"])(
-      "%s is rejected",
-      name => {
-        expect(() =>
-          typeToSchemaObject(
-            { ...int32Type(), schemaProps: [{ name, value: true }] },
-            new TypeTable()
-          )
-        ).toThrow(
-          `The "${name}" schemaprop is not supported by the OpenAPI 3.1 generator`
-        );
-      }
-    );
+    it.each<[string, SchemaProp[], SchemaObject]>([
+      [
+        "example becomes a one-item examples",
+        [{ name: "example", value: 7 }],
+        { examples: [7] }
+      ],
+      [
+        "exclusiveMinimum: true moves the minimum into exclusiveMinimum",
+        [
+          { name: "minimum", value: 1 },
+          { name: "exclusiveMinimum", value: true }
+        ],
+        { exclusiveMinimum: 1 }
+      ],
+      [
+        "exclusiveMaximum: true moves the maximum into exclusiveMaximum",
+        [
+          { name: "exclusiveMaximum", value: true },
+          { name: "maximum", value: 9 }
+        ],
+        { exclusiveMaximum: 9 }
+      ],
+      [
+        "exclusiveMinimum: false is dropped and the minimum kept",
+        [
+          { name: "minimum", value: 1 },
+          { name: "exclusiveMinimum", value: false }
+        ],
+        { minimum: 1 }
+      ],
+      [
+        "exclusiveMaximum: false with no maximum is dropped",
+        [{ name: "exclusiveMaximum", value: false }],
+        {}
+      ],
+      [
+        "other schemaprops are copied",
+        [
+          { name: "default", value: 3 },
+          { name: "deprecated", value: true },
+          { name: "multipleOf", value: 3 }
+        ],
+        { default: 3, deprecated: true, multipleOf: 3 }
+      ]
+    ])("%s", (_, schemaProps, expected) => {
+      expect(
+        typeToSchemaObject({ ...int32Type(), schemaProps }, new TypeTable())
+      ).toEqual({ type: "integer", format: "int32", ...expected });
+    });
+
+    it.each([
+      ["exclusiveMinimum", "minimum"],
+      ["exclusiveMaximum", "maximum"]
+    ])("%s: true with no %s is rejected", (name, bound) => {
+      expect(() =>
+        typeToSchemaObject(
+          {
+            ...int64Type(),
+            schemaProps: [
+              { name, value: true },
+              { name: "multipleOf", value: 2 }
+            ]
+          },
+          new TypeTable()
+        )
+      ).toThrow(
+        `The "${name}" schemaprop on type "int64" has no "${bound}" to make exclusive.`
+      );
+    });
   });
 
   describe("emission table", () => {
@@ -535,17 +592,19 @@ describe("OpenAPI 3.1 type util", () => {
 
     describe("union-level schemaprops stay on the outer schema", () => {
       const title = { name: "title", value: "a title" };
+      const example = { name: "example", value: "an example" };
+      const annotations = { title: "a title", examples: ["an example"] };
 
       it.each<[string, UnionType, SchemaObject]>([
         [
           "widened type",
           unionType([stringType(), nullType()]),
-          { type: ["string", "null"], title: "a title" }
+          { type: ["string", "null"], ...annotations }
         ],
         [
           "nullable reference",
           unionType([referenceType("Cat"), nullType()]),
-          { anyOf: [ref("Cat"), { type: "null" }], title: "a title" }
+          { anyOf: [ref("Cat"), { type: "null" }], ...annotations }
         ],
         [
           "nullable discriminated union",
@@ -553,19 +612,22 @@ describe("OpenAPI 3.1 type util", () => {
             [referenceType("Cat"), referenceType("Dog"), nullType()],
             "kind"
           ),
-          { anyOf: [catAndDogOneOf, { type: "null" }], title: "a title" }
+          { anyOf: [catAndDogOneOf, { type: "null" }], ...annotations }
         ],
         [
           "union without a discriminator",
           unionType([stringType(), int32Type()]),
           {
             oneOf: [{ type: "string" }, { type: "integer", format: "int32" }],
-            title: "a title"
+            ...annotations
           }
         ]
       ])("%s", (_, type, expected) => {
         expect(
-          typeToSchemaObject({ ...type, schemaProps: [title] }, typeTable)
+          typeToSchemaObject(
+            { ...type, schemaProps: [title, example] },
+            typeTable
+          )
         ).toEqual(expected);
       });
 
@@ -577,11 +639,11 @@ describe("OpenAPI 3.1 type util", () => {
                 referenceType("Cat"),
                 referenceType("Bird")
               ]),
-              schemaProps: [title]
+              schemaProps: [title, example]
             },
             typeTable
           )
-        ).toEqual({ allOf: [ref("Cat"), ref("Bird")], title: "a title" });
+        ).toEqual({ allOf: [ref("Cat"), ref("Bird")], ...annotations });
       });
     });
   });
