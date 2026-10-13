@@ -5,8 +5,14 @@ import {
   areIntLiteralTypes,
   areStringLiteralTypes,
   ArrayType,
-  isNullType,
+  dereferenceType,
+  IntersectionType,
+  isNotNullType,
+  isObjectType,
+  isReferenceType,
+  isStringLiteralType,
   ObjectType,
+  possibleRootTypes,
   ReferenceType,
   SchemaProp,
   Type,
@@ -22,7 +28,7 @@ export function typeToSchemaObject(
 ): SchemaObject {
   switch (type.kind) {
     case TypeKind.NULL:
-      return unsupported("The null type");
+      return { type: "null" };
     case TypeKind.BOOLEAN:
       return primitiveSchema("boolean", { schemaProps: type.schemaProps });
     case TypeKind.BOOLEAN_LITERAL:
@@ -84,9 +90,9 @@ export function typeToSchemaObject(
     case TypeKind.ARRAY:
       return arrayTypeToSchema(type, typeTable);
     case TypeKind.UNION:
-      return unionTypeToSchema(type);
+      return unionTypeToSchema(type, typeTable);
     case TypeKind.INTERSECTION:
-      return unsupported("An intersection type");
+      return intersectionTypeToSchema(type, typeTable);
     case TypeKind.REFERENCE:
       return referenceTypeToSchema(type);
     default:
@@ -151,46 +157,218 @@ function arrayTypeToSchema(
   };
 }
 
-function unionTypeToSchema(type: UnionType): SchemaObject {
-  if (type.types.some(isNullType)) {
-    return unsupported("A union with null");
+function unionTypeToSchema(
+  type: UnionType,
+  typeTable: TypeTable
+): SchemaObject {
+  const nonNullTypes = type.types.filter(isNotNullType);
+  const nullable = nonNullTypes.length < type.types.length;
+  const unionSchemaProps = schemaPropsToSchemaObject(type.schemaProps);
+
+  if (nonNullTypes.length === 0) {
+    return { type: "null", ...unionSchemaProps };
   }
 
-  const types = type.types;
-  if (types.length > 1) {
-    if (areBooleanLiteralTypes(types)) {
-      return primitiveSchema("boolean", {
-        values: types.map(t => t.value),
-        schemaProps: type.schemaProps
-      });
-    }
-    if (areStringLiteralTypes(types)) {
-      return primitiveSchema("string", {
-        values: types.map(t => t.value),
-        schemaProps: type.schemaProps
-      });
-    }
-    if (areFloatLiteralTypes(types)) {
-      return primitiveSchema("number", {
-        values: types.map(t => t.value),
-        format: "float",
-        schemaProps: type.schemaProps
-      });
-    }
-    if (areIntLiteralTypes(types)) {
-      return primitiveSchema("integer", {
-        values: types.map(t => t.value),
-        format: "int32",
-        schemaProps: type.schemaProps
-      });
-    }
+  // A union of one type and null is that type made nullable. A discriminator
+  // inferred from the one type alone is ignored, rather than wrapping the
+  // type in a discriminated oneOf with a single member.
+  if (nonNullTypes.length === 1) {
+    const [member] = nonNullTypes;
+    const schema = typeToSchemaObject(member, typeTable);
+    return {
+      ...(nullable ? orNull(member, schema, typeTable) : schema),
+      ...unionSchemaProps
+    };
   }
 
-  return unsupported("A union other than a union of literals of one kind");
+  const literalSchema = literalUnionToSchema(nonNullTypes);
+  if (literalSchema !== undefined) {
+    return {
+      ...(nullable ? widenToNull(literalSchema) : literalSchema),
+      ...unionSchemaProps
+    };
+  }
+
+  if (type.discriminator !== undefined) {
+    nonNullTypes.forEach(member => {
+      if (!resolvesToSingleObject(member, typeTable)) {
+        unsupported(
+          `A discriminated union with a member that resolves to another union (${describeMember(member)})`
+        );
+      }
+    });
+    const discriminated: SchemaObject = {
+      oneOf: nonNullTypes.map(t => typeToSchemaObject(t, typeTable)),
+      discriminator: {
+        propertyName: type.discriminator,
+        mapping: discriminatorMapping(
+          nonNullTypes,
+          type.discriminator,
+          typeTable
+        )
+      }
+    };
+    return nullable
+      ? { anyOf: [discriminated, { type: "null" }], ...unionSchemaProps }
+      : { ...discriminated, ...unionSchemaProps };
+  }
+
+  const members = nonNullTypes.map(t => typeToSchemaObject(t, typeTable));
+  if (nullable && !nonNullTypes.some(t => admitsNull(t, typeTable))) {
+    members.push({ type: "null" });
+  }
+  return { oneOf: members, ...unionSchemaProps };
+}
+
+function literalUnionToSchema(types: Type[]): SchemaObject | undefined {
+  if (areBooleanLiteralTypes(types)) {
+    return primitiveSchema("boolean", { values: types.map(t => t.value) });
+  }
+  if (areStringLiteralTypes(types)) {
+    return primitiveSchema("string", { values: types.map(t => t.value) });
+  }
+  if (areFloatLiteralTypes(types)) {
+    return primitiveSchema("number", {
+      values: types.map(t => t.value),
+      format: "float"
+    });
+  }
+  if (areIntLiteralTypes(types)) {
+    return primitiveSchema("integer", {
+      values: types.map(t => t.value),
+      format: "int32"
+    });
+  }
+  return undefined;
+}
+
+/**
+ * Maps each discriminator value to its member's `$ref`. A mapping needs every
+ * member to be a reference; with an inline member there is no mapping, and
+ * readers match members by the discriminator property alone.
+ */
+function discriminatorMapping(
+  members: Type[],
+  propertyName: string,
+  typeTable: TypeTable
+): { [value: string]: string } | undefined {
+  if (!members.every(isReferenceType)) {
+    return undefined;
+  }
+
+  return members.reduce<{ [value: string]: string }>((mapping, member) => {
+    const [root] = possibleRootTypes(member, typeTable);
+    const property = isObjectType(root)
+      ? root.properties.find(p => p.name === propertyName)
+      : undefined;
+    const propertyType = property && dereferenceType(property.type, typeTable);
+    if (propertyType === undefined || !isStringLiteralType(propertyType)) {
+      throw new Error(
+        `Unexpected error: the discriminator property "${propertyName}" of ${member.name} is not a string literal`
+      );
+    }
+    mapping[propertyType.value] = referenceObjectValue(member.name);
+    return mapping;
+  }, {});
+}
+
+/**
+ * Whether a discriminated `oneOf` member resolves to one object schema, which
+ * is where the discriminator property must be required. A member that
+ * resolves to another union resolves to that union's `oneOf` instead.
+ */
+function resolvesToSingleObject(type: Type, typeTable: TypeTable): boolean {
+  const resolved = dereferenceType(type, typeTable);
+  switch (resolved.kind) {
+    case TypeKind.OBJECT:
+      return true;
+    case TypeKind.INTERSECTION:
+      return resolved.types.every(t => resolvesToSingleObject(t, typeTable));
+    default:
+      return false;
+  }
+}
+
+function describeMember(type: Type): string {
+  return isReferenceType(type) ? type.name : `an inline ${type.kind}`;
+}
+
+function intersectionTypeToSchema(
+  type: IntersectionType,
+  typeTable: TypeTable
+): SchemaObject {
+  return {
+    allOf: type.types.map(t => typeToSchemaObject(t, typeTable)),
+    ...schemaPropsToSchemaObject(type.schemaProps)
+  };
+}
+
+/**
+ * Whether a type accepts `null`, through a `null` member of a union or a
+ * reference to a type that does.
+ */
+function admitsNull(
+  type: Type,
+  typeTable: TypeTable,
+  visited: Set<string> = new Set()
+): boolean {
+  switch (type.kind) {
+    case TypeKind.NULL:
+      return true;
+    case TypeKind.UNION:
+      return type.types.some(t => admitsNull(t, typeTable, visited));
+    case TypeKind.REFERENCE:
+      if (visited.has(type.name)) {
+        return false;
+      }
+      return admitsNull(
+        typeTable.getOrError(type.name).type,
+        typeTable,
+        new Set(visited).add(type.name)
+      );
+    default:
+      return false;
+  }
+}
+
+/**
+ * `schema`, which was generated from `type`, widened to also accept `null`.
+ * A schema that already accepts it is returned unchanged, so a reference to
+ * a nullable type stays a bare `$ref`.
+ */
+function orNull(
+  type: Type,
+  schema: SchemaObject,
+  typeTable: TypeTable
+): SchemaObject {
+  if (admitsNull(type, typeTable)) {
+    return schema;
+  }
+  const isComposite = ["$ref", "oneOf", "anyOf", "allOf"].some(
+    keyword => keyword in schema
+  );
+  if (schema.type !== undefined && !isComposite) {
+    return widenToNull(schema);
+  }
+  return { anyOf: [schema, { type: "null" }] };
+}
+
+/** Adds `null` to a schema's `type`, and to its `enum` if it has one. */
+function widenToNull(schema: SchemaObject): SchemaObject {
+  const types = Array.isArray(schema.type) ? schema.type : [schema.type];
+  return {
+    ...schema,
+    type: [...types.filter((t): t is JsonType => t !== undefined), "null"],
+    enum: schema.enum && [...schema.enum, null]
+  };
 }
 
 function referenceTypeToSchema(type: ReferenceType): SchemaObject {
-  return { $ref: `#/components/schemas/${type.name}` };
+  return { $ref: referenceObjectValue(type.name) };
+}
+
+function referenceObjectValue(name: string): string {
+  return `#/components/schemas/${name}`;
 }
 
 /**

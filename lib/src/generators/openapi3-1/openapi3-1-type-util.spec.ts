@@ -18,7 +18,8 @@ import {
   stringType,
   Type,
   TypeTable,
-  unionType
+  unionType,
+  UnionType
 } from "../../types";
 import { SchemaObject } from "./openapi3-1-specification";
 import { typeToSchemaObject } from "./openapi3-1-type-util";
@@ -205,46 +206,363 @@ describe("OpenAPI 3.1 type util", () => {
     );
   });
 
-  describe("unsupported types", () => {
-    it.each<[string, Type, string]>([
-      ["null", nullType(), "The null type"],
+  describe("emission table", () => {
+    const named = (name: string, type: Type) => ({ name, typeDef: { type } });
+    const cat = objectType([
+      { name: "kind", type: stringLiteralType("cat"), optional: false },
+      { name: "meows", type: booleanType(), optional: false }
+    ]);
+    const dog = objectType([
+      { name: "kind", type: stringLiteralType("dog"), optional: false }
+    ]);
+    const bird = objectType([
+      { name: "wings", type: int32Type(), optional: false }
+    ]);
+    const typeTable = TypeTable.fromArray([
+      named("Cat", cat),
+      named("Dog", dog),
+      named("Bird", bird),
+      named("CatAlias", referenceType("Cat")),
+      named("MaybeCat", unionType([referenceType("Cat"), nullType()])),
+      named("MaybeCatAlias", referenceType("MaybeCat")),
+      named(
+        "CatAndBird",
+        intersectionType([referenceType("Cat"), referenceType("Bird")])
+      ),
+      named(
+        "Pet",
+        unionType([referenceType("Cat"), referenceType("Dog")], "kind")
+      ),
+      named(
+        "MaybePet",
+        unionType(
+          [referenceType("Cat"), referenceType("Dog"), nullType()],
+          "kind"
+        )
+      ),
+      named("Nothing", nullType())
+    ]);
+    const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` });
+    const catAndDogOneOf: SchemaObject = {
+      oneOf: [ref("Cat"), ref("Dog")],
+      discriminator: {
+        propertyName: "kind",
+        mapping: {
+          cat: "#/components/schemas/Cat",
+          dog: "#/components/schemas/Dog"
+        }
+      }
+    };
+
+    it.each<[string, Type, SchemaObject]>([
+      ["null on its own", nullType(), { type: "null" }],
       [
-        "string | null",
+        "boolean | null",
+        unionType([booleanType(), nullType()]),
+        { type: ["boolean", "null"] }
+      ],
+      [
+        "String | null",
         unionType([stringType(), nullType()]),
-        "A union with null"
+        { type: ["string", "null"] }
+      ],
+      [
+        "Date | null",
+        unionType([dateType(), nullType()]),
+        { type: ["string", "null"], format: "date" }
+      ],
+      [
+        "DateTime | null",
+        unionType([dateTimeType(), nullType()]),
+        { type: ["string", "null"], format: "date-time" }
+      ],
+      [
+        "Float | null",
+        unionType([floatType(), nullType()]),
+        { type: ["number", "null"], format: "float" }
+      ],
+      [
+        "Double | null",
+        unionType([doubleType(), nullType()]),
+        { type: ["number", "null"], format: "double" }
+      ],
+      [
+        "Int32 | null",
+        unionType([int32Type(), nullType()]),
+        { type: ["integer", "null"], format: "int32" }
+      ],
+      [
+        "Int64 | null",
+        unionType([int64Type(), nullType()]),
+        { type: ["integer", "null"], format: "int64" }
+      ],
+      [
+        '"a" | null',
+        unionType([stringLiteralType("a"), nullType()]),
+        { type: ["string", "null"], enum: ["a", null] }
+      ],
+      [
+        "1 | null",
+        unionType([intLiteralType(1), nullType()]),
+        { type: ["integer", "null"], format: "int32", enum: [1, null] }
       ],
       [
         '"a" | "b" | null',
         unionType([stringLiteralType("a"), stringLiteralType("b"), nullType()]),
-        "A union with null"
+        { type: ["string", "null"], enum: ["a", "b", null] }
       ],
       [
-        "string | boolean",
-        unionType([stringType(), booleanType()]),
-        "A union other than a union of literals of one kind"
-      ],
-      [
-        "1 | true",
-        unionType([intLiteralType(1), booleanLiteralType(true)]),
-        "A union other than a union of literals of one kind"
-      ],
-      [
-        "a single-member union",
-        unionType([stringType()]),
-        "A union other than a union of literals of one kind"
-      ],
-      [
-        "an intersection",
-        intersectionType([
-          objectType([{ name: "a", type: stringType(), optional: false }]),
-          objectType([{ name: "b", type: stringType(), optional: false }])
+        "true | false | null",
+        unionType([
+          booleanLiteralType(true),
+          booleanLiteralType(false),
+          nullType()
         ]),
-        "An intersection type"
+        { type: ["boolean", "null"], enum: [true, false, null] }
+      ],
+      [
+        "object | null",
+        unionType([bird, nullType()]),
+        {
+          type: ["object", "null"],
+          properties: { wings: { type: "integer", format: "int32" } },
+          required: ["wings"]
+        }
+      ],
+      [
+        "array | null",
+        unionType([arrayType(stringType()), nullType()]),
+        { type: ["array", "null"], items: { type: "string" } }
+      ],
+      [
+        "reference | null",
+        unionType([referenceType("Cat"), nullType()]),
+        { anyOf: [ref("Cat"), { type: "null" }] }
+      ],
+      [
+        "reference to an alias of an object | null",
+        unionType([referenceType("CatAlias"), nullType()]),
+        { anyOf: [ref("CatAlias"), { type: "null" }] }
+      ],
+      [
+        "reference to a nullable union | null",
+        unionType([referenceType("MaybeCat"), nullType()]),
+        ref("MaybeCat")
+      ],
+      [
+        "reference to an alias of a nullable union | null",
+        unionType([referenceType("MaybeCatAlias"), nullType()]),
+        ref("MaybeCatAlias")
+      ],
+      [
+        "reference to null | null",
+        unionType([referenceType("Nothing"), nullType()]),
+        ref("Nothing")
+      ],
+      [
+        "discriminated union of references",
+        unionType([referenceType("Cat"), referenceType("Dog")], "kind"),
+        catAndDogOneOf
+      ],
+      [
+        "discriminated union of references | null",
+        unionType(
+          [referenceType("Cat"), referenceType("Dog"), nullType()],
+          "kind"
+        ),
+        { anyOf: [catAndDogOneOf, { type: "null" }] }
+      ],
+      [
+        "discriminated union with an intersection member",
+        unionType([referenceType("CatAndBird"), referenceType("Dog")], "kind"),
+        {
+          oneOf: [ref("CatAndBird"), ref("Dog")],
+          discriminator: {
+            propertyName: "kind",
+            mapping: {
+              cat: "#/components/schemas/CatAndBird",
+              dog: "#/components/schemas/Dog"
+            }
+          }
+        }
+      ],
+      [
+        "discriminated union with an inline member has no mapping",
+        unionType([cat, referenceType("Dog")], "kind"),
+        {
+          oneOf: [typeToSchemaObject(cat, typeTable), ref("Dog")],
+          discriminator: { propertyName: "kind" }
+        }
+      ],
+      [
+        "reference to an object with one literal | null ignores the discriminator",
+        unionType([referenceType("Cat"), nullType()], "kind"),
+        { anyOf: [ref("Cat"), { type: "null" }] }
+      ],
+      [
+        "union without a discriminator",
+        unionType([stringType(), int32Type(), booleanType()]),
+        {
+          oneOf: [
+            { type: "string" },
+            { type: "integer", format: "int32" },
+            { type: "boolean" }
+          ]
+        }
+      ],
+      [
+        "union of literals of different kinds",
+        unionType([stringLiteralType("a"), intLiteralType(1)]),
+        {
+          oneOf: [
+            { type: "string", enum: ["a"] },
+            { type: "integer", format: "int32", enum: [1] }
+          ]
+        }
+      ],
+      [
+        "union without a discriminator | null",
+        unionType([referenceType("Cat"), referenceType("Bird"), nullType()]),
+        { oneOf: [ref("Cat"), ref("Bird"), { type: "null" }] }
+      ],
+      [
+        "union without a discriminator | null, with a member that admits null",
+        unionType([
+          referenceType("Bird"),
+          referenceType("MaybePet"),
+          nullType()
+        ]),
+        { oneOf: [ref("Bird"), ref("MaybePet")] }
+      ],
+      [
+        "intersection",
+        intersectionType([referenceType("Cat"), referenceType("Bird")]),
+        { allOf: [ref("Cat"), ref("Bird")] }
+      ],
+      [
+        "inline intersection | null",
+        unionType([
+          intersectionType([referenceType("Cat"), referenceType("Bird")]),
+          nullType()
+        ]),
+        { anyOf: [{ allOf: [ref("Cat"), ref("Bird")] }, { type: "null" }] }
+      ],
+      [
+        "reference to an intersection | null",
+        unionType([referenceType("CatAndBird"), nullType()]),
+        { anyOf: [ref("CatAndBird"), { type: "null" }] }
+      ],
+      [
+        "inline union of literals | null",
+        unionType([
+          unionType([stringLiteralType("a"), stringLiteralType("b")]),
+          nullType()
+        ]),
+        { type: ["string", "null"], enum: ["a", "b", null] }
+      ],
+      [
+        "inline discriminated union | null",
+        unionType([
+          unionType([referenceType("Cat"), referenceType("Dog")], "kind"),
+          nullType()
+        ]),
+        { anyOf: [catAndDogOneOf, { type: "null" }] }
+      ],
+      [
+        "inline nullable union | null keeps a single null",
+        unionType([
+          unionType([stringLiteralType("a"), nullType()]),
+          nullType()
+        ]),
+        { type: ["string", "null"], enum: ["a", null] }
+      ],
+      ["a single-member union", unionType([stringType()]), { type: "string" }],
+      ["null | null", unionType([nullType(), nullType()]), { type: "null" }]
+    ])("%s", (_, type, expected) => {
+      expect(typeToSchemaObject(type, typeTable)).toEqual(expected);
+    });
+
+    it.each<[string, Type, string]>([
+      [
+        "a reference to another union",
+        unionType([referenceType("Pet"), referenceType("Bird")], "kind"),
+        "Pet"
+      ],
+      [
+        "a reference to a nullable union",
+        unionType([referenceType("MaybeCat"), referenceType("Dog")], "kind"),
+        "MaybeCat"
+      ],
+      [
+        "an inline union",
+        unionType(
+          [
+            unionType([referenceType("Cat"), referenceType("Dog")], "kind"),
+            referenceType("Bird")
+          ],
+          "kind"
+        ),
+        "an inline union"
       ]
-    ])("%s", (_, type, subject) => {
-      expect(() => typeToSchemaObject(type, new TypeTable())).toThrow(
-        `${subject} is not supported by the OpenAPI 3.1 generator`
-      );
+    ])(
+      "a discriminated union with %s as a member is rejected",
+      (_, type, member) => {
+        expect(() => typeToSchemaObject(type, typeTable)).toThrow(
+          `A discriminated union with a member that resolves to another union (${member}) is not supported by the OpenAPI 3.1 generator`
+        );
+      }
+    );
+
+    describe("union-level schemaprops stay on the outer schema", () => {
+      const title = { name: "title", value: "a title" };
+
+      it.each<[string, UnionType, SchemaObject]>([
+        [
+          "widened type",
+          unionType([stringType(), nullType()]),
+          { type: ["string", "null"], title: "a title" }
+        ],
+        [
+          "nullable reference",
+          unionType([referenceType("Cat"), nullType()]),
+          { anyOf: [ref("Cat"), { type: "null" }], title: "a title" }
+        ],
+        [
+          "nullable discriminated union",
+          unionType(
+            [referenceType("Cat"), referenceType("Dog"), nullType()],
+            "kind"
+          ),
+          { anyOf: [catAndDogOneOf, { type: "null" }], title: "a title" }
+        ],
+        [
+          "union without a discriminator",
+          unionType([stringType(), int32Type()]),
+          {
+            oneOf: [{ type: "string" }, { type: "integer", format: "int32" }],
+            title: "a title"
+          }
+        ]
+      ])("%s", (_, type, expected) => {
+        expect(
+          typeToSchemaObject({ ...type, schemaProps: [title] }, typeTable)
+        ).toEqual(expected);
+      });
+
+      test("intersection", () => {
+        expect(
+          typeToSchemaObject(
+            {
+              ...intersectionType([
+                referenceType("Cat"),
+                referenceType("Bird")
+              ]),
+              schemaProps: [title]
+            },
+            typeTable
+          )
+        ).toEqual({ allOf: [ref("Cat"), ref("Bird")], title: "a title" });
+      });
     });
   });
 });
