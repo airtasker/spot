@@ -354,9 +354,9 @@ describe("validateOpenAPI31", () => {
             "a member of a discriminated oneOf admits null; the null branch belongs outside the discriminated oneOf"
         },
         {
-          path: "/components/schemas/Pet/oneOf/1",
+          path: "/components/schemas/Pet/discriminator",
           message:
-            'the discriminator property "kind" is not a required property of this member'
+            'a discriminator must have a "mapping" that lists every oneOf member'
         }
       ]);
     });
@@ -384,9 +384,9 @@ describe("validateOpenAPI31", () => {
             "a member of a discriminated oneOf admits null; the null branch belongs outside the discriminated oneOf"
         },
         {
-          path: "/components/schemas/Pet/oneOf/1",
+          path: "/components/schemas/Pet/discriminator",
           message:
-            'the discriminator property "kind" is not a required property of this member'
+            'a discriminator must have a "mapping" that lists every oneOf member'
         }
       ]);
     });
@@ -405,6 +405,22 @@ describe("validateOpenAPI31", () => {
         {
           path: "/components/schemas/Pet/discriminator",
           message: 'a discriminator must sit beside "oneOf"'
+        }
+      ]);
+    });
+
+    test("a discriminator without a mapping", () => {
+      expect(
+        validateOpenAPI31(
+          documentWith({
+            Pet: { oneOf: PET.oneOf, discriminator: { propertyName: "kind" } }
+          })
+        ).errors
+      ).toEqual([
+        {
+          path: "/components/schemas/Pet/discriminator",
+          message:
+            'a discriminator must have a "mapping" that lists every oneOf member'
         }
       ]);
     });

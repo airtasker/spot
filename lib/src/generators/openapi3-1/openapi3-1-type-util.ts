@@ -236,9 +236,10 @@ function literalUnionToSchema(types: Type[]): SchemaObject | undefined {
 /**
  * A `oneOf` with a discriminator. Each reference member is flattened to its
  * leaf references, so that each `oneOf` member and mapping target declares
- * the discriminator property itself. Inline members are kept as they are;
- * with one, there is no mapping, and readers match members by the
- * discriminator property alone.
+ * the discriminator property itself. Inline members are kept as they are.
+ * A mapping can only name references, so a union with an inline member is
+ * emitted as a plain `oneOf` with no discriminator, and its members are told
+ * apart by the literal value of the discriminator property.
  */
 function discriminatedUnionToSchema(
   members: Type[],
@@ -263,18 +264,16 @@ function discriminatedUnionToSchema(
       });
   });
 
+  if (!members.every(isReferenceType)) {
+    return { schema: { oneOf }, nullable };
+  }
   const mapping = discriminatorMapping(
     [...leaves.values()],
     propertyName,
     typeTable
   );
   return {
-    schema: {
-      oneOf,
-      discriminator: members.every(isReferenceType)
-        ? { propertyName, mapping }
-        : { propertyName }
-    },
+    schema: { oneOf, discriminator: { propertyName, mapping } },
     nullable
   };
 }

@@ -1570,10 +1570,7 @@ exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nested-discriminated-uni
               {
                 "$ref": "#/components/schemas/RangeSlider"
               }
-            ],
-            "discriminator": {
-              "propertyName": "kind"
-            }
+            ]
           },
           "inlineMemberWithNullableUnion": {
             "anyOf": [
@@ -1599,10 +1596,7 @@ exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nested-discriminated-uni
                   {
                     "$ref": "#/components/schemas/RangeSlider"
                   }
-                ],
-                "discriminator": {
-                  "propertyName": "kind"
-                }
+                ]
               },
               {
                 "type": "null"
@@ -2549,10 +2543,7 @@ exports[`OpenAPI 3.1 generator openapi3-1/contract-with-unions.ts matches the sn
                   "kind"
                 ]
               }
-            ],
-            "discriminator": {
-              "propertyName": "kind"
-            }
+            ]
           },
           "undiscriminated": {
             "oneOf": [

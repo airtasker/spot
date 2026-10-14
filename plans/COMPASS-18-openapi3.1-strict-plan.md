@@ -195,7 +195,7 @@ These are the checks the schemas cannot express.
 - **References:** every `$ref` starts with `#/components/schemas/` and its target exists.
 - **Discriminators.** For each `discriminator`:
   - it sits beside a `oneOf`, and no member of that `oneOf` admits `null`;
-  - when there is a `mapping`, every member is a `$ref`, and the mapping values equal the set of `oneOf` refs;
+  - it has a `mapping`, every member is a `$ref`, and the mapping values equal the set of `oneOf` refs. A discriminator without a mapping is spec-legal, but `typescript-fetch` turns it into `export type X = ;` (see *Phase 0 results*);
   - every target, following `$ref` chains and merging `allOf`, has `propertyName` as a required property, and that property's `enum` contains the mapping key.
 - **Server variables:** each `default` is in its variable's `enum`.
 - **Overlapping `oneOf` members** that can be detected, such as `Int32 | Float`, are **warnings**, not failures. The existing generator has the same semantics (open question 1).
@@ -383,8 +383,8 @@ The full emission table, including rule 0, except flattening of nested unions.
 **What it does:**
 
 - **Inline members.** These are members that are not references, at the top level of the outer union.
-  - An outer union with any inline member gets a discriminator with no mapping. Its inline members are kept, and its reference members are still flattened to leaf refs, with any inner `null` lifted.
-  - The output is spec-legal, and no mapping means there is no mapping target to get wrong.
+  - An outer union with any inline member is a plain `oneOf` with no discriminator, because a mapping can only name references. Its inline members are kept, and its reference members are still flattened to leaf refs, with any inner `null` lifted.
+  - PR 5 shipped a discriminator with no mapping here. Phase 0 replaced that; see *Phase 0 results → Decisions*.
 - **Reference members.**
   - Follow aliases to the first target that is not a reference.
   - If that target is a union: record any `null` member, which is lifted to the outer union. Then recurse into every other member. Each of those must be a reference; throw, naming the union and the member, if one is inline.
@@ -490,7 +490,7 @@ Each PR body records its own deviations. The ones that change the plan are:
 - **Freeze-check base.** Until PR 1 merges, the three-dot freeze diff uses `origin/compass-18-openapi3-freeze` as its base. Against `origin/master` it always lists PR 1's own spec file.
 - **Vendored schemas (PR 3).** The document schema is `…/oas/3.1/schema/2026-08-03`, the newest dated release. The dialect and meta-schema are the dated `dialect/2024-11-10` and `meta/2024-11-10`, which the document schema references. They are semantically identical to `dialect/base` and `meta/base`.
 - **Parser limits (PR 4).** The parser rejects parenthesised types, so `(A & B) | null` is written `A & B | null`. An inline nested union can only be written as an indexed access type.
-- **Mixed discriminated unions (PR 5).** For a union with an inline member, the reference members are still flattened to leaf refs and any inner `null` is lifted, and no mapping is emitted. Without the flattening, the self-check rejected the whole document. One case is still rejected: an inline member that is itself a union, written as an indexed access type.
+- **Mixed discriminated unions (PR 5).** For a union with an inline member, the reference members are still flattened to leaf refs and any inner `null` is lifted. PR 5 emitted a discriminator with no mapping; after Phase 0, the union is a plain `oneOf` with no discriminator. Without the flattening, the self-check rejected the whole document. One case is still rejected: an inline member that is itself a union, written as an indexed access type.
 - **Null overlap (#2807, between PR 5 and PR 6).** The self-check warns when two or more `oneOf` members admit null, such as `MaybeA | MaybeB`. `null` then matches more than one branch, so `oneOf` rejects it.
 - **Schemaprop errors (PR 6).** The error for an unbounded `exclusive*` names its location: the component and property path, or the endpoint and the request or response position.
 
@@ -661,7 +661,7 @@ The first pass compared a tuned `typescript-axios` with `typescript-fetch` at it
 - **The `export type X = ;` bug** comes from a discriminator with no `mapping`, not from inline members.
   - A union of `$ref`s with its mapping removed fails the same way (`refs-no-mapping`).
   - Inline members with the discriminator removed compile and still narrow on their literal property (`inline-no-disc`).
-  - SPOT emits a mapping-less discriminator only for an outer union with an inline member.
+  - At `e984fbd`, SPOT emitted a mapping-less discriminator only for an outer union with an inline member.
   - With those discriminators dropped, every spec-example compiles under fetch and axios, and passes `redocly lint`.
 - **Runtime:** it passes on Node 22, Node 24 and Hermes (table above). The Expo app had no `axios` installed for the Hermes run.
 
@@ -711,8 +711,11 @@ The costs: the override has to be re-applied on each generator bump, and fetch r
 ### Follow-ups
 
 - **Before PR 8:**
-  - `fix(COMPASS-18)` to throw on a lone `null` in `openapi3.1`, then re-run the `contract-with-null-type` row;
-  - `fix(COMPASS-18)` to emit no `discriminator` on a union with an inline member, then re-run `contract-with-unions` and `contract-with-nested-discriminated-unions` under `typescript-fetch`.
+  - `fix(COMPASS-18)` to throw on a lone `null` in `openapi3.1`, then re-run the `contract-with-null-type` row. **Merged**, #2818.
+  - `fix(COMPASS-18)` to emit no `discriminator` on a union with an inline member, then re-run `contract-with-unions` and `contract-with-nested-discriminated-unions` under `typescript-fetch`. **Open**, #2819. The self-check now rejects a discriminator with no mapping. Re-run at that branch's head, with the *Pins* above and `tsc --strict` with browser `lib`:
+    - `typescript-fetch` with the *Step 7* configuration and `typescript-axios` with defaults each compile both examples with 0 errors and no `export type X = ;`;
+    - the inline members still narrow on `kind`;
+    - both inputs pass `redocly lint`.
 - **Client package (the monorepo follow-up ticket):**
   - `typescript-fetch` with `modelPropertyNaming=original,withoutRuntimeChecks=true`;
   - commit the `runtime.mustache` override beside the generate script, and re-apply it on each generator bump;
