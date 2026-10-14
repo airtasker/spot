@@ -312,7 +312,6 @@ describe("OpenAPI 3.1 type util", () => {
     };
 
     it.each<[string, Type, SchemaObject]>([
-      ["null on its own", nullType(), { type: "null" }],
       [
         "boolean | null",
         unionType([booleanType(), nullType()]),
@@ -533,10 +532,41 @@ describe("OpenAPI 3.1 type util", () => {
         ]),
         { type: ["string", "null"], enum: ["a", null] }
       ],
-      ["a single-member union", unionType([stringType()]), { type: "string" }],
-      ["null | null", unionType([nullType(), nullType()]), { type: "null" }]
+      ["a single-member union", unionType([stringType()]), { type: "string" }]
     ])("%s", (_, type, expected) => {
       expect(typeToSchemaObject(type, typeTable)).toEqual(expected);
+    });
+
+    it.each<[string, Type]>([
+      ["null on its own", nullType()],
+      ["null | null", unionType([nullType(), nullType()])],
+      [
+        "an object property of type null",
+        objectType([{ name: "nothing", type: nullType(), optional: false }])
+      ]
+    ])("%s is rejected", (_, type) => {
+      expect(() => typeToSchemaObject(type, typeTable)).toThrow(
+        'A "null" type must be a member of a union with another type, such as "T | null".'
+      );
+    });
+
+    it("names the property path of a rejected null", () => {
+      expect(() =>
+        typeToSchemaObject(
+          objectType([
+            {
+              name: "outer",
+              type: arrayType(
+                objectType([
+                  { name: "nothing", type: nullType(), optional: false }
+                ])
+              ),
+              optional: false
+            }
+          ]),
+          typeTable
+        )
+      ).toThrow(/^property "outer\[\]\.nothing": A "null" type/);
     });
 
     describe("a discriminated union with a member that resolves to another union", () => {

@@ -1637,61 +1637,6 @@ exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nested-discriminated-uni
 }"
 `;
 
-exports[`OpenAPI 3.1 generator openapi3-1/contract-with-null-type.ts matches the snapshot 1`] = `
-"{
-  "openapi": "3.1.0",
-  "info": {
-    "title": "contract",
-    "version": "0.0.0"
-  },
-  "paths": {
-    "/users": {
-      "get": {
-        "operationId": "NullType",
-        "responses": {
-          "200": {
-            "description": "200 response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Body"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Nothing": {
-        "type": "null"
-      },
-      "Body": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "nothing": {
-            "type": "null"
-          },
-          "aliasedNothing": {
-            "$ref": "#/components/schemas/Nothing"
-          }
-        },
-        "required": [
-          "name",
-          "nothing",
-          "aliasedNothing"
-        ]
-      }
-    }
-  }
-}"
-`;
-
 exports[`OpenAPI 3.1 generator openapi3-1/contract-with-nullable-intersections.ts matches the snapshot 1`] = `
 "{
   "openapi": "3.1.0",
