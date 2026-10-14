@@ -362,16 +362,13 @@ class SemanticChecker {
       return;
     }
 
+    // Spec-legal, but openapi-generator's typescript-fetch emits an empty
+    // type alias (`export type X = ;`) for a discriminator without a mapping.
     if (mapping === undefined) {
-      oneOf.forEach((member, index) => {
-        const target = this.objectShape(member, new Set());
-        if (!target.required.has(propertyName)) {
-          this.error(
-            `${path}/oneOf/${index}`,
-            `the discriminator property "${propertyName}" is not a required property of this member`
-          );
-        }
-      });
+      this.error(
+        discriminatorPath,
+        'a discriminator must have a "mapping" that lists every oneOf member'
+      );
       return;
     }
     if (!isRecord(mapping)) {

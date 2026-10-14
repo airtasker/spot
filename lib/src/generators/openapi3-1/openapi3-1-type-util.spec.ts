@@ -443,12 +443,9 @@ describe("OpenAPI 3.1 type util", () => {
         }
       ],
       [
-        "discriminated union with an inline member has no mapping",
+        "discriminated union with an inline member has no discriminator",
         unionType([cat, referenceType("Dog")], "kind"),
-        {
-          oneOf: [typeToSchemaObject(cat, typeTable), ref("Dog")],
-          discriminator: { propertyName: "kind" }
-        }
+        { oneOf: [typeToSchemaObject(cat, typeTable), ref("Dog")] }
       ],
       [
         "reference to an object with one literal | null ignores the discriminator",
@@ -602,7 +599,7 @@ describe("OpenAPI 3.1 type util", () => {
           { anyOf: [catAndDogOneOf, { type: "null" }] }
         ],
         [
-          "an inline union is not flattened, and has no mapping",
+          "an inline union is not flattened, and has no discriminator",
           unionType(
             [
               unionType([referenceType("Cat"), referenceType("Dog")], "kind"),
@@ -610,10 +607,7 @@ describe("OpenAPI 3.1 type util", () => {
             ],
             "kind"
           ),
-          {
-            oneOf: [catAndDogOneOf, ref("Fish")],
-            discriminator: { propertyName: "kind" }
-          }
+          { oneOf: [catAndDogOneOf, ref("Fish")] }
         ]
       ])("%s", (_, type, expected) => {
         expect(typeToSchemaObject(type, fishTable)).toEqual(expected);
@@ -918,7 +912,7 @@ describe("OpenAPI 3.1 type util", () => {
         }
       ],
       [
-        "an inline member is kept and reference members are flattened, with no mapping",
+        "an inline member is kept and reference members are flattened, with no discriminator",
         outer(
           referenceType("FlatTypeA"),
           inlineMember,
@@ -930,8 +924,7 @@ describe("OpenAPI 3.1 type util", () => {
             inlineMemberSchema,
             ref("NestedUnionSingle"),
             ref("NestedUnionDouble")
-          ],
-          discriminator: { propertyName: "type" }
+          ]
         }
       ],
       [
@@ -944,8 +937,7 @@ describe("OpenAPI 3.1 type util", () => {
                 inlineMemberSchema,
                 ref("NestedUnionSingle"),
                 ref("NestedUnionDouble")
-              ],
-              discriminator: { propertyName: "type" }
+              ]
             },
             { type: "null" }
           ]
@@ -963,8 +955,7 @@ describe("OpenAPI 3.1 type util", () => {
             inlineMemberSchema,
             ref("NestedUnionSingle"),
             ref("NestedUnionDouble")
-          ],
-          discriminator: { propertyName: "type" }
+          ]
         }
       ]
     ])("%s", (_, type, expected) => {
