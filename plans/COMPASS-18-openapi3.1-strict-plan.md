@@ -78,7 +78,7 @@ Out of scope:
 
 | IR (`lib/src/types.ts` `TypeKind`) | Non-null | `X \| null` |
 |---|---|---|
-| `NULL` on its own | `{type: "null"}`. The existing generator throws here (open question 2). | — |
+| `NULL` on its own | **Error**, as in the existing generator. Phase 0 found that openapi-generator turns `{type: "null"}` into a reference to a `Null` model it never emits. | — |
 | `BOOLEAN` | `{type: "boolean"}` | `{type: ["boolean", "null"]}` |
 | `STRING` | `{type: "string"}` | `{type: ["string", "null"]}` |
 | `DATE` / `DATE_TIME` | `{type: "string", format: "date" \| "date-time"}` | `type: ["string", "null"]`, format kept |
@@ -443,7 +443,7 @@ No change is needed to the Dockerfile or `.dockerignore`: they copy `lib/` and `
 
 - **Bump to v2.2.0** in `package.json`, and run `prepack` to refresh the oclif README.
 - **List everything unreleased since v2.1.0 in the PR body**, not just this work. At the baseline that includes `e2e1050`, which raises `engines.node` to `>=22.13`, plus whatever COMPASS-28 has merged by then. Justify the semver bump against the whole list: a minor bump for a new generator, unless something in the list is breaking.
-- **Gate:** before cutting the GitHub Release, re-run Phase 0 steps 1 and 3–6 with the built generator. The Release publishes to npm and the Docker image.
+- **Gate:** before cutting the GitHub Release, re-run Phase 0 steps 1 and 3–6 with the built generator, using single-tag input and the commands in *Phase 0 results*. The Release publishes to npm and the Docker image.
 
 ### Follow-up tickets
 
@@ -494,14 +494,187 @@ Each PR body records its own deviations. The ones that change the plan are:
 - **Null overlap (#2807, between PR 5 and PR 6).** The self-check warns when two or more `oneOf` members admit null, such as `MaybeA | MaybeB`. `null` then matches more than one branch, so `oneOf` rejects it.
 - **Schemaprop errors (PR 6).** The error for an unbounded `exclusive*` names its location: the component and property path, or the endpoint and the request or response position.
 
+## Phase 0 results (2026-10-14)
+
+**Verdict.** `typescript-axios` meets every exit criterion except the React Native type-check *without DOM*, which fails on `URL` typings only. On the app's real compiler settings it passes. One shipped default is contradicted: a lone `null`. Neither monorepo contract contains one, so it blocks no consumer, but it is fixed forward before PR 8.
+
+### Pins
+
+| Input | Pin |
+|---|---|
+| SPOT | `master` @ `e984fbd`, `pnpm build`, `node ./bin/run` |
+| Contracts | `airtasker/monorepo` @ `ebd043f4cc3` |
+| openapi-generator | `openapitools/openapi-generator-cli:v7.26.0` @ `sha256:a304ddf1e2e5f24f68fa3153568d6174cea4959d09aa8e3db6d526fd0782326d` |
+| Lint | `redocly/cli:2.59.0`, config `extends: [spec]` |
+| TypeScript | 6.0.3; `@types/node` 24.12.4; `react-native` 0.83.10; axios 1.19.0 |
+| React Native runtime | Expo Go 55.0.34 (SDK 55), Hermes, iPhone 17 Pro, iOS 26.0, Xcode 26.0.1 |
+
+### Commands
+
+```sh
+node ./bin/run generate -c <monorepo>/apis/public-facing/http/<contract>/api.ts -g openapi3.1 -l json -o <out>
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/w" openapitools/openapi-generator-cli@sha256:a304ddf1… \
+  generate -g typescript-axios -i /w/<in>.json -o /w/<out> \
+  [--additional-properties=withSeparateModelsAndApi=true,useSingleRequestParameter=true,supportsES6=true,enumPropertyNaming=original,modelPackage=models,apiPackage=api] \
+  [--openapi-normalizer SIMPLIFY_ONEOF_ANYOF=false]
+docker run --rm -v "$PWD:/spec" -w /spec redocly/cli:2.59.0 lint --config redocly.yaml <in>.json
+```
+
+The `jq` transforms for the variants, each applied to the `api-client-v1` 3.1 JSON:
+
+```jq
+# single-tag: applied first to every api-client-v1 input (see "Multi-tag operations")
+.paths |= map_values(map_values(if type=="object" and has("tags") then .tags=[.tags[0]] else . end))
+# nullable-ref-oneOf
+walk(if type=="object" and has("anyOf") and (.anyOf|length==2) and (.anyOf|any(.=={"type":"null"})) and (.anyOf|any(type=="object" and has("$ref"))) then (.oneOf=.anyOf|del(.anyOf)) else . end)
+# undiscriminated-anyOf: applied to contract-with-unions, because api-client-v1 has no undiscriminated oneOf
+walk(if type=="object" and has("oneOf") and (has("discriminator")|not) then (.anyOf=.oneOf|del(.oneOf)) else . end)
+# no-ref-description
+walk(if type=="object" and has("$ref") and has("description") then del(.description) else . end)
+# oas-3.1.1
+.openapi="3.1.1"
+```
+
+### Step 1: generating the inputs
+
+- Both contracts generate with **no errors and no warnings**, in JSON and YAML. Every spec-example also generates; the only warning is the expected one from `contract-with-overlapping-nullable-members`.
+- Every input and every variant passes `redocly lint` with the `spec` ruleset.
+
+Encodings counted in the `api-client-v1` 3.1 output:
+
+| Shape | Count |
+|---|---:|
+| components / operations | 983 / 211 |
+| nullable refs as `anyOf: [{$ref}, {type: "null"}]` | 410 |
+| `type: [T, "null"]` | 205 |
+| discriminators, all with a mapping | 85 |
+| undiscriminated `oneOf` / `allOf` | 0 / 0 |
+| `description` beside `$ref` (18 of them empty strings) | 31 |
+| lone `{type: "null"}` | 0 |
+
+### Step 2: shape counts from `-g raw`
+
+| Shape | api-client-v1 | legacy-rails-monolith |
+|---|---:|---:|
+| unions (of which discriminated) | 786 (376) | 64 (2) |
+| nested discriminated unions | 4 | 0 |
+| inner unions with `null` or an inline member | 0 | 0 |
+| outer unions mixing inline members and union refs | 0 | 0 |
+| unbounded `exclusive*` | 0 | 0 |
+| overlapping `oneOf` members (warnings) | 0 | 0 |
+| intersections / nullable intersections (finding 5) | 0 / 0 | 0 / 0 |
+| aliases to unions | 0 | 0 |
+| endpoints with no response | 0 | 0 |
+
+### Steps 3 and 4: generation and type-checks
+
+- Every generator run exits 0. The only warning on the real contract is openapi-generator's "OpenAPI 3.1 support is still in beta".
+- **Multi-tag operations break both generators, on 3.0 and 3.1 alike.** 89 of the 211 operations carry more than one tag. Each generator emits the operation's request type once per tag, which gives TS2308 or TS2451 duplicate exports: 104 in `typescript-fetch`, 4 in `typescript-axios`. This is not a 3.1 issue. The client package must reduce each operation to one tag before generating (`single-tag` above). Every result below uses single-tag inputs.
+- **The normaliser must stay on.** With `SIMPLIFY_ONEOF_ANYOF=false`, each `anyOf: [{$ref}, {type: "null"}]` becomes a hoisted wrapper model: 123 extra files, the `null` lost, and names reused across unrelated properties (`AdsCallout.icon: CancellationPolicyWarningIcon`). With the default normaliser the 3.1 output gives the same 981 models as 3.0.
+
+`api-client-v1`, single-tag, default normaliser. Each cell is the number of `tsc` errors:
+
+| Client | browser | Node | RN (no DOM) | Expo base (`lib: DOM, ESNext`) | monorepo flags | + bff-api overrides |
+|---|---:|---:|---:|---:|---:|---:|
+| 3.1 `typescript-axios` (default / candidate options) | 0 | 0 | 7 | 0 | 3 | 0 |
+| 3.1 `typescript-fetch` (default options) | 0 | 6 | 3 | 0 | 6,362 | 3 |
+| 3.0 `typescript-axios` | 0 | 0 | 7 | 0 | 3 | 0 |
+| 3.0 `typescript-fetch` | 2 | 8 | 5 | — | 6,360 | 5 |
+
+- **axios, RN without DOM:** the 7 errors are `URL.search`, `URL.pathname`, `URL.hash`, `URLSearchParams.has` and `URLSearchParams.set`, which React Native's own typings lack. Expo's base config includes DOM, and the app compiles with it.
+- **axios, monorepo flags:** the 3 errors are TS1294 on enums, from `erasableSyntaxOnly`. bff-api's overrides already cover it.
+- **fetch:** on Node and RN without DOM, `runtime.ts` uses DOM-only types (`RequestCredentials`, `WindowOrWorkerGlobalScope`). Under `noUncheckedIndexedAccess` it also has 3 strict errors.
+- **3.0 fetch only:** 2 errors from finding 3. The nested-union wrapper `AdsSlider` makes it reference `instanceOfAdsSlider`, which is never emitted. The 3.1 leaf flattening removes them.
+
+Spec-examples, single run each:
+
+| Example | Result |
+|---|---|
+| unions, nullable types and refs, nullable intersections, nested unions, schemaprops, query and body examples | compile for both clients, except the rows below |
+| `contract-with-null-type` | **fails for both.** `{type: "null"}` becomes a reference to a `Null` model that is never emitted (TS2304 or TS2307). |
+| `contract-with-unions`, `contract-with-nested-discriminated-unions` (inline members) | `typescript-fetch` emits `export type BodyInlineDiscriminated = ;` (TS1110). `typescript-axios` compiles. Neither real contract has the shape. |
+| `contract-with-nullable-intersections` | compiles. openapi-generator warns `allOf schema null containing multiple types (not model) is not supported`, but `inline: BodyInline \| null` keeps both members' properties. |
+
+### Step 5: type quality (`typescript-axios`, 3.1)
+
+- **Nulls:** 609 `| null` against 199 in the 3.0 client. That is the 410 nullable refs of finding 1, which 3.0 types as non-null. Nullable discriminated unions (`AdsIcon.interaction`, `MyTaskViewHeader.header_status`) are `X | null`.
+- **Narrowing:** discriminated unions are `{type: 'v'} & Leaf | …` and narrow on `type`; the smoke test reads `title` after narrowing. The nested union `BrowseTasksFeedListFilterType` lists `& AdsSliderDouble`. In 3.0 it is `& AdsSlider`, the wrapper (finding 3).
+- **Leaks:** no `any` in the models. The only `unknown` is an enum value named `unknown`.
+- **Descriptions beside `$ref`:** a non-empty one becomes the property's doc comment, with no wrapper model. SPOT emits 18 of them as `""`, which gives empty `/** */` blocks. That is cosmetic.
+- **Compared with `@airtasker/bff-api`:** `AdsCallout`, `BrowseTasksFeedItem`, `BrowseTasksFeedSectionHeader` and `AdsText` have the same snake_case fields and the same `| null`. bff-api still types the nested union through the `AdsSlider` wrapper.
+- **`typescript-fetch` with `stringEnums=true`:** discriminated-union members collapse to `never`, because a `{type: 'literal'}` intersected with a TS `enum` member is empty. The client compiles, but calling it does not. The default `as const` enums are fine.
+
+A/B variants, as a diff of the generated client against the base output:
+
+| Variant | `typescript-axios` | `typescript-fetch` | Decision |
+|---|---|---|---|
+| `nullable-ref-oneOf` | identical | identical | keep `anyOf` |
+| `undiscriminated-anyOf` | `boolean \| number \| string` becomes an empty `interface`, and `Bird \| Cat` is merged into one interface | 310 changed lines, same damage | keep `oneOf` |
+| `no-ref-description` | only the doc comments change | only the doc comments change | keep `description` beside `$ref` |
+| `oas-3.1.1` | identical | identical | keep `3.1.0` |
+
+### Step 6: runtime smoke test
+
+The test calls `BrowseTasksFeed202412List` against a `node:http` echo stub. It sends the query `page_token = "p 1&x/é"` and a body holding a nested-union leaf (`AdsSliderDoubleComponentData`). The canned response has `null` for refs and for a `type: [T, "null"]` field, plus a discriminated-union leaf. The assertions cover the method, path, query, content type, the body, and the decoded and narrowed response.
+
+| Runtime | `typescript-fetch` | `typescript-axios` |
+|---|---|---|
+| Node 22.23.2 | PASS | PASS |
+| Node 24.18.0 | PASS | PASS |
+| Hermes, Expo Go 55, iOS simulator, no polyfills | PASS | PASS |
+
+- **Why no polyfills were needed:** Expo 55 replaces the global `URL` and `URLSearchParams` with a WHATWG implementation (`whatwg-url-minimum`, in `expo/src/winter/runtime.native.ts:18-20`). So the `typescript-axios` `url.search` setter works, even though React Native's own `URL` has only a getter (`react-native/Libraries/Blob/URL.js:168`). On bare React Native without Expo, `typescript-axios` would still need `react-native-url-polyfill`.
+- **Query encoding:** fetch encodes a space as `%20` and axios as `+`. The stub decoded both to the same value.
+
+### Decisions
+
+| Decision | Shipped default | Result |
+|---|---|---|
+| nullable ref `anyOf` vs `oneOf` | `anyOf` | **Keep.** The generated clients are identical. |
+| undiscriminated union `oneOf` vs `anyOf` | `oneOf` | **Keep.** `anyOf` destroys the union types. |
+| `description` beside `$ref` | emit | **Keep.** It becomes a doc comment, with no wrapper. |
+| lone `null` | `{type: "null"}` | **Contradicted.** Both clients reference a `Null` model that does not exist. Throw at generation, as `openapi3` does, in a `fix(COMPASS-18)` PR before PR 8. No monorepo contract has a lone `null`. |
+| `3.1.0` vs `3.1.1` | `3.1.0` | **Keep.** The generated clients are identical. |
+| unbounded `exclusive*` | error | **Keep.** It occurs 0 times. |
+| client | — | **`typescript-axios`**: candidate options, default normaliser, single-tag input. No polyfills inside Expo; `react-native-url-polyfill` only on bare React Native. Compile with DOM in `lib`, as Expo's base config does, and with bff-api's four overrides. |
+
+Reasons for `typescript-axios` over `typescript-fetch`:
+
+- it type-checks on Node without DOM;
+- it has no strict errors under `noUncheckedIndexedAccess`;
+- it handles discriminated unions with inline members;
+- it keeps snake_case wire names, as `@airtasker/bff-api` does, which eases migration;
+- `axios` is already a catalog dependency.
+
+### Exit criteria
+
+| Criterion | `typescript-axios` |
+|---|---|
+| `--strict`: browser, Node | met (0 / 0) |
+| `--strict`: React Native | **met on the app's Expo base config (0). Not met without DOM (7), on `URL` typings only.** This is accepted: the runtime test shows the APIs exist under Expo. |
+| runtime on Node and Hermes | met |
+| no lost `null`, no `any` leak, no wrapper-only model | met, with the default normaliser |
+| SPOT generates both monorepo contracts without error | met |
+
+### Follow-ups
+
+- **Before PR 8:** `fix(COMPASS-18)` to throw on a lone `null` in `openapi3.1`. Then re-run the `contract-with-null-type` row.
+- **Client package (the monorepo follow-up ticket):**
+  - generate from single-tag input, or give each contract operation one tag;
+  - keep `SIMPLIFY_ONEOF_ANYOF` on;
+  - never set `stringEnums`;
+  - compile with DOM in `lib` and bff-api's overrides;
+  - pin the generator image by digest.
+- **Optional:** stop emitting an empty `description: ""`.
+
 ## Open questions
 
-Phase 0 settles each of these unless noted.
+Phase 0 settled questions 1–4 (see *Phase 0 results*).
 
-1. For a union without a discriminator, keep `oneOf` or switch to `anyOf`?
-2. Emit `{type: "null"}` for a lone `null`, or throw as the existing generator does?
-3. Does a nullable intersection stay nullable through `anyOf`, or is that rejected?
-4. `3.1.0` or `3.1.1`?
+1. For a union without a discriminator, keep `oneOf` or switch to `anyOf`? **`oneOf`.** `anyOf` destroys the generated union types.
+2. Emit `{type: "null"}` for a lone `null`, or throw as the existing generator does? **Throw.** Both clients reference a `Null` model that does not exist.
+3. Does a nullable intersection stay nullable through `anyOf`, or is that rejected? **It stays nullable** (`BodyInline | null`), despite an openapi-generator warning.
+4. `3.1.0` or `3.1.1`? **`3.1.0`.** The generated clients are identical.
 5. Add a `--no-verify` escape hatch for the self-check? Recommended: no. A strict mode that can be switched off guarantees nothing. This one is a decision for the reviewer of this plan, not for Phase 0.
 
 ## Verification
