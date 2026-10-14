@@ -44,7 +44,7 @@ import {
   ServerVariableObject
 } from "./openapi3-1-specification";
 import {
-  relocateSchemaPropError,
+  relocateConversionError,
   typeToSchemaObject
 } from "./openapi3-1-type-util";
 import {
@@ -141,7 +141,7 @@ function endpointsToPathsObject(
 
     acc[pathName] = acc[pathName] ?? {};
     const pathItemMethod = httpMethodToPathItemMethod(endpoint.method);
-    acc[pathName][pathItemMethod] = relocateSchemaPropError(
+    acc[pathName][pathItemMethod] = relocateConversionError(
       () => endpointToOperationObject(endpoint, typeTable, config),
       e => e.at(`endpoint "${endpoint.name}"`)
     );
@@ -330,7 +330,7 @@ function endpointResponseToResponseObject(
     response.headers.length > 0
       ? response.headers.reduce<{ [name: string]: HeaderObject }>(
           (acc, header) => {
-            acc[header.name] = relocateSchemaPropError(
+            acc[header.name] = relocateConversionError(
               () => headerToHeaderObject(header, typeTable),
               e => e.at(`${site} header "${header.name}"`)
             );
@@ -379,7 +379,7 @@ function locatedSchema(
   typeTable: TypeTable,
   site: string
 ): SchemaObject {
-  return relocateSchemaPropError(
+  return relocateConversionError(
     () => typeToSchemaObject(type, typeTable),
     e => e.at(site)
   );

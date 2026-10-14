@@ -29,7 +29,7 @@ export function typeToSchemaObject(
 ): SchemaObject {
   switch (type.kind) {
     case TypeKind.NULL:
-      return { type: "null" };
+      throw new ConversionError(LONE_NULL_REASON);
     case TypeKind.BOOLEAN:
       return primitiveSchema("boolean", { owner: type });
     case TypeKind.BOOLEAN_LITERAL:
@@ -126,7 +126,7 @@ function objectTypeToSchema(
       ? type.properties.reduce<{ [name: string]: SchemaObject }>(
           (acc, property) => {
             acc[property.name] = {
-              ...relocateSchemaPropError(
+              ...relocateConversionError(
                 () => typeToSchemaObject(property.type, typeTable),
                 e => e.inProperty(property.name)
               ),
@@ -156,7 +156,7 @@ function arrayTypeToSchema(
 ): SchemaObject {
   return {
     type: "array",
-    items: relocateSchemaPropError(
+    items: relocateConversionError(
       () => typeToSchemaObject(type.elementType, typeTable),
       e => e.inProperty("[]")
     ),
@@ -173,7 +173,7 @@ function unionTypeToSchema(
   const unionSchemaProps = schemaPropsToSchemaObject(type);
 
   if (nonNullTypes.length === 0) {
-    return { type: "null", ...unionSchemaProps };
+    throw new ConversionError(LONE_NULL_REASON);
   }
 
   // A union of one type and null is that type made nullable. A discriminator
@@ -388,7 +388,7 @@ function schemaPropsToSchemaObject(owner: SchemaPropOwner): SchemaObject {
       case "exclusiveMaximum": {
         const bound = name === "exclusiveMinimum" ? "minimum" : "maximum";
         if (value === true && !schemaProps.has(bound)) {
-          throw new SchemaPropConversionError(
+          throw new ConversionError(
             `The "${name}" schemaprop on type "${owner.kind}" has no "${bound}" ` +
               `to make exclusive. OpenAPI 3.1 states an exclusive bound as a ` +
               `number in "${name}", so add a "${bound}" or remove "${name}".`
@@ -403,17 +403,23 @@ function schemaPropsToSchemaObject(owner: SchemaPropOwner): SchemaObject {
   return schema;
 }
 
+// openapi-generator turns a schema that admits only null into a reference to a
+// model it never emits, so the generated client does not compile.
+const LONE_NULL_REASON =
+  'A "null" type must be a member of a union with another type, such as ' +
+  '"T | null". A schema that admits only null has no model in generated clients.';
+
 const EXCLUSIVE_FLAG = {
   minimum: "exclusiveMinimum",
   maximum: "exclusiveMaximum"
 } as const;
 
 /**
- * A schemaprop that has no JSON Schema 2020-12 form. The message names
+ * A type or schemaprop that this generator cannot emit. The message names
  * where it is: the sites enclosing it, outermost first, then the path of
  * properties from there, where `[]` stands for an array's items.
  */
-export class SchemaPropConversionError extends Error {
+export class ConversionError extends Error {
   constructor(
     readonly reason: string,
     readonly sites: string[] = [],
@@ -424,19 +430,19 @@ export class SchemaPropConversionError extends Error {
         ? [...sites, `property "${formatPropertyPath(propertyPath)}"`]
         : sites;
     super(location.length > 0 ? `${location.join(", ")}: ${reason}` : reason);
-    this.name = "SchemaPropConversionError";
+    this.name = "ConversionError";
   }
 
-  at(site: string): SchemaPropConversionError {
-    return new SchemaPropConversionError(
+  at(site: string): ConversionError {
+    return new ConversionError(
       this.reason,
       [site, ...this.sites],
       this.propertyPath
     );
   }
 
-  inProperty(name: string): SchemaPropConversionError {
-    return new SchemaPropConversionError(this.reason, this.sites, [
+  inProperty(name: string): ConversionError {
+    return new ConversionError(this.reason, this.sites, [
       name,
       ...this.propertyPath
     ]);
@@ -452,17 +458,17 @@ function formatPropertyPath(path: string[]): string {
 }
 
 /**
- * Runs `generate`, and rethrows a `SchemaPropConversionError` from it after
+ * Runs `generate`, and rethrows a `ConversionError` from it after
  * `relocate` has added where it was raised.
  */
-export function relocateSchemaPropError<T>(
+export function relocateConversionError<T>(
   generate: () => T,
-  relocate: (e: SchemaPropConversionError) => SchemaPropConversionError
+  relocate: (e: ConversionError) => ConversionError
 ): T {
   try {
     return generate();
   } catch (e) {
-    if (e instanceof SchemaPropConversionError) {
+    if (e instanceof ConversionError) {
       throw relocate(e);
     }
     throw e;

@@ -56,7 +56,6 @@ const UNSUPPORTED_CONTRACTS: { [filename: string]: string } = {
 
 const OPENAPI31_SNAPSHOT_CONTRACTS = [
   "contract-with-nested-discriminated-unions.ts",
-  "contract-with-null-type.ts",
   "contract-with-nullable-intersections.ts",
   "contract-with-nullable-references.ts",
   "contract-with-nullable-types.ts",
@@ -68,6 +67,12 @@ const OPENAPI31_SNAPSHOT_CONTRACTS = [
 const OPENAPI31_WARNING_CONTRACTS = [
   "contract-with-overlapping-nullable-members.ts"
 ];
+
+// openapi3.1 spec examples this generator rejects, with the error each raises.
+const OPENAPI31_UNSUPPORTED_CONTRACTS: { [filename: string]: string } = {
+  "contract-with-null-type.ts":
+    'component "Nothing": A "null" type must be a member of a union with another type, such as "T | null".'
+};
 
 function generateFromSpecExample(
   filename: string,
@@ -105,9 +110,13 @@ describe("OpenAPI 3.1 generator", () => {
     );
   });
 
-  test("every openapi3.1 spec example is snapshotted or expects warnings", () => {
+  test("every openapi3.1 spec example is snapshotted, expects warnings or is listed as unsupported", () => {
     expect(fs.readdirSync(OPENAPI31_SPEC_EXAMPLES_DIR).sort()).toEqual(
-      [...OPENAPI31_SNAPSHOT_CONTRACTS, ...OPENAPI31_WARNING_CONTRACTS].sort()
+      [
+        ...OPENAPI31_SNAPSHOT_CONTRACTS,
+        ...OPENAPI31_WARNING_CONTRACTS,
+        ...Object.keys(OPENAPI31_UNSUPPORTED_CONTRACTS)
+      ].sort()
     );
   });
 
@@ -148,6 +157,15 @@ describe("OpenAPI 3.1 generator", () => {
     "%s is rejected",
     (filename, error) => {
       expect(() => generateFromSpecExample(filename)).toThrow(error);
+    }
+  );
+
+  test.each(Object.entries(OPENAPI31_UNSUPPORTED_CONTRACTS))(
+    "openapi3-1/%s is rejected",
+    (filename, error) => {
+      expect(() =>
+        generateFromSpecExample(filename, OPENAPI31_SPEC_EXAMPLES_DIR)
+      ).toThrow(error);
     }
   );
 
