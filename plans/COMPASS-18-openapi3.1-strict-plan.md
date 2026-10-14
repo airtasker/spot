@@ -443,7 +443,7 @@ No change is needed to the Dockerfile or `.dockerignore`: they copy `lib/` and `
 
 - **Bump to v2.2.0** in `package.json`, and run `prepack` to refresh the oclif README.
 - **List everything unreleased since v2.1.0 in the PR body**, not just this work. At the baseline that includes `e2e1050`, which raises `engines.node` to `>=22.13`, plus whatever COMPASS-28 has merged by then. Justify the semver bump against the whole list: a minor bump for a new generator, unless something in the list is breaking.
-- **Gate:** before cutting the GitHub Release, re-run Phase 0 steps 1 and 3–6 with the built generator, using single-tag input and the commands in *Phase 0 results*. The Release publishes to npm and the Docker image.
+- **Gate:** before cutting the GitHub Release, re-run Phase 0 steps 1 and 3–6 with the built generator, using single-tag input, the chosen `typescript-fetch` configuration and the commands in *Phase 0 results*. The Release publishes to npm and the Docker image.
 
 ### Follow-up tickets
 
@@ -496,7 +496,16 @@ Each PR body records its own deviations. The ones that change the plan are:
 
 ## Phase 0 results (2026-10-14)
 
-**Verdict.** `typescript-axios` meets every exit criterion except the React Native type-check *without DOM*, which fails on `URL` typings only. On the app's real compiler settings it passes. One shipped default is contradicted: a lone `null`. Neither monorepo contract contains one, so it blocks no consumer, but it is fixed forward before PR 8.
+**Verdict.** The client is `typescript-fetch`, with `modelPropertyNaming=original,withoutRuntimeChecks=true` and a three-line override of its `runtime.mustache` template (see *Step 7*).
+
+- It meets every exit criterion except the React Native type-check *without DOM*, which fails on DOM type names only. On the app's real compiler settings it passes.
+- It needs no runtime dependency and no polyfill.
+- An earlier pass chose `typescript-axios`, because only fetch's defaults had been tested.
+
+Two shipped defaults are contradicted, and both are fixed forward before PR 8. Neither monorepo contract contains either shape:
+
+- a lone `null`;
+- a discriminator with no `mapping`.
 
 ### Pins
 
@@ -617,14 +626,55 @@ A/B variants, as a diff of the generated client against the base output:
 
 The test calls `BrowseTasksFeed202412List` against a `node:http` echo stub. It sends the query `page_token = "p 1&x/é"` and a body holding a nested-union leaf (`AdsSliderDoubleComponentData`). The canned response has `null` for refs and for a `type: [T, "null"]` field, plus a discriminated-union leaf. The assertions cover the method, path, query, content type, the body, and the decoded and narrowed response.
 
-| Runtime | `typescript-fetch` | `typescript-axios` |
-|---|---|---|
-| Node 22.23.2 | PASS | PASS |
-| Node 24.18.0 | PASS | PASS |
-| Hermes, Expo Go 55, iOS simulator, no polyfills | PASS | PASS |
+| Runtime | `typescript-fetch` defaults | `typescript-fetch` candidate (*Step 7*) | `typescript-axios` |
+|---|---|---|---|
+| Node 22.23.2 | PASS | PASS | PASS |
+| Node 24.18.0 | PASS | PASS | PASS |
+| Hermes, Expo Go 55, iOS simulator, no polyfills | PASS | PASS (no `axios` installed; bundle of 1,244 modules against 2,235) | PASS |
 
 - **Why no polyfills were needed:** Expo 55 replaces the global `URL` and `URLSearchParams` with a WHATWG implementation (`whatwg-url-minimum`, in `expo/src/winter/runtime.native.ts:18-20`). So the `typescript-axios` `url.search` setter works, even though React Native's own `URL` has only a getter (`react-native/Libraries/Blob/URL.js:168`). On bare React Native without Expo, `typescript-axios` would still need `react-native-url-polyfill`.
 - **Query encoding:** fetch encodes a space as `%20` and axios as `+`. The stub decoded both to the same value.
+
+### Step 7: `typescript-fetch` re-probe
+
+The first pass compared a tuned `typescript-axios` with `typescript-fetch` at its defaults. Every reason it gave for axios was a quirk of the generated code, not a runtime gap, so fetch was re-run with three configurations on the single-tag `api-client-v1` input and the spec-examples.
+
+| fetch configuration | browser | Expo base | monorepo + bff-api overrides |
+|---|---:|---:|---:|
+| `modelPropertyNaming=original` | 0 | 0 | 3 |
+| `withoutRuntimeChecks=true` | 0 | 0 | 3 |
+| both | 0 | 0 | 3 |
+| both, plus the `runtime.mustache` override | 0 | 0 | **0** |
+
+- **The 3 `noUncheckedIndexedAccess` errors** are regex `match[n]` accesses in the content-disposition filename parser of `runtime.ts`.
+  - A copy of the v7.26.0 `runtime.mustache`, passed with `-t`, adds `?? ""` to the three accesses.
+  - Only `runtime.ts` changes, and the flag stays on. Extract the template with `openapi-generator-cli author template -g typescript-fetch`.
+  - The override has to be re-applied on each generator bump.
+- **`withoutRuntimeChecks=true`** removes the `FromJSON`/`ToJSON` mapping layer. Models become plain interfaces in one `models/index.ts`.
+  - Dates are typed `string`, which is what the JSON carries. With runtime checks, 114 models run `parseDate()` and type the field as `Date`.
+  - Under the raw monorepo flags, the unused-import noise drops from 6,362 errors to 181.
+- **`modelPropertyNaming=original`** keeps the snake_case wire names, as `typescript-axios` and `@airtasker/bff-api` do.
+- **Type quality** is the same as `typescript-axios`:
+  - 609 `| null`, 0 `any`;
+  - `& AdsSliderDouble` leaves;
+  - the same `AdsCallout` fields as bff-api.
+- **The `export type X = ;` bug** comes from a discriminator with no `mapping`, not from inline members.
+  - A union of `$ref`s with its mapping removed fails the same way (`refs-no-mapping`).
+  - Inline members with the discriminator removed compile and still narrow on their literal property (`inline-no-disc`).
+  - SPOT emits a mapping-less discriminator only for an outer union with an inline member.
+  - With those discriminators dropped, every spec-example compiles under fetch and axios, and passes `redocly lint`.
+- **Runtime:** it passes on Node 22, Node 24 and Hermes (table above). The Expo app had no `axios` installed for the Hermes run.
+
+```sh
+# the override: a copy of the v7.26.0 template with three edits
+sed -e '580s/match\[1\])/match[1] ?? "")/' \
+    -e '596s/match\[1\]\.toLowerCase()/(match[1] ?? "").toLowerCase()/' \
+    -e "598s/: match\[3\]\.trim()/: (match[3] ?? '').trim()/" \
+    tpl-all/runtime.mustache > tpl-fix/runtime.mustache
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/w" openapitools/openapi-generator-cli@sha256:a304ddf1… \
+  generate -g typescript-fetch -i /w/<in>.json -o /w/<out> -t /w/tpl-fix \
+  --additional-properties=modelPropertyNaming=original,withoutRuntimeChecks=true
+```
 
 ### Decisions
 
@@ -636,30 +686,36 @@ The test calls `BrowseTasksFeed202412List` against a `node:http` echo stub. It s
 | lone `null` | `{type: "null"}` | **Contradicted.** Both clients reference a `Null` model that does not exist. Throw at generation, as `openapi3` does, in a `fix(COMPASS-18)` PR before PR 8. No monorepo contract has a lone `null`. |
 | `3.1.0` vs `3.1.1` | `3.1.0` | **Keep.** The generated clients are identical. |
 | unbounded `exclusive*` | error | **Keep.** It occurs 0 times. |
-| client | — | **`typescript-axios`**: candidate options, default normaliser, single-tag input. No polyfills inside Expo; `react-native-url-polyfill` only on bare React Native. Compile with DOM in `lib`, as Expo's base config does, and with bff-api's four overrides. |
+| discriminator on a union with an inline member | `discriminator` with no `mapping` | **Contradicted.** `typescript-fetch` emits `export type X = ;`. Emit a plain `oneOf` instead, in a `fix(COMPASS-18)` PR before PR 8. The members still narrow on their literal property. No monorepo contract has the shape. |
+| client | — | **`typescript-fetch`** with `modelPropertyNaming=original,withoutRuntimeChecks=true`, the `runtime.mustache` override, the default normaliser and single-tag input. No runtime dependency, and no polyfill on Expo or bare React Native. Compile with DOM in `lib` and bff-api's four overrides. |
 
-Reasons for `typescript-axios` over `typescript-fetch`:
+Reasons for `typescript-fetch` over `typescript-axios`:
 
-- it type-checks on Node without DOM;
-- it has no strict errors under `noUncheckedIndexedAccess`;
-- it handles discriminated unions with inline members;
-- it keeps snake_case wire names, as `@airtasker/bff-api` does, which eases migration;
-- `axios` is already a catalog dependency.
+- `fetch` is native on every target, and the client needs no dependency. `axios` brings `follow-redirects`, `form-data`, `https-proxy-agent` and `proxy-from-env`.
+- It needs no polyfill even on bare React Native. `typescript-axios` sets `url.search`, which React Native's own `URL` lacks.
+- Its types match `typescript-axios` exactly. Its two problems have fixes: the `runtime.ts` errors through the template override, and `= ;` through the SPOT change above.
+
+The costs: the override has to be re-applied on each generator bump, and fetch reports a non-2xx response as `ResponseError`, not an axios error.
 
 ### Exit criteria
 
-| Criterion | `typescript-axios` |
+| Criterion | `typescript-fetch` candidate |
 |---|---|
-| `--strict`: browser, Node | met (0 / 0) |
-| `--strict`: React Native | **met on the app's Expo base config (0). Not met without DOM (7), on `URL` typings only.** This is accepted: the runtime test shows the APIs exist under Expo. |
+| `--strict`: browser | met (0) |
+| `--strict`: Node, React Native | **met with DOM in `lib`. Not met without DOM** (Node 6, React Native 3): `runtime.ts` names `RequestCredentials` and `WindowOrWorkerGlobalScope`. The monorepo base and Expo base both include DOM. This is accepted on the strength of the runtime test. |
+| monorepo flags with bff-api's overrides | met (0), with the template override |
 | runtime on Node and Hermes | met |
 | no lost `null`, no `any` leak, no wrapper-only model | met, with the default normaliser |
 | SPOT generates both monorepo contracts without error | met |
 
 ### Follow-ups
 
-- **Before PR 8:** `fix(COMPASS-18)` to throw on a lone `null` in `openapi3.1`. Then re-run the `contract-with-null-type` row.
+- **Before PR 8:**
+  - `fix(COMPASS-18)` to throw on a lone `null` in `openapi3.1`, then re-run the `contract-with-null-type` row;
+  - `fix(COMPASS-18)` to emit no `discriminator` on a union with an inline member, then re-run `contract-with-unions` and `contract-with-nested-discriminated-unions` under `typescript-fetch`.
 - **Client package (the monorepo follow-up ticket):**
+  - `typescript-fetch` with `modelPropertyNaming=original,withoutRuntimeChecks=true`;
+  - commit the `runtime.mustache` override beside the generate script, and re-apply it on each generator bump;
   - generate from single-tag input, or give each contract operation one tag;
   - keep `SIMPLIFY_ONEOF_ANYOF` on;
   - never set `stringEnums`;
