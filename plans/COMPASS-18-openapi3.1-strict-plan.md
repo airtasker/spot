@@ -712,7 +712,7 @@ The costs: the override has to be re-applied on each generator bump, and fetch r
 
 - **Before PR 8:**
   - `fix(COMPASS-18)` to throw on a lone `null` in `openapi3.1`, then re-run the `contract-with-null-type` row. **Merged**, #2818.
-  - `fix(COMPASS-18)` to emit no `discriminator` on a union with an inline member, then re-run `contract-with-unions` and `contract-with-nested-discriminated-unions` under `typescript-fetch`. **Open**, on branch `COMPASS-18-no-discriminator-inline-members`. The self-check now rejects a discriminator with no mapping. Re-run at that branch's head, with the *Pins* above and `tsc --strict` with browser `lib`:
+  - `fix(COMPASS-18)` to emit no `discriminator` on a union with an inline member, then re-run `contract-with-unions` and `contract-with-nested-discriminated-unions` under `typescript-fetch`. **Open**, #2819. The self-check now rejects a discriminator with no mapping. Re-run at that branch's head, with the *Pins* above and `tsc --strict` with browser `lib`:
     - `typescript-fetch` with the *Step 7* configuration and `typescript-axios` with defaults each compile both examples with 0 errors and no `export type X = ;`;
     - the inline members still narrow on `kind`;
     - both inputs pass `redocly lint`.
