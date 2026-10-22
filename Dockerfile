@@ -26,7 +26,7 @@
 # The `node` tag tracks the `nodejs` line in .tool-versions, and the corepack pin
 # tracks `packageManager` in package.json. Keep all three in step.
 
-FROM node:22.23.2-bookworm-slim AS base
+FROM node:22.23.4-bookworm-slim AS base
 WORKDIR /opt/spot
 RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 # docs/package.json is a workspace member, so --frozen-lockfile refuses to install
@@ -50,7 +50,7 @@ COPY cli ./cli
 # webpack/redoc bundle that this image never serves.
 RUN pnpm exec tsc
 
-FROM node:22.23.2-bookworm-slim AS runtime
+FROM node:22.23.4-bookworm-slim AS runtime
 WORKDIR /opt/spot
 COPY --from=prod-deps /opt/spot/node_modules ./node_modules
 COPY --from=builder /opt/spot/build ./build
