@@ -1,5 +1,5 @@
 import JsonSchemaValidator from "ajv";
-import Ajv from "ajv-formats";
+import addFormats from "ajv-formats";
 import assertNever from "assert-never";
 import qs from "qs";
 import * as url from "url";
@@ -413,7 +413,8 @@ export class ContractMismatcher {
       return [];
     }
 
-    const jsv = Ajv(
+    // `addFormats` adds the format validators to the instance and returns it.
+    const jsv = addFormats(
       new JsonSchemaValidator({
         verbose: true,
         allErrors: true
