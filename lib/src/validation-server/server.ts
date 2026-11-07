@@ -1,4 +1,5 @@
 import express from "express";
+import { listen } from "../express-listen";
 import { Contract } from "../definitions";
 import { InternalServerError } from "./spots/utils";
 import {
@@ -62,7 +63,9 @@ export function runValidationServer(
 
   return {
     app,
-    defer: () => new Promise<void>(resolve => app.listen(port, resolve))
+    defer: async (): Promise<void> => {
+      await listen(app, port);
+    }
   };
 }
 
