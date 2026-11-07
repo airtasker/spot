@@ -13,7 +13,9 @@ const FIXTURES = path.join(__dirname, "../../../test-fixtures/ts-lint");
 describe("ts-lint command", () => {
   jest.setTimeout(60000);
 
-  let restoreExitCode: number | undefined;
+  // Typed off the property rather than spelled out: node widened `exitCode` to
+  // allow a string and null, and this is only ever a saved copy of it.
+  let restoreExitCode: typeof process.exitCode;
   let out: string;
   let writeSpy: jest.SpyInstance;
 
